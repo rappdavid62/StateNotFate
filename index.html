@@ -1,17 +1,1144 @@
+<!-- 
+=============================================================================
+STATE, NOT FATE — DEPRESSION PROJECT MAIN FRAME (STANDALONE SINGLE-FILE BETA)
+=============================================================================
+Fully offline-capable, locally encrypted, private, and single-file portable.
+Designed to be uploaded to Google Drive, emailed, and shared.
+All assets (HTML, CSS, JS) are embedded.
+
+Local Junction Streaming:
+Points to relative child folder "knowledge/" (from the Junction link in scratch).
+=============================================================================
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>State, Not Fate — Enhanced</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>State, Not Fate — Depression Project Main Frame</title>
     <link rel="stylesheet" href="index.css">
+    
+    <!-- PWA Mobile Web App Manifest & Metadata -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#14c8af">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="State Not Fate">
 </head>
 <body>
-    <!-- Full enhanced index.html with smart-welcome screen injected (from previous council synthesis) -->
-    <div id="screen-smart-welcome" class="screen hidden">
-        <!-- Smart welcome content populated by showSmartWelcomeScreen() -->
+    <div class="app-container">
+        
+        <!-- ========================================== -->
+        <!-- SECURITY LOCK SCREEN (PIN KEYPAD GATING)   -->
+        <!-- ========================================== -->
+        <div id="screen-lock" class="welcome-screen hidden">
+            <h1 class="logo-header">STATE, NOT FATE</h1>
+            <h3 class="text-lavender mb-2">Security Locked</h3>
+            <p class="text-secondary mb-3" style="font-size:0.9rem;">Enter your 4-digit PIN to decrypt your private recovery dashboard and Crisis Safe Box.</p>
+            
+            <div class="glass-card" style="max-width: 320px; width: 100%; padding: 1.5rem;">
+                <div style="display:flex; gap:1.25rem; justify-content:center; margin-bottom:1.5rem;">
+                    <div class="pin-dot" id="dot-1"></div>
+                    <div class="pin-dot" id="dot-2"></div>
+                    <div class="pin-dot" id="dot-3"></div>
+                    <div class="pin-dot" id="dot-4"></div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;">
+                    <button class="btn btn-secondary keypad-btn" data-val="1">1</button>
+                    <button class="btn btn-secondary keypad-btn" data-val="2">2</button>
+                    <button class="btn btn-secondary keypad-btn" data-val="3">3</button>
+                    <button class="btn btn-secondary keypad-btn" data-val="4">4</button>
+                    <button class="btn btn-secondary keypad-btn" data-val="5">5</button>
+                    <button class="btn btn-secondary keypad-btn" data-val="6">6</button>
+                    <button class="btn btn-secondary keypad-btn" data-val="7">7</button>
+                    <button class="btn btn-secondary keypad-btn" data-val="8">8</button>
+                    <button class="btn btn-secondary keypad-btn" data-val="9">9</button>
+                    <button class="btn btn-secondary keypad-btn text-red" data-val="clear" style="font-size:0.8rem;">Clear</button>
+                    <button class="btn btn-secondary keypad-btn" data-val="0">0</button>
+                    <button class="btn btn-primary keypad-btn" id="btn-submit-pin" style="font-size:0.8rem; background:var(--accent-teal);">OK</button>
+                </div>
+            </div>
+            <p class="text-muted mt-2" style="font-size:0.75rem; text-align:center; max-width:280px; line-height:1.4;">
+                Data is fully sandboxed on your machine. Correct PIN is required to decrypt the local database.
+            </p>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SCREEN 0: WELCOME & TRUST LANDING (PHASE 0)-->
+        <!-- ========================================== -->
+        <div id="screen-welcome" class="welcome-screen">
+            <h1 class="logo-header">STATE, NOT FATE</h1>
+            <h3 class="text-lavender mb-2">Depression Project Main Frame Operating System</h3>
+            <p class="intro">
+                Depression is a multi-system assault on your biology, time perception, energy, and self-worth. 
+                This adjunctive framework treats depression as a temporary <em>state</em> that can be influenced through 
+                repeated, biologically supported, professionally compatible action—not as your permanent identity.
+            </p>
+            
+            <div class="guidelines-box glass-card">
+                <h2>The Main Frame Principles:</h2>
+                <ul>
+                    <li><strong>Action before motivation:</strong> We start tiny to prove to your brain that actions produce consequences.</li>
+                    <li><strong>Streak purity is a trap:</strong> Streak systems build shame. We track <em>resilience</em> and restart speed instead.</li>
+                    <li><strong>Interactive Media Console:</strong> Play your clinical recordings and podcasts directly inside your local app.</li>
+                    <li><strong>Clinical Progression tracking:</strong> Standardized PHQ-9 assessments and 10-Layer progression metrics built-in.</li>
+                </ul>
+            </div>
+            
+            <div class="flex-between w-full">
+                <button class="btn btn-secondary" onclick="window.open('https://www.google.com', '_blank')">Exit to Safety</button>
+                <button class="btn btn-primary" id="btn-start-intake">Begin Assessment <span class="icon">➔</span></button>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SCREEN 1: PROGRESSIVE INTAKE ACCORDION      -->
+        <!-- ========================================== -->
+        <div id="screen-intake" class="intake-screen hidden">
+            <h2 class="mb-1 text-lavender">Main Frame Onboarding & Reality Mapping</h2>
+            <p class="mb-3 text-muted">Complete these progressive sections to build your custom, low-friction recovery dashboard. Go at your own pace.</p>
+            
+            <div class="accordion-container">
+                
+                <!-- SECTION 1: CLINICAL SAFETY SCREENING -->
+                <div class="accordion-section active" data-section="safety">
+                    <button class="accordion-header">
+                        <span>1. Clinical Safety & Security PIN</span>
+                        <span class="icon">▼</span>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="form-group mb-3" style="background: rgba(165, 120, 240, 0.03); border: 1px solid rgba(165, 120, 240, 0.15); border-radius: var(--radius-sm); padding: 1rem;">
+                            <label>Set a 4-digit Security PIN to lock your private files and safety plans:</label>
+                            <input type="text" id="input-set-pin" maxlength="4" placeholder="e.g. 1234" style="letter-spacing:0.5em; text-align:center; max-width:160px; font-weight:600; font-size: 1.15rem; display:block; margin: 0 auto 0.5rem auto;">
+                            <div class="description center-text">Remember this PIN. It will be required to decrypt your dashboard and Crisis Safe Box every time you launch.</div>
+                        </div>
+
+                        <p class="mb-2 text-muted">Because depression can affect safety and clinical risks, we check these first. Your data remains fully private in your browser.</p>
+                        
+                        <div class="safety-row" data-safety-type="suicide">
+                            <span class="question-header">Are you currently experiencing thoughts of hurting yourself or ending your life?</span>
+                            <div class="safety-options">
+                                <button class="safety-option-btn" data-val="0">No, none</button>
+                                <button class="safety-option-btn" data-val="1">Passive thoughts (no plan)</button>
+                                <button class="safety-option-btn" data-val="2">Active thoughts (with plans/intent)</button>
+                            </div>
+                        </div>
+
+                        <div class="safety-row" data-safety-type="psychosis">
+                            <span class="question-header">Are you experiencing things that feel unreal, hearing voices, or feeling extremely disconnected?</span>
+                            <div class="safety-options">
+                                <button class="safety-option-btn" data-val="0">No</button>
+                                <button class="safety-option-btn" data-val="1">Slight unreality / fog</button>
+                                <button class="safety-option-btn" data-val="2">Yes, active unreality/psychosis</button>
+                            </div>
+                        </div>
+
+                        <div class="safety-row" data-safety-type="mania">
+                            <span class="question-header">Are you experiencing extremely racing thoughts, high energy without sleep, or impulsive behavior?</span>
+                            <div class="safety-options">
+                                <button class="safety-option-btn" data-val="0">No</button>
+                                <button class="safety-option-btn" data-val="1">Mild racing thoughts</button>
+                                <button class="safety-option-btn" data-val="2">Yes, extreme high energy/mania</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: FUNCTION BURDEN MAPPING -->
+                <div class="accordion-section" data-section="burden">
+                    <button class="accordion-header">
+                        <span>2. Function Burden (0-4 Severity Grid)</span>
+                        <span class="icon">▼</span>
+                    </button>
+                    <div class="accordion-content">
+                        <p class="text-muted mb-2">Rate how hard depression is hitting each area right now under real daily conditions.</p>
+                        <p class="text-muted" style="font-size:0.8rem; margin-top:-0.5rem;">0 = Not a problem | 1 = Mild | 2 = Moderate | 3 = Serious | 4 = Severe / Disabling</p>
+                        
+                        <div class="rating-grid">
+                            <div class="rating-row" data-metric="sleep">
+                                <label>Sleep Timing & Regularity</label>
+                                <div class="rating-buttons" data-metric="sleep">
+                                    <button class="rating-btn" data-val="0">0</button>
+                                    <button class="rating-btn" data-val="1">1</button>
+                                    <button class="rating-btn" data-val="2">2</button>
+                                    <button class="rating-btn" data-val="3">3</button>
+                                    <button class="rating-btn" data-val="4">4</button>
+                                </div>
+                            </div>
+                            <div class="rating-row" data-metric="morning">
+                                <label>Getting out of bed in the morning</label>
+                                <div class="rating-buttons" data-metric="morning">
+                                    <button class="rating-btn" data-val="0">0</button>
+                                    <button class="rating-btn" data-val="1">1</button>
+                                    <button class="rating-btn" data-val="2">2</button>
+                                    <button class="rating-btn" data-val="3">3</button>
+                                    <button class="rating-btn" data-val="4">4</button>
+                                </div>
+                            </div>
+                            <div class="rating-row" data-metric="initiation">
+                                <label>Task Initiation (actually beginning tasks)</label>
+                                <div class="rating-buttons" data-metric="initiation">
+                                    <button class="rating-btn" data-val="0">0</button>
+                                    <button class="rating-btn" data-val="1">1</button>
+                                    <button class="rating-btn" data-val="2">2</button>
+                                    <button class="rating-btn" data-val="3">3</button>
+                                    <button class="rating-btn" data-val="4">4</button>
+                                </div>
+                            </div>
+                            <div class="rating-row" data-metric="clutter">
+                                <label>Clutter and Environment drag</label>
+                                <div class="rating-buttons" data-metric="clutter">
+                                    <button class="rating-btn" data-val="0">0</button>
+                                    <button class="rating-btn" data-val="1">1</button>
+                                    <button class="rating-btn" data-val="2">2</button>
+                                    <button class="rating-btn" data-val="3">3</button>
+                                    <button class="rating-btn" data-val="4">4</button>
+                                </div>
+                            </div>
+                            <div class="rating-row" data-metric="energy">
+                                <label>Physical & Cognitive Energy levels</label>
+                                <div class="rating-buttons" data-metric="energy">
+                                    <button class="rating-btn" data-val="0">0</button>
+                                    <button class="rating-btn" data-val="1">1</button>
+                                    <button class="rating-btn" data-val="2">2</button>
+                                    <button class="rating-btn" data-val="3">3</button>
+                                    <button class="rating-btn" data-val="4">4</button>
+                                </div>
+                            </div>
+                            <div class="rating-row" data-metric="shame">
+                                <label>Shame & collapse spirals after a miss</label>
+                                <div class="rating-buttons" data-metric="shame">
+                                    <button class="rating-btn" data-val="0">0</button>
+                                    <button class="rating-btn" data-val="1">1</button>
+                                    <button class="rating-btn" data-val="2">2</button>
+                                    <button class="rating-btn" data-val="3">3</button>
+                                    <button class="rating-btn" data-val="4">4</button>
+                                </div>
+                            </div>
+                            <div class="rating-row" data-metric="hygiene">
+                                <label>Basic personal hygiene (teeth, shower)</label>
+                                <div class="rating-buttons" data-metric="hygiene">
+                                    <button class="rating-btn" data-val="0">0</button>
+                                    <button class="rating-btn" data-val="1">1</button>
+                                    <button class="rating-btn" data-val="2">2</button>
+                                    <button class="rating-btn" data-val="3">3</button>
+                                    <button class="rating-btn" data-val="4">4</button>
+                                </div>
+                            </div>
+                            <div class="rating-row" data-metric="eating">
+                                <label>Eating regularly & nutrition access</label>
+                                <div class="rating-buttons" data-metric="eating">
+                                    <button class="rating-btn" data-val="0">0</button>
+                                    <button class="rating-btn" data-val="1">1</button>
+                                    <button class="rating-btn" data-val="2">2</button>
+                                    <button class="rating-btn" data-val="3">3</button>
+                                    <button class="rating-btn" data-val="4">4</button>
+                                </div>
+                            </div>
+                            <div class="rating-row" data-metric="social">
+                                <label>Social withdrawal and isolation</label>
+                                <div class="rating-buttons" data-metric="social">
+                                    <button class="rating-btn" data-val="0">0</button>
+                                    <button class="rating-btn" data-val="1">1</button>
+                                    <button class="rating-btn" data-val="2">2</button>
+                                    <button class="rating-btn" data-val="3">3</button>
+                                    <button class="rating-btn" data-val="4">4</button>
+                                </div>
+                            </div>
+                            <div class="rating-row" data-metric="meaning">
+                                <label>Feeling that action or effort matters</label>
+                                <div class="rating-buttons" data-metric="meaning">
+                                    <button class="rating-btn" data-val="0">0</button>
+                                    <button class="rating-btn" data-val="1">1</button>
+                                    <button class="rating-btn" data-val="2">2</button>
+                                    <button class="rating-btn" data-val="3">3</button>
+                                    <button class="rating-btn" data-val="4">4</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: THE COUNTER-SCRIPT MANTRA BUILDER -->
+                <div class="accordion-section" data-section="mantra">
+                    <button class="accordion-header">
+                        <span>3. Custom Counter-Script Mantra</span>
+                        <span class="icon">▼</span>
+                    </button>
+                    <div class="accordion-content">
+                        <p class="text-muted mb-2">Depression repeats negative programming. We combat it with a custom identity statement that represents the exact opposite of what your depression tries to make you believe.</p>
+                        
+                        <div class="form-group">
+                            <label>What automatic negative beliefs does your depression tell you most often?</label>
+                            <input type="text" id="input-negative-beliefs" placeholder="e.g. I am sad, sick, ugly, indecisive, oddball, and everyone hates me.">
+                        </div>
+
+                        <div class="form-group">
+                            <label>What is the extreme-opposite, proud, identity-rewrite mantra you will repeat aloud?</label>
+                            <textarea id="input-custom-mantra" rows="3" placeholder="e.g. I am a happy, healthy, handsome, confident, charismatic man, and people like me."></textarea>
+                            <div class="description">This statement is your core load-bearing anchor. We will display it prominently as your daily identity shield.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 4: STRUCTURE & CAPACITY -->
+                <div class="accordion-section" data-section="structure">
+                    <button class="accordion-header">
+                        <span>4. Day Rhythm & Capacity</span>
+                        <span class="icon">▼</span>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="form-group">
+                            <label for="select-worst-time">What part of the day is usually your lowest point?</label>
+                            <select id="select-worst-time">
+                                <option value="morning">First thing in the morning (startup paralysis)</option>
+                                <option value="midday">Midday slump</option>
+                                <option value="evening">Late afternoon / dusk crash</option>
+                                <option value="night">Late night ruminations</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="input-still-works">Residual Capacity: What is one small thing that still works a little even on bad days?</label>
+                            <input type="text" id="input-still-works" placeholder="e.g. Making a cup of tea, drinking water, feeding the cat.">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 5: MINIMUM VIABLE DAY (MVD) FLOOR -->
+                <div class="accordion-section" data-section="mvd">
+                    <button class="accordion-header">
+                        <span>5. Your Minimum Viable Day (MVD) Floor</span>
+                        <span class="icon">▼</span>
+                    </button>
+                    <div class="accordion-content">
+                        <p class="text-muted mb-2">When energy collapses, we abandon the big goals and focus entirely on protecting the absolute biological floor. Define your MVD actions below:</p>
+                        
+                        <div class="form-group">
+                            <label>MVD Task 1 (Biological Core - Wake / Meds / Water)</label>
+                            <input type="text" id="input-mvd-1" value="Wake on workdays by 7:30am, drink water, take morning medication.">
+                        </div>
+                        <div class="form-group">
+                            <label>MVD Task 2 (Minimal Personal Care - Hygiene / Nutrition)</label>
+                            <input type="text" id="input-mvd-2" value="Brush teeth, eat a simple protein block before energy crash.">
+                        </div>
+                        <div class="form-group">
+                            <label>MVD Task 3 (Environmental / Body Anchor)</label>
+                            <input type="text" id="input-mvd-3" value="Stand outside for 2 minutes in daylight, keep tomorrow's clothes pre-positioned.">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 6: CRISIS SAFETY PLAN -->
+                <div class="accordion-section" data-section="crisis">
+                    <button class="accordion-header">
+                        <span>6. Crisis Safety Plan & Contacts</span>
+                        <span class="icon">▼</span>
+                    </button>
+                    <div class="accordion-content">
+                        <p class="text-muted mb-2">If you experience active suicidal thoughts or severe functioning collapse, this safety plan will be available side-by-side with your writings in the Crisis Safe Box.</p>
+                        
+                        <div class="form-group">
+                            <label>Write down 2-3 reasons to preserve your life (no matter how small, e.g. pets, parents, future plans):</label>
+                            <textarea id="input-reasons-live" rows="2" placeholder="e.g. 1. My cat relies on me. 2. Rebuilding my health. 3. Seeing the beach again."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Who are 1 or 2 safe, non-judgmental people you can text or call in a crisis?</label>
+                            <input type="text" id="input-safe-contacts" placeholder="e.g. Dave (555-0192), Aunt Sarah.">
+                        </div>
+
+                        <div class="form-group">
+                            <label>List 2 safe, low-friction activities that take your mind off extreme pain:</label>
+                            <input type="text" id="input-distraction-activities" placeholder="e.g. Playing a specific video game, watching nature documentaries.">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Intake Footer Actions -->
+            <div class="flex-between mt-3">
+                <button class="btn btn-secondary" id="btn-back-welcome">Back</button>
+                <button class="btn btn-primary" id="btn-submit-intake">Compile Main Frame <span class="icon">➔</span></button>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SCREEN 2: MAIN DASHBOARD                   -->
+        <!-- ========================================== -->
+        <div id="screen-dashboard" class="hidden">
+            
+            <!-- Tab Navigation Bar -->
+            <div class="app-tabs">
+                <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+                <button class="tab-btn" data-tab="safebox" id="btn-tab-safebox">Crisis Safe Box <span class="text-red">⚠</span></button>
+                <button class="tab-btn" data-tab="mediaconsole">Media Console</button>
+                <button class="tab-btn" data-tab="progression">Progression</button>
+                <button class="tab-btn" data-tab="cognitivelab">Worksheets & Journal 📝</button>
+                <button class="tab-btn" data-tab="documentcenter">Document Center 📁</button>
+                <button class="tab-btn" data-tab="explorer">Explorer</button>
+                <button class="tab-btn" id="btn-tab-lock" style="color: var(--accent-orange);">Lock App 🔒</button>
+                <button class="tab-btn" data-tab="reset-intake" id="btn-tab-reset" style="margin-left: auto; color: var(--text-muted);">Reset Intake</button>
+            </div>
+
+            <!-- TAB 1: MAIN DASHBOARD VIEW -->
+            <div id="tab-dashboard" class="tab-content">
+                
+                <!-- Master Custom Mantra Display (Center Stage) -->
+                <div class="master-mantra-card glass-card">
+                    <span class="master-mantra-badge">Identity Shield Mantra</span>
+                    <div class="master-mantra-text" id="dashboard-mantra-text">"I am in a state, not a fate."</div>
+                    <div class="master-mantra-controls">
+                        <button class="btn btn-secondary" id="btn-trigger-breathe" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+                            <span class="icon">⤪</span> Breathing Guide
+                        </button>
+                        <button class="btn btn-primary" id="btn-check-mantra" style="padding: 0.5rem 1rem; font-size: 0.85rem; background: var(--accent-lavender); border-color: var(--accent-lavender); color: #0b0713;">
+                            ✓ Repeated Aloud
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Dashboard Grid -->
+                <div class="dashboard-grid">
+                    
+                    <!-- Left: Daily Checklist -->
+                    <div class="checklist-column">
+                        
+                        <!-- Morning Energy Check-in Widget -->
+                        <div class="energy-check-card glass-card">
+                            <div class="energy-check-header">Morning Energy Check-in</div>
+                            <div class="energy-buttons-container">
+                                <button class="energy-btn active" data-energy="high">
+                                    <span class="icon">⚡</span>
+                                    <span class="label">High</span>
+                                </button>
+                                <button class="energy-btn" data-energy="medium">
+                                    <span class="icon">☀</span>
+                                    <span class="label">Medium</span>
+                                </button>
+                                <button class="energy-btn" data-energy="low">
+                                    <span class="icon">☁</span>
+                                    <span class="label">Low</span>
+                                </button>
+                                <button class="energy-btn" data-energy="collapse">
+                                    <span class="icon">🔥</span>
+                                    <span class="label">Collapse</span>
+                                </button>
+                            </div>
+                            <button class="btn btn-secondary text-red" id="btn-quick-safety" style="padding: 0.5rem 0.75rem; font-size: 0.75rem; margin-top: 0.75rem; width: 100%; justify-content: center; gap: 0.4rem; color: var(--accent-red); border-color: rgba(230, 40, 60, 0.2);">🚨 Quick Safety Plan</button>
+                        </div>
+
+                        <!-- Daily Tasks Checkbox Area -->
+                        <div class="checklist-card glass-card">
+                            <div class="checklist-title-bar">
+                                <h3>Today's Actions</h3>
+                                <span class="badge badge-high" id="active-energy-badge">High Energy</span>
+                            </div>
+                            
+                            <!-- MVD / Collapse Warning banner -->
+                            <div id="collapse-warning-banner" class="mvd-warning-banner hidden">
+                                <strong>Protect the Floor:</strong> You are in collapse mode. Standard goals are disabled to eliminate shame. Complete only these three floor anchors to protect your self-trust.
+                            </div>
+
+                            <div class="checklist-items" id="daily-checklist-items">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Right: Analytics, Hope Meter, Reminders -->
+                    <div class="sidebar-analytics">
+                        
+                        <div class="resilience-widget glass-card">
+                            <h3>Resilience Dashboard</h3>
+                            <div class="stats-grid">
+                                <div class="stat-box" data-stat="resilience">
+                                    <div class="stat-value" id="stats-resilience-rate">100%</div>
+                                    <div class="stat-label">Resilience Rate</div>
+                                </div>
+                                <div class="stat-box" data-stat="floor">
+                                    <div class="stat-value" id="stats-floor-days">0</div>
+                                    <div class="stat-label">Floor Wins</div>
+                                </div>
+                            </div>
+                            <div class="description mt-2" style="font-size:0.8rem; text-align: center;">
+                                Measured by <strong>restart speed</strong> and cumulative floor completions, not perfect streaks.
+                            </div>
+                        </div>
+
+                        <!-- Hope Level Meter -->
+                        <div class="hope-widget glass-card">
+                            <h3>Proof-Based Hope Meter</h3>
+                            <div class="hope-widget-container mt-2">
+                                <div class="hope-meter-labels">
+                                    <span id="label-hope-level">Level 1</span>
+                                    <span id="label-hope-percent">0%</span>
+                                </div>
+                                <div class="hope-meter-track">
+                                    <div class="hope-meter-fill" id="hope-bar-fill"></div>
+                                </div>
+                                <div class="hope-details-card mt-2">
+                                    <div class="hope-details-header" id="hope-level-title">Action is Possible</div>
+                                    <div class="hope-details-desc" id="hope-level-desc">Rebuild self-trust. Complete small daily anchors to register proof.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Biological timing / substrate reminders -->
+                        <div class="glass-card rem-card">
+                            <h3>Substrate Reminders</h3>
+                            <ul class="guidelines-box ul mt-1" style="list-style-type: none; font-size: 0.85rem; padding: 0;">
+                                <li style="margin-bottom:0.5rem; color:var(--text-secondary);">
+                                    <strong>Circadian timing:</strong> Get outdoor bright light within 1 hr of wake to sync biological clock.
+                                </li>
+                                <li style="margin-bottom:0.5rem; color:var(--text-secondary);">
+                                    <strong>Medicine timing:</strong> Maintain strict medication adherence. Treat as a primary, non-negotiable anchor.
+                                </li>
+                                <li style="margin-bottom:0.5rem; color:var(--text-secondary);">
+                                    <strong>Substrate Support:</strong> Maintain clinician-guided vitamins (e.g. high-EPA Omega-3s) to protect the floor.
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- TAB 2: CRISIS SAFE BOX VIEW -->
+            <div id="tab-safebox" class="tab-content hidden">
+                <div class="glass-card">
+                    <div class="safebox-header">
+                        <h2>CRISIS SAFE BOX Dashboard</h2>
+                        <span class="badge" style="background: var(--accent-red); color:#fff;">Highly Confidential / Local Storage Only</span>
+                    </div>
+
+                    <div class="safebox-grid">
+                        
+                        <div class="safety-plan-block">
+                            
+                            <div>
+                                <div class="safebox-field-label">My Reasons to Live</div>
+                                <div class="safebox-display-box" id="display-reasons-live">Reasons list...</div>
+                            </div>
+
+                            <div>
+                                <div class="safebox-field-label">Safe Coping Actions</div>
+                                <div class="safebox-display-box" id="display-distraction-activities">Coping items...</div>
+                            </div>
+
+                            <div>
+                                <div class="safebox-field-label">Safe Contacts</div>
+                                <div class="safebox-display-box" id="display-safe-contacts">Dave (555-0192)</div>
+                            </div>
+
+                            <!-- Private Linked Writings Vault -->
+                            <div class="linked-files-block mt-2">
+                                <div class="linked-files-header">
+                                    <div class="safebox-field-label" style="margin-bottom:0;">Linked Writings & Private Logs</div>
+                                </div>
+                                <p class="text-muted" style="font-size:0.8rem; margin-top:-0.25rem;">Log file paths of your local notes/writings so you can quickly recall them in crisis states.</p>
+                                
+                                <div class="flex-between gap-1 mt-1">
+                                    <input type="text" id="input-link-filename" placeholder="File Name (e.g. My Suicide Note / Raw Thoughts)" style="flex:1;">
+                                    <input type="text" id="input-link-path" placeholder="File Path (e.g. C:/Users/rappd/thoughts.txt)" style="flex:1;">
+                                    <button class="btn btn-primary" id="btn-add-file-link" style="padding:0.75rem 1rem;">Link File</button>
+                                </div>
+
+                                <div class="linked-files-list mt-2" id="linked-files-container">
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Right: Standard support resources -->
+                        <div class="safety-plan-block">
+                            
+                            <div class="hotline-card glass-card">
+                                <h3 class="text-red">🚨 Immediate Crisis support</h3>
+                                <p class="text-secondary mt-1" style="font-size:0.85rem;">If your thoughts turn to direct intent, please call or text these numbers immediately. It is anonymous, confidential, and safe.</p>
+                                <ul class="hotline-list">
+                                    <li>
+                                        <span>National Crisis Line</span>
+                                        <span class="hotline-number">988</span>
+                                    </li>
+                                    <li>
+                                        <span>Crisis Text Line</span>
+                                        <span class="hotline-number">Text HOME to 741741</span>
+                                    </li>
+                                    <li>
+                                        <span>Emergency Services</span>
+                                        <span class="hotline-number">911</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="glass-card">
+                                <h3>The Suicide Note Paradigm</h3>
+                                <p class="text-secondary mt-1" style="font-size:0.85rem; line-height: 1.45;">
+                                    Your linked crisis notes represent raw, intense feelings from previous severe states. 
+                                    By placing them here side-by-side with your <strong>Reasons to Live</strong> and <strong>Structured Safety Plan</strong>, 
+                                    we integrate those feelings into a survival architecture. 
+                                    <br><br>
+                                    Read your safety plan first. Reach out to David or Dave. Call 988. The state is temporary; it is not your fate.
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: INTERACTIVE MEDIA CONSOLE -->
+            <div id="tab-mediaconsole" class="tab-content hidden">
+                <div class="glass-card">
+                    <h2 class="mb-1 text-teal">Interactive Media Console</h2>
+                    <p class="text-secondary mb-3">Absorb your recovery guides, talks, and clinical outreach briefs locally and privately.</p>
+                    
+                    <div class="safebox-grid">
+                        
+                        <div class="safety-plan-block">
+                            <div class="glass-card" style="background:rgba(0,0,0,0.25); text-align:center; padding: 2rem;">
+                                <div class="safebox-field-label" style="text-align:left;">Now Playing</div>
+                                <h3 id="media-playing-title" class="mb-2">No Track Selected</h3>
+                                <div class="text-muted mb-3" id="media-playing-type">Select a track from your playlist to begin.</div>
+                                
+                                <audio id="audio-player" class="w-full mb-3" controls style="display:none;"></audio>
+                                
+                                <div id="video-container" class="hidden mb-3" style="width: 100%; border-radius: var(--radius-sm); overflow: hidden; background:#000;">
+                                    <video id="video-player" class="w-full" controls style="max-height: 250px;"></video>
+                                </div>
+
+                                <div class="flex-between mt-2" style="max-width: 320px; margin: 0 auto;">
+                                    <span class="text-muted" style="font-size:0.85rem;">Playback Speed:</span>
+                                    <div style="display:flex; gap:0.25rem;">
+                                        <button class="btn btn-secondary speed-badge" data-speed="0.75" style="padding:0.3rem 0.5rem; font-size:0.75rem;">0.75x</button>
+                                        <button class="btn btn-secondary speed-badge active" data-speed="1.0" style="padding:0.3rem 0.5rem; font-size:0.75rem;">1.0x</button>
+                                        <button class="btn btn-secondary speed-badge" data-speed="1.25" style="padding:0.3rem 0.5rem; font-size:0.75rem;">1.25x</button>
+                                        <button class="btn btn-secondary speed-badge" data-speed="1.5" style="padding:0.3rem 0.5rem; font-size:0.75rem;">1.5x</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="glass-card">
+                                <h3>The Mechanical System Premise</h3>
+                                <p class="text-secondary" style="font-size:0.85rem; line-height: 1.45;">
+                                    Depression acts like broken firmware in a machine. 
+                                    Listening to these guides is designed to disrupt the negative self-talk stream and remind your brain of simple circadian, biological, and behavioral mechanics. 
+                                    Adjust the playback speed down to <strong>0.75x</strong> if you are experiencing severe brain fog or attention fatigue.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="linked-files-block">
+                            <div class="safebox-field-label">System Audio/Video Files</div>
+                            <div class="linked-files-list" id="media-playlist-container" style="max-height: 520px;">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: CLINICAL PROGRESS & PHQ-9 -->
+            <div id="tab-progression" class="tab-content hidden">
+                <div class="glass-card">
+                    <h2 class="mb-1 text-lavender">Clinical Progression Dashboard</h2>
+                    <p class="text-secondary mb-3">Monitor your 10-Layer behavioral roadmap and track clinical symptom scores over time.</p>
+
+                    <div class="safebox-grid">
+                        
+                        <div>
+                            <div class="safebox-field-label mb-2">My Recovery Roadmap (Layers 0 - 9)</div>
+                            <div class="timeline" id="progression-timeline-container">
+                            </div>
+                        </div>
+
+                        <div class="safety-plan-block">
+                            
+                            <div class="glass-card" style="background: rgba(0,0,0,0.15);">
+                                <h3>Depression Severity (PHQ-9)</h3>
+                                <div class="flex-between mt-2 mb-2">
+                                    <div>
+                                        <div class="text-muted" style="font-size:0.8rem; text-transform: uppercase;">Current State</div>
+                                        <h2 id="phq-current-severity" class="text-teal">Not Assessed</h2>
+                                    </div>
+                                    <div class="center-text">
+                                        <div class="text-muted" style="font-size:0.8rem; text-transform: uppercase;">Last Score</div>
+                                        <h2 id="phq-current-score" style="font-size:2.25rem; font-weight:700;">--</h2>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary w-full" id="btn-start-phq9" style="background: var(--accent-teal); border-color: var(--accent-teal); color:#0b0f13; justify-content:center;">
+                                    ✓ Take PHQ-9 Assessment
+                                </button>
+                            </div>
+
+                            <div class="glass-card">
+                                <div class="safebox-field-label">PHQ-9 Clinical History</div>
+                                <div class="chart-container" style="position:relative; width:100%; height:200px; background:rgba(0,0,0,0.3); border-radius: var(--radius-sm); border: 1px solid rgba(255,255,255,0.03); overflow:hidden;">
+                                    <svg id="phq-history-svg" width="100%" height="200" style="padding: 10px 15px 25px 25px;">
+                                    </svg>
+                                    <div id="chart-empty-text" class="text-muted" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:0.85rem; text-align:center;">
+                                        Take your first assessment to begin graphing clinical outcome history.
+                                    </div>
+                                </div>
+                                <p class="text-muted mt-1" style="font-size:0.75rem;">A score below 10 generally indicates mild-to-minimal severity, showing that behavioral activation is rebuilding the floor.</p>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: CONCEPT EXPLORER VIEW -->
+            <div id="tab-explorer" class="tab-content hidden">
+                <div class="concept-explorer">
+                    
+                    <div class="glass-card">
+                        <h2>The State, Not Fate Concept Reference</h2>
+                        <p class="text-secondary mt-1">Access the underlying philosophy and clinical evidence of this operating system at any time.</p>
+                    </div>
+
+                    <h3 class="text-lavender mt-2">The 12 Load-Bearing Design Pillars</h3>
+                    <div class="concept-grid">
+                        <div class="concept-pill-item">
+                            <div class="concept-pill-title">1. Startup Damage</div>
+                            <div class="concept-pill-desc">Depression is a failure of initiation, not information. We design the first move to be smaller than the mind believes it should be, bypassing internal motivation arguments.</div>
+                        </div>
+                        <div class="concept-pill-item">
+                            <div class="concept-pill-title">2. Weak Reward Registration</div>
+                            <div class="concept-pill-desc">The brain fails to record relief or victory from effort. We combat this by designing short feedback loops, concrete actions, and visible, physical consequences.</div>
+                        </div>
+                        <div class="concept-pill-item">
+                            <div class="concept-pill-title">3. Friction Reduction</div>
+                            <div class="concept-pill-desc">We prioritize removing drag over demanding heroic effort. Pre-position shoes, keep meds beside water, and define reset zones to reduce negotiation costs.</div>
+                        </div>
+                        <div class="concept-pill-item">
+                            <div class="concept-pill-title">4. Restartability</div>
+                            <div class="concept-pill-desc">Routines inevitably fail. A robust recovery system is RELAPSE-AWARE. We track your "speed of return" and celebrate getting back up rather than streak lengths.</div>
+                        </div>
+                        <div class="concept-pill-item">
+                            <div class="concept-pill-title">5. Anchors</div>
+                            <div class="concept-pill-desc">Tiny, highly repeatable actions that stabilize the floor (e.g. drinking water after bathroom, exposure to morning light, a same-place key-meds station).</div>
+                        </div>
+                        <div class="concept-pill-item">
+                            <div class="concept-pill-title">6. Matched First Moves</div>
+                            <div class="concept-pill-desc">We avoid overprescribing. A person with environmental chaos needs a visible zone reset, while a person with rhythm collapse needs wake timing. We match the move to your dominant pattern.</div>
+                        </div>
+                        <div class="concept-pill-item">
+                            <div class="concept-pill-title">7. Proof-Based Hope</div>
+                            <div class="concept-pill-desc">Hope is not a slogan. It is a sequence: Action is possible -> Action causes results -> Results repeat -> Repetition stabilizes life -> Stability supports a future. We build hope through evidence.</div>
+                        </div>
+                        <div class="concept-pill-item">
+                            <div class="concept-pill-title">8. Stabilization Before Expansion</div>
+                            <div class="concept-pill-desc">We stop bleeding function and reduce environment/schedule chaos before attempting complex identity work, relationships, or career overhaul.</div>
+                        </div>
+                    </div>
+
+                    <h3 class="text-teal mt-2">Clinical Outreach & Cooperation briefs</h3>
+                    <div class="glass-card">
+                        <div class="concept-pill-title text-teal">Section 13: Clinical Collaboration Brief</div>
+                        <p class="text-secondary mt-1" style="font-size:0.9rem; line-height:1.5;">
+                            State, Not Fate is designed as an adjunctive operating system. It bridges the gap between insights gained in therapy and daily execution.
+                            <br><br>
+                            <strong>Outreach template for professionals:</strong>
+                            <br>
+                            <em>"I am utilizing a structured behavioral activation and circadian timing system to manage my daily energy and function. It helps me track anchors, record restart speed, and manage task-entry friction. It is designed to complement our clinical therapy objectives by tracking my floor wins and PHQ-9 progress."</em>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 6: COGNITIVE LAB (WORKSHEETS & JOURNAL) -->
+            <div id="tab-cognitivelab" class="tab-content hidden">
+                <div class="glass-card">
+                    <div class="safebox-header">
+                        <h2 class="text-lavender">Cognitive Lab & Thought Tools</h2>
+                        <span class="badge" style="background: var(--accent-lavender); color:#0b0713;">Cognitive Anchors</span>
+                    </div>
+                    <p class="text-secondary mb-3 mt-1" style="font-size:0.9rem;">Protect the cognitive floor: challenge unhelpful programming and record positive daily possibilities.</p>
+
+                    <div class="safebox-grid">
+                        
+                        <!-- Left Panel: Daily Gratitude & Possibility Journal -->
+                        <div class="safety-plan-block">
+                            <div class="glass-card" style="background: rgba(165, 120, 240, 0.03); border-color: rgba(165, 120, 240, 0.15); padding: 1.25rem;">
+                                <h3 class="text-lavender mb-1">📝 Gratitude & Possibility Journal</h3>
+                                <p class="text-muted mb-3" style="font-size:0.8rem; line-height: 1.4;">Record concrete evidence of daily micro-wins and realistic hope to override the brain's default negative filtration loop.</p>
+
+                                <div class="form-group mb-3">
+                                    <label style="font-size:0.85rem; font-weight:500; color:var(--text-primary);">1. Micro-Moment / Relief Win (no matter how small):</label>
+                                    <textarea id="input-gratitude-relief" rows="2" placeholder="e.g. My hot tea tasted good, medication taken on time, stood in daylight for 2 minutes."></textarea>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label style="font-size:0.85rem; font-weight:500; color:var(--text-primary);">2. Realistic Possibility (one realistic small action or hope for tomorrow):</label>
+                                    <input type="text" id="input-gratitude-possibility" placeholder="e.g. I will step outside for 5 minutes after morning medicine.">
+                                </div>
+
+                                <button class="btn btn-primary w-full" id="btn-save-gratitude" style="background:var(--accent-lavender); border-color:var(--accent-lavender); color:#0b0713; justify-content:center; font-weight:600;">
+                                    ✓ Record Daily Journal Anchor
+                                </button>
+                            </div>
+
+                            <div class="linked-files-block mt-3">
+                                <div class="safebox-field-label">Journal History Logs</div>
+                                <div class="linked-files-list" id="gratitude-history-container" style="max-height: 250px; overflow-y:auto; display:flex; flex-direction:column; gap:0.5rem;">
+                                    <!-- Injected dynamically -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Panel: Thought Challenge Worksheet -->
+                        <div class="safety-plan-block">
+                            <div class="glass-card" style="background: rgba(20, 200, 175, 0.03); border-color: rgba(20, 200, 175, 0.15); padding: 1.25rem;">
+                                <h3 class="text-teal mb-1">⚖ Thought Challenge Worksheet</h3>
+                                <p class="text-muted mb-3" style="font-size:0.8rem; line-height: 1.4;">Challenge distorted depressive thoughts. Separate automatic unhelpful fictions from objective facts.</p>
+
+                                <div class="form-group mb-3">
+                                    <label style="font-size:0.85rem; font-weight:500; color:var(--text-primary);">Step 1: Automatic Negative Thought (ANT)</label>
+                                    <input type="text" id="input-thought-ant" placeholder="What is the automatic negative belief? e.g. I missed an MVD win, I'm a failure.">
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label style="font-size:0.85rem; font-weight:500; color:var(--text-primary);">Step 2: Fact-Check / Evidence Check</label>
+                                    <textarea id="input-thought-challenge" rows="2" placeholder="Is it 100% true? e.g. Routine misses are part of recovery. Relapse is evaluated by restart speed, not perfection."></textarea>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label style="font-size:0.85rem; font-weight:500; color:var(--text-primary);">Step 3: Identity Rewrite (Balanced Counter-Script)</label>
+                                    <textarea id="input-thought-rewrite" rows="2" placeholder="Balanced opposite: e.g. I missed today, but I am in a state, not a fate. I will restart tomorrow."></textarea>
+                                </div>
+
+                                <button class="btn btn-primary w-full" id="btn-save-thought" style="background:var(--accent-teal); border-color:var(--accent-teal); color:#0b0f13; justify-content:center; font-weight:600;">
+                                    ✓ Save Thought Correction Worksheet
+                                </button>
+                            </div>
+
+                            <div class="linked-files-block mt-3">
+                                <div class="safebox-field-label">Completed Thought Restructuring Logs</div>
+                                <div class="linked-files-list" id="thought-history-container" style="max-height: 250px; overflow-y:auto; display:flex; flex-direction:column; gap:0.5rem;">
+                                    <!-- Injected dynamically -->
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <hr style="border:0; border-top:1px solid rgba(255,255,255,0.08); margin: 2rem 0 1.5rem 0;">
+
+                    <!-- CLINICIAN CUSTOMIZER PANEL -->
+                    <div class="glass-card" style="background: rgba(240, 115, 30, 0.015); border-color: rgba(240, 115, 30, 0.12); padding: 1.5rem; margin-top: 1rem;">
+                        <div class="safebox-header" style="margin-bottom:0.5rem;">
+                            <h3 class="text-orange" style="display:flex; align-items:center; gap:0.5rem; margin:0;">⚙ Clinician's Plan Customizer</h3>
+                            <span class="badge" style="background: var(--accent-orange); color:#0c0803; font-weight:600; font-size:0.7rem; padding:0.2rem 0.5rem;">Adaptive Customizer</span>
+                        </div>
+                        <p class="text-muted mb-3" style="font-size:0.8rem; line-height:1.45;">
+                            Work with your therapist or peer leader to adapt your recovery checklist. 
+                            Choose a clinically pre-configured treatment plan template, or customize your MVD Floor and active checklist actions directly.
+                        </p>
+
+                        <!-- Preset templates -->
+                        <div class="form-group mb-3" style="background:rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.03); padding:0.75rem; border-radius:var(--radius-sm);">
+                            <label style="font-size:0.85rem; font-weight:600; color:var(--text-primary);">Load Pre-Configured Clinical Template:</label>
+                            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:0.5rem; margin-top:0.35rem;">
+                                <button class="btn btn-secondary" onclick="loadClinicalTemplate('circadian')" style="padding:0.5rem; font-size:0.75rem; justify-content:center; text-align:center;">Template A: Circadian & Wake Focus</button>
+                                <button class="btn btn-secondary" onclick="loadClinicalTemplate('environmental')" style="padding:0.5rem; font-size:0.75rem; justify-content:center; text-align:center;">Template B: Environmental Reset</button>
+                                <button class="btn btn-secondary" onclick="loadClinicalTemplate('graded')" style="padding:0.5rem; font-size:0.75rem; justify-content:center; text-align:center;">Template C: Graded Activation</button>
+                                <button class="btn btn-secondary" onclick="loadClinicalTemplate('lowshame')" style="padding:0.5rem; font-size:0.75rem; justify-content:center; text-align:center;">Template D: Low-Shame Recovery Floor</button>
+                            </div>
+                        </div>
+
+                        <div class="safebox-grid mt-2" style="gap: 1.25rem;">
+                            <!-- Column 1: Customize MVD Floor -->
+                            <div class="safety-plan-block" style="flex:1;">
+                                <h4 class="text-lavender mb-2" style="font-size:0.95rem; font-weight:500;">1. Customize MVD Biological Floor</h4>
+                                <div class="form-group mb-2">
+                                    <label style="font-size:0.8rem; color:var(--text-secondary);">MVD Floor Task 1 (Biological Core):</label>
+                                    <input type="text" id="input-custom-mvd1" style="font-size:0.85rem; padding:0.6rem;">
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label style="font-size:0.8rem; color:var(--text-secondary);">MVD Floor Task 2 (Minimal Personal Care):</label>
+                                    <input type="text" id="input-custom-mvd2" style="font-size:0.85rem; padding:0.6rem;">
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label style="font-size:0.8rem; color:var(--text-secondary);">MVD Floor Task 3 (Environmental Anchor):</label>
+                                    <input type="text" id="input-custom-mvd3" style="font-size:0.85rem; padding:0.6rem;">
+                                </div>
+                            </div>
+
+                            <!-- Column 2: Customize Active Actions -->
+                            <div class="safety-plan-block" style="flex:1;">
+                                <h4 class="text-teal mb-2" style="font-size:0.95rem; font-weight:500;">2. Add Custom Active Checklist Tasks</h4>
+                                <p class="text-muted mb-2" style="font-size:0.75rem;">Add highly specific, low-friction recovery tasks to your daily active lists (will be visible on high/medium energy days):</p>
+                                
+                                <div class="flex-between gap-1 mb-2">
+                                    <input type="text" id="input-custom-task" placeholder="e.g. Read 5 pages, stretching routine, feed the cat" style="font-size:0.85rem; padding:0.6rem; flex:1;">
+                                    <button class="btn btn-primary" id="btn-add-custom-task" style="padding:0.6rem 1rem; font-size:0.8rem; background:var(--accent-teal); border-color:var(--accent-teal); color:#0b0f13; font-weight:600;">Add Task</button>
+                                </div>
+                                <div class="safebox-field-label" style="font-size:0.75rem; margin-bottom:0.25rem;">My Active Custom Tasks</div>
+                                <div class="linked-files-list" id="custom-tasks-container" style="max-height: 120px; overflow-y:auto; display:flex; flex-direction:column; gap:0.4rem;">
+                                    <!-- Dynamic list of custom tasks -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex-between mt-3" style="border-top: 1px dashed rgba(255,255,255,0.06); padding-top:1rem;">
+                            <button class="btn btn-secondary" onclick="resetChecklistToDefaults()" style="font-size:0.8rem; padding:0.5rem 1rem;">Reset Checklist to Defaults</button>
+                            <button class="btn btn-primary" id="btn-save-custom-treatment" style="background:var(--accent-orange); border-color:var(--accent-orange); color:#0c0803; font-weight:600; padding:0.6rem 1.25rem; font-size:0.85rem;">
+                                ✓ Save Treatment Plan Customization
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- TAB 7: DOCUMENT CENTER VIEW -->
+            <div id="tab-documentcenter" class="tab-content hidden">
+                <div class="glass-card">
+                    <div class="safebox-header">
+                        <h2 class="text-teal">🗂 Document Center & File System</h2>
+                        <span class="badge" style="background: var(--accent-teal); color:#0b0f13; font-weight:600;">System Registry</span>
+                    </div>
+                    <p class="text-secondary mb-3 mt-1" style="font-size:0.9rem;">
+                        A centralized offline console to track your clinical assessment history, review completed cognitive sheets, and browse your portable file system directory.
+                    </p>
+
+                    <div class="safebox-grid">
+                        
+                        <!-- Left Panel: Database Registry Tracker (PHQ-9 & Worksheets) -->
+                        <div class="safety-plan-block" style="display:flex; flex-direction:column; gap:1.25rem;">
+                            
+                            <!-- PHQ-9 History Table Card -->
+                            <div class="glass-card" style="padding:1.25rem; background:rgba(0,0,0,0.15);">
+                                <h3 class="text-lavender mb-2" style="font-size:1rem; font-weight:600; display:flex; align-items:center; gap:0.5rem;">
+                                    📊 PHQ-9 Outcome History Log
+                                </h3>
+                                <p class="text-muted mb-2" style="font-size:0.75rem;">Logs of all DSM-5 symptom assessments registered locally.</p>
+                                
+                                <div style="max-height: 200px; overflow-y:auto; border: 1px solid rgba(255,255,255,0.05); border-radius:var(--radius-sm);">
+                                    <table style="width:100%; border-collapse:collapse; font-size:0.8rem; text-align:left;">
+                                        <thead>
+                                            <tr style="border-bottom:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.25); color:var(--text-primary);">
+                                                <th style="padding:0.5rem;">Date</th>
+                                                <th style="padding:0.5rem; text-align:center;">Score</th>
+                                                <th style="padding:0.5rem;">Severity</th>
+                                                <th style="padding:0.5rem; text-align:center;">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="doc-phq-table-body">
+                                            <!-- Dynamically rendered -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Completed Worksheets Summary Log -->
+                            <div class="glass-card" style="padding:1.25rem; background:rgba(0,0,0,0.15);">
+                                <h3 class="text-teal mb-2" style="font-size:1rem; font-weight:600; display:flex; align-items:center; gap:0.5rem;">
+                                    📝 Completed Cognitive Worksheets Log
+                                </h3>
+                                <p class="text-muted mb-2" style="font-size:0.75rem;">Logs of all restructured thoughts and gratitude logs.</p>
+                                
+                                <div style="display:flex; flex-direction:column; gap:0.5rem; max-height:220px; overflow-y:auto;" id="doc-worksheets-list-container">
+                                    <!-- Dynamically rendered -->
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary w-full mt-2" id="btn-export-session" style="background:var(--accent-teal); border-color:var(--accent-teal); color:#0b0f13; justify-content:center; font-weight:600; font-size:0.8rem; padding:0.6rem;">📋 Export Progress Share Briefing</button>
+                        </div>
+
+                        <!-- Right Panel: Portable File System Explorer -->
+                        <div class="linked-files-block">
+                            <h3 class="text-orange mb-2" style="font-size:1rem; font-weight:600; display:flex; align-items:center; gap:0.5rem; margin-top:0;">
+                                📁 Local Knowledge Directory Explorer
+                            </h3>
+                            <p class="text-muted mb-3" style="font-size:0.8rem; line-height:1.45;">
+                                Browse the physical portable directories and documents inside your **`knowledge/`** folder. Copy their relative paths to easily launch them or link them to your Safe Box.
+                            </p>
+
+                            <!-- Explorer Search Filter -->
+                            <div class="flex-between gap-1 mb-3">
+                                <input type="text" id="input-explorer-search" placeholder="🔍 Search document catalog by name or type..." style="font-size:0.85rem; padding:0.6rem; flex:1;" oninput="filterDocumentExplorer()">
+                                <button class="btn btn-secondary" onclick="document.getElementById('input-explorer-search').value = ''; filterDocumentExplorer();" style="padding:0.6rem 1rem; font-size:0.8rem;">Clear</button>
+                            </div>
+
+                            <div class="safebox-field-label" style="font-size:0.75rem; margin-bottom:0.25rem;">Knowledge Directory Catalog</div>
+                            <div class="linked-files-list" id="explorer-catalog-container" style="max-height: 400px; overflow-y:auto; display:flex; flex-direction:column; gap:0.5rem;">
+                                <!-- Dynamically rendered catalog of files -->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ========================================== -->
+        <!-- PHQ-9 CLINICAL ASSESSMENT OVERLAY MODAL    -->
+        <!-- ========================================== -->
+        <div id="phq9-modal" class="modal-overlay">
+            <div class="modal-content" style="max-width: 650px; max-height: 90vh; overflow-y: auto;">
+                <button class="modal-close-btn" id="btn-close-phq-modal">×</button>
+                <div class="modal-title" style="color: var(--accent-lavender);">
+                    <span>✓</span> Patient Health Questionnaire (PHQ-9)
+                </div>
+                <div class="modal-desc">
+                    Over the last 2 weeks, how often have you been bothered by any of the following problems?
+                </div>
+
+                <div class="rating-grid" id="phq-questions-container" style="gap:1rem;">
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" id="btn-cancel-phq">Cancel</button>
+                    <button class="btn btn-primary" id="btn-submit-phq" style="background: var(--accent-lavender); border-color:var(--accent-lavender); color:#0b0713;">
+                        ✓ Submit Results
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- CRISIS SUPPORT BRIDGE OVERLAY (MODAL)      -->
+        <!-- ========================================== -->
+        <div id="crisis-modal" class="modal-overlay">
+            <div class="modal-content safety-modal">
+                <button class="modal-close-btn" id="btn-close-crisis-modal">×</button>
+                <div class="modal-title">
+                    <span>⚠</span> HIGH SAFETY ALERT
+                </div>
+                <div class="modal-desc">
+                    Your recent inputs indicate a high level of active distress, suicidal intent, or extreme functioning collapse. 
+                    <br><br>
+                    <strong>State, Not Fate is an adjunctive recovery framework, but in active crisis, professional clinical support is required.</strong>
+                    <br><br>
+                    We want you to remain safe. Please review your <strong>Crisis Safety Plan</strong> inside the Safe Box, and immediately reach out to your support network or a professional.
+                </div>
+
+                <div class="hotline-card glass-card mb-2" style="background: rgba(0, 0, 0, 0.25);">
+                    <h4 class="text-red">Confidential Support Resources</h4>
+                    <ul class="hotline-list mt-1">
+                        <li>
+                            <span>Suicide & Crisis Helpline</span>
+                            <span class="hotline-number">988 (Call or Text)</span>
+                        </li>
+                        <li>
+                            <span>Crisis Text Line</span>
+                            <span class="hotline-number">Text HOME to 741741</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" id="btn-crisis-go-safebox">Go to Crisis Safe Box</button>
+                    <button class="btn btn-danger" id="btn-crisis-dismiss">I've Contacted Someone</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- BREATH MANTRA PACING GUIDE (MODAL)         -->
+        <!-- ========================================== -->
+        <div id="breath-modal" class="modal-overlay">
+            <div class="modal-content text-center" style="max-width: 450px; border-color: var(--accent-lavender);">
+                <button class="modal-close-btn" id="btn-close-breath-modal">×</button>
+                <h3 class="text-lavender mb-2">Breathing Mantra Guide</h3>
+                <p class="text-muted mb-3" style="font-size:0.9rem;">Observe the pulsing circle. Synchronize your breath. Speak your counter-script aloud.</p>
+                
+                <div style="height: 160px; display: flex; align-items: center; justify-content: center; margin: 1.5rem 0; position: relative;">
+                    <!-- Pulse breathe circle (central pulse background) -->
+                    <div id="pacer-circle" style="width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-teal), var(--accent-lavender)); position: absolute; transition: transform 4s ease-in-out; box-shadow: 0 0 20px rgba(165, 120, 240, 0.3); z-index: 1;"></div>
+                    <!-- Elegant SVG Pulsing Ring -->
+                    <svg width="160" height="160" viewBox="0 0 100 100" style="transform: rotate(-90deg); position: relative; z-index: 2; overflow: visible;">
+                        <defs>
+                            <linearGradient id="breath-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="var(--accent-teal)" />
+                                <stop offset="100%" stop-color="var(--accent-lavender)" />
+                            </linearGradient>
+                        </defs>
+                        <!-- Background circle track -->
+                        <circle cx="50" cy="50" r="40" stroke="rgba(255,255,255,0.05)" stroke-width="4" fill="transparent" />
+                        <!-- Active glowing pulsing ring path -->
+                        <circle id="breath-progress-ring" cx="50" cy="50" r="40" stroke="url(#breath-gradient)" stroke-width="4" fill="transparent" stroke-dasharray="251.2" stroke-dashoffset="251.2" style="transition: stroke-dashoffset 4s linear; filter: drop-shadow(0 0 6px var(--accent-lavender));" />
+                    </svg>
+                </div>
+
+                <div class="text-lavender mb-2" id="breath-mantra-subtitle" style="font-weight: 500; font-size: 1.15rem; min-height:55px;">
+                    Loading mantra...
+                </div>
+
+                <div id="breath-phase-text" class="text-muted mb-2" style="font-size: 0.85rem; letter-spacing: 0.05em; text-transform: uppercase;">
+                    Inhale
+                </div>
+
+                <button class="btn btn-primary" id="btn-breath-done" style="background: var(--accent-lavender); border-color: var(--accent-lavender); color: #0b0713;">✓ Practice Completed</button>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- QUICK SAFETY PLAN MODAL                    -->
+        <!-- ========================================== -->
+        <div id="quick-safety-modal" class="modal-overlay">
+            <div class="modal-content safety-modal" style="max-width: 500px; border-color: var(--accent-red);">
+                <button class="modal-close-btn" id="btn-close-quick-safety-modal">×</button>
+                <h3 class="text-red mb-2">🚨 Quick Safety Plan</h3>
+                <p class="text-muted mb-3" style="font-size: 0.85rem;">Zero-friction access to your emergency anchors and resources.</p>
+                
+                <div class="safety-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div class="glass-card" style="padding: 1rem; background: rgba(255, 255, 255, 0.02);">
+                        <h4 class="text-teal mb-1" style="font-size: 0.85rem; font-weight: 600;">❤️ Reasons to Live</h4>
+                        <div id="quick-reasons-live" style="font-size: 0.8rem; color: var(--text-secondary); white-space: pre-wrap; max-height: 120px; overflow-y: auto;">None recorded.</div>
+                    </div>
+                    <div class="glass-card" style="padding: 1rem; background: rgba(255, 255, 255, 0.02);">
+                        <h4 class="text-lavender mb-1" style="font-size: 0.85rem; font-weight: 600;">📞 Safe Contacts</h4>
+                        <div id="quick-safe-contacts" style="font-size: 0.8rem; color: var(--text-secondary); white-space: pre-wrap; max-height: 120px; overflow-y: auto;">None recorded.</div>
+                    </div>
+                </div>
+                
+                <div class="glass-card" style="padding: 1rem; border-color: rgba(230, 40, 60, 0.2); background: rgba(230, 40, 60, 0.05); text-align: center;">
+                    <h4 class="text-red mb-1" style="font-size: 0.9rem; font-weight: 600;">🆘 24/7 Professional Support</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-primary); margin-bottom: 0.5rem;">If you are in distress, professional support is always here.</p>
+                    <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                        <button class="btn btn-secondary" onclick="window.open('tel:988')" style="padding: 0.4rem 0.75rem; font-size: 0.75rem; color: var(--accent-red); border-color: rgba(230, 40, 60, 0.3);">Call 988 (Hotline)</button>
+                        <button class="btn btn-secondary" onclick="window.open('https://988lifeline.org/chat/')" style="padding: 0.4rem 0.75rem; font-size: 0.75rem; color: var(--accent-teal); border-color: rgba(20, 200, 175, 0.3);">988 Online Chat</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- PROGRESS EXPORT MODAL                      -->
+        <!-- ========================================== -->
+        <div id="export-modal" class="modal-overlay">
+            <div class="modal-content" style="max-width: 600px; max-height: 90vh; overflow-y: auto; border-color: var(--accent-teal);">
+                <button class="modal-close-btn" id="btn-close-export-modal">×</button>
+                <h3 class="text-teal mb-2">📋 Export Progress Share Briefing</h3>
+                <p class="text-muted mb-3" style="font-size: 0.85rem;">This briefing summarizes your clinical data locally, fully anonymized. Share this with your therapist to optimize your recovery templates.</p>
+                
+                <textarea id="textarea-export-briefing" readonly style="width: 100%; height: 300px; font-family: monospace; font-size: 0.85rem; background: rgba(0, 0, 0, 0.3); color: var(--text-primary); border: 1px solid var(--card-border); border-radius: var(--radius-sm); padding: 0.75rem; margin-bottom: 1rem; resize: none;"></textarea>
+                
+                <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+                    <button class="btn btn-secondary" id="btn-copy-export-briefing">Copy to Clipboard</button>
+                    <button class="btn btn-primary" id="btn-download-export-briefing" style="background: var(--accent-teal); border-color: var(--accent-teal); color: #0b0f13; font-weight:600;">Download Briefing (.md)</button>
+                </div>
+            </div>
+        </div>
+
     </div>
-    <!-- Rest of original structure + new smart welcome logic -->
+    
+    <!-- Testing/Prototype Build Footer -->
+    <div style="position:fixed; bottom:0; left:0; right:0; background:rgba(240,115,30,0.12); border-top:1px solid rgba(240,115,30,0.25); padding:0.4rem 1rem; text-align:center; font-size:0.75rem; color:#e8a050; z-index:9999; backdrop-filter:blur(8px); font-family:'Outfit','Inter',sans-serif;">
+        ⚠ TESTING / PROTOTYPE BUILD — Not a medical service. This is an adjunctive self-management tool, not a substitute for professional care. If in crisis: call/text <strong>988</strong>.
+    </div>
+    
     <script src="app.js"></script>
 </body>
 </html>
