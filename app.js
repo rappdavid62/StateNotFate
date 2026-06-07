@@ -129,6 +129,12 @@
                 });
             }
             
+            handleRouting();
+            window.addEventListener("hashchange", handleRouting);
+        }
+
+        function handleRouting() {
+            const hash = window.location.hash;
             if (state.securityPin) {
                 state.isLocked = true;
                 showScreen("lock");
@@ -154,8 +160,10 @@
                         }
                     }
                 }
-            } else {
+            } else if (hash === "#screen-welcome" || hash === "#program") {
                 showScreen("welcome");
+            } else {
+                toggleAppView(false);
             }
         }
 
@@ -278,7 +286,20 @@
             state.customTasks = state.customTasks.map(task => descramble(task, pin));
         }
 
+        function toggleAppView(showApp) {
+            const publicElements = document.querySelectorAll("[data-public-site]");
+            const appContainer = document.querySelector(".app-container");
+            if (showApp) {
+                publicElements.forEach(el => el.classList.add("hidden"));
+                if (appContainer) appContainer.classList.remove("hidden");
+            } else {
+                publicElements.forEach(el => el.classList.remove("hidden"));
+                if (appContainer) appContainer.classList.add("hidden");
+            }
+        }
+
         function showScreen(screenId) {
+            toggleAppView(true);
             Object.keys(screens).forEach(key => {
                 if (key === screenId) {
                     screens[key].classList.remove("hidden");
@@ -2185,6 +2206,12 @@
                     quests: { daily: [] }
                 };
             }
+            if (!state.polaris.proof) state.polaris.proof = { total: 0, today: 0, ledger: [] };
+            if (!state.polaris.resilience) state.polaris.resilience = { current: 0, longest: 0, missedDays: 0, lastCompletedDate: '' };
+            if (!state.polaris.day) state.polaris.day = { currentState: 'medium', lastCheckInDate: '', difficulty: 'easy', pacing: 'slow', floorWinsMode: false };
+            if (!state.polaris.anchors) state.polaris.anchors = { today: {} };
+            if (!state.polaris.quests) state.polaris.quests = { daily: [] };
+
             // Ensure anchors.today is an object (migration from v2/v3 arrays)
             if (Array.isArray(state.polaris.anchors.today)) {
                 state.polaris.anchors.today = {};
