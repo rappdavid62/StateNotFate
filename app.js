@@ -307,6 +307,9 @@
                     screens[key].classList.add("hidden");
                 }
             });
+            if (screenId === "welcome") {
+                updateWelcomeScreenDynamicGreeting();
+            }
         }
 
         function showTab(tabId) {
@@ -389,12 +392,15 @@
 
             document.querySelectorAll(".tab-btn").forEach(btn => {
                 btn.addEventListener("click", (e) => {
-                    const tabId = e.target.getAttribute("data-tab");
+                    const tabBtn = e.target.closest(".tab-btn");
+                    if (!tabBtn) return;
+                    const tabId = tabBtn.getAttribute("data-tab");
+                    const buttonId = tabBtn.id;
                     if (tabId === "reset-intake") {
                         if (confirm("Are you sure you want to reset your intake data? This will clear your current dashboard and clinical progress history.")) {
                             resetToOnboarding();
                         }
-                    } else if (e.target.id === "btn-tab-lock") {
+                    } else if (buttonId === "btn-tab-lock") {
                         lockApplication();
                     } else {
                         showTab(tabId);
@@ -2203,7 +2209,10 @@
                     resilience: { current: 0, longest: 0, missedDays: 0, lastCompletedDate: '' },
                     day: { currentState: 'medium', lastCheckInDate: '', difficulty: 'easy', pacing: 'slow', floorWinsMode: false },
                     anchors: { today: {} },
-                    quests: { daily: [] }
+                    quests: { daily: [] },
+                    profile: {},
+                    questionnaire: {},
+                    routing: {}
                 };
             }
             if (!state.polaris.proof) state.polaris.proof = { total: 0, today: 0, ledger: [] };
@@ -2211,6 +2220,9 @@
             if (!state.polaris.day) state.polaris.day = { currentState: 'medium', lastCheckInDate: '', difficulty: 'easy', pacing: 'slow', floorWinsMode: false };
             if (!state.polaris.anchors) state.polaris.anchors = { today: {} };
             if (!state.polaris.quests) state.polaris.quests = { daily: [] };
+            if (!state.polaris.profile) state.polaris.profile = {};
+            if (!state.polaris.questionnaire) state.polaris.questionnaire = {};
+            if (!state.polaris.routing) state.polaris.routing = {};
 
             // Ensure anchors.today is an object (migration from v2/v3 arrays)
             if (Array.isArray(state.polaris.anchors.today)) {
@@ -2357,7 +2369,7 @@
             // Resilience info (B4: return speed surfaced)
             const r = state.polaris.resilience;
             const resRate = calculateResilienceRate();
-            let resText = 'Streak: ' + (r.current || 0) + ' | Best: ' + (r.longest || 0);
+            let resText = 'Active: ' + (r.current || 0) + ' | Best: ' + (r.longest || 0);
             if (r.missedDays > 0) resText += ' | Restarts: ' + r.missedDays;
             if (resRate < 100 && state.history.length > 2) resText += ' | Return rate: ' + resRate + '%';
             document.getElementById('polaris-resilience-info').textContent = resText;
@@ -2553,29 +2565,31 @@
             const h = state.history;
             let currentStreak = 0, longestStreak = 0;
             for (let i = 0; i < h.length; i++) {
-                if (h[i].floorCompleted || (h[i].completed && h[i].completed.length > 0)) {
+                if (h[i] && (h[i].floorCompleted || (h[i].completed && h[i].completed.length > 0))) {
                     currentStreak++;
                     longestStreak = Math.max(longestStreak, currentStreak);
                 } else { currentStreak = 0; }
             }
             let mostAnchors = 0;
             for (let i = 0; i < h.length; i++) {
-                if (h[i].completed) mostAnchors = Math.max(mostAnchors, h[i].completed.length);
+                if (h[i] && h[i].completed) mostAnchors = Math.max(mostAnchors, h[i].completed.length);
             }
             // Also count polaris proof entries per day
             if (state.polaris && state.polaris.proof && state.polaris.proof.ledger) {
                 const dayCounts = {};
                 state.polaris.proof.ledger.forEach(function(e) {
-                    const d = e.createdAt.slice(0, 10);
-                    dayCounts[d] = (dayCounts[d] || 0) + 1;
+                    if (e && e.createdAt) {
+                        const d = e.createdAt.slice(0, 10);
+                        dayCounts[d] = (dayCounts[d] || 0) + 1;
+                    }
                 });
                 Object.values(dayCounts).forEach(function(c) { mostAnchors = Math.max(mostAnchors, c); });
             }
             let fastestRestart = null;
             for (let i = 0; i < h.length; i++) {
-                if (h[i].missed) {
+                if (h[i] && h[i].missed) {
                     for (let j = i + 1; j < h.length; j++) {
-                        if (h[j].floorCompleted || (h[j].completed && h[j].completed.length > 0)) {
+                        if (h[j] && (h[j].floorCompleted || (h[j].completed && h[j].completed.length > 0))) {
                             const gap = j - i;
                             if (fastestRestart === null || gap < fastestRestart) fastestRestart = gap;
                             break;
@@ -2594,7 +2608,7 @@
             if (pb.longestStreak === 0 && pb.mostAnchorsInDay === 0) { el.style.display = 'none'; return; }
             el.style.display = 'flex';
             var parts = [];
-            if (pb.longestStreak > 0) parts.push('Best streak: ' + pb.longestStreak);
+            if (pb.longestStreak > 0) parts.push('Best run: ' + pb.longestStreak);
             if (pb.mostAnchorsInDay > 0) parts.push('Best day: ' + pb.mostAnchorsInDay + ' done');
             if (pb.fastestRestart !== null) parts.push('Fastest restart: ' + pb.fastestRestart + 'd');
             el.textContent = parts.join('  |  ');
@@ -2609,6 +2623,7 @@
             // Build active dates map from history + proof ledger
             var activeDates = {};
             state.history.forEach(function(log) {
+                if (!log) return;
                 var level = 0;
                 if (log.floorCompleted && log.mvdCompleted) level = 3;
                 else if (log.floorCompleted) level = 2;
@@ -2617,8 +2632,10 @@
             });
             if (state.polaris && state.polaris.proof && state.polaris.proof.ledger) {
                 state.polaris.proof.ledger.forEach(function(entry) {
-                    var d = entry.createdAt.slice(0, 10);
-                    if (!activeDates[d]) activeDates[d] = 1;
+                    if (entry && entry.createdAt) {
+                        var d = entry.createdAt.slice(0, 10);
+                        if (!activeDates[d]) activeDates[d] = 1;
+                    }
                 });
             }
 
@@ -2754,11 +2771,56 @@
         }
 
         function showSmartWelcomeScreen() {
-            // Placeholder for Smart Welcome screen logic
+            showScreen("welcome");
         }
 
         function executeMatchedFirstMove() {
-            // Placeholder for Matched First Move logic
+            const energy = state.todayEnergy || "medium";
+            if (energy === "collapse") {
+                goToEmergencyFloor();
+            } else {
+                startSmallAction();
+            }
         }
+
+        function updateWelcomeScreenDynamicGreeting() {
+            const greetingEl = document.getElementById("welcome-greeting");
+            const subtitleEl = document.getElementById("welcome-subtitle");
+            if (!greetingEl || !subtitleEl) return;
+
+            let greeting = "You’re here.";
+            let subtitle = "No catch-up. Pick the current state.";
+
+            if (state.history && state.history.length > 0) {
+                const activeDays = state.history.filter(log => log && log.date && !log.missed);
+                if (activeDays.length > 0) {
+                    const lastActiveLog = activeDays[activeDays.length - 1];
+                    const today = getTodayString();
+                    const gap = daysBetween(lastActiveLog.date, today);
+
+                    if (gap <= 1) {
+                        greeting = "You’re here.";
+                        subtitle = "Continue or make it smaller.";
+                    } else if (gap >= 2 && gap <= 3) {
+                        greeting = "No reset.";
+                        subtitle = "Pick the floor.";
+                    } else if (gap >= 4 && gap <= 14) {
+                        greeting = "Progress paused.";
+                        subtitle = "Nothing is erased.";
+                    } else {
+                        greeting = "Long gap. Still not zero.";
+                        subtitle = "Start with the floor.";
+                    }
+                }
+            }
+
+            greetingEl.textContent = greeting;
+            subtitleEl.textContent = subtitle;
+        }
+
+        window.PolarisUI = {
+            render: renderPolarisTab,
+            toggle: togglePolaris
+        };
 
         window.onload = init;
