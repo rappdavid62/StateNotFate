@@ -1,0 +1,186 @@
+{
+  "Behavioral Activation": [
+    {
+      "pmid": "42171809",
+      "title": "Moderators, mediators, and components of a standalone smartphone application for postpartum depression: secondary analysis of a randomized controlled trial.",
+      "authors": [
+        "Borja T",
+        "Fonseca Zuccolo P",
+        "Seda L",
+        "Matijasevich A",
+        "Vanoni Polanczyk G",
+        "Fatori D"
+      ],
+      "journal": "Archives of women's mental health",
+      "year": "2026",
+      "abstract": "PURPOSE: The purpose of this study was to identify potential moderators, mediators, and efficacious components of a standalone app intervention on postpartum depression symptoms and functional impairment.\nMETHODS: A total of 264 women were randomized to intervention (Motherly app) or to an active control group. We analyzed depressive symptoms assessed by the Edinburgh Postnatal Depression Scale and functional impairment by the Clinical Global Impression at post-treatment as outcomes. Various potential moderators were assessed at baseline. Potential mediation variables were the level of behavioral activation (BA) measured by the Behavioral Activation for Depression Scale - Short Form and the Response-contingent positive reinforcement (RCPR) by the Reward Probability Index, at post-treatment. Intervention component analysis was evaluated using app engagement data.\nRESULTS: The results indicate that intervention effects on depressive symptoms were moderated by the number of children and pediatric consultations, with stronger effects observed among mothers with fewer children and higher consultation frequency. Functional impairment was moderated by time spent with the child, with greater improvements among mothers with lower caregiving demands. Mediation analyses showed BA and RCPR mediated the effect of our intervention on depressive symptoms and functional impairment. Total and BA achievements were significantly associated with reduction in depressive symptoms.\nCONCLUSION: Our findings suggest that our app intervention efficacy is influenced by maternal characteristics and childcare responsibilities. BA and RCPR are key mechanisms, and higher engagement with app components produce greater symptom reduction."
+    },
+    {
+      "pmid": "42124392",
+      "title": "Smartphone CBT engagement and depressive symptoms: secondary analysis of the RESiLIENT trial using a time-varying exposure approach.",
+      "authors": [
+        "Luo Y",
+        "Inoue K",
+        "Tajika A",
+        "Toyomoto R",
+        "Sakata M",
+        "Akechi T",
+        "Horikoshi M",
+        "Noma H",
+        "Furukawa TA"
+      ],
+      "journal": "Psychological medicine",
+      "year": "2026",
+      "abstract": "BACKGROUND: Smartphone-based cognitive behavioral therapy (CBT) programs offer accessible interventions for subthreshold depression, yet engagement needed for meaningful benefit remains unclear. We examined how lesson and worksheet engagement relate to depressive symptom improvements in a behavioral activation (BA) intervention, accounting for time-varying confounders.\nMETHODS: This secondary analysis included 298 adults assigned to the BA arm of the RESiLIENT trial, a randomized controlled trial in Japan. Lesson and worksheet completion were treated as time-varying exposures, each yielding four engagement patterns: minimal (Few-Few), early (Many-Few), late (Few-Many), and consistently high (Many-Many). Outcomes were depressive symptom changes measured by the Patient Health Questionnaire-9 (PHQ-9) at weeks 6 and 26. We applied the parametric g-formula to estimate counterfactual PHQ-9 changes under each pattern, adjusting for baseline and time-varying confounders.\nRESULTS: Early lesson engagement during weeks 0-3 was associated with larger PHQ-9 reductions at both weeks 6 and 26, even when later engagement declined (Many-Few vs. Few-Few: week 6: -1.47 [95% CI -2.52 to -0.53]; week 26: -1.27 [-2.53 to -0.17]). In contrast, higher worksheet engagement was linked to improved PHQ-9 at week 6, with maximal benefit among consistently high engagers (Many-Many vs. Few-Few: -1.25 [-2.17 to -0.44]) and late engagers (Few-Many vs. Few-Few: -1.18 [-2.20 to -0.08]), but not persist to week 26.\nCONCLUSIONS: Greater engagement with smartphone-delivered BA is associated with larger symptom reductions. Early lesson engagement drives sustained benefit, whereas worksheet engagement did not persist. These findings may guide digital CBT design by emphasizing early lesson completion alongside concurrent skill practice."
+    },
+    {
+      "pmid": "42025640",
+      "title": "Behavioral activation for smoking cessation may improve bodily pain in adults with lifetime major depressive disorder.",
+      "authors": [
+        "Powers JM",
+        "Jao NC",
+        "Gollan JK",
+        "Fishel VY",
+        "Schnoll RA",
+        "Hitsman B"
+      ],
+      "journal": "Journal of affective disorders",
+      "year": "2026",
+      "abstract": "SIGNIFICANCE: Pain and major depressive disorder (MDD) are common and frequently co-occur among people who smoke cigarettes. Behavioral activation (BA) is standard treatment in MDD that may also reduce pain. This secondary analysis tested whether the effects of Behavioral Activation Smoking Cessation (BASC) was more effective than standard behavioral treatment (ST) in reducing pain during and after tobacco treatment among adults who smoked daily and had a history of MDD.\nMETHODS: Participants (N = 244; 57% female; 53% Black; Mage = 50.1) received BASC or ST and varenicline or placebo, and reported on bodily pain at week 1 (baseline), 3 (target quit date, TQD), 7, 12 (end of treatment, EOT), and 27 (follow-up, FU) using the Short-Form Survey (SF-36). Repeated measures analyses examined changes in pain from baseline through FU by treatment condition.\nRESULTS: There was a significant effect of BASC on change in pain across treatment (F(2.75) = 4.38, p = .006), with almost a 10-point decrease in SF-36 score from week 3 to week 12/EOT (MBASC = 9.55 vs. MST = 0.86). While the BASC group reported significantly lower levels of pain at week 12/EOT compared to the ST group (MBASC = 19.05 vs. MST = 28.83; p < .001), there was no differences between treatment groups at week 27/FU (MBASC = 28.63 vs. MST = 31.14; p = .163).\nCONCLUSION: BASC produced a clinically meaningful reduction in pain compared to ST during the 12-week intervention. These findings suggest that BA may be useful for addressing the comorbidity of pain, depression, and smoking. Future studies designed to test this transdiagnostic application of BASC are needed."
+    }
+  ],
+  "Circadian Alignment / Bright Light": [
+    {
+      "pmid": "41853181",
+      "title": "The impact of bright light therapy on non-motor symptoms in patients with Parkinson's disease: a systematic review and meta-analysis.",
+      "authors": [
+        "Geng J",
+        "Yu HL",
+        "Tan L"
+      ],
+      "journal": "Frontiers in neurology",
+      "year": "2026",
+      "abstract": "BACKGROUND: The non-motor symptoms of Parkinson's patients seriously affect their quality of life. This meta-analysis intended to systematically examine the beneficial effect of bright light therapy (BLT) on non-motor symptoms in individuals with Parkinson's disease (PD).\nMETHODS: A systematic search was conducted in PubMed, Cochrane Library, Web of Science, Embase, Ovid Medline, China National Knowledge Infrastructure (CNKI), WanFang VIP and CBM to comprehensively collect RCTS and NRCTS relevant to BLT for Parkinson's disease. Data extraction and literature screening were carried out separately by two researchers, and used the RoB2 tool and ROBINS-I tool to evaluate the risk of bias for the two types of studies, respectively. Software such as RevMan5.4 and Stata 18.0 were used to analyze the data.\nRESULTS: Compared with dim light, BLT has a considerable benefit in improving the nighttime sleep of people with Parkinson's disease. However, its therapeutic effects on depression, anxiety, exhaustion, cognition, sleep quality and quality of life are not superior to those of dim light. Moreover, the distance of the light source will alter the therapeutic effect of BLT on nighttime sleep and daytime sleepiness.\nRESULTS: Compared with dim light, BLT has a considerable benefit in improving the nighttime sleep of people with PD. However, its therapeutic effects on depression, anxiety, fatigue, cognition, sleep quality and quality of life are not superior to those of dim light. Moreover, the distance of the light source will alter the therapeutic effect of BLT on nighttime sleep and daytime sleepiness.\nCONCLUSION: BLT can be used to treat the non-motor symptoms of PD and may become a practical option for home self-management. However, the ideal therapy parameters (such as intensity, distance, cycle, etc.) still need further research.\nSYSTEMATIC REVIEW REGISTRATION: https://www.crd.york.ac.uk/PROSPERO/view/CRD420251047102, identifier (CRD420251047102)."
+    },
+    {
+      "pmid": "41785919",
+      "title": "The impact of timing on bright light therapy: Alleviating anhedonia and circadian rhythm disturbances in depression patients: a randomized controlled trial.",
+      "authors": [
+        "Li X",
+        "Qin X",
+        "Fang J",
+        "Hu Q",
+        "Yu J",
+        "Wang T",
+        "Huang Z",
+        "Zhu D"
+      ],
+      "journal": "Journal of affective disorders",
+      "year": "2026",
+      "abstract": "This study aimed to determine the effectiveness of different times of bright light therapy (BLT) in alleviating anhedonia and circadian rhythm disturbances in depression patients. The study also explored whether the positive effects of BLT on anhedonia in depression were associated with changes in melatonin and cortisol indices throughout the treatment period. In this single-blind, placebo-controlled study, 81 patients were randomly assigned to one of four groups: morning BLT group, morning placebo group, evening BLT group, or evening placebo group. Participants in the BLT groups received BLT at 10,000 lx, while those in the placebo groups were exposed at 100 lx for 30 min daily over two weeks. The primary outcome measure was the Revised Physical Anhedonia Scale (RPAS) score. Secondary outcome measures included salivary melatonin and cortisol levels, as well as the Hamilton Depression Rating Scale (HAMD) score. The morning BLT group showed a significant delay in the melatonin peak phase and an improvement in RPAS scores compared to the morning placebo group. A correlation between changes in RPAS scores and melatonin peak phase was observed (P = 0.048) after morning BLT, with multiple linear regression analysis further confirming this relationship (P = 0.026). These findings suggest that morning BLT significantly alleviates anhedonia in depression, an effect associated with delayed melatonin peak phase. Depressive symptoms improved following both morning and evening BLT. These results highlight the potential of bright light therapy as a non-pharmacological treatment option, with morning administration showing particular benefit for anhedonia."
+    },
+    {
+      "pmid": "41756577",
+      "title": "The effect of bright light therapy on glycemic control and cortisol rhythmicity in depression: a randomized controlled trial.",
+      "authors": [
+        "Fang J",
+        "Li X",
+        "Zhu S",
+        "Hu Q",
+        "Wang T",
+        "Yu J",
+        "Qin X",
+        "Zhu D"
+      ],
+      "journal": "Frontiers in psychiatry",
+      "year": "2026",
+      "abstract": "BACKGROUND: Depressed patients with comorbid metabolic disorders have poorer quality of life and prognosis. Pharmacological interventions carries risks of liver and kidney toxicity, which highlights the need for safer non-pharmacological alternatives. Experimental data suggest that light exposure modulates cortisol secretion, thereby influencing metabolic outcomes in depression. We hypothesized that bright light therapy may ameliorate metabolic disturbances by modulating cortisol secretion.\nMETHODS: In this randomized controlled trial, hospitalized patients with depression were assigned to receive either bright light therapy (BLT) or dim-light control condition. The pre-specified primary endpoint was the change in fasting blood glucose (FBG) and cortisol rhythm indices from baseline to post-treatment. Secondary endpoints included changes in other glycolipid parameters, and scores on the Hamilton Depression (HAMD) and Anxiety (HAMA) scales. Treatment effects were evaluated using linear mixed-effects models with baseline adjustment.\nRESULTS: After the 2-week intervention, the BLT group showed a significant reduction in fasting blood glucose (95% CI: 0.280 to 0.600; p < 0.001) and cortisol mesor (95% CI: -2.677 to -0.064; p = 0.040) compared to the control group. Within the BLT group, the change in FBG was positively associated with the change in cortisol mesor after adjusting for covariates (β = 0.053, 95% CI: 0.016 to 0.122, p = 0.036).\nCONCLUSIONS: The findings of this study support a potential mechanism whereby BLT modulates cortisol rhythmicity, which in turn may contribute to improved glycemic control, pointing to its potential therapeutic benefit for addressing metabolic disturbances in depression.\nCLINICAL TRIAL REGISTRATION: https://www.chictr.org.cn/bin/project/edit?pid=260569, identifier ChiCTR2500097364."
+    }
+  ],
+  "Resilience & Self-Compassion vs Streak Shame": [
+    {
+      "pmid": "42227754",
+      "title": "Understanding the Influence of Experiential Psychotherapy Among Men Who Have Offended: A Systematic Review.",
+      "authors": [
+        "Ayot HK"
+      ],
+      "journal": "International journal of offender therapy and comparative criminology",
+      "year": "2026",
+      "abstract": "High rates of recidivism persist among incarcerated men, particularly those with extensive trauma histories, while many rehabilitation programs remain primarily cognitively focused. This systematic review synthesizes evidence on experiential psychotherapies, including mindfulness-based interventions, Acceptance and Commitment Therapy (ACT), yoga, meditation, and creative arts therapies delivered in forensic settings to adult males. Twenty-four studies met inclusion criteria. Thematic synthesis identified three outcome domains: (1) psychological and emotional well-being, including reductions in stress, anxiety, depression, and trauma symptoms; (2) behavioral and cognitive regulation, including improved impulse control and prosocial identity shifts; and (3) recidivism and desistance, with several studies-particularly those examining Transcendental Meditation and structured mindfulness programs-reporting reduced reoffending. Evidence for Compassion Focused Therapy and most creative arts therapies was limited or absent. Overall, findings suggest experiential psychotherapies may support emotional regulation, identity change, and desistance, though heterogeneity in study design and outcomes limits generalizability and highlights the need for more rigorous longitudinal research.\nCan Mindfulness, Yoga, and Related Therapies Help Reduce Reoffending? A Review of the EvidenceMany people who go to prison return again after release. This is especially true for men who have lived through trauma, violence, or neglect and who struggle with strong emotions such as anger, fear, or shame. Most rehabilitation programs focus on changing how people think, but they often do not address how people feel in their bodies or how they experience their emotions. This review looked at whether therapies based on experience and awareness, such as mindfulness, meditation, yoga, Acceptance and Commitment Therapy (ACT), and creative activities, can help people in prison change in deeper and longer-lasting ways. We reviewed 24 studies from several countries that tested these approaches with men in prisons and other secure settings. We looked at three main outcomes: mental and emotional health, behavior and self-control, and whether people returned to crime after release. Many studies found that these therapies helped reduce stress, anxiety, depression, and trauma symptoms. People often reported better emotional control, greater self-awareness, and a more positive sense of who they are. Some programs, especially meditation-based approaches, were also linked to lower rates of reoffending. However, the studies used different methods and were not all high quality. There was also very little research on compassion-based therapy or creative arts programs. Overall, these approaches show promise as part of rehabilitation. They may help people heal from trauma, manage their emotions, and build a new sense of self. More long-term and carefully designed studies are still needed."
+    },
+    {
+      "pmid": "42220893",
+      "title": "Hemispheric dissociation of anxiety and autonomic arousal during lateral visual field viewing: a case report.",
+      "authors": [
+        "Schiffer F"
+      ],
+      "journal": "Frontiers in human neuroscience",
+      "year": "2026",
+      "abstract": "We report a clinical case illustrating rapid, reversible, and reproducible hemispheric differences in subjective experience and autonomic arousal during lateral visual field viewing. A man in his 40s with longstanding anxiety and depression showed repeatable shifts in affective state, self-appraisal, and appraisal of the clinician when alternately viewing through the right versus left lateral visual field while holding the same shame-evoking interpersonal scenario in mind. Pulse rate measured with a fingertip pulse oximeter was observed to co-occur with these shifts (anxious/shame state ≈105 bpm; calm/secure state ≈85-90 bpm; baseline ≈95 bpm). Across 72 consecutive patients entered into the author's practice, 89% showed a clinically useful between-field difference in momentary anxiety and 49% showed a marked difference of the type described in this case report. Together with prior findings from split-brain research, Wada studies, fMRI, repetitive transcranial magnetic stimulation (rTMS), and lateral visual field stimulation (LVFS) paradigms, this observation is consistent with the partial functional independence of two hemispheric experiential systems-one of which is more childlike and more affected by past trauma-and with history-dependent meaning as a driver of physiological response. We interpret the case within Dual-Brain Psychology (DBP) and relate the findings to the Emotion-Type Hypothesis (ETH), proposing a distinction between lateralized emotional functions (as characterized by ETH) and hemispheric experiential dominance (as characterized by DBP). On this account, a hemispheric experiential system may function as the dominant organizing self while recruiting emotional and cognitive capacities distributed across both hemispheres. This synthesis may help reconcile population-level associations between emotion type and hemispheric specialization with the within-individual variability in hemispheric emotional valence observed under lateral visual field viewing."
+    },
+    {
+      "pmid": "42205348",
+      "title": "From Interpersonal Experiences to Proximal Minority Processes and Mental Health: A Characterization of Latent Socio-Evolutionary Profiles in Portuguese Sexual Minoritized Individuals.",
+      "authors": [
+        "Seabra D",
+        "Ribeiro da Silva D",
+        "Gato J",
+        "Petrocchi N",
+        "Salvador MDC"
+      ],
+      "journal": "International journal of sexual health : official journal of the World Association for Sexual Health",
+      "year": "2026",
+      "abstract": "Objective: Sexual minorities (SMs) include monosexual, bi + individuals, and a spectrum of asexual sexual orientations. They encounter challenges that can significantly impact their mental health. Integrative models incorporate several different factors to provide an explanation for mental health issues. These factors include stigma, evolutionary dimensions, distal and proximal processes, and inter- and intrapersonal experiences over time. This study aimed to identify profiles among Portuguese SM individuals by examining stigma and evolutionary interpersonal distal processes and characterizing these profiles through analyzing proximal processes, mental health indicators, and sociodemographic variables. Methods: The sample consisted of 409 Portuguese SM adults. The identification of profiles was conducted through a latent profile analysis, which employed self-report measures of early memories of warmth and safeness, early traumatic shame experiences, social support, and homophobic discrimination. The following variables were assessed for the characterization of each profile: age, gender, gender identity, sexual orientation, residence area, employment, religiosity, stigma anticipation, internalized stigma, rejection sensitivity, self-criticism, shame, concealment of sexual orientation, life satisfaction, depression, anxiety, and social anxiety symptoms. Results: The four-profile model demonstrated the optimal fit, designated as \"traumatized,\" \"marginalized,\" \"resilient,\" and \"secure.\" The characterization of these profiles illuminated the non-straightforward and nuanced influence of interpersonal experiences on mental health. The paper concludes with a discussion of the clinical implications and limitations of the findings. Conclusions: The findings underscore the importance of addressing stigma, social, and evolutionary dimensions across inter- and intrapersonal experiences in the assessment and case formulation with SM individuals. The interventions should adopt an affirmative and contextual approach considering general and SM-specific cognitions, emotions, behaviors, and processes."
+    }
+  ],
+  "Digital Mental Health Feasibility / Safety": [
+    {
+      "pmid": "42181584",
+      "title": "Mobile Health (",
+      "authors": [
+        "Hernawaty T",
+        "Suryani S",
+        "Maryati I",
+        "Susanti RD",
+        "Maharani AY",
+        "Syafaat FA",
+        "Sundari NF",
+        "Aisyah TS",
+        "Erlindasari S"
+      ],
+      "journal": "Cancer management and research",
+      "year": "2026",
+      "abstract": "BACKGROUND: Psychosocial screening is the systematic identification of psychological and social problems in cancer patients, including emotional distress, anxiety, and depression. Mobile health (mHealth) technology has the potential to assist in the continuous screening and monitoring of patients' psychosocial conditions. However, evidence of its effectiveness, integration, and feasibility remains varied.\nOBJECTIVE: To map the literature on the use of mHealth for psychosocial screening of cancer patients and to identify its potential, challenges, and future directions in nursing practice.\nMETHODS: A scoping review was conducted using three databases: PubMed, Scopus, and ScienceDirect.\nRESULTS: A total of seven studies (n=7, including feasibility, protocol, and qualitative co-design studies) were included. Findings indicate that mHealth is feasible and acceptable for identifying emotional distress, monitoring psychosocial conditions, and supporting patient-provider communication.\nCONCLUSION: mHealth shows promising feasibility and offers potential to enhance nursing triage, referral, and patient-centered psychosocial care, and potential utility for psychosocial screening in cancer patients. However, further research is needed on long-term implementation, tool validation, data security, and integration into healthcare systems, particularly in Indonesia."
+    },
+    {
+      "pmid": "42177443",
+      "title": "Comparison of mHealth-supported and centre-based cardiac rehabilitation in patients with stable coronary heart disease: a randomized controlled trial.",
+      "authors": [
+        "Yang X",
+        "Liang J",
+        "Li Y",
+        "Miao J",
+        "Xu Y",
+        "Li W"
+      ],
+      "journal": "BMC cardiovascular disorders",
+      "year": "2026",
+      "abstract": "BACKGROUND: High-intensity interval training (HIIT) is an effective exercise modality in cardiac rehabilitation; however, participation in conventional centre-based programs remains suboptimal due to barriers such as limited accessibility and adherence. Mobile health (mHealth) technologies may improve accessibility and supervision of exercise training. While previous studies have primarily focused on training modality, evidence comparing different delivery models of HIIT-based cardiac rehabilitation remains limited. This study aimed to compare the effectiveness and safety of mHealth-supported versus centre-based delivery of a standardized HIIT cardiac rehabilitation program in patients with stable coronary heart disease (CHD).\nMETHODS: Between December 2024 and April 2025, 98 adults with stable CHD eligible for Phase II cardiac rehabilitation were enrolled and randomly assigned to either the control group (n = 49) or the intervention group (n = 49). Both groups performed the same standardized HIIT protocol; the control group received supervised centre-based rehabilitation, whereas the intervention group performed mHealth-supported home-based training with real-time monitoring and individualized feedback via the Xin'ankang mHealth platform. Primary outcomes included the six-minute walk distance (6MWD), cardiopulmonary exercise testing (CPET) parameters, and SF-36 quality of life scores. Secondary outcomes included anxiety, depression, and sleep quality.\nRESULTS: Baseline characteristics were generally comparable between groups, although minor differences were observed in certain SF-36 domains. After adjustment for baseline values, the intervention group demonstrated significant improvements compared to the control group in sleep quality scores (3.17 ± 2.09 vs. 4.83 ± 2.09), peak METs (5.83 ± 0.09 vs. 4.94 ± 0.09), anaerobic threshold METs (4.29 ± 0.07 vs. 3.53 ± 0.07), peak VO₂ (20.12 ± 0.30 vs. 16.70 ± 0.30 ml/kg/min), and 6MWD (563.83 ± 3.21 vs. 531.49 ± 3.21 m) (all P < 0.05). Improvements in SF-36 scores were observed in several domains, although no significant difference was found in vitality or mental health. Subgroup analyses revealed consistent improvements across age groups, while a sex-specific difference was observed for changes in VO₂ peak.\nCONCLUSION: Compared with centre-based delivery of the same HIIT program, mHealth-supported HIIT was associated with greater improvements in cardiopulmonary function, exercise capacity, and quality of life in patients with CHD. These findings suggest that delivery modality may influence the effectiveness of HIIT-based cardiac rehabilitation.\nTRIAL REGISTRATION: Clinical Trial Registration Number: ChiCTR2500104462, June 17, 2025."
+    },
+    {
+      "pmid": "42145919",
+      "title": "Pregnant Adults' Interest in Physical and Mental Health Behavior Change Interventions Using Mobile Technology.",
+      "authors": [
+        "Yarish NM",
+        "Sandoval CM",
+        "Moulder A",
+        "Turner MI",
+        "Downs DS",
+        "Heron KE"
+      ],
+      "journal": "Journal of technology in behavioral science",
+      "year": "2025",
+      "abstract": "Improving the health and well-being of pregnant adults is an important public health priority in the USA, and mobile health (mHealth) interventions may provide a scalable strategy to disseminate behavior change programs to pregnant adults. This study assessed pregnant people's use of mobile technology, interest in making health behavior changes during and after pregnancy, and their willingness to use mHealth interventions. Participants were 133 pregnant adults (M age = 27.86; 81% White) living across the USA recruited from social media to complete an online survey. Measures assessed mobile technology use and beliefs about improving mental/physical health in pregnancy and postpartum and using mHealth technology to address such changes. Participants endorsed daily smartphone use, and most participants endorsed wanting to improve their physical and mental health during pregnancy and postpartum. Key areas that emerged from their responses were to improve physical (healthy eating, physical activity, weight control, sleep, hydration) and mental (stress management, reducing depression/anxiety) health. Participants generally thought mobile technology could be a helpful and feasible tool for improving their health. Overall, findings support and extend past research among preconception adults suggesting mobile technology may be a helpful tool for implementing pre- and postnatal health behavior change programs. These findings may also be useful for developing community-informed health behavior interventions for pregnant adults that utilize mHealth approaches. Though these results show promise for the use of mHealth interventions during the perinatal period, feasibility and effectiveness studies are needed to better understand the role of mobile technology in perinatal health promotion."
+    }
+  ]
+}
