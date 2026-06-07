@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact / Join - State Not Fate</title>
+    <meta name="description" content="Contact or join the State Not Fate Depression Project without submitting sensitive clinical information.">
+    <meta property="og:title" content="State Not Fate - Contact / Join">
+    <meta property="og:description" content="A low-risk contact path for beta testers, collaborators, clinicians, supporters, and partners.">
+    <link rel="canonical" href="http://127.0.0.1:4173/contact">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <header class="public-header" data-public-site>
+        <nav class="public-nav" aria-label="Public site navigation">
+            <a class="public-brand" href="/">State Not Fate</a>
+            <div class="public-nav-links">
+                <a href="/#learn">Learn</a>
+                <a href="/#program">Start / Try the program</a>
+                <a href="/evidence">Evidence / Sources</a>
+                <a href="/contact" aria-current="page">Contact / Join</a>
+                <a href="/crisis">Crisis Help</a>
+            </div>
+        </nav>
+    </header>
+    <main class="public-page" data-public-site>
+        <h1>Contact / Join</h1>
+        <p class="public-summary">Use this form for project interest only. Do not submit emergency or crisis information through this form.</p>
+
+        <form class="contact-form" id="join-form" novalidate>
+            <label for="join-email">Email</label>
+            <input id="join-email" name="email" type="email" autocomplete="email" required>
+
+            <label for="join-interest">Interest type</label>
+            <select id="join-interest" name="interest" required>
+                <option value="">Choose one</option>
+                <option value="beta-tester">Beta tester</option>
+                <option value="collaborator">Collaborator</option>
+                <option value="clinician-researcher">Clinician/researcher</option>
+                <option value="supporter">Supporter</option>
+                <option value="media-partnership">Media/partnership</option>
+            </select>
+
+            <label for="join-note">Short note, optional</label>
+            <textarea id="join-note" name="note" rows="4" placeholder="Project role, collaboration idea, or practical question."></textarea>
+
+            <p class="privacy-note">Please do not include diagnosis details, medication history, trauma history, suicidal ideation, or other sensitive clinical data.</p>
+            <button class="btn btn-primary" type="submit">Submit interest</button>
+            <p id="join-status" role="status" aria-live="polite"></p>
+        </form>
+    </main>
+    <script>
+        document.getElementById('join-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const email = document.getElementById('join-email');
+            const status = document.getElementById('join-status');
+            if (!email.checkValidity()) {
+                status.textContent = 'Please enter a valid email address.';
+                return;
+            }
+            status.textContent = 'Form is not connected yet in development. No message was sent.';
+        });
+    </script>
+</body>
+</html>

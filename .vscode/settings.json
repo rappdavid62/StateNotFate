@@ -1,0 +1,7 @@
+{
+    "python.testing.pytestArgs": [
+        "polaris-full-package"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}

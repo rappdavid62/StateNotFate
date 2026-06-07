@@ -16,6 +16,11 @@ Points to relative child folder "knowledge/" (from the Junction link in scratch)
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>State, Not Fate — Depression Project Main Frame</title>
+    <meta name="description" content="State Not Fate is proof-based depression support that treats depression as functional disruption, not moral failure.">
+    <meta property="og:title" content="State Not Fate - Depression Project">
+    <meta property="og:description" content="A public-facing, source-grounded depression project with adjunctive tools, crisis boundaries, and a private local beta app.">
+    <meta property="og:type" content="website">
+    <link rel="canonical" href="http://127.0.0.1:4173/">
     <link rel="stylesheet" href="index.css">
     
     <!-- PWA Mobile Web App Manifest & Metadata -->
@@ -26,6 +31,47 @@ Points to relative child folder "knowledge/" (from the Junction link in scratch)
     <meta name="apple-mobile-web-app-title" content="State Not Fate">
 </head>
 <body>
+    <a class="skip-link" href="#public-main">Skip to public project information</a>
+    <header class="public-header" data-public-site>
+        <nav class="public-nav" aria-label="Public site navigation">
+            <a class="public-brand" href="/">State Not Fate</a>
+            <div class="public-nav-links">
+                <a href="#learn">Learn</a>
+                <a href="#program">Start / Try the program</a>
+                <a href="/evidence">Evidence / Sources</a>
+                <a href="/contact">Contact / Join</a>
+                <a href="/crisis">Crisis Help</a>
+            </div>
+        </nav>
+    </header>
+
+    <main id="public-main" class="public-site" data-public-site>
+        <section class="public-hero" aria-labelledby="public-title">
+            <p class="public-kicker">Depression Project</p>
+            <h1 id="public-title">State Not Fate</h1>
+            <p class="public-summary">State Not Fate is proof-based depression support that treats depression as functional system disruption, not moral failure.</p>
+            <div class="public-actions" id="program">
+                <a class="btn btn-primary" href="#screen-welcome">Try the local beta</a>
+                <a class="btn btn-secondary" href="/evidence">Review sources</a>
+            </div>
+        </section>
+
+        <section class="public-grid" id="learn" aria-label="Project overview">
+            <article>
+                <h2>What it is</h2>
+                <p>A low-friction recovery framework focused on action-before-motivation, proof-based hope, restart speed, and practical daily anchors.</p>
+            </article>
+            <article>
+                <h2>What it is not</h2>
+                <p>State Not Fate is adjunctive support, not a replacement for professional care, therapy, medical care, or emergency services.</p>
+            </article>
+            <article>
+                <h2>Safety first</h2>
+                <p>If there is immediate danger, call your local emergency number, contact a local crisis line, or use a trusted urgent support service. In the U.S. and Canada, 988 is one option.</p>
+            </article>
+        </section>
+    </main>
+
     <div class="app-container">
         
         <!-- ========================================== -->
@@ -67,15 +113,35 @@ Points to relative child folder "knowledge/" (from the Junction link in scratch)
         <!-- ========================================== -->
         <!-- SCREEN 0: WELCOME & TRUST LANDING (PHASE 0)-->
         <!-- ========================================== -->
-        <div id="screen-welcome" class="welcome-screen">
-            <h1 class="logo-header">STATE, NOT FATE</h1>
-            <h3 class="text-lavender mb-2">Depression Project Main Frame Operating System</h3>
-            <p class="intro">
-                Depression is a multi-system assault on your biology, time perception, energy, and self-worth. 
-                This adjunctive framework treats depression as a temporary <em>state</em> that can be influenced through 
-                repeated, biologically supported, professionally compatible action—not as your permanent identity.
-            </p>
-            
+        <!-- ========================================== -->
+<!-- SMART WELCOME / RE-ENTRY LAYER             -->
+<!-- ========================================== -->
+<div id="screen-welcome" class="welcome-screen">
+    <h1 class="logo-header">STATE, NOT FATE</h1>
+    <h3 class="text-lavender mb-2">You’re here.</h3>
+    <p class="intro" style="max-width: 420px;">No catch-up. Pick the current state.</p>
+
+    <div class="glass-card" style="max-width: 420px; width: 100%; padding: 1.5rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <button class="btn btn-primary w-full" onclick="startSmallAction()" style="padding: 1rem; font-size: 1.05rem;">
+                Start Small — One tiny action right now
+            </button>
+            <button class="btn btn-secondary w-full" onclick="exploreFullProgram()" style="padding: 1rem; font-size: 1.05rem;">
+                Explore Full Program
+            </button>
+            <button class="btn btn-secondary w-full" onclick="openProfileDepthSelector()" style="padding: 1rem; font-size: 1.05rem;">
+                Personalize More
+            </button>
+            <button class="btn btn-danger w-full" onclick="goToEmergencyFloor()" style="padding: 1rem; font-size: 1.05rem;">
+                Emergency Floor
+            </button>
+        </div>
+    </div>
+
+    <p class="text-muted" style="font-size: 0.8rem; max-width: 380px;">
+        Help is never locked. You can open the full program or 10-Minute Floor anytime.
+    </p>
+
             <div class="guidelines-box glass-card">
                 <h2>The Main Frame Principles:</h2>
                 <ul>
@@ -90,6 +156,42 @@ Points to relative child folder "knowledge/" (from the Junction link in scratch)
                 <button class="btn btn-secondary" onclick="window.open('https://www.google.com', '_blank')">Exit to Safety</button>
                 <button class="btn btn-primary" id="btn-start-intake">Begin Assessment <span class="icon">➔</span></button>
             </div>
+        </div>
+
+        <!-- STATE SELECTOR SCREEN -->
+        <div id="screen-state-selector" class="welcome-screen hidden" style="max-width: 520px;">
+            <h2 class="mb-2 text-lavender">What is blocking action right now?</h2>
+            <div class="glass-card" style="padding: 1.25rem;">
+                <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+                    <button class="btn btn-secondary" onclick="selectState('initiation')">I can't start</button>
+                    <button class="btn btn-secondary" onclick="selectState('rhythm')">My rhythm is broken</button>
+                    <button class="btn btn-secondary" onclick="selectState('environment')">My space is dragging me down</button>
+                    <button class="btn btn-secondary" onclick="selectState('body')">My body needs the floor</button>
+                    <button class="btn btn-secondary" onclick="selectState('mind')">My mind is spiraling</button>
+                    <button class="btn btn-danger" onclick="selectState('emergency')">Emergency mode</button>
+                </div>
+            </div>
+            <button class="btn btn-secondary mt-3" onclick="showScreen('welcome')">← Back</button>
+        </div>
+
+        <!-- PROFILE DEPTH SELECTOR SCREEN -->
+        <div id="screen-profile-depth" class="welcome-screen hidden" style="max-width: 520px;">
+            <h2 class="mb-2 text-lavender">Choose Your Depth</h2>
+            <p class="text-muted mb-3" style="max-width: 420px;">How much time do you want to invest right now? You can always change this later.</p>
+            <div class="glass-card" style="padding: 1.25rem;">
+                <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+                    <button class="btn btn-secondary" onclick="applyProfileDepth('quick')" style="padding: 1rem; text-align: left;">
+                        <strong>Quick Setup (2 min)</strong><br><span class="text-muted" style="font-size:0.8rem;">Set your mantra and MVD floor. Skip detailed burden mapping.</span>
+                    </button>
+                    <button class="btn btn-secondary" onclick="applyProfileDepth('standard')" style="padding: 1rem; text-align: left;">
+                        <strong>Standard Intake (5-10 min)</strong><br><span class="text-muted" style="font-size:0.8rem;">Full clinical intake with all sections. Recommended for first use.</span>
+                    </button>
+                    <button class="btn btn-secondary" onclick="applyProfileDepth('minimal')" style="padding: 1rem; text-align: left;">
+                        <strong>Minimal — Just Dashboard</strong><br><span class="text-muted" style="font-size:0.8rem;">Skip intake entirely. Use default settings and go straight to dashboard.</span>
+                    </button>
+                </div>
+            </div>
+            <button class="btn btn-secondary mt-3" onclick="showScreen('welcome')">← Back</button>
         </div>
 
         <!-- ========================================== -->
@@ -373,6 +475,7 @@ Points to relative child folder "knowledge/" (from the Junction link in scratch)
             <!-- Tab Navigation Bar -->
             <div class="app-tabs">
                 <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+                <button class="tab-btn" data-tab="polaris">🜁 Polaris</button>   
                 <button class="tab-btn" data-tab="safebox" id="btn-tab-safebox">Crisis Safe Box <span class="text-red">⚠</span></button>
                 <button class="tab-btn" data-tab="mediaconsole">Media Console</button>
                 <button class="tab-btn" data-tab="progression">Progression</button>
@@ -505,8 +608,115 @@ Points to relative child folder "knowledge/" (from the Junction link in scratch)
                     </div>
 <!-- TAB: POLARIS -->
 <div id="tab-polaris" class="tab-content hidden">
-    <div class="glass-card" style="max-width: 620px; margin: 0 auto;">
-        <div id="polaris-status"></div>
+    <div class="glass-card" style="max-width: 660px; margin: 0 auto; padding: 1.5rem;">
+        <!-- Header: Polaris + Day N + Toggle -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <div>
+                <h2 style="margin: 0; display: flex; align-items: center; gap: 0.5rem;">🜁 Polaris <span id="polaris-day-counter" class="text-muted" style="font-size: 0.8rem; font-weight: 400;"></span></h2>
+            </div>
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.85rem; color: var(--text-secondary);">
+                <span id="polaris-toggle-label">Enabled</span>
+                <div id="polaris-toggle" onclick="togglePolaris()" style="width: 44px; height: 24px; border-radius: 12px; background: var(--accent-teal); position: relative; cursor: pointer; transition: background 0.3s;">
+                    <div id="polaris-toggle-knob" style="width: 20px; height: 20px; border-radius: 50%; background: #fff; position: absolute; top: 2px; left: 22px; transition: left 0.3s; box-shadow: 0 1px 3px rgba(0,0,0,0.3);"></div>
+                </div>
+            </label>
+        </div>
+
+        <!-- Polaris Content -->
+        <div id="polaris-content">
+            <!-- Hope Level (compact bar) -->
+            <div id="polaris-hope-section" style="margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                    <span id="polaris-hope-title" style="font-size: 0.8rem; font-weight: 600; color: var(--accent-teal);">Level 1: Action is Possible</span>
+                    <span id="polaris-hope-percent" class="text-muted" style="font-size: 0.75rem;">0%</span>
+                </div>
+                <div style="height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden;">
+                    <div id="polaris-hope-fill" style="height: 100%; width: 0%; background: var(--accent-teal); border-radius: 2px; transition: width 0.5s;"></div>
+                </div>
+            </div>
+
+            <!-- Day Message -->
+            <div id="polaris-day-message" class="glass-card" style="background: rgba(20, 200, 175, 0.04); border-color: rgba(20, 200, 175, 0.15); padding: 1rem; margin-bottom: 1rem;">
+                <div class="text-teal" style="font-size: 0.75rem; text-transform: uppercase; font-weight: 600; margin-bottom: 0.25rem;">Today</div>
+                <div id="polaris-message-text" style="font-size: 0.95rem; line-height: 1.5; color: var(--text-primary);">Loading...</div>
+                <div class="text-muted" style="font-size: 0.75rem; margin-top: 0.5rem;">Energy: <span id="polaris-energy-badge" class="badge badge-medium" style="font-size: 0.65rem; padding: 0.1rem 0.4rem;">MEDIUM</span></div>
+            </div>
+
+            <!-- Gap Notice (hidden by default) -->
+            <div id="polaris-gap-notice" class="hidden" style="padding: 0.6rem 0.75rem; margin-bottom: 0.75rem; border-radius: var(--radius-sm); background: rgba(240,115,30,0.06); border: 1px solid rgba(240,115,30,0.12); font-size: 0.85rem; color: var(--text-secondary);"></div>
+
+            <!-- Yesterday Incomplete (hidden by default) -->
+            <div id="polaris-yesterday-incomplete" class="hidden" style="padding: 0.5rem 0.75rem; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-secondary); border-left: 2px solid rgba(240,115,30,0.3);"></div>
+
+            <!-- Tomorrow Recall from yesterday (hidden by default) -->
+            <div id="polaris-tomorrow-recall" class="hidden" style="padding: 0.6rem 0.75rem; margin-bottom: 0.75rem; border-radius: var(--radius-sm); background: rgba(20,200,175,0.04); border: 1px solid rgba(20,200,175,0.12); font-size: 0.85rem; color: var(--text-secondary); display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;"></div>
+
+            <!-- Anchors Section -->
+            <div style="margin-bottom: 1rem;">
+                <h3 style="font-size: 0.95rem; font-weight: 600; color: var(--accent-lavender); margin-bottom: 0.5rem;">Your Anchors</h3>
+                <!-- Add anchor input -->
+                <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;">
+                    <input type="text" id="input-new-anchor" placeholder="Add an anchor..." style="flex: 1; padding: 0.55rem 0.75rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 0.85rem; font-family: inherit; outline: none; transition: border-color 0.2s;" onkeydown="if(event.key==='Enter') addUserAnchor()" onfocus="this.style.borderColor='rgba(20,200,175,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+                    <button class="btn btn-primary" onclick="addUserAnchor()" style="padding: 0.55rem 0.75rem; font-size: 1.1rem; line-height: 1; background: var(--accent-teal); border-color: var(--accent-teal); color: #0b0f13; min-width: 38px; font-weight: 700;">+</button>
+                </div>
+                <!-- Anchor list (rendered by JS) -->
+                <div id="polaris-anchors-list" style="display: flex; flex-direction: column; gap: 0.4rem;"></div>
+                <!-- Empty state -->
+                <div id="polaris-empty-anchors" class="hidden" style="text-align: center; padding: 1.5rem 1rem; color: var(--text-secondary); font-size: 0.85rem;">No anchors yet. Add what you're going to do today.</div>
+            </div>
+
+            <!-- Proof Points -->
+            <div class="glass-card" style="background: rgba(165, 120, 240, 0.04); border-color: rgba(165, 120, 240, 0.15); padding: 1rem; margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <h3 style="font-size: 0.95rem; font-weight: 600; color: var(--accent-lavender); margin: 0;">Proof Points</h3>
+                    <span id="polaris-proof-total" class="badge badge-medium" style="font-size: 0.75rem; padding: 0.2rem 0.5rem;">0 pts</span>
+                </div>
+                <p class="text-muted" style="font-size: 0.8rem; margin: 0;">Completed anchors are logged.</p>
+                <div id="polaris-proof-today" class="text-teal" style="font-size: 0.85rem; margin-top: 0.5rem; font-weight: 500;">Today: 0 points earned</div>
+            </div>
+
+            <!-- Personal Bests -->
+            <div id="polaris-personal-bests" class="text-muted" style="display: none; gap: 1rem; justify-content: center; flex-wrap: wrap; font-size: 0.75rem; margin-bottom: 1rem; padding: 0.5rem 0;"></div>
+
+            <!-- Activity Calendar -->
+            <div style="margin-bottom: 1rem;">
+                <h3 style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.5rem;">Activity</h3>
+                <div id="polaris-activity-calendar" style="overflow-x: auto;"></div>
+            </div>
+
+            <!-- Tomorrow Hook (shown when all anchors done) -->
+            <div id="polaris-tomorrow-hook" class="hidden" style="padding: 1rem; margin-bottom: 1rem; border-radius: var(--radius-sm); background: rgba(20,200,175,0.04); border: 1px solid rgba(20,200,175,0.12);">
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0 0 0.5rem 0;">All anchors done. What will you start with tomorrow?</p>
+                <div style="display: flex; gap: 0.5rem;">
+                    <input type="text" id="input-tomorrow-anchor" placeholder="First thing tomorrow..." style="flex: 1; padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 0.85rem; font-family: inherit; outline: none;" onkeydown="if(event.key==='Enter') saveTomorrowAnchor()">
+                    <button class="btn btn-secondary" onclick="saveTomorrowAnchor()" style="padding: 0.5rem 0.75rem; font-size: 0.8rem; color: var(--accent-teal); border-color: rgba(20,200,175,0.3);">Set</button>
+                </div>
+            </div>
+
+            <!-- Restart / Floor Win -->
+            <div id="polaris-restart-section" class="glass-card" style="background: rgba(240, 115, 30, 0.04); border-color: rgba(240, 115, 30, 0.15); padding: 1rem; margin-bottom: 1rem;">
+                <h3 style="font-size: 0.95rem; font-weight: 600; color: var(--accent-orange); margin: 0 0 0.5rem 0;">Restart / Floor Win</h3>
+                <p class="text-muted" style="font-size: 0.8rem; margin-bottom: 0.75rem;">Missed days count. Coming back counts more.</p>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <button class="btn btn-secondary" onclick="polarisFloorWin()" style="padding: 0.5rem 1rem; font-size: 0.8rem; color: var(--accent-orange); border-color: rgba(240, 115, 30, 0.3);">🔥 Log Floor Win</button>
+                    <button class="btn btn-secondary" onclick="polarisRestart()" style="padding: 0.5rem 1rem; font-size: 0.8rem; color: var(--accent-teal); border-color: rgba(20, 200, 175, 0.3);">↻ Restart Day</button>
+                </div>
+                <div id="polaris-resilience-info" class="text-muted" style="font-size: 0.75rem; margin-top: 0.5rem;"></div>
+            </div>
+
+            <!-- Settings -->
+            <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+                <button class="btn btn-primary" onclick="showTab('dashboard')" style="padding: 0.5rem 1rem; font-size: 0.8rem; background: var(--accent-lavender); border-color: var(--accent-lavender); color: #0b0f13; font-weight: 600;">📊 View Full Dashboard</button>
+                <button class="btn btn-secondary" onclick="showTab('cognitivelab')" style="padding: 0.5rem 1rem; font-size: 0.8rem;">⚙ Settings</button>
+                <button class="btn btn-secondary" onclick="showTab('safebox')" style="padding: 0.5rem 1rem; font-size: 0.8rem; color: var(--accent-red); border-color: rgba(230, 40, 60, 0.2);">🚨 Safe Box</button>
+            </div>
+        </div>
+
+        <!-- Polaris Disabled State -->
+        <div id="polaris-disabled" class="hidden" style="text-align: center; padding: 2rem 1rem;">
+            <p class="text-muted" style="font-size: 1rem; margin-bottom: 1rem;">Polaris is currently disabled.</p>
+            <button class="btn btn-primary" onclick="togglePolaris()" style="background: var(--accent-teal); border-color: var(--accent-teal); color: #0b0f13;">Enable Polaris</button>
+        </div>
     </div>
 </div>
                 </div>
@@ -1002,6 +1212,17 @@ Points to relative child folder "knowledge/" (from the Junction link in scratch)
                 <div class="rating-grid" id="phq-questions-container" style="gap:1rem;">
                 </div>
 
+                <!-- PHQ-9 Results Interpretation Panel (hidden until submission) -->
+                <div id="phq-result-panel" class="hidden" style="margin: 1rem 0; padding: 1rem; border-radius: var(--radius-sm); border: 1px solid rgba(165, 120, 240, 0.2); background: rgba(165, 120, 240, 0.04);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                        <h4 style="margin: 0; color: var(--accent-lavender); font-size: 0.95rem;">Assessment Results</h4>
+                        <span id="phq-result-score-badge" class="badge badge-medium" style="font-size: 0.85rem; padding: 0.25rem 0.6rem;">--</span>
+                    </div>
+                    <div id="phq-result-severity" style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary);"></div>
+                    <div id="phq-result-interpretation" style="font-size: 0.85rem; line-height: 1.5; color: var(--text-secondary); margin-bottom: 0.75rem;"></div>
+                    <div id="phq-result-recommendation" style="font-size: 0.85rem; line-height: 1.5; padding: 0.75rem; border-radius: var(--radius-sm); background: rgba(20, 200, 175, 0.04); border: 1px solid rgba(20, 200, 175, 0.12); color: var(--text-primary);"></div>
+                </div>
+
                 <div class="modal-footer">
                     <button class="btn btn-secondary" id="btn-cancel-phq">Cancel</button>
                     <button class="btn btn-primary" id="btn-submit-phq" style="background: var(--accent-lavender); border-color:var(--accent-lavender); color:#0b0713;">
@@ -1144,6 +1365,9 @@ Points to relative child folder "knowledge/" (from the Junction link in scratch)
         ⚠ TESTING / PROTOTYPE BUILD — Not a medical service. This is an adjunctive self-management tool, not a substitute for professional care. If in crisis: call/text <strong>988</strong>.
     </div>
     
+    <!-- Toast Notification Container -->
+    <div id="toast-container" style="position: fixed; top: 1rem; right: 1rem; z-index: 10000; display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none; max-width: 380px;"></div>
+
     <script src="app.js"></script>
 </body>
 </html>

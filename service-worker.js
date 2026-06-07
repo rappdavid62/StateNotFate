@@ -1,9 +1,15 @@
-const CACHE_NAME = 'state-not-fate-cache-v1';
+const CACHE_NAME = 'state-not-fate-cache-v4';
 const ASSETS_TO_CACHE = [
   './index.html',
+  './evidence.html',
+  './contact.html',
+  './crisis.html',
+  './404.html',
   './index.css',
   './app.js',
-  './manifest.json'
+  './manifest.json',
+  './robots.txt',
+  './sitemap.xml'
 ];
 
 // Install Service Worker and cache core recovery assets

@@ -45,7 +45,11 @@
             thoughtCorrections: [],
             customTasks: [],
             securityPin: "",
-            isLocked: false
+            isLocked: false,
+            userAnchors: [],
+            firstUseDate: '',
+            tomorrowAnchor: '',
+            personalBests: { longestStreak: 0, mostAnchorsInDay: 0, fastestRestart: null }
         };
 
         let state = { ...DEFAULT_STATE };
@@ -92,12 +96,15 @@
         const screens = {
             lock: document.getElementById("screen-lock"),
             welcome: document.getElementById("screen-welcome"),
+            stateSelector: document.getElementById("screen-state-selector"),
+            profileDepth: document.getElementById("screen-profile-depth"),
             intake: document.getElementById("screen-intake"),
             dashboard: document.getElementById("screen-dashboard")
         };
 
         const tabs = {
             dashboard: document.getElementById("tab-dashboard"),
+            polaris: document.getElementById("tab-polaris"),
             safebox: document.getElementById("tab-safebox"),
             mediaconsole: document.getElementById("tab-mediaconsole"),
             progression: document.getElementById("tab-progression"),
@@ -128,7 +135,25 @@
                 resetPinDots();
             } else if (state.isOnboarded) {
                 showScreen("dashboard");
-                renderDashboard();
+                ensurePolarisState();
+                if (state.polaris && state.polaris.enabled) {
+                    showTab("polaris");
+                    renderPolarisTab();
+                } else {
+                    renderDashboard();
+                }
+                // Gap acknowledgment for returning users
+                const h = state.history;
+                if (h.length > 0) {
+                    const lastDate = h[h.length - 1].date;
+                    const today = getTodayString();
+                    if (lastDate !== today) {
+                        const gap = Math.floor(Math.abs(new Date(today) - new Date(lastDate)) / 86400000);
+                        if (gap >= 2) {
+                            showToast(`${gap} days since last check-in. Pick up where you are.`, 'info', 6000);
+                        }
+                    }
+                }
             } else {
                 showScreen("welcome");
             }
@@ -163,6 +188,15 @@
                     if (state.customTasks === undefined) state.customTasks = [];
                     if (state.securityPin === undefined) state.securityPin = "";
                     if (state.isLocked === undefined) state.isLocked = false;
+                    if (state.polaris === undefined) state.polaris = null;
+                    if (state.userAnchors === undefined) state.userAnchors = [];
+                    if (state.firstUseDate === undefined) state.firstUseDate = '';
+                    if (state.tomorrowAnchor === undefined) state.tomorrowAnchor = '';
+                    if (state.personalBests === undefined) state.personalBests = { longestStreak: 0, mostAnchorsInDay: 0, fastestRestart: null };
+                    // Migrate polaris.anchors.today from array (v2/v3) to object (v4, ID-based)
+                    if (state.polaris && state.polaris.anchors && Array.isArray(state.polaris.anchors.today)) {
+                        state.polaris.anchors.today = {};
+                    }
                 } catch (e) {
                     console.error("Error reading saved state, resetting...", e);
                     state = { ...DEFAULT_STATE };
@@ -198,6 +232,23 @@
 
                 stateToSave.customTasks = state.customTasks.map(task => scramble(task, state.securityPin));
             }
+            /*
+             * SECURITY NOTE — POLARIS ENCRYPTION
+             * Polaris state (state.polaris) currently stores proof point ledger entries,
+             * anchor completion data, and resilience metrics. These are currently
+             * non-clinical and low-sensitivity (counts, timestamps, task labels).
+             *
+             * HOWEVER: If clinical notes, therapist-facing summaries, or free-text
+             * reflections are ever added to the Polaris proof ledger or quest system,
+             * they MUST be encrypted using the same scramble/descramble PIN method
+             * applied to reasonsLive, safeContacts, gratitudeJournal, and
+             * thoughtCorrections. Unencrypted clinical free-text in localStorage
+             * would violate the privacy contract this app makes with the user.
+             *
+             * To extend: add polaris.proof.ledger[].label and any future free-text
+             * fields to the scramble block in saveState() and the descramble block
+             * in decryptStateData().
+             */
             localStorage.setItem("state_not_fate_state", JSON.stringify(stateToSave));
         }
 
@@ -262,6 +313,8 @@
                 renderCognitiveLab();
             } else if (tabId === "documentcenter") {
                 renderDocumentCenter();
+            } else if (tabId === "polaris") {
+                renderPolarisTab();
             }
         }
 
@@ -433,7 +486,7 @@
                 const textarea = document.getElementById("textarea-export-briefing");
                 textarea.select();
                 document.execCommand("copy");
-                alert("Anonymized clinical progress briefing copied to clipboard!");
+                showToast('Anonymized clinical progress briefing copied to clipboard!', 'success');
             });
             document.getElementById("btn-download-export-briefing").addEventListener("click", () => {
                 const content = document.getElementById("textarea-export-briefing").value;
@@ -501,14 +554,21 @@
                 state.isLocked = false;
                 decryptStateData(state.securityPin);
                 showScreen("dashboard");
-                renderDashboard();
+                // Returning users with Polaris enabled land on Polaris tab after unlock
+                ensurePolarisState();
+                if (state.polaris && state.polaris.enabled) {
+                    showTab("polaris");
+                    renderPolarisTab();
+                } else {
+                    renderDashboard();
+                }
             } else {
                 const keypadCard = document.querySelector("#screen-lock .glass-card");
                 keypadCard.style.animation = "none";
                 setTimeout(() => {
                     keypadCard.style.animation = "shake 0.3s ease-in-out";
                 }, 10);
-                alert("Incorrect Security PIN. Decryption failed.");
+                showToast('Incorrect Security PIN. Decryption failed.', 'error');
                 resetPinDots();
             }
         }
@@ -523,6 +583,39 @@
         `;
         document.head.appendChild(style);
 
+        // ==========================================================
+        // TOAST NOTIFICATION SYSTEM (replaces all alert() calls)
+        // ==========================================================
+        function showToast(message, type = 'info', durationMs = 4000) {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            const colorMap = {
+                success: { bg: 'rgba(20, 200, 175, 0.12)', border: 'rgba(20, 200, 175, 0.35)', text: 'var(--accent-teal)', icon: '✓' },
+                warning: { bg: 'rgba(240, 115, 30, 0.12)', border: 'rgba(240, 115, 30, 0.35)', text: 'var(--accent-orange)', icon: '⚠' },
+                error:   { bg: 'rgba(230, 40, 60, 0.12)', border: 'rgba(230, 40, 60, 0.35)', text: 'var(--accent-red)', icon: '✖' },
+                info:    { bg: 'rgba(165, 120, 240, 0.12)', border: 'rgba(165, 120, 240, 0.35)', text: 'var(--accent-lavender)', icon: 'ℹ' }
+            };
+            const c = colorMap[type] || colorMap.info;
+
+            const toast = document.createElement('div');
+            toast.style.cssText = `pointer-events: auto; display: flex; align-items: flex-start; gap: 0.6rem; padding: 0.75rem 1rem; border-radius: var(--radius-sm, 8px); background: ${c.bg}; border: 1px solid ${c.border}; backdrop-filter: blur(12px); color: var(--text-primary, #e8eaf0); font-size: 0.85rem; line-height: 1.45; box-shadow: 0 4px 16px rgba(0,0,0,0.25); opacity: 0; transform: translateX(40px); transition: opacity 0.3s, transform 0.3s;`;
+            toast.innerHTML = `<span style="color: ${c.text}; font-size: 1.1rem; flex-shrink: 0; margin-top: 1px;">${c.icon}</span><span>${message}</span>`;
+
+            container.appendChild(toast);
+            // Trigger entrance animation
+            requestAnimationFrame(() => {
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateX(0)';
+            });
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(40px)';
+                setTimeout(() => toast.remove(), 350);
+            }, durationMs);
+        }
+
         function lockApplication() {
             if (state.securityPin) {
                 state.isLocked = true;
@@ -531,14 +624,14 @@
                 showScreen("lock");
                 resetPinDots();
             } else {
-                alert("You must define a 4-digit Security PIN in Intake Section 1 to lock the application.");
+                showToast('You must define a 4-digit Security PIN in Intake Section 1 to lock the application.', 'warning');
             }
         }
 
         function submitIntake() {
             const pin = document.getElementById("input-set-pin").value.trim();
             if (pin.length > 0 && pin.length !== 4) {
-                alert("Your Security PIN must be exactly 4 digits long.");
+                showToast('Your Security PIN must be exactly 4 digits long.', 'warning');
                 return;
             }
             
@@ -937,7 +1030,7 @@
                         <div class="linked-file-path">${file.path}</div>
                     </div>
                     <div style="display:flex; gap:0.5rem; align-items:center;">
-                        <button class="btn btn-secondary" onclick="navigator.clipboard.writeText('${file.path.replace(/\\/g, '\\\\')}'); alert('Path copied to clipboard!')" style="padding:0.4rem 0.6rem; font-size:0.75rem;">Copy Path</button>
+                        <button class="btn btn-secondary" onclick="navigator.clipboard.writeText('${file.path.replace(/\\/g, '\\\\')}'); showToast('Path copied to clipboard!', 'success')" style="padding:0.4rem 0.6rem; font-size:0.75rem;">Copy Path</button>
                         <button class="linked-file-remove" data-idx="${index}">×</button>
                     </div>
                 `;
@@ -956,7 +1049,7 @@
             const path = pathInput.value.trim();
             
             if (!name || !path) {
-                alert("Please enter both the file label and its local absolute system path.");
+                showToast('Please enter both the file label and its local absolute system path.', 'warning');
                 return;
             }
             
@@ -1158,23 +1251,43 @@
         function submitPhqAssessment() {
             const unanswered = tempPhqAnswers.findIndex(ans => ans === null);
             if (unanswered !== -1) {
-                alert(`Please answer all questions. Question ${unanswered + 1} is missing.`);
+                showToast(`Please answer all questions. Question ${unanswered + 1} is missing.`, 'warning');
                 return;
             }
             
             const score = tempPhqAnswers.reduce((sum, val) => sum + val, 0);
             
-            let severity = "Minimal Depression";
-            if (score >= 20) severity = "Severe Depression";
-            else if (score >= 15) severity = "Moderately Severe";
-            else if (score >= 10) severity = "Moderate Depression";
-            else if (score >= 5) severity = "Mild Depression";
+            let severity = 'Minimal Depression';
+            let interpretation = '';
+            let recommendation = '';
+            if (score >= 20) {
+                severity = 'Severe Depression';
+                interpretation = 'Your responses indicate severe depressive symptoms. This level of distress significantly impairs daily functioning and requires professional clinical intervention.';
+                recommendation = '⚠ Strongly recommended: Contact your prescribing clinician or therapist immediately. This score warrants active clinical management. If you are in crisis, call or text 988.';
+            } else if (score >= 15) {
+                severity = 'Moderately Severe';
+                interpretation = 'Your responses suggest moderately severe depression. Routine daily tasks are likely significantly harder than usual, and self-motivation is unreliable.';
+                recommendation = 'Recommended: Active treatment with therapy and/or medication. Review your MVD floor — lower the bar to protect self-trust. Floor Wins count.';
+            } else if (score >= 10) {
+                severity = 'Moderate Depression';
+                interpretation = 'Your responses reflect moderate depressive symptoms. You may experience persistent low energy, disrupted sleep, and difficulty starting tasks.';
+                recommendation = 'Consider: Treatment plan review with your clinician. Continue using daily anchors and track restart speed rather than streak purity.';
+            } else if (score >= 5) {
+                severity = 'Mild Depression';
+                interpretation = 'Your responses suggest mild depressive symptoms. You may have some difficult days but retain partial functioning capacity.';
+                recommendation = 'Monitor: Continue daily Floor anchors. Reassess in 2 weeks. If symptoms persist or worsen, consult your care provider.';
+            } else {
+                interpretation = 'Your responses indicate minimal or no depressive symptoms at this time. This is measurable progress.';
+                recommendation = 'Maintain: Keep your current anchors running. Proof of stability is clinical data. Reassess in 2–4 weeks to confirm trajectory.';
+            }
             
             const today = getTodayString();
             state.phq9History.push({
                 date: today,
                 score: score,
-                severity: severity
+                severity: severity,
+                interpretation: interpretation,
+                recommendation: recommendation
             });
             
             const q9SuicidalityScore = tempPhqAnswers[8];
@@ -1184,8 +1297,45 @@
             }
             
             saveState();
-            closePhqAssessmentModal();
+
+            // Display results in the PHQ-9 modal interpretation panel
+            const resultPanel = document.getElementById('phq-result-panel');
+            const scoreBadge = document.getElementById('phq-result-score-badge');
+            const severityEl = document.getElementById('phq-result-severity');
+            const interpEl = document.getElementById('phq-result-interpretation');
+            const recEl = document.getElementById('phq-result-recommendation');
+
+            resultPanel.classList.remove('hidden');
+            scoreBadge.textContent = `Score: ${score}/27`;
+
+            // Color-code the score badge
+            if (score >= 20) { scoreBadge.className = 'badge badge-collapse'; }
+            else if (score >= 15) { scoreBadge.className = 'badge'; scoreBadge.style.cssText = 'font-size:0.85rem;padding:0.25rem 0.6rem;background:rgba(240,115,30,0.2);color:var(--accent-orange);border:1px solid rgba(240,115,30,0.3);'; }
+            else if (score >= 10) { scoreBadge.className = 'badge badge-low'; scoreBadge.style.cssText = 'font-size:0.85rem;padding:0.25rem 0.6rem;'; }
+            else if (score >= 5) { scoreBadge.className = 'badge badge-medium'; scoreBadge.style.cssText = 'font-size:0.85rem;padding:0.25rem 0.6rem;'; }
+            else { scoreBadge.className = 'badge badge-high'; scoreBadge.style.cssText = 'font-size:0.85rem;padding:0.25rem 0.6rem;'; }
+
+            severityEl.textContent = severity;
+            interpEl.textContent = interpretation;
+            recEl.innerHTML = `<strong style="color: var(--accent-teal);">Recommendation:</strong> ${recommendation}`;
+
+            // Scroll the result panel into view
+            resultPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            // Change Submit button to Close
+            const submitBtn = document.getElementById('btn-submit-phq');
+            submitBtn.textContent = '✓ Close Assessment';
+            submitBtn.onclick = function() {
+                closePhqAssessmentModal();
+                resultPanel.classList.add('hidden');
+                submitBtn.innerHTML = '✓ Submit Results';
+                submitBtn.onclick = null;
+                // Re-bind original via event listener (it was set in setupEventListeners)
+                submitBtn.addEventListener('click', submitPhqAssessment, { once: false });
+            };
+
             renderProgressionDashboard();
+            showToast(`PHQ-9 recorded: ${severity} (Score: ${score}/27)`, score >= 15 ? 'warning' : 'success', 5000);
         }
 
         function drawPhq9HistoryChart() {
@@ -1461,7 +1611,7 @@
             const possibility = possibilityInput.value.trim();
             
             if (!relief || !possibility) {
-                alert("Please complete both the Micro-Moment Win and Tomorrow's Possibility fields.");
+                showToast('Please complete both the Micro-Moment Win and Tomorrow\'s Possibility fields.', 'warning');
                 return;
             }
             
@@ -1536,7 +1686,7 @@
             const rewrite = rewriteInput.value.trim();
             
             if (!ant || !challenge || !rewrite) {
-                alert("Please complete all three steps of the Thought Challenge worksheet.");
+                showToast('Please complete all three steps of the Thought Challenge worksheet.', 'warning');
                 return;
             }
             
@@ -1737,7 +1887,7 @@
                         </div>
                         <div style="display:flex; gap:0.5rem; align-items:center;">
                             <span class="text-muted" style="font-size:0.75rem; font-family:monospace;">${file.size}</span>
-                            <button class="btn btn-secondary" onclick="navigator.clipboard.writeText('knowledge/${file.name}'); alert('Relative offline path copied!')" style="padding:0.25rem 0.5rem; font-size:0.7rem;">Copy Path</button>
+                            <button class="btn btn-secondary" onclick="navigator.clipboard.writeText('knowledge/${file.name}'); showToast('Relative offline path copied!', 'success')" style="padding:0.25rem 0.5rem; font-size:0.7rem;">Copy Path</button>
                         </div>
                     </div>
                     <div style="font-size:0.75rem; color:var(--text-secondary); line-height:1.35; padding-top:0.15rem;">
@@ -1791,7 +1941,7 @@
             const val = input.value.trim();
             
             if (!val) {
-                alert("Please enter a custom checklist task label.");
+                showToast('Please enter a custom checklist task label.', 'warning');
                 return;
             }
             
@@ -1814,14 +1964,14 @@
             const mvd3 = document.getElementById("input-custom-mvd3").value.trim();
             
             if (!mvd1 || !mvd2 || !mvd3) {
-                alert("Your Minimum Viable Day (MVD) Floor must have all 3 tasks defined to protect your self-trust.");
+                showToast('Your Minimum Viable Day (MVD) Floor must have all 3 tasks defined to protect your self-trust.', 'warning');
                 return;
             }
             
             state.mvd = [mvd1, mvd2, mvd3];
             saveState();
             
-            alert("Treatment Plan customization saved successfully! Your daily checklist is updated.");
+            showToast('Treatment Plan customization saved successfully! Your daily checklist is updated.', 'success');
             renderDashboard();
         }
 
@@ -1886,8 +2036,694 @@
                 saveState();
                 renderCustomizer();
                 renderDashboard();
-                alert(`Clinical Template loaded successfully! Your MVD Floor and Active checklists are updated.`);
+                showToast(`Clinical Template loaded successfully! Your MVD Floor and Active checklists are updated.`, 'success');
             }
+        }
+        // ==========================================================
+        // SMART WELCOME HANDLER FUNCTIONS
+        // ==========================================================
+
+        function startSmallAction() {
+            // Opens state selector for immediate small action path
+            showScreen('stateSelector');
+        }
+
+        function exploreFullProgram() {
+            // Go to normal intake if not onboarded, or dashboard if already onboarded
+            if (state.isOnboarded) {
+                showScreen('dashboard');
+                showTab('dashboard');
+                renderDashboard();
+            } else {
+                showScreen('intake');
+                initIntakeForm();
+            }
+        }
+
+        function openProfileDepthSelector() {
+            // Open lightweight profile/depth selector screen
+            showScreen('profileDepth');
+        }
+
+        function applyProfileDepth(depth) {
+            if (depth === 'quick') {
+                // Go to intake but auto-open only mantra + MVD sections
+                showScreen('intake');
+                initIntakeForm();
+                // Collapse all sections except mantra and mvd
+                document.querySelectorAll('.accordion-section').forEach(sec => {
+                    const section = sec.getAttribute('data-section');
+                    if (section === 'mantra' || section === 'mvd') {
+                        sec.classList.add('active');
+                    } else {
+                        sec.classList.remove('active');
+                    }
+                });
+            } else if (depth === 'standard') {
+                showScreen('intake');
+                initIntakeForm();
+            } else if (depth === 'minimal') {
+                // Skip intake entirely, mark as onboarded with defaults
+                state.isOnboarded = true;
+                state.todayEnergy = 'medium';
+                state.currentLayer = 1;
+                saveState();
+                showScreen('dashboard');
+                showTab('dashboard');
+                renderDashboard();
+            }
+        }
+
+        function goToEmergencyFloor() {
+            // If onboarded, go to safebox tab. If not, do minimal onboard then safebox.
+            if (state.isOnboarded) {
+                showScreen('dashboard');
+                showTab('safebox');
+                renderSafeBox();
+            } else {
+                // Minimal onboard to enable dashboard access
+                state.isOnboarded = true;
+                state.todayEnergy = 'collapse';
+                state.currentLayer = 0;
+                saveState();
+                showScreen('dashboard');
+                showTab('safebox');
+                renderSafeBox();
+            }
+            // Also trigger crisis overlay if high risk
+            if (isHighRiskActive()) {
+                triggerCrisisOverlay();
+            }
+        }
+
+        function selectState(selectedState) {
+            // Map state selection to a meaningful first action and show dashboard
+            const stateActionMap = {
+                initiation: {
+                    message: 'Task initiation is the bottleneck. Your only job: define the first 10 seconds of one task.',
+                    energy: 'low'
+                },
+                rhythm: {
+                    message: 'Your rhythm is broken. Anchor to one fixed wake time and one fixed light exposure.',
+                    energy: 'low'
+                },
+                environment: {
+                    message: 'Your space is dragging you down. Clear one visible surface zone. That is the whole mission.',
+                    energy: 'medium'
+                },
+                body: {
+                    message: 'Your body needs the floor. Water, light, and standing for 60 seconds. Nothing more required.',
+                    energy: 'collapse'
+                },
+                mind: {
+                    message: 'Your mind is spiraling. Repeat your counter-script aloud. Open the breathing guide.',
+                    energy: 'low'
+                },
+                emergency: {
+                    message: 'Emergency mode activated. Opening Safe Box.',
+                    energy: 'collapse'
+                }
+            };
+
+            const action = stateActionMap[selectedState] || stateActionMap.initiation;
+
+            // If emergency, go straight to safe box
+            if (selectedState === 'emergency') {
+                goToEmergencyFloor();
+                return;
+            }
+
+            // Ensure onboarded (minimal) so dashboard works
+            if (!state.isOnboarded) {
+                state.isOnboarded = true;
+                state.currentLayer = 0;
+            }
+
+            state.todayEnergy = action.energy;
+            saveState();
+
+            showScreen('dashboard');
+            showTab('dashboard');
+            renderDashboard();
+
+            // Show a brief contextual message
+            showToast(action.message, selectedState === 'body' ? 'warning' : 'info', 5000);
+        }
+
+        // ==========================================================
+        // POLARIS SYSTEM (UPDATE 4 — USER-OWNED ANCHORS + RETENTION)
+        // ==========================================================
+
+        function ensurePolarisState() {
+            if (!state.polaris) {
+                state.polaris = {
+                    enabled: true,
+                    proof: { total: 0, today: 0, ledger: [] },
+                    resilience: { current: 0, longest: 0, missedDays: 0, lastCompletedDate: '' },
+                    day: { currentState: 'medium', lastCheckInDate: '', difficulty: 'easy', pacing: 'slow', floorWinsMode: false },
+                    anchors: { today: {} },
+                    quests: { daily: [] }
+                };
+            }
+            // Ensure anchors.today is an object (migration from v2/v3 arrays)
+            if (Array.isArray(state.polaris.anchors.today)) {
+                state.polaris.anchors.today = {};
+            }
+            // Set firstUseDate once
+            if (!state.firstUseDate) {
+                state.firstUseDate = getTodayString();
+                saveState();
+            }
+        }
+
+        function getDayNumber() {
+            if (!state.firstUseDate) return 1;
+            const first = new Date(state.firstUseDate + 'T00:00:00');
+            const now = new Date(getTodayString() + 'T00:00:00');
+            return Math.max(1, Math.floor((now - first) / 86400000) + 1);
+        }
+
+        function daysBetween(dateStr1, dateStr2) {
+            const d1 = new Date(dateStr1 + 'T00:00:00');
+            const d2 = new Date(dateStr2 + 'T00:00:00');
+            return Math.floor(Math.abs(d2 - d1) / 86400000);
+        }
+
+        function getPolarisMessage(dayState) {
+            const map = {
+                high: 'Full capacity. Run your anchors, then stop before it turns into punishment.',
+                medium: 'Core anchors first. One extra task. No heroic plan.',
+                low: 'Low day. Your anchors are still here. Do what you can.',
+                collapse: 'Floor day. No performance standard. Stay safe.'
+            };
+            return map[dayState] || map.medium;
+        }
+
+        function getAnchorsForToday(dayState) {
+            // Collapse: always show generic floor items
+            if (dayState === 'collapse') {
+                return [
+                    { id: 'floor_water', text: 'Drink a full glass of water', isGeneric: true },
+                    { id: 'floor_light', text: 'Open blinds or stand by window', isGeneric: true },
+                    { id: 'floor_win', text: 'One tiny Floor Win (anything)', isGeneric: true }
+                ];
+            }
+            // User has anchors: show them all
+            if (state.userAnchors.length > 0) {
+                return state.userAnchors.map(a => ({ id: a.id, text: a.text, isGeneric: false }));
+            }
+            // No user anchors + low energy: show minimal generic suggestions
+            if (dayState === 'low') {
+                return [
+                    { id: 'sug_water', text: 'Drink water', isGeneric: true },
+                    { id: 'sug_light', text: 'Stand in daylight for 2 minutes', isGeneric: true },
+                    { id: 'sug_one', text: 'Do one small thing', isGeneric: true }
+                ];
+            }
+            // No user anchors + medium/high: return empty (show "add first anchor" prompt)
+            return [];
+        }
+
+        // ---- RENDER: Main Polaris Tab ----
+
+        function renderPolarisTab() {
+            ensurePolarisState();
+
+            const contentEl = document.getElementById('polaris-content');
+            const disabledEl = document.getElementById('polaris-disabled');
+            const toggleEl = document.getElementById('polaris-toggle');
+            const toggleKnob = document.getElementById('polaris-toggle-knob');
+            const toggleLabel = document.getElementById('polaris-toggle-label');
+
+            if (!state.polaris.enabled) {
+                contentEl.classList.add('hidden');
+                disabledEl.classList.remove('hidden');
+                toggleEl.style.background = 'rgba(255,255,255,0.1)';
+                toggleKnob.style.left = '2px';
+                toggleLabel.textContent = 'Disabled';
+                return;
+            }
+
+            contentEl.classList.remove('hidden');
+            disabledEl.classList.add('hidden');
+            toggleEl.style.background = 'var(--accent-teal)';
+            toggleKnob.style.left = '22px';
+            toggleLabel.textContent = 'Enabled';
+
+            // Day rollover: reset today's completions and proof when date changes
+            const today = getTodayString();
+            if (state.polaris.day.lastCheckInDate && state.polaris.day.lastCheckInDate !== today) {
+                // Clear stale tomorrowAnchor if gap > 1 day
+                const gapSinceCheckin = daysBetween(state.polaris.day.lastCheckInDate, today);
+                if (gapSinceCheckin > 1) {
+                    state.tomorrowAnchor = '';
+                }
+                state.polaris.anchors.today = {};
+                state.polaris.proof.today = 0;
+                state.polaris.day.floorWinsMode = false;
+            }
+            state.polaris.day.lastCheckInDate = today;
+
+            const dayState = (state.todayEnergy || 'medium').toLowerCase();
+            const message = getPolarisMessage(dayState);
+
+            // B2: Day counter
+            const dayCounterEl = document.getElementById('polaris-day-counter');
+            if (dayCounterEl) dayCounterEl.textContent = 'Day ' + getDayNumber();
+
+            // B5: Hope level
+            renderPolarisHopeLevel();
+
+            // Day message
+            document.getElementById('polaris-message-text').textContent = message;
+            const energyBadge = document.getElementById('polaris-energy-badge');
+            energyBadge.textContent = dayState.toUpperCase();
+            energyBadge.className = 'badge badge-' + dayState;
+            energyBadge.style.cssText = 'font-size: 0.65rem; padding: 0.1rem 0.4rem;';
+
+            // B3: Gap notice
+            renderGapNotice();
+
+            // B8: Yesterday incomplete
+            renderYesterdayIncomplete();
+
+            // B6: Tomorrow recall (from yesterday)
+            renderTomorrowRecall();
+
+            // Anchors
+            const anchors = getAnchorsForToday(dayState);
+            renderAnchorList(anchors, dayState);
+
+            // Proof points
+            document.getElementById('polaris-proof-total').textContent = state.polaris.proof.total + ' pts';
+            document.getElementById('polaris-proof-today').textContent = 'Today: ' + state.polaris.proof.today + ' points earned';
+
+            // B7: Personal bests
+            renderPersonalBests();
+
+            // B1: Activity calendar
+            renderActivityCalendar();
+
+            // B6: Tomorrow hook (after all done)
+            renderTomorrowHook(anchors);
+
+            // Resilience info (B4: return speed surfaced)
+            const r = state.polaris.resilience;
+            const resRate = calculateResilienceRate();
+            let resText = 'Streak: ' + (r.current || 0) + ' | Best: ' + (r.longest || 0);
+            if (r.missedDays > 0) resText += ' | Restarts: ' + r.missedDays;
+            if (resRate < 100 && state.history.length > 2) resText += ' | Return rate: ' + resRate + '%';
+            document.getElementById('polaris-resilience-info').textContent = resText;
+
+            saveState();
+        }
+
+        // ---- RENDER: Hope Level in Polaris ----
+
+        function renderPolarisHopeLevel() {
+            const totalFloorDays = state.history.filter(log => log.floorCompleted).length;
+            let level = 1, progress = 0, title = 'Action is Possible';
+
+            if (totalFloorDays < 3) {
+                level = 1; progress = (totalFloorDays / 3) * 20;
+            } else if (totalFloorDays < 7) {
+                level = 2; progress = 20 + ((totalFloorDays - 3) / 4) * 20;
+                title = 'Action Causes Results';
+            } else if (totalFloorDays < 12) {
+                level = 3; progress = 40 + ((totalFloorDays - 7) / 5) * 20;
+                title = 'The Result Can Repeat';
+            } else if (totalFloorDays < 20) {
+                level = 4; progress = 60 + ((totalFloorDays - 12) / 8) * 20;
+                title = 'Repetition Stabilizes';
+            } else {
+                level = 5; progress = Math.min(100, 80 + ((totalFloorDays - 20) / 10) * 20);
+                title = 'Stability Supports a Future';
+            }
+
+            const hopeTitle = document.getElementById('polaris-hope-title');
+            const hopePercent = document.getElementById('polaris-hope-percent');
+            const hopeFill = document.getElementById('polaris-hope-fill');
+            if (hopeTitle) hopeTitle.textContent = 'Level ' + level + ': ' + title;
+            if (hopePercent) hopePercent.textContent = Math.round(progress) + '%';
+            if (hopeFill) hopeFill.style.width = progress + '%';
+        }
+
+        // ---- RENDER: Gap Notice (B3) ----
+
+        function renderGapNotice() {
+            const el = document.getElementById('polaris-gap-notice');
+            if (!el) return;
+            const h = state.history;
+            if (h.length === 0) { el.classList.add('hidden'); return; }
+            const lastDate = h[h.length - 1].date;
+            const today = getTodayString();
+            if (lastDate === today) { el.classList.add('hidden'); return; }
+            const gap = daysBetween(lastDate, today);
+            if (gap >= 2) {
+                el.textContent = gap + ' days since last check-in. Pick up where you are.';
+                el.classList.remove('hidden');
+            } else {
+                el.classList.add('hidden');
+            }
+        }
+
+        // ---- RENDER: Yesterday Incomplete (B8) ----
+
+        function renderYesterdayIncomplete() {
+            const el = document.getElementById('polaris-yesterday-incomplete');
+            if (!el) return;
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yy = yesterday.getFullYear();
+            const ym = String(yesterday.getMonth() + 1).padStart(2, '0');
+            const yd = String(yesterday.getDate()).padStart(2, '0');
+            const yStr = yy + '-' + ym + '-' + yd;
+            const yLog = state.history.find(l => l.date === yStr);
+            if (!yLog) { el.classList.add('hidden'); return; }
+            if (yLog.missed) {
+                el.textContent = 'Yesterday was missed. Today is a restart.';
+                el.classList.remove('hidden');
+            } else if (yLog.completed && yLog.completed.length > 0 && !yLog.mvdCompleted) {
+                el.textContent = yLog.completed.length + ' done yesterday. Partial days still count.';
+                el.classList.remove('hidden');
+            } else {
+                el.classList.add('hidden');
+            }
+        }
+
+        // ---- RENDER: Tomorrow Recall (B6) ----
+
+        function renderTomorrowRecall() {
+            const el = document.getElementById('polaris-tomorrow-recall');
+            if (!el) return;
+            if (state.tomorrowAnchor) {
+                el.innerHTML = '<span>Yesterday you said: <strong>' + escapeHtml(state.tomorrowAnchor) + '</strong></span>'
+                    + '<span style="display:flex;gap:0.4rem;">'
+                    + '<button class="btn btn-secondary" onclick="addTomorrowRecallAsAnchor()" style="padding:0.2rem 0.5rem;font-size:0.7rem;color:var(--accent-teal);border-color:rgba(20,200,175,0.3);">Add</button>'
+                    + '<button class="btn btn-secondary" onclick="dismissTomorrowRecall()" style="padding:0.2rem 0.5rem;font-size:0.7rem;">×</button>'
+                    + '</span>';
+                el.classList.remove('hidden');
+            } else {
+                el.classList.add('hidden');
+            }
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.appendChild(document.createTextNode(str));
+            return div.innerHTML;
+        }
+
+        function addTomorrowRecallAsAnchor() {
+            if (state.tomorrowAnchor) {
+                state.userAnchors.push({ id: 'anchor_' + Date.now(), text: state.tomorrowAnchor, active: true });
+                state.tomorrowAnchor = '';
+                saveState();
+                renderPolarisTab();
+                showToast('Added as anchor.', 'success');
+            }
+        }
+
+        function dismissTomorrowRecall() {
+            state.tomorrowAnchor = '';
+            saveState();
+            renderPolarisTab();
+        }
+
+        // ---- RENDER: Anchor List ----
+
+        function renderAnchorList(anchors, dayState) {
+            const anchorsList = document.getElementById('polaris-anchors-list');
+            const emptyState = document.getElementById('polaris-empty-anchors');
+            anchorsList.innerHTML = '';
+
+            if (anchors.length === 0) {
+                if (emptyState) emptyState.classList.remove('hidden');
+                return;
+            }
+            if (emptyState) emptyState.classList.add('hidden');
+
+            // Generic suggestion notice
+            if (anchors[0] && anchors[0].isGeneric && dayState !== 'collapse') {
+                const notice = document.createElement('div');
+                notice.style.cssText = 'font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.4rem; font-style: italic;';
+                notice.textContent = 'Suggested basics \u2014 add your own anchors above.';
+                anchorsList.appendChild(notice);
+            }
+
+            if (dayState === 'collapse') {
+                const notice = document.createElement('div');
+                notice.style.cssText = 'font-size: 0.75rem; color: var(--accent-orange); margin-bottom: 0.4rem;';
+                notice.textContent = 'Collapse day. Minimum floor only.';
+                anchorsList.appendChild(notice);
+            }
+
+            anchors.forEach(function(anchor) {
+                const isChecked = state.polaris.anchors.today[anchor.id] && state.polaris.anchors.today[anchor.id].completed;
+                const item = document.createElement('div');
+                item.style.cssText = 'display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 0.75rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-sm); transition: all 0.2s;' + (isChecked ? ' opacity: 0.6;' : '');
+
+                // Checkbox
+                const checkbox = document.createElement('div');
+                checkbox.style.cssText = 'width: 18px; height: 18px; border-radius: 4px; border: 2px solid ' + (isChecked ? 'var(--accent-teal)' : 'rgba(255,255,255,0.2)') + '; background: ' + (isChecked ? 'var(--accent-teal)' : 'transparent') + '; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 0.7rem; color: #0b0f13; cursor: pointer;';
+                checkbox.textContent = isChecked ? '\u2713' : '';
+                checkbox.addEventListener('click', function() { togglePolarisAnchor(anchor.id, anchor.text); });
+
+                // Text
+                const text = document.createElement('span');
+                text.style.cssText = 'flex: 1; font-size: 0.85rem; color: var(--text-primary);' + (isChecked ? ' text-decoration: line-through;' : '');
+                text.textContent = anchor.text;
+
+                item.appendChild(checkbox);
+                item.appendChild(text);
+
+                // Delete button (user anchors only)
+                if (!anchor.isGeneric) {
+                    const del = document.createElement('button');
+                    del.style.cssText = 'background: none; border: none; color: rgba(255,255,255,0.15); font-size: 1.1rem; cursor: pointer; padding: 0 0.3rem; line-height: 1; transition: color 0.2s;';
+                    del.textContent = '\u00d7';
+                    del.addEventListener('mouseenter', function() { del.style.color = 'var(--accent-red)'; });
+                    del.addEventListener('mouseleave', function() { del.style.color = 'rgba(255,255,255,0.15)'; });
+                    del.addEventListener('click', function(e) { e.stopPropagation(); removeUserAnchor(anchor.id); });
+                    item.appendChild(del);
+                }
+
+                anchorsList.appendChild(item);
+            });
+
+            // Softer messaging for low energy
+            if (dayState === 'low' && anchors.length > 0 && !anchors[0].isGeneric) {
+                const notice = document.createElement('div');
+                notice.style.cssText = 'font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.4rem; font-style: italic;';
+                notice.textContent = 'Low energy day. Do what you can.';
+                anchorsList.appendChild(notice);
+            }
+        }
+
+        // ---- RENDER: Personal Bests (B7) ----
+
+        function computePersonalBests() {
+            const h = state.history;
+            let currentStreak = 0, longestStreak = 0;
+            for (let i = 0; i < h.length; i++) {
+                if (h[i].floorCompleted || (h[i].completed && h[i].completed.length > 0)) {
+                    currentStreak++;
+                    longestStreak = Math.max(longestStreak, currentStreak);
+                } else { currentStreak = 0; }
+            }
+            let mostAnchors = 0;
+            for (let i = 0; i < h.length; i++) {
+                if (h[i].completed) mostAnchors = Math.max(mostAnchors, h[i].completed.length);
+            }
+            // Also count polaris proof entries per day
+            if (state.polaris && state.polaris.proof && state.polaris.proof.ledger) {
+                const dayCounts = {};
+                state.polaris.proof.ledger.forEach(function(e) {
+                    const d = e.createdAt.slice(0, 10);
+                    dayCounts[d] = (dayCounts[d] || 0) + 1;
+                });
+                Object.values(dayCounts).forEach(function(c) { mostAnchors = Math.max(mostAnchors, c); });
+            }
+            let fastestRestart = null;
+            for (let i = 0; i < h.length; i++) {
+                if (h[i].missed) {
+                    for (let j = i + 1; j < h.length; j++) {
+                        if (h[j].floorCompleted || (h[j].completed && h[j].completed.length > 0)) {
+                            const gap = j - i;
+                            if (fastestRestart === null || gap < fastestRestart) fastestRestart = gap;
+                            break;
+                        }
+                    }
+                }
+            }
+            state.personalBests = { longestStreak: longestStreak, mostAnchorsInDay: mostAnchors, fastestRestart: fastestRestart };
+        }
+
+        function renderPersonalBests() {
+            computePersonalBests();
+            const el = document.getElementById('polaris-personal-bests');
+            if (!el) return;
+            const pb = state.personalBests;
+            if (pb.longestStreak === 0 && pb.mostAnchorsInDay === 0) { el.style.display = 'none'; return; }
+            el.style.display = 'flex';
+            var parts = [];
+            if (pb.longestStreak > 0) parts.push('Best streak: ' + pb.longestStreak);
+            if (pb.mostAnchorsInDay > 0) parts.push('Best day: ' + pb.mostAnchorsInDay + ' done');
+            if (pb.fastestRestart !== null) parts.push('Fastest restart: ' + pb.fastestRestart + 'd');
+            el.textContent = parts.join('  |  ');
+        }
+
+        // ---- RENDER: Activity Calendar (B1) ----
+
+        function renderActivityCalendar() {
+            const container = document.getElementById('polaris-activity-calendar');
+            if (!container) return;
+
+            // Build active dates map from history + proof ledger
+            var activeDates = {};
+            state.history.forEach(function(log) {
+                var level = 0;
+                if (log.floorCompleted && log.mvdCompleted) level = 3;
+                else if (log.floorCompleted) level = 2;
+                else if (log.completed && log.completed.length > 0) level = 1;
+                if (level > 0) activeDates[log.date] = level;
+            });
+            if (state.polaris && state.polaris.proof && state.polaris.proof.ledger) {
+                state.polaris.proof.ledger.forEach(function(entry) {
+                    var d = entry.createdAt.slice(0, 10);
+                    if (!activeDates[d]) activeDates[d] = 1;
+                });
+            }
+
+            var today = new Date();
+            var todayStr = getTodayString();
+            var colors = ['rgba(255,255,255,0.04)', 'rgba(20,200,175,0.2)', 'rgba(20,200,175,0.45)', 'rgba(20,200,175,0.75)'];
+            var html = '<div style="display:grid;grid-template-rows:repeat(7,12px);grid-auto-flow:column;gap:2px;width:fit-content;">';
+
+            for (var i = 83; i >= 0; i--) {
+                var d = new Date(today);
+                d.setDate(d.getDate() - i);
+                var yyyy = d.getFullYear();
+                var mm = String(d.getMonth() + 1).padStart(2, '0');
+                var dd = String(d.getDate()).padStart(2, '0');
+                var dateStr = yyyy + '-' + mm + '-' + dd;
+                var level = activeDates[dateStr] || 0;
+                var isToday = (dateStr === todayStr);
+                var border = isToday ? 'outline:1px solid rgba(255,255,255,0.4);outline-offset:-1px;' : '';
+                html += '<div title="' + dateStr + '" style="width:12px;height:12px;border-radius:2px;background:' + colors[Math.min(level, 3)] + ';' + border + '"></div>';
+            }
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // ---- RENDER: Tomorrow Hook (B6) ----
+
+        function renderTomorrowHook(anchors) {
+            var el = document.getElementById('polaris-tomorrow-hook');
+            if (!el) return;
+            if (anchors.length === 0) { el.classList.add('hidden'); return; }
+            var allDone = anchors.every(function(a) {
+                return state.polaris.anchors.today[a.id] && state.polaris.anchors.today[a.id].completed;
+            });
+            if (allDone && anchors.length > 0) {
+                el.classList.remove('hidden');
+            } else {
+                el.classList.add('hidden');
+            }
+        }
+
+        // ---- USER ANCHOR MANAGEMENT ----
+
+        function addUserAnchor() {
+            var input = document.getElementById('input-new-anchor');
+            var text = input.value.trim();
+            if (!text) return;
+            state.userAnchors.push({ id: 'anchor_' + Date.now(), text: text, active: true });
+            input.value = '';
+            saveState();
+            renderPolarisTab();
+        }
+
+        function removeUserAnchor(id) {
+            state.userAnchors = state.userAnchors.filter(function(a) { return a.id !== id; });
+            // Clean up completion entry
+            delete state.polaris.anchors.today[id];
+            saveState();
+            renderPolarisTab();
+        }
+
+        function saveTomorrowAnchor() {
+            var input = document.getElementById('input-tomorrow-anchor');
+            var text = input.value.trim();
+            if (!text) return;
+            state.tomorrowAnchor = text;
+            input.value = '';
+            saveState();
+            showToast('Tomorrow anchor set.', 'success');
+        }
+
+        // ---- POLARIS ACTIONS ----
+
+        function togglePolaris() {
+            ensurePolarisState();
+            state.polaris.enabled = !state.polaris.enabled;
+            saveState();
+            renderPolarisTab();
+        }
+
+        function togglePolarisAnchor(anchorId, anchorText) {
+            ensurePolarisState();
+            var wasCompleted = state.polaris.anchors.today[anchorId] && state.polaris.anchors.today[anchorId].completed;
+            state.polaris.anchors.today[anchorId] = { completed: !wasCompleted };
+
+            if (!wasCompleted) {
+                state.polaris.proof.today += 1;
+                state.polaris.proof.total += 1;
+                state.polaris.proof.ledger.push({
+                    id: 'proof_' + Date.now(),
+                    source: 'anchor',
+                    points: 1,
+                    label: anchorText,
+                    createdAt: new Date().toISOString()
+                });
+                // Also log to history for dashboard metrics
+                logActionCompletion(anchorText);
+            } else {
+                state.polaris.proof.today = Math.max(0, state.polaris.proof.today - 1);
+                state.polaris.proof.total = Math.max(0, state.polaris.proof.total - 1);
+            }
+
+            saveState();
+            renderPolarisTab();
+        }
+
+        function polarisFloorWin() {
+            ensurePolarisState();
+            state.polaris.proof.today += 1;
+            state.polaris.proof.total += 1;
+            state.polaris.proof.ledger.push({
+                id: 'proof_' + Date.now(),
+                source: 'floor_win',
+                points: 1,
+                label: 'Floor Win',
+                createdAt: new Date().toISOString()
+            });
+            state.polaris.day.floorWinsMode = true;
+            logActionCompletion('Floor Win');
+            saveState();
+            renderPolarisTab();
+            showToast('Floor Win logged. Proof logged.', 'success');
+        }
+
+        function polarisRestart() {
+            ensurePolarisState();
+            state.polaris.resilience.current = 0;
+            state.polaris.anchors.today = {};
+            state.polaris.proof.today = 0;
+            state.polaris.day.floorWinsMode = false;
+            saveState();
+            renderPolarisTab();
+            showToast('Day restarted. Anchors reset.', 'info');
         }
 
         window.onload = init;

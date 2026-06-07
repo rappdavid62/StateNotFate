@@ -1,0 +1,15 @@
+{
+  "name": "state-not-fate-public-tests",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "node scripts/static-server.mjs",
+    "test": "playwright test",
+    "test:public": "playwright test tests/public"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.2",
+    "@playwright/test": "^1.52.0"
+  }
+}

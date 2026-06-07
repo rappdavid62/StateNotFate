@@ -1,0 +1,31 @@
+import { expect, test } from '@playwright/test';
+
+test('public presence SEO/performance skeleton exists', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('console', (message) => {
+    if (message.type() === 'error') errors.push(message.text());
+  });
+
+  const started = Date.now();
+  const response = await page.goto('/');
+  const elapsed = Date.now() - started;
+
+  expect(response?.ok()).toBeTruthy();
+  await expect(page).toHaveTitle(/State,? Not Fate|Depression Project/i);
+  await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /depression/i);
+  await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', /State Not Fate/i);
+  await expect(page.locator('meta[property="og:description"]')).toHaveAttribute('content', /depression/i);
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /\/$/);
+  expect(errors).toEqual([]);
+  expect(elapsed).toBeLessThan(3000);
+
+  expect((await page.goto('/robots.txt'))?.ok()).toBeTruthy();
+  await expect(page.locator('body')).toContainText('Sitemap');
+
+  expect((await page.goto('/sitemap.xml'))?.ok()).toBeTruthy();
+  await expect(page.locator('body')).toContainText('/evidence');
+
+  const notFound = await page.goto('/missing-page-for-public-test');
+  expect(notFound?.status()).toBe(404);
+  await expect(page.getByRole('heading', { name: /not found/i })).toBeVisible();
+});
