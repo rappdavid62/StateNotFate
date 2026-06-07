@@ -568,7 +568,7 @@
                 setTimeout(() => {
                     keypadCard.style.animation = "shake 0.3s ease-in-out";
                 }, 10);
-                showToast('Incorrect Security PIN. Decryption failed.', 'error');
+                showToast('Incorrect PIN.', 'error');
                 resetPinDots();
             }
         }
