@@ -2726,4 +2726,12 @@
             showToast('Day restarted. Anchors reset.', 'info');
         }
 
+        function showSmartWelcomeScreen() {
+            // Placeholder for Smart Welcome screen logic
+        }
+
+        function executeMatchedFirstMove() {
+            // Placeholder for Matched First Move logic
+        }
+
         window.onload = init;
