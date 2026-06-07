@@ -4,7 +4,7 @@ test('evidence/source path exists and separates claim strength', async ({ page }
   const response = await page.goto('/evidence');
   expect(response?.ok()).toBeTruthy();
 
-  await expect(page.getByRole('heading', { name: /evidence|sources/i })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: /evidence|sources/i })).toBeVisible();
 
   for (const label of ['evidence', 'inference', 'hypothesis', 'opinion', 'personal testimony', 'public claim']) {
     await expect(page.getByText(new RegExp(label, 'i')).first()).toBeVisible();

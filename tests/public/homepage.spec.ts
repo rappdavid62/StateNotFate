@@ -7,10 +7,11 @@ test('public homepage exists and communicates the project clearly', async ({ pag
   await expect(page.getByRole('heading', { name: /State Not Fate|Depression Project/i })).toBeVisible();
   await expect(page.getByText(/proof-based depression support/i)).toBeVisible();
 
-  await expect(page.getByRole('link', { name: /learn/i })).toBeVisible();
-  await expect(page.getByRole('link', { name: /start|try the program/i })).toBeVisible();
-  await expect(page.getByRole('link', { name: /evidence|sources/i })).toBeVisible();
-  await expect(page.getByRole('link', { name: /contact|join/i })).toBeVisible();
+  const nav = page.getByRole('navigation');
+  await expect(nav.getByRole('link', { name: /learn/i })).toBeVisible();
+  await expect(nav.getByRole('link', { name: /start|try the program/i })).toBeVisible();
+  await expect(nav.getByRole('link', { name: /evidence|sources/i })).toBeVisible();
+  await expect(nav.getByRole('link', { name: /contact|join/i })).toBeVisible();
 
   const bodyText = await page.locator('body').innerText();
   for (const phrase of [

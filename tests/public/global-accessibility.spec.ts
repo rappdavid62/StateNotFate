@@ -21,7 +21,7 @@ test('global readiness and accessibility baseline', async ({ page }) => {
   const seriousOrCritical = results.violations.filter((violation) => ['serious', 'critical'].includes(violation.impact || ''));
   expect(seriousOrCritical).toEqual([]);
 
-  const publicText = await page.locator('[data-public-site]').innerText();
+  const publicText = (await page.locator('[data-public-site]').allInnerTexts()).join(' ');
   expect(publicText).toMatch(/local emergency number|local crisis line/i);
   expect(publicText).not.toMatch(/all users are in the U\.S\./i);
 
