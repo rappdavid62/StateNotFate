@@ -100,3 +100,44 @@ Use these aligned shortcuts to speed up execution and reduce friction:
 | **Focus Terminal** | N/A | `Ctrl + \`` | `Ctrl + \`` (Dev Server) |
 | **PWA Sync/Refresh** | N/A | N/A | `Ctrl + F5` (Force Reload) |
 
+
+---
+
+## 7. Obsidian Mobile Sync Troubleshooting
+
+If your phone or tablet is not syncing or linking up with your desktop Obsidian vault, go through this checklist:
+
+### Step 1: Desktop Status Check
+* **OneDrive Client**: Ensure the OneDrive desktop application is running on your PC (press `Win + S`, search for `OneDrive`, and launch it). If it is not running, your local edits will not sync to the cloud.
+* **Corrupted `.git` Cleanup**: We have successfully deleted the corrupted `.git` folder from `C:\Users\rappd\OneDrive\Desktop\ObsidianVault` to prevent OneDrive file lock conflicts. Do not initialize another Git repo inside the OneDrive folder.
+
+### Step 2: Choose Your Platform Configuration
+
+#### 📱 Apple iOS (iPhone or iPad)
+*iOS restricts third-party apps like Obsidian from reading folders inside the OneDrive sandbox. OneDrive sync will NOT work natively on iOS. Use iCloud instead:*
+1. **On PC**: Install **iCloud for Windows** from the Microsoft Store.
+2. **Move Vault**: Move `ObsidianVault` from your Desktop into the `iCloud Drive\Obsidian` folder on your PC.
+3. **On iPhone/iPad**: Install Obsidian and open it. Choose **"Open folder as vault"** and select the folder inside iCloud Drive. It will sync automatically in the background.
+
+#### 🤖 Android Phone or Tablet
+*Android cannot read OneDrive cloud directories directly in third-party apps. You must use a sync manager:*
+1. **On Android**: Install **OneSync** (Autosync for OneDrive) from the Play Store.
+2. **Setup Folder Pair**: Link your OneDrive account and pair the `Desktop/ObsidianVault` cloud directory with a local folder on your Android storage (e.g., `/Documents/ObsidianVault`).
+3. **On Android Obsidian**: Tap **"Open folder as vault"** and choose that local folder.
+
+#### 🔑 Private Git Sync (All Devices)
+*If you prefer to bypass cloud services entirely and sync via Git:*
+1. **On PC**: Create a new **private** GitHub repository named `ObsidianVault` (do not mix this with the PWA code repository).
+2. **Initialize & Push**:
+   ```powershell
+   cd "C:\Users\rappd\OneDrive\Desktop\ObsidianVault"
+   git init
+   git remote add origin https://github.com/rappdavid62/ObsidianVault.git
+   git add .
+   git commit -m "Initial vault commit"
+   git branch -M main
+   git push -u origin main
+   ```
+3. **On Mobile**: Open Obsidian, install the **Obsidian Git** plugin, and clone your private repository using a GitHub **Personal Access Token (PAT)** for authentication.
+
+
