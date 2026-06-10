@@ -49,7 +49,10 @@
             userAnchors: [],
             firstUseDate: '',
             tomorrowAnchor: '',
-            personalBests: { longestStreak: 0, mostAnchorsInDay: 0, fastestRestart: null }
+            personalBests: { longestStreak: 0, mostAnchorsInDay: 0, fastestRestart: null },
+            polarisUpgrade: false,
+            polarisHistory: [],
+            polarisRestartLogs: []
         };
 
         let state = { ...DEFAULT_STATE };
@@ -105,6 +108,7 @@
         const tabs = {
             dashboard: document.getElementById("tab-dashboard"),
             polaris: document.getElementById("tab-polaris"),
+            momentum: document.getElementById("tab-momentum"),
             safebox: document.getElementById("tab-safebox"),
             mediaconsole: document.getElementById("tab-mediaconsole"),
             progression: document.getElementById("tab-progression"),
@@ -201,6 +205,9 @@
                     if (state.firstUseDate === undefined) state.firstUseDate = '';
                     if (state.tomorrowAnchor === undefined) state.tomorrowAnchor = '';
                     if (state.personalBests === undefined) state.personalBests = { longestStreak: 0, mostAnchorsInDay: 0, fastestRestart: null };
+                    if (state.polarisUpgrade === undefined) state.polarisUpgrade = false;
+                    if (state.polarisHistory === undefined) state.polarisHistory = [];
+                    if (state.polarisRestartLogs === undefined) state.polarisRestartLogs = [];
                     // Migrate polaris.anchors.today from array (v2/v3) to object (v4, ID-based)
                     if (state.polaris && state.polaris.anchors && Array.isArray(state.polaris.anchors.today)) {
                         state.polaris.anchors.today = {};
@@ -329,7 +336,9 @@
                 }
             });
 
-            if (tabId === "mediaconsole") {
+            if (tabId === "dashboard") {
+                renderDashboard();
+            } else if (tabId === "mediaconsole") {
                 renderMediaConsole();
             } else if (tabId === "progression") {
                 renderProgressionDashboard();
@@ -339,6 +348,8 @@
                 renderDocumentCenter();
             } else if (tabId === "polaris") {
                 renderPolarisTab();
+            } else if (tabId === "momentum") {
+                renderMomentumTab();
             }
         }
 
@@ -733,6 +744,15 @@
         function renderDashboard() {
             document.getElementById("dashboard-mantra-text").innerHTML = `"${state.customMantra}"`;
             
+            const banner = document.getElementById("polaris-activation-banner");
+            if (banner) {
+                if (state.polarisUpgrade) {
+                    banner.classList.add("hidden");
+                } else {
+                    banner.classList.remove("hidden");
+                }
+            }
+
             state.mantraCompletedToday = isMantraCompletedToday();
             const mantraBtn = document.getElementById("btn-check-mantra");
             if (state.mantraCompletedToday) {
@@ -2816,6 +2836,285 @@
 
             greetingEl.textContent = greeting;
             subtitleEl.textContent = subtitle;
+        }
+
+        // ==========================================================
+        // POLARIS 2.0 SYSTEM LOGIC FUNCTIONS
+        // ==========================================================
+
+        function activatePolarisUpgrade() {
+            ensurePolarisState();
+            state.polarisUpgrade = true;
+            // Migrate existing history to polarisHistory
+            if (state.history && state.history.length > 0 && state.polarisHistory.length === 0) {
+                state.polarisHistory = state.history.map(h => ({
+                    date: h.date,
+                    energy: h.energy || 'medium',
+                    phq9Score: (state.phq9History && state.phq9History.find(p => p.date === h.date)) ? state.phq9History.find(p => p.date === h.date).score : null,
+                    anchorsCompleted: h.completed ? h.completed.length : 0,
+                    floorCompleted: h.floorCompleted || false
+                }));
+            }
+            saveState();
+            // Hide the banner
+            const banner = document.getElementById("polaris-activation-banner");
+            if (banner) banner.classList.add("hidden");
+            
+            showToast("⚡ Polaris 2.0 Activated! Core assets and ledger records successfully migrated.", "success", 5000);
+            renderDashboard();
+            // Switch to momentum tab to show it off!
+            showTab("momentum");
+        }
+
+        function generateNarrativeProof() {
+            const h = state.history || [];
+            if (h.length === 0) {
+                return "PROOF: No check-in data recorded yet. Set your energy level and check off your first action to build your first data point.";
+            }
+            
+            // Filter low energy successes
+            const lowEnergySuccesses = h.filter(log => (log.energy === 'low' || log.energy === 'collapse') && (log.floorCompleted || log.mvdCompleted));
+            
+            // Calculate restarts
+            let restarts = [];
+            for (let i = 0; i < h.length - 1; i++) {
+                if (h[i].missed && (h[i+1].floorCompleted || h[i+1].mvdCompleted)) {
+                    restarts.push(h[i+1].date);
+                }
+            }
+            
+            const totalFloorDays = h.filter(log => log.floorCompleted).length;
+            
+            const proofs = [];
+            
+            if (lowEnergySuccesses.length > 0) {
+                const lastLow = lowEnergySuccesses[lowEnergySuccesses.length - 1];
+                proofs.push(`PROOF: On ${lastLow.date}, your energy was registered as ${lastLow.energy.toUpperCase()}, but you secured your biological floor. Action outpaced mood.`);
+            }
+            
+            if (restarts.length > 0) {
+                proofs.push(`PROOF: You successfully restarted on ${restarts[restarts.length - 1]} immediately following an incomplete day. Your restart speed is operational.`);
+            }
+            
+            if (totalFloorDays >= 3) {
+                proofs.push(`PROOF: You have defended your biological floor for ${totalFloorDays} days. This is not luck or inspiration; it is repeatable mechanical execution.`);
+            }
+            
+            // Default fallback proof
+            proofs.push(`PROOF: Your recovery OS is running. You have logged ${h.length} total active check-ins. Every log is evidence of agency.`);
+            
+            // Pick a random one from the generated proofs
+            const index = Math.floor(Math.random() * proofs.length);
+            return proofs[index];
+        }
+
+        function updateSimulatorProjections() {
+            const slider = document.getElementById("input-sim-rate");
+            if (!slider) return;
+            const pct = parseInt(slider.value);
+            
+            // Display values
+            const dailyTarget = Math.max(3, state.userAnchors.length);
+            const projectedDaily = (dailyTarget * (pct / 100)).toFixed(1);
+            
+            const simSliderVal = document.getElementById("sim-slider-val");
+            const simSliderPct = document.getElementById("sim-slider-pct");
+            if (simSliderVal) simSliderVal.textContent = projectedDaily;
+            if (simSliderPct) simSliderPct.textContent = pct + "%";
+            
+            const y1 = Math.round(365 * projectedDaily);
+            const y3 = Math.round(365 * 3 * projectedDaily);
+            const y5 = Math.round(365 * 5 * projectedDaily);
+            
+            const y1El = document.getElementById("sim-y1-count");
+            const y3El = document.getElementById("sim-y3-count");
+            const y5El = document.getElementById("sim-y5-count");
+            
+            if (y1El) y1El.textContent = y1.toLocaleString();
+            if (y3El) y3El.textContent = y3.toLocaleString();
+            if (y5El) y5El.textContent = y5.toLocaleString();
+            
+            // Calculate unlocks
+            // - 30% Rate: "Survival Floor Secured"
+            // - 50% Rate: "PRS Certification & entry-level peer work"
+            // - 80% Rate: "Cincinnati Integration & lead coordinator"
+            // - 95% Rate: "Master Recovery Partner"
+            const milestones = [];
+            if (pct >= 30) milestones.push('<span class="text-teal" style="font-weight:600;">Survival Floor Secured (30%)</span>');
+            else milestones.push('<span class="text-muted">Survival Floor Secured (Requires 30%)</span>');
+            
+            if (pct >= 50) milestones.push('<span class="text-teal" style="font-weight:600;">PRS Certification & Entry-Level Peer Work (50%)</span>');
+            else milestones.push('<span class="text-muted">PRS Certification & Entry-Level Peer Work (Requires 50%)</span>');
+            
+            if (pct >= 80) milestones.push('<span class="text-lavender" style="font-weight:600;">Cincinnati Integration & Lead Coordinator (80%)</span>');
+            else milestones.push('<span class="text-muted">Cincinnati Integration & Lead Coordinator (Requires 80%)</span>');
+            
+            if (pct >= 95) milestones.push('<span class="text-orange" style="font-weight:600;">Master Recovery Partner (95%)</span>');
+            else milestones.push('<span class="text-muted">Master Recovery Partner (Requires 95%)</span>');
+            
+            const milestoneEl = document.getElementById("sim-unlocked-milestones");
+            if (milestoneEl) {
+                milestoneEl.innerHTML = milestones.join("  |  ");
+            }
+        }
+
+        function renderMomentumTab() {
+            ensurePolarisState();
+            
+            // Update Living System State
+            const domPatternEl = document.getElementById("audit-dominant-pattern");
+            const hopeLvlEl = document.getElementById("audit-hope-level");
+            const resRateEl = document.getElementById("audit-resilience-rate");
+            const restartCountEl = document.getElementById("audit-restart-count");
+            const narrativeEl = document.getElementById("audit-narrative-statement");
+            
+            if (domPatternEl) domPatternEl.textContent = state.dominantPattern || "Rhythm Collapse";
+            
+            const hopeTitles = {
+                1: "Action is Possible",
+                2: "Action Causes Results",
+                3: "The Result Can Repeat",
+                4: "Repetition Stabilizes Life",
+                5: "Stability Supports a Future"
+            };
+            if (hopeLvlEl) {
+                hopeLvlEl.textContent = `Level ${state.currentHopeLevel || 1} - ${hopeTitles[state.currentHopeLevel || 1]}`;
+            }
+            
+            const resRate = calculateResilienceRate();
+            if (resRateEl) resRateEl.textContent = `${resRate}%`;
+            
+            // Calculate slumps / restarts
+            let restarts = 0;
+            const h = state.history || [];
+            for (let i = 0; i < h.length - 1; i++) {
+                if (h[i].missed && (h[i+1].floorCompleted || h[i+1].mvdCompleted)) {
+                    restarts++;
+                }
+            }
+            if (restartCountEl) restartCountEl.textContent = restarts;
+            
+            if (narrativeEl) {
+                narrativeEl.textContent = `"${generateNarrativeProof()}"`;
+            }
+            
+            // Update Year Simulator
+            updateSimulatorProjections();
+            
+            // Render 28-Day Momentum Grid
+            renderMomentumGrid();
+        }
+
+        function renderMomentumGrid() {
+            const grid = document.getElementById("momentum-grid");
+            if (!grid) return;
+            grid.innerHTML = "";
+            
+            const today = new Date();
+            const colors = {
+                unchecked: 'cell-unchecked',
+                floor: 'cell-floor',
+                full: 'cell-full',
+                slump: 'cell-slump',
+                emergency: 'cell-emergency'
+            };
+            
+            for (let i = 27; i >= 0; i--) {
+                const d = new Date(today);
+                d.setDate(today.getDate() - i);
+                const yyyy = d.getFullYear();
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const dd = String(d.getDate()).padStart(2, '0');
+                const dateStr = `${yyyy}-${mm}-${dd}`;
+                
+                const log = state.history.find(h => h.date === dateStr);
+                let cellClass = colors.unchecked;
+                let tooltip = `${dateStr}: Unchecked`;
+                
+                if (log) {
+                    const energyLabel = log.energy ? log.energy.toUpperCase() : 'MEDIUM';
+                    const completedCount = log.completed ? log.completed.length : 0;
+                    tooltip = `${dateStr} [${energyLabel}]: ${completedCount} actions completed`;
+                    
+                    if (log.energy === 'collapse') {
+                        if (log.floorCompleted || log.mvdCompleted) {
+                            cellClass = colors.floor;
+                            tooltip += " (Floor Win protected)";
+                        } else {
+                            cellClass = colors.emergency;
+                            tooltip += " (Emergency active)";
+                        }
+                    } else {
+                        if (log.floorCompleted) {
+                            cellClass = colors.full;
+                            tooltip += " (All completed)";
+                        } else if (log.mvdCompleted) {
+                            cellClass = colors.floor;
+                            tooltip += " (MVD Floor protected)";
+                        } else if (log.missed) {
+                            cellClass = colors.slump;
+                            tooltip += " (Slump Day)";
+                        } else {
+                            cellClass = colors.unchecked;
+                        }
+                    }
+                }
+                
+                const cell = document.createElement("div");
+                cell.className = `momentum-grid-cell ${cellClass}`;
+                cell.title = tooltip;
+                grid.appendChild(cell);
+            }
+        }
+
+        function exportAnonymizedAudit() {
+            ensurePolarisState();
+            
+            const resRate = calculateResilienceRate();
+            let restarts = 0;
+            const h = state.history || [];
+            for (let i = 0; i < h.length - 1; i++) {
+                if (h[i].missed && (h[i+1].floorCompleted || h[i+1].mvdCompleted)) {
+                    restarts++;
+                }
+            }
+            
+            const totalFloorDays = h.filter(log => log.floorCompleted).length;
+            const totalLogs = h.length;
+            const lowEnergyLogs = h.filter(log => log.energy === 'low' || log.energy === 'collapse').length;
+            
+            let phqTrend = "";
+            if (state.phq9History && state.phq9History.length > 0) {
+                phqTrend = state.phq9History.map(p => `- **${p.date}**: Score ${p.score}/27 (${p.severity})`).join("\n");
+            } else {
+                phqTrend = "No assessments recorded yet.";
+            }
+            
+            // Generate narrative statements list
+            const narrativeList = [];
+            const lowEnergySuccesses = h.filter(log => (log.energy === 'low' || log.energy === 'collapse') && (log.floorCompleted || log.mvdCompleted));
+            if (lowEnergySuccesses.length > 0) {
+                const lastLow = lowEnergySuccesses[lowEnergySuccesses.length - 1];
+                narrativeList.push(`- **Action > Mood**: On ${lastLow.date}, energy was low, but floor anchors were maintained.`);
+            }
+            if (totalFloorDays >= 3) {
+                narrativeList.push(`- **Consistency Proof**: Biological floor defended for ${totalFloorDays} days.`);
+            }
+            if (restarts > 0) {
+                narrativeList.push(`- **Restart Speed**: Verified immediate return-to-floor following collapse events.`);
+            }
+            if (narrativeList.length === 0) {
+                narrativeList.push("- No logs registered yet. Complete daily checklist items to generate narrative proofs.");
+            }
+            
+            const md = `# Polaris 2.0 Recovery Audit & Co-Pilot Sync\nAnonymized clinical progress tracker generated on ${new Date().toISOString().slice(0, 10)}.\n\n## 1. System Metrics\n- **Dominant Functional Pattern**: ${state.dominantPattern || 'Rhythm Collapse'}\n- **Current Hope Level**: Level ${state.currentHopeLevel || 1}\n- **Resilience Rating**: ${resRate}% (Restart success rate)\n- **Verified Streak Restarts**: ${restarts}\n- **Total Tracked Days**: ${totalLogs} days\n- **Low Energy / Collapse Days Managed**: ${lowEnergyLogs} days\n\n## 2. PHQ-9 Depressive Severity Trend\n${phqTrend}\n\n## 3. Narrative Verification Proofs\n${narrativeList.join("\n")}\n\n## 4. Substrate & Floor Configuration\n- **Morning Wake Target**: Wake on workdays by 7:30am (Circadian Lock)\n- **Active Anchors Count**: ${Math.max(3, state.userAnchors.length)} target anchors\n- **MVD Tasks**:\n  1. ${state.mvd[0]}\n  2. ${state.mvd[1]}\n  3. ${state.mvd[2]}\n\n---\n*Anonymity Statement: This report contains no personal identifiers (name, email, IP) and is formatted for copy-paste sharing into clinical vaults (e.g., Obsidian, Grok, therapist session notebooks).*`;
+
+            navigator.clipboard.writeText(md).then(() => {
+                showToast("📋 Anonymized Audit copied to clipboard successfully!", "success");
+            }).catch(err => {
+                console.error("Failed to copy clipboard:", err);
+                showToast("Failed to copy to clipboard. Please select manually.", "error");
+            });
         }
 
         window.PolarisUI = {

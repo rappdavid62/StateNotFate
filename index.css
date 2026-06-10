@@ -1567,3 +1567,52 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* ==========================================================
+         * POLARIS 2.0 MOMENTUM & AUDIT STYLES
+         * ========================================================== */
+        .momentum-grid-cell {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .momentum-grid-cell:hover {
+            transform: scale(1.15);
+            border-color: var(--card-border-focus);
+            z-index: 10;
+        }
+
+        .momentum-grid-cell.cell-unchecked {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border);
+        }
+
+        .momentum-grid-cell.cell-floor {
+            background: var(--accent-teal-dim);
+            border-color: rgba(20, 200, 175, 0.4);
+            box-shadow: 0 0 4px rgba(20, 200, 175, 0.2);
+        }
+
+        .momentum-grid-cell.cell-full {
+            background: var(--accent-teal);
+            border-color: var(--accent-teal);
+            box-shadow: 0 0 8px rgba(20, 200, 175, 0.4);
+        }
+
+        .momentum-grid-cell.cell-slump {
+            background: var(--accent-orange-dim);
+            border-color: rgba(240, 115, 30, 0.4);
+            box-shadow: 0 0 4px rgba(240, 115, 30, 0.2);
+        }
+
+        .momentum-grid-cell.cell-emergency {
+            background: var(--accent-red-glow);
+            border: 1px solid var(--accent-red);
+            box-shadow: 0 0 6px rgba(230, 40, 60, 0.3);
+        }

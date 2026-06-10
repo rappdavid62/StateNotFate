@@ -457,6 +457,7 @@
             <div class="app-tabs">
                 <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
                 <button class="tab-btn" data-tab="polaris">🜁 Polaris</button>   
+                <button class="tab-btn" data-tab="momentum">Momentum & Audit 📊</button>
                 <button class="tab-btn" data-tab="safebox" id="btn-tab-safebox">Crisis Safe Box <span class="text-red">⚠</span></button>
                 <button class="tab-btn" data-tab="mediaconsole">Media Console</button>
                 <button class="tab-btn" data-tab="progression">Progression</button>
@@ -469,6 +470,17 @@
 
             <!-- TAB 1: MAIN DASHBOARD VIEW -->
             <div id="tab-dashboard" class="tab-content">
+                
+                <!-- Polaris Upgrade Activation Banner -->
+                <div id="polaris-activation-banner" class="glass-card hidden" style="background: linear-gradient(135deg, rgba(20, 200, 175, 0.1), rgba(165, 120, 240, 0.1)); border-color: var(--accent-teal); margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; padding: 1.25rem;">
+                    <div style="flex: 1; min-width: 280px; text-align: left;">
+                        <h3 style="color: var(--accent-teal); margin-bottom: 0.25rem;">🜁 Upgrade to Polaris 2.0 System</h3>
+                        <p class="text-secondary" style="font-size: 0.85rem; margin: 0; font-weight: 300;">Unlock the Momentum Tab, Adaptive Year Simulator, and auto-generated proof logs. Your current local data will be migrated safely.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="activatePolarisUpgrade()" style="background: var(--accent-teal); border-color: var(--accent-teal); color: #0b0f13; font-weight: 600; padding: 0.6rem 1.25rem;">
+                        ⚡ Activate Polaris
+                    </button>
+                </div>
                 
                 <!-- Master Custom Mantra Display (Center Stage) -->
                 <div class="master-mantra-card glass-card">
@@ -702,6 +714,97 @@
         </div>
     </div>
 </div>
+
+            <!-- ========================================== -->
+            <!-- TAB 1.5: MOMENTUM & AUDIT VIEW             -->
+            <!-- ========================================== -->
+            <div id="tab-momentum" class="tab-content hidden">
+                <div class="glass-card" style="max-width: 800px; margin: 0 auto; padding: 1.75rem;">
+                    <h2 class="mb-2 text-lavender" style="display:flex; align-items:center; gap:0.5rem;">📊 Momentum & System Audit</h2>
+                    <p class="text-muted mb-3" style="font-weight: 300;">Your recovery operating system. Powered by evidence, tracked via cumulative milestones, and exported for clinical co-pilot review.</p>
+
+                    <!-- Row 1: Living System State & Narrative Proof -->
+                    <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
+                        <!-- Living System State -->
+                        <div class="glass-card" style="padding:1.25rem; background:rgba(165, 120, 240, 0.03); border-color:var(--accent-lavender-dim);">
+                            <h3 style="font-size:1rem; color:var(--accent-lavender); margin-bottom:0.75rem;">Living System State</h3>
+                            <div style="display:flex; flex-direction:column; gap:0.5rem; font-size:0.9rem;">
+                                <div><strong>Dominant Pattern:</strong> <span id="audit-dominant-pattern" class="text-lavender">Rhythm Collapse</span></div>
+                                <div><strong>Current Hope Level:</strong> <span id="audit-hope-level" class="text-teal">Level 1 - Action is Possible</span></div>
+                                <div><strong>Resilience Score:</strong> <span id="audit-resilience-rate" class="text-orange">100%</span></div>
+                                <div><strong>Streak Restarts:</strong> <span id="audit-restart-count">0</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Active Narrative Proof Statement -->
+                        <div class="glass-card" style="padding:1.25rem; background:rgba(20, 200, 175, 0.03); border-color:rgba(20,200,175,0.25);">
+                            <h3 style="font-size:1rem; color:var(--accent-teal); margin-bottom:0.75rem;">Narrative Proof Statement</h3>
+                            <p id="audit-narrative-statement" style="font-size:0.9rem; line-height:1.4; color:var(--text-primary); font-weight: 300;">
+                                "No audit logs found. Complete daily anchors to register proof."
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Adaptive Year Simulator -->
+                    <div class="glass-card mb-3" style="padding:1.5rem;">
+                        <h3 style="font-size:1.1rem; color:var(--text-primary); margin-bottom:0.5rem;">Adaptive Year Simulator (Five-Year Manual)</h3>
+                        <p class="text-muted" style="font-size:0.85rem; margin-bottom:1rem; font-weight: 300;">Simulate how small daily anchors scale over 1, 3, and 5 years. Move the slider to set your projected daily completion rate.</p>
+                        
+                        <div style="margin-bottom:1.25rem;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem; font-size:0.9rem;">
+                                <span>Projected Daily Anchors Completed: <strong id="sim-slider-val" class="text-teal">2.0</strong></span>
+                                <span>Consistency Rate: <strong id="sim-slider-pct" class="text-lavender">80%</strong></span>
+                            </div>
+                            <input type="range" id="input-sim-rate" min="10" max="100" step="5" value="80" style="width:100%; accent-color:var(--accent-teal); height:6px; background:rgba(255,255,255,0.1); border-radius:3px; cursor:pointer;" oninput="updateSimulatorProjections()">
+                        </div>
+
+                        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:1rem; text-align:center; margin-bottom:1rem;">
+                            <div style="background:rgba(0,0,0,0.15); padding:0.75rem; border-radius:var(--radius-sm);">
+                                <div class="text-muted" style="font-size:0.75rem; text-transform:uppercase;">Year 1</div>
+                                <div id="sim-y1-count" style="font-size:1.5rem; font-weight:700; color:var(--accent-teal); margin:0.25rem 0;">0</div>
+                                <div class="text-muted" style="font-size:0.7rem;">Completed Anchors</div>
+                            </div>
+                            <div style="background:rgba(0,0,0,0.15); padding:0.75rem; border-radius:var(--radius-sm);">
+                                <div class="text-muted" style="font-size:0.75rem; text-transform:uppercase;">Year 3</div>
+                                <div id="sim-y3-count" style="font-size:1.5rem; font-weight:700; color:var(--accent-lavender); margin:0.25rem 0;">0</div>
+                                <div class="text-muted" style="font-size:0.7rem;">Completed Anchors</div>
+                            </div>
+                            <div style="background:rgba(0,0,0,0.15); padding:0.75rem; border-radius:var(--radius-sm);">
+                                <div class="text-muted" style="font-size:0.75rem; text-transform:uppercase;">Year 5</div>
+                                <div id="sim-y5-count" style="font-size:1.5rem; font-weight:700; color:var(--accent-orange); margin:0.25rem 0;">0</div>
+                                <div class="text-muted" style="font-size:0.7rem;">Completed Anchors</div>
+                            </div>
+                        </div>
+
+                        <!-- Milestone unlock card -->
+                        <div id="sim-milestone-card" class="glass-card" style="background:rgba(165,120,240,0.04); border-color:rgba(165,120,240,0.15); padding:0.85rem 1rem; font-size:0.85rem; line-height:1.45; text-align: left;">
+                            <strong>Unlocked Milestones:</strong> <span id="sim-unlocked-milestones">Loading...</span>
+                        </div>
+                    </div>
+
+                    <!-- Row 3: 28-Day Momentum Grid -->
+                    <div class="glass-card mb-3" style="padding:1.25rem;">
+                        <h3 style="font-size:1rem; color:var(--text-secondary); margin-bottom:0.75rem;">28-Day Momentum Grid</h3>
+                        <div id="momentum-grid" style="display:flex; gap:0.4rem; justify-content:center; flex-wrap:wrap; padding:0.5rem 0;"></div>
+                        <div style="display:flex; justify-content:center; gap:1.25rem; font-size:0.75rem; margin-top:0.75rem; color:var(--text-muted); flex-wrap: wrap;">
+                            <span style="display:flex; align-items:center; gap:0.25rem;"><div style="width:10px; height:10px; background:rgba(255,255,255,0.03); border:1px solid var(--card-border);"></div> Unchecked</span>
+                            <span style="display:flex; align-items:center; gap:0.25rem;"><div style="width:10px; height:10px; background:var(--accent-teal-dim);"></div> Floor Win (MVD)</span>
+                            <span style="display:flex; align-items:center; gap:0.25rem;"><div style="width:10px; height:10px; background:var(--accent-teal);"></div> Full Completed</span>
+                            <span style="display:flex; align-items:center; gap:0.25rem;"><div style="width:10px; height:10px; background:var(--accent-orange-dim);"></div> Slump Day</span>
+                            <span style="display:flex; align-items:center; gap:0.25rem;"><div style="width:10px; height:10px; background:var(--accent-red-glow); border:1px solid var(--accent-red);"></div> Emergency Mode</span>
+                        </div>
+                    </div>
+
+                    <!-- Row 4: Auto-Audit Exporter -->
+                    <div class="glass-card" style="padding:1.25rem; background:rgba(255,255,255,0.01);">
+                        <h3 style="font-size:1rem; color:var(--text-primary); margin-bottom:0.25rem;">Auto-Audit & Co-Pilot Sync</h3>
+                        <p class="text-muted" style="font-size:0.8rem; margin-bottom:0.75rem; font-weight: 300;">Generate a completely private, anonymized clinical briefing of your state history and proof statements to copy-paste into Grok, Obsidian, or Tonya's session notes.</p>
+                        <button class="btn btn-primary" onclick="exportAnonymizedAudit()" style="background:var(--accent-teal); border-color:var(--accent-teal); color:#0b0f13; font-size:0.85rem; padding:0.6rem 1.25rem; justify-content:center; width: 100%;">
+                            📋 Copy Anonymized Audit (Markdown)
+                        </button>
+                    </div>
+                </div>
+            </div>
 
             <!-- TAB 2: CRISIS SAFE BOX VIEW -->
             <div id="tab-safebox" class="tab-content hidden">
