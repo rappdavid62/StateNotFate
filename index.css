@@ -1616,3 +1616,95 @@
             border: 1px solid var(--accent-red);
             box-shadow: 0 0 6px rgba(230, 40, 60, 0.3);
         }
+
+        /* ==========================================================
+         * SMART RE-ENTRY CARD STYLES
+         * ========================================================== */
+        .reentry-card {
+            background: linear-gradient(135deg, rgba(26, 32, 44, 0.85), rgba(45, 30, 75, 0.5));
+            border: 1px solid var(--accent-lavender-dim);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            box-shadow: var(--shadow-main);
+            transition: all var(--transition-normal);
+        }
+
+        .reentry-card:hover {
+            border-color: var(--accent-lavender);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45), 0 0 24px rgba(165, 120, 240, 0.15);
+        }
+
+        .reentry-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent-lavender);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .reentry-content {
+            font-size: 1.05rem;
+            font-weight: 400;
+            line-height: 1.45;
+            color: var(--text-primary);
+        }
+
+        .reentry-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .reentry-btn {
+            padding: 0.55rem 1.15rem;
+            font-size: 0.85rem;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-sans);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            border: 1px solid transparent;
+        }
+
+        .reentry-btn-primary {
+            background-color: var(--accent-teal);
+            color: #0b0f13;
+        }
+
+        .reentry-btn-primary:hover {
+            background-color: hsl(175, 80%, 52%);
+            box-shadow: 0 0 10px rgba(20, 200, 175, 0.35);
+        }
+
+        .reentry-btn-secondary {
+            background-color: transparent;
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+        }
+
+        .reentry-btn-secondary:hover {
+            border-color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        @media (max-width: 480px) {
+            .reentry-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .reentry-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+

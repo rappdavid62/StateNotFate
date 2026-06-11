@@ -52,7 +52,13 @@
             personalBests: { longestStreak: 0, mostAnchorsInDay: 0, fastestRestart: null },
             polarisUpgrade: false,
             polarisHistory: [],
-            polarisRestartLogs: []
+            polarisRestartLogs: [],
+            lastVisitDate: '',
+            reEntry: {
+                lastSeenDate: null,
+                missedDays: 0,
+                lastMessageType: null
+            }
         };
 
         let state = { ...DEFAULT_STATE };
@@ -208,6 +214,14 @@
                     if (state.polarisUpgrade === undefined) state.polarisUpgrade = false;
                     if (state.polarisHistory === undefined) state.polarisHistory = [];
                     if (state.polarisRestartLogs === undefined) state.polarisRestartLogs = [];
+                    if (state.lastVisitDate === undefined) state.lastVisitDate = '';
+                    if (state.reEntry === undefined) {
+                        state.reEntry = {
+                            lastSeenDate: null,
+                            missedDays: 0,
+                            lastMessageType: null
+                        };
+                    }
                     // Migrate polaris.anchors.today from array (v2/v3) to object (v4, ID-based)
                     if (state.polaris && state.polaris.anchors && Array.isArray(state.polaris.anchors.today)) {
                         state.polaris.anchors.today = {};
@@ -773,6 +787,7 @@
             
             renderDailyChecklist();
             updateDashboardMetrics();
+            renderReEntryCard();
         }
 
         function isMantraCompletedToday() {
@@ -2089,6 +2104,157 @@
         // ==========================================================
         // SMART WELCOME HANDLER FUNCTIONS
         // ==========================================================
+
+        // === SMART RE-ENTRY CARD ===
+        function updateReEntryState() {
+            if (!state.isOnboarded) return;
+
+            const today = getTodayString();
+            
+            // Ensure reEntry structure exists
+            if (!state.reEntry) {
+                state.reEntry = {
+                    lastSeenDate: null,
+                    missedDays: 0,
+                    lastMessageType: null
+                };
+            }
+            
+            // If it is a new day (or first check)
+            if (state.reEntry.lastSeenDate !== today) {
+                let type = 'normal';
+                let diffDays = 0;
+                
+                if (!state.lastVisitDate || state.history.length === 0) {
+                    type = 'first-use';
+                } else {
+                    const d1 = new Date(today);
+                    const d2 = new Date(state.lastVisitDate);
+                    
+                    // Safely calculate difference in days using UTC to avoid DST issues
+                    const utc1 = Date.UTC(d1.getFullYear(), d1.getMonth(), d1.getDate());
+                    const utc2 = Date.UTC(d2.getFullYear(), d2.getMonth(), d2.getDate());
+                    diffDays = Math.floor((utc1 - utc2) / (1000 * 60 * 60 * 24));
+                    
+                    if (diffDays === 1) {
+                        // Check if yesterday was completed
+                        const yesterdayDate = new Date();
+                        yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+                        const yyyy = yesterdayDate.getFullYear();
+                        const mm = String(yesterdayDate.getMonth() + 1).padStart(2, '0');
+                        const dd = String(yesterdayDate.getDate()).padStart(2, '0');
+                        const yesterdayStr = `${yyyy}-${mm}-${dd}`;
+                        
+                        const yesterdayLog = state.history.find(log => log.date === yesterdayStr);
+                        const completedYesterday = yesterdayLog && (yesterdayLog.floorCompleted || (yesterdayLog.completed && yesterdayLog.completed.length > 0));
+                        
+                        if (completedYesterday) {
+                            type = 'normal';
+                        } else {
+                            type = 'missed-yesterday';
+                        }
+                    } else if (diffDays >= 2) {
+                        type = 'away-multiple';
+                    } else {
+                        // Already checked in today or timezone shift
+                        type = 'normal';
+                    }
+                }
+                
+                state.reEntry.lastSeenDate = today;
+                state.reEntry.missedDays = diffDays > 0 ? diffDays : 0;
+                state.reEntry.lastMessageType = type;
+                state.lastVisitDate = today;
+                saveState();
+            }
+        }
+
+        function renderReEntryCard() {
+            if (!state.isOnboarded) return;
+
+            const container = document.getElementById("reentry-card-container");
+            if (!container) return;
+            
+            // Re-run checking logic to ensure reEntry state is up-to-date
+            updateReEntryState();
+
+            // Check if energy is low or collapse (dynamic override)
+            const isLowEnergy = state.todayEnergy === 'low' || state.todayEnergy === 'collapse';
+            
+            let message = "";
+            let cardType = state.reEntry ? state.reEntry.lastMessageType : 'normal';
+
+            if (isLowEnergy) {
+                message = "Low energy changes the plan. It does not cancel the day. Use Floor Wins Mode.";
+            } else if (cardType === 'first-use') {
+                message = "Start small. The goal is not a perfect day. The goal is one piece of proof.";
+            } else if (cardType === 'missed-yesterday') {
+                message = "You missed a day. That is data, not a verdict. Restart with one small anchor.";
+            } else if (cardType === 'away-multiple') {
+                message = "You were away for a bit. No penalty. The system resumes at the smallest useful step.";
+            } else {
+                message = "Welcome back. Start with today’s anchors.";
+            }
+
+            container.innerHTML = `
+                <div class="reentry-card">
+                    <div class="reentry-header">
+                        <span class="icon">🜁</span> Smart Re-Entry Signal
+                    </div>
+                    <div class="reentry-content">
+                        ${message}
+                    </div>
+                    <div class="reentry-actions">
+                        <button class="reentry-btn reentry-btn-primary" onclick="startSmallestAnchor()">
+                            🎯 Start smallest anchor
+                        </button>
+                        <button class="reentry-btn reentry-btn-secondary" onclick="focusChecklist()">
+                            📋 Open today's checklist
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function startSmallestAnchor() {
+            // Determine the first anchor label
+            const label = (state.mvd && state.mvd[0]) || "Wake on workdays by 7:30am, drink water, take morning medication.";
+            
+            // If already completed, show a toast. Otherwise, complete it.
+            const today = getTodayString();
+            const todayLog = state.history.find(log => log.date === today);
+            const isCompleted = todayLog && todayLog.completed.includes(label);
+
+            if (!isCompleted) {
+                logActionCompletion(label);
+                saveState();
+                renderDashboard();
+                showToast(`Anchor logged: ${label}`, 'success');
+            } else {
+                showToast(`Anchor already completed: ${label}`, 'info');
+            }
+
+            // Scroll to the checklist
+            focusChecklist();
+        }
+
+        function focusChecklist() {
+            showTab("dashboard");
+            const el = document.getElementById("daily-checklist-items");
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth' });
+                // Subtle highlight animation
+                el.style.transition = "outline 0.3s ease";
+                el.style.outline = "2px solid var(--accent-teal)";
+                setTimeout(() => {
+                    el.style.outline = "none";
+                }, 1000);
+            }
+        }
+
+        window.startSmallestAnchor = startSmallestAnchor;
+        window.focusChecklist = focusChecklist;
+
 
         function startSmallAction() {
             // Opens state selector for immediate small action path
