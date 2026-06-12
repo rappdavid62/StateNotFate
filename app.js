@@ -77,58 +77,160 @@
             { title: "The 6-Minute System Synopsis", file: "6_minute_synopsis.mp4", type: "video", duration: "6:00" }
         ];
         const COMPANION_QUESTION_TREE = {
-            "q1": {
-                text: "I feel slowed down or weighed down much of the day.",
-                next: { "0": "q2", "1": "q2", "2": "q1_a", "3": "q1_a", "4": "q1_a", "default": "q2" }
-            },
-            "q1_a": {
-                text: "Is this physical heaviness mostly happening in the morning?",
-                next: { "default": "q2" }
-            },
-            "q2": {
-                text: "My day feels harder to start than it should.",
-                next: { "0": "q3", "1": "q3", "2": "q2_a", "3": "q2_a", "4": "q2_a", "default": "q3" }
-            },
-            "q2_a": {
-                text: "Do you often stay in bed longer than intended specifically to avoid starting?",
-                next: { "default": "q3" }
-            },
-            "q3": {
-                text: "My depressive state is reducing how much life I can carry.",
-                next: { "default": "q4" }
-            },
-            "q4": {
-                text: "Basic tasks feel disproportionately expensive.",
-                next: { "default": "q5" }
-            },
-            "q5": {
-                text: "I lose large amounts of time to drifting, freezing, or shutting down.",
-                next: { "0": "q6", "1": "q6", "2": "q5_a", "3": "q5_a", "4": "q5_a", "default": "q6" }
-            },
-            "q5_a": {
-                text: "Does the shutting down usually happen after a specific trigger, or just randomly?",
-                next: { "default": "q6" }
-            },
-            "q6": {
-                text: "My functioning is worse than my mood alone would suggest.",
-                next: { "default": "q7" }
-            },
-            "q7": {
-                text: "I feel less able to handle ordinary stress than I used to.",
-                next: { "default": "q8" }
-            },
-            "q8": {
-                text: "I am letting important tasks pile up because they feel too heavy.",
-                next: { "default": "q9" }
-            },
-            "q9": {
-                text: "My depression is damaging work, school, or household functioning.",
-                next: { "default": "q10" }
-            },
-            "q10": {
-                text: "I am having trouble maintaining hygiene or basic self-care.",
-                next: { "default": "done" } // Ends the MVP tree here
-            }
+    "q1": { text: "I feel slowed down or weighed down much of the day.", next: {'0': 'q2', '1': 'q2', '2': 'q1_a', '3': 'q1_a', '4': 'q1_a', 'default': 'q2'} },
+    "q1_a": { text: "Is this physical heaviness mostly happening in the morning?", next: {'default': 'q2'} },
+    "q2": { text: "My day feels harder to start than it should.", next: {'0': 'q3', '1': 'q3', '2': 'q2_a', '3': 'q2_a', '4': 'q2_a', 'default': 'q3'} },
+    "q2_a": { text: "Do you often stay in bed longer than intended specifically to avoid starting?", next: {'default': 'q3'} },
+    "q3": { text: "My depressive state is reducing how much life I can carry.", next: {'default': 'q4'} },
+    "q4": { text: "Basic tasks feel disproportionately expensive.", next: {'default': 'q5'} },
+    "q5": { text: "I lose large amounts of time to drifting, freezing, or shutting down.", next: {'default': 'q6'} },
+    "q6": { text: "My functioning is worse than my mood alone would suggest.", next: {'default': 'q7'} },
+    "q7": { text: "I feel less able to handle ordinary stress than I used to.", next: {'default': 'q8'} },
+    "q8": { text: "I am letting important tasks pile up because they feel too heavy.", next: {'default': 'q9'} },
+    "q9": { text: "My depression is damaging work, school, or household functioning.", next: {'default': 'q10'} },
+    "q10": { text: "I am having trouble maintaining hygiene or basic self-care.", next: {'default': 'q11'} },
+    "q11": { text: "My appetite or eating pattern has become less reliable.", next: {'default': 'q12'} },
+    "q12": { text: "I feel disconnected from pleasure, interest, or reward.", next: {'default': 'q13'} },
+    "q13": { text: "I feel like my range of action has narrowed.", next: {'default': 'q14'} },
+    "q14": { text: "Small setbacks hit me harder than they should.", next: {'default': 'q15'} },
+    "q15": { text: "My current functioning feels fragile or inconsistent.", next: {'default': 'q16'} },
+    "q16": { text: "I feel sad, flat, empty, or emotionally blunted.", next: {'default': 'q17'} },
+    "q17": { text: "I get less pleasure from things that used to help.", next: {'default': 'q18'} },
+    "q18": { text: "Positive events have less impact on me than they used to.", next: {'default': 'q19'} },
+    "q19": { text: "I have trouble imagining enjoying the future.", next: {'default': 'q20'} },
+    "q20": { text: "I feel hopeless about meaningful change.", next: {'default': 'q21'} },
+    "q21": { text: "I feel emotionally numb more than simply tired.", next: {'default': 'q22'} },
+    "q22": { text: "I feel grief-like heaviness without clear relief.", next: {'default': 'q23'} },
+    "q23": { text: "I feel irritable or more easily frustrated.", next: {'default': 'q24'} },
+    "q24": { text: "My mood drops sharply with small disappointments.", next: {'default': 'q25'} },
+    "q25": { text: "I feel like life has lost some of its color.", next: {'default': 'q26'} },
+    "q26": { text: "I feel guilty or defective much of the time.", next: {'default': 'q27'} },
+    "q27": { text: "I feel ashamed of struggling this much.", next: {'default': 'q28'} },
+    "q28": { text: "I feel like effort probably will not pay off.", next: {'default': 'q29'} },
+    "q29": { text: "I feel stuck in the same state with little movement.", next: {'default': 'q30'} },
+    "q30": { text: "I feel disconnected from wanting things.", next: {'default': 'q31'} },
+    "q31": { text: "My thinking becomes darker or harsher when I am low.", next: {'default': 'q32'} },
+    "q32": { text: "I mistake depressed thoughts for objective truth.", next: {'default': 'q33'} },
+    "q33": { text: "I replay problems without getting clearer or closer to action.", next: {'default': 'q34'} },
+    "q34": { text: "I build cases against myself in my own head.", next: {'default': 'q35'} },
+    "q35": { text: "I focus more on failure than on contrary evidence.", next: {'default': 'q36'} },
+    "q36": { text: "I have trouble making ordinary decisions.", next: {'default': 'q37'} },
+    "q37": { text: "My concentration is worse than normal.", next: {'default': 'q38'} },
+    "q38": { text: "I feel mentally slowed or foggy.", next: {'default': 'q39'} },
+    "q39": { text: "I expect bad outcomes before I try.", next: {'default': 'q40'} },
+    "q40": { text: "I interpret delays or neutral events as proof that I am failing.", next: {'default': 'q41'} },
+    "q41": { text: "I have trouble holding perspective once shame gets high.", next: {'default': 'q42'} },
+    "q42": { text: "My mind erases evidence that I can handle things.", next: {'default': 'q43'} },
+    "q43": { text: "I compare myself to others in ways that make me collapse further.", next: {'default': 'q44'} },
+    "q44": { text: "I struggle to separate a bad state from my whole identity.", next: {'default': 'q45'} },
+    "q45": { text: "I have trouble seeing temporary conditions as temporary.", next: {'default': 'q46'} },
+    "q46": { text: "My sleep schedule is drifting later or becoming irregular.", next: {'default': 'q47'} },
+    "q47": { text: "I have trouble falling asleep when I intend to.", next: {'default': 'q48'} },
+    "q48": { text: "I wake often or sleep lightly.", next: {'default': 'q49'} },
+    "q49": { text: "I wake without feeling restored.", next: {'default': 'q50'} },
+    "q50": { text: "I oversleep or stay in bed longer than intended.", next: {'0': 'q51', '1': 'q51', '2': 'q50_a', '3': 'q50_a', '4': 'q50_a', 'default': 'q51'} },
+    "q50_a": { text: "Is this primarily driven by physical exhaustion or a desire to hide from the day?", next: {'default': 'q51'} },
+    "q51": { text: "My wake time changes a lot from day to day.", next: {'default': 'q52'} },
+    "q52": { text: "Morning light or daylight exposure is inconsistent.", next: {'default': 'q53'} },
+    "q53": { text: "Low sleep quality makes everything else worse.", next: {'default': 'q54'} },
+    "q54": { text: "I use sleep, lying down, or hiding in bed to escape the day.", next: {'default': 'q55'} },
+    "q55": { text: "My evenings get taken over by passive numbing or scrolling.", next: {'default': 'q56'} },
+    "q56": { text: "My sleep pattern makes mornings feel unwinnable.", next: {'default': 'q57'} },
+    "q57": { text: "I delay starting the day even after waking.", next: {'default': 'q58'} },
+    "q58": { text: "My energy rhythm feels badly timed or unstable.", next: {'default': 'q59'} },
+    "q59": { text: "I have trouble protecting a realistic wind-down window.", next: {'default': 'q60'} },
+    "q60": { text: "Sleep disruption is one of the main engines of my depression right now.", next: {'default': 'q61'} },
+    "q61": { text: "My energy is low most days.", next: {'default': 'q62'} },
+    "q62": { text: "My body often feels heavy or slowed down.", next: {'default': 'q63'} },
+    "q63": { text: "Small tasks consume more energy than they should.", next: {'default': 'q64'} },
+    "q64": { text: "Fatigue makes me doubt myself morally instead of practically.", next: {'default': 'q65'} },
+    "q65": { text: "I feel physically deconditioned or weaker than I should.", next: {'default': 'q66'} },
+    "q66": { text: "My appetite or food intake becomes erratic when I am low.", next: {'default': 'q67'} },
+    "q67": { text: "I go too long without eating or drinking enough.", next: {'default': 'q68'} },
+    "q68": { text: "My physical state worsens my mood more than I admit.", next: {'default': 'q69'} },
+    "q69": { text: "I feel restless or agitated instead of simply tired.", next: {'default': 'q70'} },
+    "q70": { text: "I rely on substances, caffeine, nicotine, or other inputs to push through collapse.", next: {'default': 'q71'} },
+    "q71": { text: "Physical discomfort or pain is feeding the depressive state.", next: {'default': 'q72'} },
+    "q72": { text: "I have trouble telling the difference between exhaustion and avoidance.", next: {'default': 'q73'} },
+    "q73": { text: "I often wait to feel energized before attempting anything useful.", next: {'default': 'q74'} },
+    "q74": { text: "When my body feels bad, the whole day is easier to lose.", next: {'default': 'q75'} },
+    "q75": { text: "Basic body care is inconsistent enough to affect function.", next: {'default': 'q76'} },
+    "q76": { text: "I avoid things that might actually help because they feel too hard.", next: {'default': 'q77'} },
+    "q77": { text: "I delay tasks until they become bigger and more frightening.", next: {'default': 'q78'} },
+    "q78": { text: "I use scrolling, numbing, or passive distraction to avoid starting.", next: {'default': 'q79'} },
+    "q79": { text: "I cancel, hide, or withdraw more than I want to.", next: {'default': 'q80'} },
+    "q80": { text: "I wait to feel ready before acting.", next: {'default': 'q81'} },
+    "q81": { text: "I start less than I plan.", next: {'default': 'q82'} },
+    "q82": { text: "I follow through less than I intend.", next: {'default': 'q83'} },
+    "q83": { text: "Once I slip, I tend to abandon the whole day.", next: {'default': 'q84'} },
+    "q84": { text: "I turn one mistake into a reason to stop trying.", next: {'default': 'q85'} },
+    "q85": { text: "My routines disappear when mood drops.", next: {'default': 'q86'} },
+    "q86": { text: "I can think clearly about the plan but not run it consistently.", next: {'default': 'q87'} },
+    "q87": { text: "I choose short-term relief over longer-term function.", next: {'default': 'q88'} },
+    "q88": { text: "I have trouble scaling the day to my actual energy.", next: {'default': 'q89'} },
+    "q89": { text: "I overreach on better days and pay for it later.", next: {'default': 'q90'} },
+    "q90": { text: "My life is more passive than I want it to be.", next: {'default': 'q91'} },
+    "q91": { text: "My room, home, or daily environment makes functioning harder.", next: {'default': 'q92'} },
+    "q92": { text: "Clutter, mess, or friction drains more energy than I admit.", next: {'default': 'q93'} },
+    "q93": { text: "Bills, paperwork, appointments, or admin tasks are slipping.", next: {'default': 'q94'} },
+    "q94": { text: "I lose traction because needed items are not where I can find them.", next: {'default': 'q95'} },
+    "q95": { text: "My environment makes good habits harder to run.", next: {'default': 'q96'} },
+    "q96": { text: "I am falling behind on tasks that keep life stable.", next: {'default': 'q97'} },
+    "q97": { text: "Work or practical responsibilities feel increasingly threatening.", next: {'default': 'q98'} },
+    "q98": { text: "My day lacks enough structure to protect me from drift.", next: {'default': 'q99'} },
+    "q99": { text: "I do better with external structure than without it.", next: {'default': 'q100'} },
+    "q100": { text: "When external structure disappears, I unravel quickly.", next: {'0': 'q101', '1': 'q101', '2': 'q100_a', '3': 'q100_a', '4': 'q100_a', 'default': 'q101'} },
+    "q100_a": { text: "Do you notice a specific time of day when the lack of structure hits hardest?", next: {'default': 'q101'} },
+    "q101": { text: "I spend too much time reacting instead of running a plan.", next: {'default': 'q102'} },
+    "q102": { text: "My current systems for tracking or reminders are too weak.", next: {'default': 'q103'} },
+    "q103": { text: "I am not using written structure as much as I need.", next: {'default': 'q104'} },
+    "q104": { text: "My environment becomes an accomplice to collapse.", next: {'default': 'q105'} },
+    "q105": { text: "Practical life friction is a major maintaining factor right now.", next: {'default': 'q106'} },
+    "q106": { text: "I withdraw from people when I am low.", next: {'default': 'q107'} },
+    "q107": { text: "I feel like a burden to others.", next: {'default': 'q108'} },
+    "q108": { text: "I expect misunderstanding or rejection more than support.", next: {'default': 'q109'} },
+    "q109": { text: "I communicate less clearly or less often than I want to.", next: {'default': 'q110'} },
+    "q110": { text: "Relationships feel harder to maintain than they should.", next: {'default': 'q111'} },
+    "q111": { text: "Loneliness is feeding the depressive state.", next: {'default': 'q112'} },
+    "q112": { text: "Shame makes me harder to reach.", next: {'default': 'q113'} },
+    "q113": { text: "I have become less expressive or less responsive.", next: {'default': 'q114'} },
+    "q114": { text: "I lose contact with parts of my identity outside depression.", next: {'default': 'q115'} },
+    "q115": { text: "I feel smaller, narrower, or less like myself than before.", next: {'default': 'q116'} },
+    "q116": { text: "Social effort feels expensive even when I want connection.", next: {'default': 'q117'} },
+    "q117": { text: "I avoid people because I do not want to be seen like this.", next: {'default': 'q118'} },
+    "q118": { text: "When others respond badly, it confirms my worst beliefs fast.", next: {'default': 'q119'} },
+    "q119": { text: "I need more low-pressure human contact than I currently get.", next: {'default': 'q120'} },
+    "q120": { text: "Depression has started to fuse with my sense of who I am.", next: {'default': 'q121'} },
+    "q121": { text: "I have had depressive periods before this current one.", next: {'default': 'q122'} },
+    "q122": { text: "This current state feels chronic, recurrent, or stubborn.", next: {'default': 'q123'} },
+    "q123": { text: "I suspect there are contributing factors beyond just mood.", next: {'default': 'q124'} },
+    "q124": { text: "Physical health issues may be worsening the depression picture.", next: {'default': 'q125'} },
+    "q125": { text: "Substances or medication side effects may be part of the picture.", next: {'default': 'q126'} },
+    "q126": { text: "My current medication strategy, if any, is not fully optimized.", next: {'default': 'q127'} },
+    "q127": { text: "Side effects or treatment tradeoffs are affecting function.", next: {'default': 'q128'} },
+    "q128": { text: "I have trouble judging treatment by concrete outcomes instead of ideology or mood memory.", next: {'default': 'q129'} },
+    "q129": { text: "I do not track changes in sleep, energy, mood, and side effects clearly enough.", next: {'default': 'q130'} },
+    "q130": { text: "Access, cost, time, or logistics make treatment harder.", next: {'default': 'q131'} },
+    "q131": { text: "I have trouble staying consistent with helpful treatment inputs.", next: {'default': 'q132'} },
+    "q132": { text: "I need a plan that fits real life better, not a theoretically perfect one.", next: {'default': 'q133'} },
+    "q133": { text: "My depression may be complicated by anxiety, trauma, pain, burnout, or heavy stress.", next: {'default': 'q134'} },
+    "q134": { text: "I need better collaborative decision-making around treatment than I currently have.", next: {'default': 'q135'} },
+    "q135": { text: "My current approach is too fragmented to be reliable.", next: {'default': 'q136'} },
+    "q136": { text: "It is hard to believe effort will lead to improvement.", next: {'default': 'q137'} },
+    "q137": { text: "I have trouble noticing small gains once they happen.", next: {'default': 'q138'} },
+    "q138": { text: "I discount small corrective actions as meaningless.", next: {'default': 'q139'} },
+    "q139": { text: "I need visible evidence that inputs can change the state.", next: {'default': 'q140'} },
+    "q140": { text: "I do better when expectations are realistic and scaled.", next: {'default': 'q141'} },
+    "q141": { text: "I need a minimum viable day plan for bad days.", next: {'default': 'q142'} },
+    "q142": { text: "I need a rescue plan for collapse days.", next: {'default': 'q143'} },
+    "q143": { text: "I need clearer priorities about which anchors matter most first.", next: {'default': 'q144'} },
+    "q144": { text: "I need a plan that protects continuity rather than perfection.", next: {'default': 'q145'} },
+    "q145": { text: "I need a stronger sense of what would count as real progress.", next: {'default': 'q146'} },
+    "q146": { text: "I need more repetition and less heroic overcorrection.", next: {'default': 'q147'} },
+    "q147": { text: "I need a better way to identify my main constraints.", next: {'default': 'q148'} },
+    "q148": { text: "I need the plan to meet me at my actual capacity, not an ideal version of me.", next: {'default': 'q149'} },
+    "q149": { text: "It is hard to hold onto the idea that any part of this can still change.", next: {'default': 'q150'} },
+    "q150": { text: "I struggle to keep testing small repeated changes when immediate payoff is low.", next: {'default': 'done'} },
         };
 
         const PHQ9_QUESTIONS = [
@@ -1862,20 +1964,15 @@
         // ==========================================================
 
         const KNOWLEDGE_CATALOG = [
-            { name: "00_Project_File_Map_Comprehensive.pdf", type: "pdf", size: "6.5 KB", desc: "Comprehensive mapping of all core documents, scripts, and media files in the recovery suite." },
-            { name: "00_READ_THIS_FIRST_COMPREHENSIVE.pdf", type: "pdf", size: "7.2 KB", desc: "Crucial initial briefing outlining installation steps, troubleshooting launcher, and browser CORS solutions." },
-            { name: "01_2026 All Documents.pdf", type: "pdf", size: "404.4 KB", desc: "Compiled clinical data, guides, and worksheets for the 2026 depression project elements." },
-            { name: "01_Current_Main_Elements_Expanded.pdf", type: "pdf", size: "9.8 KB", desc: "Expanded reference documenting the core features of the interactive main frame SPA." },
-            { name: "01_Front_End_Preamble_Expanded.pdf", type: "pdf", size: "6.0 KB", desc: "Preamble briefing explaining the mechanical model of depression functioning burden." },
-            { name: "02_Depression_Project_Program_Expanded.pdf", type: "pdf", size: "13.4 KB", desc: "Outlines the 10-layer clinical roadmap, layer requirements, and behavior guidelines." },
-            { name: "02_Front_End_Questionnaire_Expanded.pdf", type: "pdf", size: "8.9 KB", desc: "Expanded guide to the accordion intake forms and diagnostic burdent mapping metrics." },
-            { name: "03_Depression_Project_Outline_Expanded.pdf", type: "pdf", size: "12.1 KB", desc: "An expanded operational outline documenting the startup damage and initiation models." },
-            { name: "03_Front_End_Intake_Guide_Expanded.pdf", type: "pdf", size: "10.5 KB", desc: "Comprehensive companion manual for the onboarding, mantras, and safety plan inputs." },
-            { name: "04_Hope_System_Front_End_Expanded.pdf", type: "pdf", size: "6.0 KB", desc: "Clinical blueprint explaining the proof-based hope sequence and its progression math." },
-            { name: "05_User_Testimonial_and_Design_Rationale.pdf", type: "pdf", size: "7.1 KB", desc: "Presents early feedback data and clinical evidence for low-shame downscaling checklists." },
-            { name: "06_Evidence_and_Design_Rationale.pdf", type: "pdf", size: "8.8 KB", desc: "NICE/VA guidelines alignment details and professional reviews cooperation brief." },
-            { name: "State_Not_Fate_Revised_Comprehensive_Clinical_Overview.docx", type: "docx", size: "41.7 KB", desc: "A comprehensive Microsoft Word clinical overview guide of the recovery suite's medical paradigm." },
-            { name: "emergency_appendix_living_with_suicidal_thoughts_scrubbed.rtf", type: "rtf", size: "12.8 KB", desc: "Appendix document detailing critical crisis handling, coping tactics, and self-support bridges." },
+            { name: "01_Front_End_Preamble-2.md", type: "md", size: "4.1 KB", desc: "Preamble briefing explaining the mechanical model of depression." },
+            { name: "02_Depression_Project_Program-1.md", type: "md", size: "12.3 KB", desc: "Outlines the clinical roadmap and behavior guidelines." },
+            { name: "02_Front_End_Questionnaire-1.md", type: "md", size: "7.9 KB", desc: "Guide to the intake forms and diagnostic metrics." },
+            { name: "03_Depression_Project_Outline-1.md", type: "md", size: "11.1 KB", desc: "Operational outline documenting the startup damage and initiation models." },
+            { name: "03_Front_End_Intake_Guide-1.md", type: "md", size: "9.5 KB", desc: "Companion manual for the onboarding and interpreting answers." },
+            { name: "04_Hope_and_Activation_Start-2.md", type: "md", size: "5.5 KB", desc: "Hope activation protocols and starter steps." },
+            { name: "04_Hope_System_Front_End-1.md", type: "md", size: "5.1 KB", desc: "Clinical blueprint explaining the proof-based hope sequence." },
+            { name: "five_year_depression_years_and_worksheets_2026_v1.md", type: "md", size: "14.2 KB", desc: "Historical worksheet mapping five years of depression state vs. external stressors." },
+            { name: "legitimate_preamble_and_150_item_intake.md", type: "md", size: "22.3 KB", desc: "The definitive 150-item intake questionnaire assessing core function." },
             // Media tracks
             { name: "Treating_depression_as_a_systems_failure.m4a", type: "audio", size: "34.7 MB", desc: "Guide on treating depression as an operational systems failure rather than identity." },
             { name: "The_Reprogramming_Protocol__Debugging_Depression.mp4", type: "video", size: "58.9 MB", desc: "Video overview on reprograming automatic self-talk and building consistency." },
@@ -2019,8 +2116,10 @@
                 card.style.gap = "0.25rem";
                 
                 let badgeClass = "badge-low";
-                if (file.type === "pdf") badgeClass = "badge-high";
+                if (file.type === "md") badgeClass = "badge-high";
                 else if (file.type === "video" || file.type === "audio") badgeClass = "badge-medium";
+                
+                let linkPath = file.type === "md" ? "docs/" + file.name : "knowledge/" + file.name;
                 
                 card.innerHTML = `
                     <div class="flex-between">
@@ -2030,7 +2129,7 @@
                         </div>
                         <div style="display:flex; gap:0.5rem; align-items:center;">
                             <span class="text-muted" style="font-size:0.75rem; font-family:monospace;">${file.size}</span>
-                            <button class="btn btn-secondary" onclick="navigator.clipboard.writeText('knowledge/${file.name}'); showToast('Relative offline path copied!', 'success')" style="padding:0.25rem 0.5rem; font-size:0.7rem;">Copy Path</button>
+                            <a href="${linkPath}" target="_blank" class="btn btn-secondary" style="padding:0.25rem 0.5rem; font-size:0.7rem; text-decoration: none;">View</a>
                         </div>
                     </div>
                     <div style="font-size:0.75rem; color:var(--text-secondary); line-height:1.35; padding-top:0.15rem;">
@@ -2170,7 +2269,7 @@
                         "Tell yourself: 'I am allowed to restart today without moral punishment.'"
                     ];
                     state.customTasks = [
-                        "Send exactly 1 low-threat connection text to Dave or Dave ('thinking of you, zero pressure to reply')",
+                        "Send exactly 1 low-threat connection text to Dave or Dave ('thinking of you, no pressure to reply')",
                         "Spend 10 minutes resting in a public space/park without performative pressure",
                         "Practice breathing guides for 3 minutes to downregulate the nervous system"
                     ];
@@ -2538,7 +2637,7 @@
             if (!state.polaris.profile.evolvingIntake) {
                 state.polaris.profile.evolvingIntake = {
                     enabled: true,
-                    questionsAnswered: {},
+                    answers: {},
                     lastQuestionDate: null,
                     currentQuestionId: "q1"
                 };
@@ -2587,9 +2686,24 @@
             // Give the companion a slightly mythic/calm voice if enabled, overriding the default message
             if (!state.polaris.profile.companionSkin) return defaultMsg;
             
+            const PSYCHOED_TENETS = [
+                "Momentum creates motivation, not the other way around.",
+                "Avoidance reduces anxiety for 10 minutes, but deepens the depressive state for 10 hours.",
+                "Shame is the heaviest cognitive drag. You are allowed to restart your day without moral punishment.",
+                "Depression is a physical drag, not a moral failing. Protect your biological core.",
+                "Disrupted sleep is one of the main engines of depression. Defend your wind-down window.",
+                "The goal is not a perfect day. The goal is one piece of proof.",
+                "Small setbacks hit harder than they should. This is a temporary condition of the nervous system."
+            ];
+            
+            // Randomly select one if high or medium, otherwise use fallback
+            // Seed randomness based on date so it's consistent for the day
+            const daySeed = new Date().getDate();
+            const tenet = PSYCHOED_TENETS[daySeed % PSYCHOED_TENETS.length];
+            
             const map = {
-                high: 'The path is clear. Execute, then rest.',
-                medium: 'Anchor the day. Keep it simple.',
+                high: tenet,
+                medium: tenet,
                 low: 'I am here. The floor remains. Do what you can.',
                 collapse: 'Rest. There is no failure on the floor.'
             };
@@ -2650,12 +2764,14 @@
             ensurePolarisState();
             const intake = state.polaris.profile.evolvingIntake;
             const qId = intake.currentQuestionId;
+            if (qId === "done") return;
             
-            // Save the answer
-            intake.questionsAnswered[qId] = score;
+            // Record answer
+            const today = getTodayString();
+            if (!intake.answers[today]) intake.answers[today] = {};
+            intake.answers[today][qId] = score;
             intake.lastQuestionDate = getTodayString();
             
-            // Determine next question
             const currentQ = COMPANION_QUESTION_TREE[qId];
             if (currentQ && currentQ.next) {
                 if (currentQ.next[score] !== undefined) {
@@ -2678,6 +2794,14 @@
             ensurePolarisState();
             const intake = state.polaris.profile.evolvingIntake;
             intake.lastQuestionDate = getTodayString(); // count as asked today
+            saveState();
+            renderPolarisTab();
+        }
+
+        function answerAnotherCompanionQuestion() {
+            ensurePolarisState();
+            const intake = state.polaris.profile.evolvingIntake;
+            intake.lastQuestionDate = null;
             saveState();
             renderPolarisTab();
         }
@@ -2744,8 +2868,10 @@
             if (state.polaris.profile.companionSkin) {
                 avatarEl.textContent = state.polaris.profile.companionSkin;
                 avatarEl.style.display = 'block';
+                contentEl.dataset.companionTheme = state.polaris.profile.companionSkin;
             } else {
                 avatarEl.style.display = 'none';
+                delete contentEl.dataset.companionTheme;
             }
 
             // Evolving Questionnaire logic
@@ -2763,8 +2889,11 @@
                 }
             }
 
+            // B2: Evolving Questionnaire
             const qCard = document.getElementById('polaris-companion-question');
+            const askAnotherCard = document.getElementById('polaris-answer-another-container');
             if (qCard) {
+                const intake = state.polaris.profile.evolvingIntake;
                 const currentQ = COMPANION_QUESTION_TREE[intake.currentQuestionId];
                 if (intake.enabled && state.polaris.profile.companionSkin && intake.lastQuestionDate !== getTodayString() && intake.currentQuestionId !== "done" && currentQ) {
                     document.getElementById('companion-question-text').textContent = currentQ.text;
@@ -2772,10 +2901,19 @@
                 } else {
                     qCard.classList.add('hidden');
                 }
+
+                if (intake.enabled && state.polaris.profile.companionSkin && intake.lastQuestionDate === getTodayString() && intake.currentQuestionId !== "done") {
+                    if(askAnotherCard) askAnotherCard.classList.remove('hidden');
+                } else {
+                    if(askAnotherCard) askAnotherCard.classList.add('hidden');
+                }
             }
 
             // B3: Gap notice
             renderGapNotice();
+
+            // B4: Clinical Insights
+            renderPolarisInsights();
 
             // B8: Yesterday incomplete
             renderYesterdayIncomplete();
@@ -2809,6 +2947,65 @@
             document.getElementById('polaris-resilience-info').textContent = resText;
 
             saveState();
+        }
+
+        function renderPolarisInsights() {
+            const container = document.getElementById('polaris-insights-container');
+            const list = document.getElementById('polaris-insights-list');
+            if (!container || !list) return;
+
+            const intake = state.polaris.profile.evolvingIntake;
+            if (!intake || !intake.answers || !intake.enabled || !state.polaris.profile.companionSkin) {
+                container.classList.add('hidden');
+                return;
+            }
+
+            const answers = {};
+            for (const date in intake.answers) {
+                Object.assign(answers, intake.answers[date]);
+            }
+
+            const domains = [
+                { title: "Functional Damage", range: [1, 15], text: "Your depressive state is heavily shrinking your daily life, making basic tasks disproportionately expensive." },
+                { title: "Anhedonia & Despair", range: [16, 30], text: "You are experiencing significant emotional blunting and loss of reward. This is a nervous system state, not a permanent loss of color." },
+                { title: "Cognitive Drag", range: [31, 45], text: "Your mind is currently building cases against itself. Remember that depressed thoughts are not objective truth." },
+                { title: "Sleep Disruption", range: [46, 60], text: "Sleep disruption is a primary engine of your current state. Stabilizing your wake time and morning light is a top priority." },
+                { title: "Physical Drag", range: [61, 75], text: "Your body is experiencing heavy physical deconditioning. The drag you feel is biological, not a lack of willpower." },
+                { title: "Avoidance Failure", range: [76, 90], text: "Avoidance is currently driving your collapse. Waiting to feel ready before acting is a trap. Start smaller." },
+                { title: "Friction & Admin", range: [91, 105], text: "Your environment and lack of structure are accomplices to collapse. Focus on reducing visual clutter and friction." },
+                { title: "Social Shrinkage", range: [106, 120], text: "Shame is making you harder to reach. You need low-pressure human contact, even if you feel like a burden." },
+                { title: "Treatment Fit", range: [121, 135], text: "Your current treatment approach may not fit your real life or has severe side-effect tradeoffs." },
+                { title: "Hope Signal", range: [136, 150], text: "You are discounting small corrective actions. We need a minimum viable day plan that guarantees small wins." }
+            ];
+
+            const insights = [];
+            for (const config of domains) {
+                let sum = 0;
+                let count = 0;
+                for (let i = config.range[0]; i <= config.range[1]; i++) {
+                    if (answers["q" + i] !== undefined) {
+                        sum += parseInt(answers["q" + i]);
+                        count++;
+                    }
+                }
+                // Require at least 3 questions answered in a domain, with average >= 2.5
+                if (count >= 3 && (sum / count) >= 2.5) {
+                    insights.push(config);
+                }
+            }
+
+            if (insights.length === 0) {
+                container.classList.add('hidden');
+                return;
+            }
+
+            container.classList.remove('hidden');
+            list.innerHTML = insights.map(i => `
+                <div class="glass-card" style="padding: 0.75rem; background: rgba(0,0,0,0.2); border-left: 3px solid var(--accent-lavender); border-radius: var(--radius-sm);">
+                    <div style="font-size: 0.75rem; font-weight: 600; color: var(--accent-lavender); margin-bottom: 0.25rem;">${i.title}</div>
+                    <div style="font-size: 0.85rem; color: var(--text-primary); line-height: 1.4;">${i.text}</div>
+                </div>
+            `).join('');
         }
 
         // ---- RENDER: Hope Level in Polaris ----
