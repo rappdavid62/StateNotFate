@@ -1175,9 +1175,36 @@
             const videoContainer = document.getElementById("video-container");
             const title = document.getElementById("media-playing-title");
             const typeLabel = document.getElementById("media-playing-type");
+            const errorFallback = document.getElementById("media-error-fallback");
             
             title.innerHTML = track.title;
             typeLabel.innerHTML = `Format: ${track.type.toUpperCase()} | Duration: ${track.duration} | Relative Offline Link`;
+            
+            if (errorFallback) errorFallback.classList.add("hidden");
+
+            const handleError = () => {
+                if (audio) audio.style.display = "none";
+                if (videoContainer) videoContainer.classList.add("hidden");
+                if (errorFallback) {
+                    errorFallback.classList.remove("hidden");
+                    const streamUrl = track.url || "https://statenotfate.org/media"; // Placeholder until exact external URLs are ready
+                    errorFallback.innerHTML = `
+                        <h4 class="text-orange" style="margin-top:0; margin-bottom:0.75rem; font-size:1rem; color: #ffcc00;">⚠️ Local File Not Found (Email-Safe Core Frame):</h4>
+                        <p style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-secondary); line-height: 1.4;">
+                            To keep this app lightweight and emailable (&lt; 1.5 MB), the heavy 500 MB media assets are excluded from this core program frame.
+                        </p>
+                        <div style="font-size: 0.9rem; color: var(--text-primary); margin-bottom: 0.5rem;">Options to play:</div>
+                        <ol style="font-size: 0.85rem; color: var(--text-secondary); padding-left: 1.25rem; margin-bottom: 1.5rem; line-height: 1.5;">
+                            <li style="margin-bottom: 0.5rem;"><strong class="text-teal">Stream Online:</strong> Stream this high-fidelity track instantly from our secure vault.</li>
+                            <li><strong>Play Locally:</strong> Download the full version or place this file (<code>${track.file}</code>) in your local <code>knowledge/</code> folder.</li>
+                        </ol>
+                        <a href="${streamUrl}" target="_blank" class="btn btn-primary" style="background: var(--accent-teal); color: #0b0f13; border:none; text-decoration: none; padding: 0.6rem 1.2rem; font-weight: 600; display: inline-block;">Stream Online ➔</a>
+                    `;
+                }
+            };
+
+            audio.onerror = handleError;
+            video.onerror = handleError;
             
             // Single-file local streaming path using Directory Junction
             const relativeSrc = `knowledge/${track.file}`;
