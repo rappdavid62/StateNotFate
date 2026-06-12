@@ -9,7 +9,7 @@
     <meta property="og:description" content="A public-facing, source-grounded depression project with adjunctive tools, crisis boundaries, and a private local beta app.">
     <meta property="og:type" content="website">
     <link rel="canonical" href="http://127.0.0.1:4173/">
-    <link rel="stylesheet" href="index.css?v=2.1">
+    <link rel="stylesheet" href="index.css?v=2.3">
 </head>
 <body>
     <a class="skip-link" href="#public-main">Skip to public project information</a>
@@ -660,6 +660,22 @@
                     <span>Severe</span>
                 </div>
                 <button class="btn btn-secondary" onclick="skipCompanionQuestion()" style="font-size: 0.8rem; padding: 0.3rem 0.75rem; color: var(--text-muted);">Skip for now</button>
+            </div>
+
+            <!-- Answer Another Question Button -->
+            <div id="polaris-answer-another-container" class="hidden" style="text-align: center; margin-bottom: 1.5rem;">
+                <button class="btn btn-secondary" onclick="answerAnotherCompanionQuestion()" style="font-size: 0.8rem; padding: 0.3rem 0.75rem; color: var(--accent-lavender); border-color: rgba(165, 120, 240, 0.4);">Ask Another Question</button>
+            </div>
+
+            <!-- Polaris Insights -->
+            <div id="polaris-insights-container" class="hidden" style="margin-bottom: 1.5rem;">
+                <h4 class="text-lavender" style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
+                    <span style="display:inline-block; width:8px; height:8px; background:var(--accent-lavender); border-radius:50%;"></span>
+                    Companion Clinical Insights
+                </h4>
+                <div id="polaris-insights-list" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <!-- Dynamically populated -->
+                </div>
             </div>
 
             <!-- Gap Notice (hidden by default) -->
@@ -1547,6 +1563,6 @@
     <!-- Toast Notification Container -->
     <div id="toast-container" style="position: fixed; top: 1rem; right: 1rem; z-index: 10000; display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none; max-width: 380px;"></div>
 
-    <script src="app.js?v=2.1"></script>
+    <script src="app.js?v=2.3"></script>
 </body>
 </html>

@@ -1722,3 +1722,54 @@
             }
         }
 
+/* POLARIS GOTH THEMES */
+#polaris-content[data-companion-theme="??"] .glass-card {
+    border-left-color: #8a0303 !important;
+    background: linear-gradient(135deg, rgba(138,3,3,0.05), rgba(0,0,0,0.6)) !important;
+}
+#polaris-content[data-companion-theme="??"] .text-teal { color: #ff3333 !important; text-shadow: 0 0 10px rgba(255, 51, 51, 0.5) !important; }
+#polaris-content[data-companion-theme="??"] #polaris-hope-fill { background: #ff3333 !important; }
+
+#polaris-content[data-companion-theme="??"] .glass-card {
+    border-left-color: #aa0000 !important;
+    background: linear-gradient(135deg, rgba(170,0,0,0.05), rgba(0,0,0,0.6)) !important;
+}
+#polaris-content[data-companion-theme="??"] .text-teal { color: #ff0000 !important; text-shadow: 0 0 10px rgba(255, 0, 0, 0.5) !important; }
+#polaris-content[data-companion-theme="??"] #polaris-hope-fill { background: #ff0000 !important; }
+
+#polaris-content[data-companion-theme="??"] .glass-card {
+    border-left-color: #4a7c2a !important;
+    background: linear-gradient(135deg, rgba(74,124,42,0.05), rgba(0,0,0,0.6)) !important;
+}
+#polaris-content[data-companion-theme="??"] .text-teal { color: #66ff00 !important; text-shadow: 0 0 10px rgba(102, 255, 0, 0.5) !important; }
+#polaris-content[data-companion-theme="??"] #polaris-hope-fill { background: #66ff00 !important; }
+
+#polaris-content[data-companion-theme="??"] .glass-card {
+    border-left-color: #ffffff !important;
+    background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(0,0,0,0.6)) !important;
+}
+#polaris-content[data-companion-theme="??"] .text-teal { color: #ffffff !important; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5) !important; }
+#polaris-content[data-companion-theme="??"] #polaris-hope-fill { background: #ffffff !important; }
+
+#polaris-content[data-companion-theme="???"] .glass-card {
+    border-left-color: #555555 !important;
+    background: radial-gradient(circle at top right, rgba(255,255,255,0.05) 1px, transparent 1px), rgba(0,0,0,0.6) !important;
+    background-size: 15px 15px, 100% 100% !important;
+}
+#polaris-content[data-companion-theme="???"] .text-teal { color: #aaaaaa !important; }
+#polaris-content[data-companion-theme="???"] #polaris-hope-fill { background: #aaaaaa !important; }
+
+#polaris-content[data-companion-theme="????"] .glass-card {
+    border-left-color: #5d3fd3 !important;
+    background: linear-gradient(135deg, rgba(93,63,211,0.05), rgba(0,0,0,0.6)) !important;
+}
+#polaris-content[data-companion-theme="????"] .text-teal { color: #9d7cff !important; text-shadow: 0 0 10px rgba(157, 124, 255, 0.5) !important; }
+#polaris-content[data-companion-theme="????"] #polaris-hope-fill { background: #9d7cff !important; }
+
+#polaris-content[data-companion-theme="??"] .glass-card {
+    border-left-color: rgba(255,255,255,0.4) !important;
+    background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,0,0,0.3)) !important;
+    backdrop-filter: blur(8px) !important;
+}
+#polaris-content[data-companion-theme="??"] .text-teal { color: rgba(255,255,255,0.8) !important; }
+#polaris-content[data-companion-theme="??"] #polaris-hope-fill { background: rgba(255,255,255,0.8) !important; }

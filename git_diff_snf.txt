@@ -1,0 +1,1140 @@
+diff --git a/.github/copilot-instructions.md b/.github/copilot-instructions.md
+deleted file mode 100644
+index e50e559..0000000
+--- a/.github/copilot-instructions.md
++++ /dev/null
+@@ -1,36 +0,0 @@
+-# Copilot Instructions for State Not Fate
+-
+-This repository is a static PWA / public website. Treat it as a plain HTML/CSS/JavaScript app, not a framework or backend project.
+-
+-## Source of truth
+-- Primary source of truth: AGENTS.md.
+-- Secondary context: README.md, docs/AI-Systems-MOC.md, and docs/State-Not-Fate-MOC.md.
+-- Core app/deployment files include index.html, index.css, app.js, service-worker.js, manifest.json, package.json, package-lock.json, and netlify.toml.
+-
+-## Hard rules
+-- Do not migrate the app to React, TypeScript, a backend, or another framework unless explicitly requested.
+-- Do not change application architecture unless explicitly requested.
+-- Do not invent file paths.
+-- Do not change core app files unless the user explicitly approves the plan.
+-- Preserve browser localStorage state behavior; there is no backend state.
+-- Preserve the static Netlify deployment assumption and fallback redirect to index.html.
+-
+-## Safe workflow rules
+-1. Inspect relevant files before editing.
+-2. Produce a short plan before edits.
+-3. Name affected files before making changes.
+-4. Keep diffs small and reviewable.
+-5. Avoid unrelated refactors.
+-6. Preserve safety/crisis content, accessibility, SEO metadata, public site behavior, and PWA behavior.
+-7. Include acceptance criteria, validation steps, and rollback notes.
+-8. Ask for clarification when the requested change is ambiguous.
+-
+-## Validation guidance
+-- npm run serve starts the local static server from scripts/static-server.mjs.
+-- npm test runs the full Playwright suite.
+-- npm run test:public runs the public-facing Playwright tests.
+-
+-## Notes for future agents
+-- Edits to index.html may affect both the public landing page and the embedded app experience.
+-- Larger system or evidence-related changes should reference docs/AI-Systems-MOC.md and docs/State-Not-Fate-MOC.md.
+-- When in doubt, ask before applying a change.
+diff --git a/AGENTS.md b/AGENTS.md
+deleted file mode 100644
+index 96282af..0000000
+--- a/AGENTS.md
++++ /dev/null
+@@ -1,42 +0,0 @@
+-# AI Agent Instructions for State Not Fate
+-
+-## Purpose
+-This repository is a static PWA / public website for the State Not Fate recovery project. AI coding agents should treat it as a browser-first, no-framework static app with Playwright tests for quality checks.
+-
+-## Key Code Areas
+-- `index.html` - public landing page plus the embedded local app UI screens.
+-- `index.css` - site and app styling.
+-- `app.js` - primary application logic, onboarding flows, state management, PWA registration, and user interactions.
+-- `service-worker.js` - offline support and caching behavior for the PWA.
+-- `tests/public/` - Playwright end-to-end checks for homepage, accessibility, SEO, safety, and evidence pages.
+-- `package.json` - developer scripts and Playwright dependency.
+-- `netlify.toml` - static hosting configuration, client-side routing fallback, and security headers.
+-- `docs/` - extended architecture and systems thinking notes; link here rather than duplicating.
+-
+-## Recommended Agent Behavior
+-- Prefer minimal, precise changes. This is a static site, so do not introduce a JavaScript framework or server-side dependencies unless the user explicitly requests them.
+-- Preserve accessibility, SEO, and safety/care guidance. The site includes mental health safety content, crisis pages, and public-facing evidence resources.
+-- Keep PWA semantics intact: service worker registration, manifest usage, and `localStorage` state persistence are core behaviors.
+-- Use `npm test` and `npm run test:public` to validate changes with Playwright.
+-- Use `npm run serve` to run the local static server before verifying UI changes in a browser.
+-
+-## Build / Test Commands
+-- `npm install` - install dev dependencies
+-- `npm run serve` - launch the static server from `scripts/static-server.mjs`
+-- `npm test` - run full Playwright suite
+-- `npm run test:public` - run the public-facing test subset in `tests/public`
+-
+-## Important Notes
+-- This repo is not a framework-based app. It uses plain HTML, CSS, and vanilla JavaScript.
+-- Application state is sandboxed to the browser via `localStorage`; there is no backend state.
+-- Edits to `index.html` can affect both the public landing page and the embedded app experience.
+-- `netlify.toml` expects a static deployment with a fallback redirect to `index.html`.
+-- `docs/AI-Systems-MOC.md` and `docs/State-Not-Fate-MOC.md` contain domain context and should be referenced when adding larger system or evidence-related changes.
+-
+-## Useful Links
+-- `README.md` - project overview and phone/mobile sync notes
+-- `netlify.toml` - deployment and security header rules
+-- `tests/public/` - canonical acceptance tests for public site behavior
+-
+-## Suggested Next Customization
+-If we want stronger automation, add a skill for Playwright-based public site validation or a custom agent prompt targeting static PWA maintenance.
+diff --git a/app.js b/app.js
+index 7900b0c..d35e854 100644
+--- a/app.js
++++ b/app.js
+@@ -49,7 +49,10 @@
+             userAnchors: [],
+             firstUseDate: '',
+             tomorrowAnchor: '',
+-            personalBests: { longestStreak: 0, mostAnchorsInDay: 0, fastestRestart: null }
++            personalBests: { longestStreak: 0, mostAnchorsInDay: 0, fastestRestart: null },
++            polarisUpgrade: false,
++            polarisHistory: [],
++            polarisRestartLogs: []
+         };
+ 
+         let state = { ...DEFAULT_STATE };
+@@ -105,6 +108,7 @@
+         const tabs = {
+             dashboard: document.getElementById("tab-dashboard"),
+             polaris: document.getElementById("tab-polaris"),
++            momentum: document.getElementById("tab-momentum"),
+             safebox: document.getElementById("tab-safebox"),
+             mediaconsole: document.getElementById("tab-mediaconsole"),
+             progression: document.getElementById("tab-progression"),
+@@ -201,6 +205,9 @@
+                     if (state.firstUseDate === undefined) state.firstUseDate = '';
+                     if (state.tomorrowAnchor === undefined) state.tomorrowAnchor = '';
+                     if (state.personalBests === undefined) state.personalBests = { longestStreak: 0, mostAnchorsInDay: 0, fastestRestart: null };
++                    if (state.polarisUpgrade === undefined) state.polarisUpgrade = false;
++                    if (state.polarisHistory === undefined) state.polarisHistory = [];
++                    if (state.polarisRestartLogs === undefined) state.polarisRestartLogs = [];
+                     // Migrate polaris.anchors.today from array (v2/v3) to object (v4, ID-based)
+                     if (state.polaris && state.polaris.anchors && Array.isArray(state.polaris.anchors.today)) {
+                         state.polaris.anchors.today = {};
+@@ -329,7 +336,9 @@
+                 }
+             });
+ 
+-            if (tabId === "mediaconsole") {
++            if (tabId === "dashboard") {
++                renderDashboard();
++            } else if (tabId === "mediaconsole") {
+                 renderMediaConsole();
+             } else if (tabId === "progression") {
+                 renderProgressionDashboard();
+@@ -339,6 +348,8 @@
+                 renderDocumentCenter();
+             } else if (tabId === "polaris") {
+                 renderPolarisTab();
++            } else if (tabId === "momentum") {
++                renderMomentumTab();
+             }
+         }
+ 
+@@ -733,6 +744,15 @@
+         function renderDashboard() {
+             document.getElementById("dashboard-mantra-text").innerHTML = `"${state.customMantra}"`;
+             
++            const banner = document.getElementById("polaris-activation-banner");
++            if (banner) {
++                if (state.polarisUpgrade) {
++                    banner.classList.add("hidden");
++                } else {
++                    banner.classList.remove("hidden");
++                }
++            }
++
+             state.mantraCompletedToday = isMantraCompletedToday();
+             const mantraBtn = document.getElementById("btn-check-mantra");
+             if (state.mantraCompletedToday) {
+@@ -2818,6 +2838,285 @@
+             subtitleEl.textContent = subtitle;
+         }
+ 
++        // ==========================================================
++        // POLARIS 2.0 SYSTEM LOGIC FUNCTIONS
++        // ==========================================================
++
++        function activatePolarisUpgrade() {
++            ensurePolarisState();
++            state.polarisUpgrade = true;
++            // Migrate existing history to polarisHistory
++            if (state.history && state.history.length > 0 && state.polarisHistory.length === 0) {
++                state.polarisHistory = state.history.map(h => ({
++                    date: h.date,
++                    energy: h.energy || 'medium',
++                    phq9Score: (state.phq9History && state.phq9History.find(p => p.date === h.date)) ? state.phq9History.find(p => p.date === h.date).score : null,
++                    anchorsCompleted: h.completed ? h.completed.length : 0,
++                    floorCompleted: h.floorCompleted || false
++                }));
++            }
++            saveState();
++            // Hide the banner
++            const banner = document.getElementById("polaris-activation-banner");
++            if (banner) banner.classList.add("hidden");
++            
++            showToast("⚡ Polaris 2.0 Activated! Core assets and ledger records successfully migrated.", "success", 5000);
++            renderDashboard();
++            // Switch to momentum tab to show it off!
++            showTab("momentum");
++        }
++
++        function generateNarrativeProof() {
++            const h = state.history || [];
++            if (h.length === 0) {
++                return "PROOF: No check-in data recorded yet. Set your energy level and check off your first action to build your first data point.";
++            }
++            
++            // Filter low energy successes
++            const lowEnergySuccesses = h.filter(log => (log.energy === 'low' || log.energy === 'collapse') && (log.floorCompleted || log.mvdCompleted));
++            
++            // Calculate restarts
++            let restarts = [];
++            for (let i = 0; i < h.length - 1; i++) {
++                if (h[i].missed && (h[i+1].floorCompleted || h[i+1].mvdCompleted)) {
++                    restarts.push(h[i+1].date);
++                }
++            }
++            
++            const totalFloorDays = h.filter(log => log.floorCompleted).length;
++            
++            const proofs = [];
++            
++            if (lowEnergySuccesses.length > 0) {
++                const lastLow = lowEnergySuccesses[lowEnergySuccesses.length - 1];
++                proofs.push(`PROOF: On ${lastLow.date}, your energy was registered as ${lastLow.energy.toUpperCase()}, but you secured your biological floor. Action outpaced mood.`);
++            }
++            
++            if (restarts.length > 0) {
++                proofs.push(`PROOF: You successfully restarted on ${restarts[restarts.length - 1]} immediately following an incomplete day. Your restart speed is operational.`);
++            }
++            
++            if (totalFloorDays >= 3) {
++                proofs.push(`PROOF: You have defended your biological floor for ${totalFloorDays} days. This is not luck or inspiration; it is repeatable mechanical execution.`);
++            }
++            
++            // Default fallback proof
++            proofs.push(`PROOF: Your recovery OS is running. You have logged ${h.length} total active check-ins. Every log is evidence of agency.`);
++            
++            // Pick a random one from the generated proofs
++            const index = Math.floor(Math.random() * proofs.length);
++            return proofs[index];
++        }
++
++        function updateSimulatorProjections() {
++            const slider = document.getElementById("input-sim-rate");
++            if (!slider) return;
++            const pct = parseInt(slider.value);
++            
++            // Display values
++            const dailyTarget = Math.max(3, state.userAnchors.length);
++            const projectedDaily = (dailyTarget * (pct / 100)).toFixed(1);
++            
++            const simSliderVal = document.getElementById("sim-slider-val");
++            const simSliderPct = document.getElementById("sim-slider-pct");
++            if (simSliderVal) simSliderVal.textContent = projectedDaily;
++            if (simSliderPct) simSliderPct.textContent = pct + "%";
++            
++            const y1 = Math.round(365 * projectedDaily);
++            const y3 = Math.round(365 * 3 * projectedDaily);
++            const y5 = Math.round(365 * 5 * projectedDaily);
++            
++            const y1El = document.getElementById("sim-y1-count");
++            const y3El = document.getElementById("sim-y3-count");
++            const y5El = document.getElementById("sim-y5-count");
++            
++            if (y1El) y1El.textContent = y1.toLocaleString();
++            if (y3El) y3El.textContent = y3.toLocaleString();
++            if (y5El) y5El.textContent = y5.toLocaleString();
++            
++            // Calculate unlocks
++            // - 30% Rate: "Survival Floor Secured"
++            // - 50% Rate: "PRS Certification & entry-level peer work"
++            // - 80% Rate: "Cincinnati Integration & lead coordinator"
++            // - 95% Rate: "Master Recovery Partner"
++            const milestones = [];
++            if (pct >= 30) milestones.push('<span class="text-teal" style="font-weight:600;">Survival Floor Secured (30%)</span>');
++            else milestones.push('<span class="text-muted">Survival Floor Secured (Requires 30%)</span>');
++            
++            if (pct >= 50) milestones.push('<span class="text-teal" style="font-weight:600;">PRS Certification & Entry-Level Peer Work (50%)</span>');
++            else milestones.push('<span class="text-muted">PRS Certification & Entry-Level Peer Work (Requires 50%)</span>');
++            
++            if (pct >= 80) milestones.push('<span class="text-lavender" style="font-weight:600;">Cincinnati Integration & Lead Coordinator (80%)</span>');
++            else milestones.push('<span class="text-muted">Cincinnati Integration & Lead Coordinator (Requires 80%)</span>');
++            
++            if (pct >= 95) milestones.push('<span class="text-orange" style="font-weight:600;">Master Recovery Partner (95%)</span>');
++            else milestones.push('<span class="text-muted">Master Recovery Partner (Requires 95%)</span>');
++            
++            const milestoneEl = document.getElementById("sim-unlocked-milestones");
++            if (milestoneEl) {
++                milestoneEl.innerHTML = milestones.join("  |  ");
++            }
++        }
++
++        function renderMomentumTab() {
++            ensurePolarisState();
++            
++            // Update Living System State
++            const domPatternEl = document.getElementById("audit-dominant-pattern");
++            const hopeLvlEl = document.getElementById("audit-hope-level");
++            const resRateEl = document.getElementById("audit-resilience-rate");
++            const restartCountEl = document.getElementById("audit-restart-count");
++            const narrativeEl = document.getElementById("audit-narrative-statement");
++            
++            if (domPatternEl) domPatternEl.textContent = state.dominantPattern || "Rhythm Collapse";
++            
++            const hopeTitles = {
++                1: "Action is Possible",
++                2: "Action Causes Results",
++                3: "The Result Can Repeat",
++                4: "Repetition Stabilizes Life",
++                5: "Stability Supports a Future"
++            };
++            if (hopeLvlEl) {
++                hopeLvlEl.textContent = `Level ${state.currentHopeLevel || 1} - ${hopeTitles[state.currentHopeLevel || 1]}`;
++            }
++            
++            const resRate = calculateResilienceRate();
++            if (resRateEl) resRateEl.textContent = `${resRate}%`;
++            
++            // Calculate slumps / restarts
++            let restarts = 0;
++            const h = state.history || [];
++            for (let i = 0; i < h.length - 1; i++) {
++                if (h[i].missed && (h[i+1].floorCompleted || h[i+1].mvdCompleted)) {
++                    restarts++;
++                }
++            }
++            if (restartCountEl) restartCountEl.textContent = restarts;
++            
++            if (narrativeEl) {
++                narrativeEl.textContent = `"${generateNarrativeProof()}"`;
++            }
++            
++            // Update Year Simulator
++            updateSimulatorProjections();
++            
++            // Render 28-Day Momentum Grid
++            renderMomentumGrid();
++        }
++
++        function renderMomentumGrid() {
++            const grid = document.getElementById("momentum-grid");
++            if (!grid) return;
++            grid.innerHTML = "";
++            
++            const today = new Date();
++            const colors = {
++                unchecked: 'cell-unchecked',
++                floor: 'cell-floor',
++                full: 'cell-full',
++                slump: 'cell-slump',
++                emergency: 'cell-emergency'
++            };
++            
++            for (let i = 27; i >= 0; i--) {
++                const d = new Date(today);
++                d.setDate(today.getDate() - i);
++                const yyyy = d.getFullYear();
++                const mm = String(d.getMonth() + 1).padStart(2, '0');
++                const dd = String(d.getDate()).padStart(2, '0');
++                const dateStr = `${yyyy}-${mm}-${dd}`;
++                
++                const log = state.history.find(h => h.date === dateStr);
++                let cellClass = colors.unchecked;
++                let tooltip = `${dateStr}: Unchecked`;
++                
++                if (log) {
++                    const energyLabel = log.energy ? log.energy.toUpperCase() : 'MEDIUM';
++                    const completedCount = log.completed ? log.completed.length : 0;
++                    tooltip = `${dateStr} [${energyLabel}]: ${completedCount} actions completed`;
++                    
++                    if (log.energy === 'collapse') {
++                        if (log.floorCompleted || log.mvdCompleted) {
++                            cellClass = colors.floor;
++                            tooltip += " (Floor Win protected)";
++                        } else {
++                            cellClass = colors.emergency;
++                            tooltip += " (Emergency active)";
++                        }
++                    } else {
++                        if (log.floorCompleted) {
++                            cellClass = colors.full;
++                            tooltip += " (All completed)";
++                        } else if (log.mvdCompleted) {
++                            cellClass = colors.floor;
++                            tooltip += " (MVD Floor protected)";
++                        } else if (log.missed) {
++                            cellClass = colors.slump;
++                            tooltip += " (Slump Day)";
++                        } else {
++                            cellClass = colors.unchecked;
++                        }
++                    }
++                }
++                
++                const cell = document.createElement("div");
++                cell.className = `momentum-grid-cell ${cellClass}`;
++                cell.title = tooltip;
++                grid.appendChild(cell);
++            }
++        }
++
++        function exportAnonymizedAudit() {
++            ensurePolarisState();
++            
++            const resRate = calculateResilienceRate();
++            let restarts = 0;
++            const h = state.history || [];
++            for (let i = 0; i < h.length - 1; i++) {
++                if (h[i].missed && (h[i+1].floorCompleted || h[i+1].mvdCompleted)) {
++                    restarts++;
++                }
++            }
++            
++            const totalFloorDays = h.filter(log => log.floorCompleted).length;
++            const totalLogs = h.length;
++            const lowEnergyLogs = h.filter(log => log.energy === 'low' || log.energy === 'collapse').length;
++            
++            let phqTrend = "";
++            if (state.phq9History && state.phq9History.length > 0) {
++                phqTrend = state.phq9History.map(p => `- **${p.date}**: Score ${p.score}/27 (${p.severity})`).join("\n");
++            } else {
++                phqTrend = "No assessments recorded yet.";
++            }
++            
++            // Generate narrative statements list
++            const narrativeList = [];
++            const lowEnergySuccesses = h.filter(log => (log.energy === 'low' || log.energy === 'collapse') && (log.floorCompleted || log.mvdCompleted));
++            if (lowEnergySuccesses.length > 0) {
++                const lastLow = lowEnergySuccesses[lowEnergySuccesses.length - 1];
++                narrativeList.push(`- **Action > Mood**: On ${lastLow.date}, energy was low, but floor anchors were maintained.`);
++            }
++            if (totalFloorDays >= 3) {
++                narrativeList.push(`- **Consistency Proof**: Biological floor defended for ${totalFloorDays} days.`);
++            }
++            if (restarts > 0) {
++                narrativeList.push(`- **Restart Speed**: Verified immediate return-to-floor following collapse events.`);
++            }
++            if (narrativeList.length === 0) {
++                narrativeList.push("- No logs registered yet. Complete daily checklist items to generate narrative proofs.");
++            }
++            
++            const md = `# Polaris 2.0 Recovery Audit & Co-Pilot Sync\nAnonymized clinical progress tracker generated on ${new Date().toISOString().slice(0, 10)}.\n\n## 1. System Metrics\n- **Dominant Functional Pattern**: ${state.dominantPattern || 'Rhythm Collapse'}\n- **Current Hope Level**: Level ${state.currentHopeLevel || 1}\n- **Resilience Rating**: ${resRate}% (Restart success rate)\n- **Verified Streak Restarts**: ${restarts}\n- **Total Tracked Days**: ${totalLogs} days\n- **Low Energy / Collapse Days Managed**: ${lowEnergyLogs} days\n\n## 2. PHQ-9 Depressive Severity Trend\n${phqTrend}\n\n## 3. Narrative Verification Proofs\n${narrativeList.join("\n")}\n\n## 4. Substrate & Floor Configuration\n- **Morning Wake Target**: Wake on workdays by 7:30am (Circadian Lock)\n- **Active Anchors Count**: ${Math.max(3, state.userAnchors.length)} target anchors\n- **MVD Tasks**:\n  1. ${state.mvd[0]}\n  2. ${state.mvd[1]}\n  3. ${state.mvd[2]}\n\n---\n*Anonymity Statement: This report contains no personal identifiers (name, email, IP) and is formatted for copy-paste sharing into clinical vaults (e.g., Obsidian, Grok, therapist session notebooks).*`;
++
++            navigator.clipboard.writeText(md).then(() => {
++                showToast("📋 Anonymized Audit copied to clipboard successfully!", "success");
++            }).catch(err => {
++                console.error("Failed to copy clipboard:", err);
++                showToast("Failed to copy to clipboard. Please select manually.", "error");
++            });
++        }
++
+         window.PolarisUI = {
+             render: renderPolarisTab,
+             toggle: togglePolaris
+diff --git a/docs/AI-Systems-MOC.md b/docs/AI-Systems-MOC.md
+deleted file mode 100644
+index 7b4e7a2..0000000
+--- a/docs/AI-Systems-MOC.md
++++ /dev/null
+@@ -1,19 +0,0 @@
+-# AI Systems & Execution MOC
+-
+-**Hub for the AI coaching, prompt, and execution layers that operationalize State Not Fate principles in daily life (job, routines, money, social, low energy, decisions).**
+-
+-These systems share DNA with the SNF project: blunt execution operator, bottom-line first, no fluff/therapy/moralizing, **Ideal vs Realistic Move** given real constraints (energy, money, fog, transport), external memory via status/tracker files, proof/volume over perfection, one non-negotiable, restartable, low cognitive load.
+-
+-## Core Systems
+-- **AI Life Coach Friend**: Full local Markdown OS (see full folder in Drive). Daily ritual with status block updates, templates, trackers (job, money, daily_log), social translator, emotional playbook, low energy plans. Master instructions enforce the response format and rules.
+-- **David AI Prompt Library**: 12 action-oriented commands (job search pipeline, apply, resume, council, research, low energy execution, social calibration, weekly review, tool decider, AI setup audit). Master context includes specific bio, certs (PRS APS.006470), job targets (field tech priority, HVAC, PRS, warehouse etc.), constraints, and work history.
+-- **ANTI-GRAVITY 2.0 + Grok Build prompts** (grok_build_polaris_master_prompt_v2.md in this repo): The PWA-specific coaching layer encoding full architecture, energy model, Polaris protocols, exact PHQ-9, 5-year vision, personal facts, and fantasy boundary.
+-
+-## How They Tie to State Not Fate
+-Same principles: proof/anchors, low friction, restart without shame, ideal/realistic split, energy awareness, external memory, blunt tone. AI Life Coach + Prompt Library = execution tooling for stabilization (job search as floor-building). Anti-Gravity = the PWA coach (Polaris, Floor Win, etc.).
+-
+-Past conversations (Grok sessions) built/refined these and the PWA.
+-
+-**Usage**: Update status block daily. Use prompts + templates for action. Cross to PWA Polaris on low energy days.
+-
+-See the full MOC in Obsidian for details and links. These turn the philosophy into daily executable infrastructure.
+\ No newline at end of file
+diff --git a/docs/State-Not-Fate-MOC.md b/docs/State-Not-Fate-MOC.md
+deleted file mode 100644
+index dc3015a..0000000
+--- a/docs/State-Not-Fate-MOC.md
++++ /dev/null
+@@ -1,41 +0,0 @@
+-# State Not Fate MOC
+-
+-**Core knowledge hub for the Depression Recovery Operating System (State Not Fate / SNF Project).**
+-
+-This MOC ties together the canonical project documents (already distilled in the repo and Obsidian STATENOTFATE/), the lived philosophy, the PWA implementation, the AI coaching layer, personal context, and evidence base. It was built by sorting high-signal material from Google Drive (My Drive/CHATGPT_MASTER_context bundles, AI_Life_Coach_Friend), OneDrive (depression project docs, transcripts, plans), local hard drive (AI_Work prompts, ANTI_GRAVITY master prompt, Depapp overview, .grok sessions), and prior Grok/ChatGPT project conversations (explicitly referenced as source streams in the comprehensive bundles).
+-
+-## Quick Navigation (Piles)
+-- **Philosophy & Design Core**: 5-year-architecture-one-pager.md, grok_build_polaris_master_prompt_v2.md, anchor-library-v2.md, and the full set of canonical .md files in this repo + Obsidian STATENOTFATE/
+-- **Front-End / Hope / Intake**: evolving-intake-questionnaire.md and related in repo/Obsidian
+-- **Long Horizon**: 5-year-architecture-one-pager.md and five-year materials
+-- **Implementation / PWA + AI Engine**: See grok_build_polaris_master_prompt_v2.md, app.js, index.html, and the new Tech/ notes
+-- **AI Execution Layer**: AI Life Coach Friend system (blunt execution, status blocks, trackers) + David prompt library + Anti-Gravity Engine
+-- **Evidence & Rationale**: evidence.html, expanded_pubmed_evidence.json, pubmed_evidence.json
+-- **Source Bundles & Maps**: See the comprehensive PDFs in Drive (00_READ_THIS_FIRST_COMPREHENSIVE, Project File Map, Current Main Elements) and local copies
+-- **Conversations & Synthesis**: .grok/sessions records (build history for PWA, prompts, bundles) and the chat themes folded into the bundles
+-
+-## Core Principles (Stand-out Revelatory Connective Pieces)
+-- "State is information. Fate is a story we stop telling." (ANTI-GRAVITY 2.0). Current energy/mood/capacity/symptoms = data, never identity or permanent. Neuroplasticity via small repeated self-compassionate actions.
+-- Depression = multi-system assault (bio, psycho, social, behavioral, existential) that damages startup/initiation, reward registration, self-trust, future horizon. Not fixed by generic advice.
+-- Proof-based hope, not hype. Floor wins valid. Restart fidelity over compliance. "I restart without punishment."
+-- Energy sovereignty: 4 tiers (High / Medium / Low / Collapse) → MVD (Minimum Viable Day) + adaptive anchors/Polaris UI.
+-- Anchors + Mantras + Meditation + Circadian + Graded movement as load-bearing infrastructure.
+-- Stabilization before expansion. Ideal vs Realistic always distinguished.
+-- Human tone: blunt, precise, realistic, low-friction, no fluff/therapy/moralizing. Shared across PWA, prompts, and coaching.
+-- External memory & context engineering (AI Life Coach + trackers + status blocks + Obsidian/GitHub): "Context engineering beats clever prompting."
+-- AI as execution operator / Anti-Gravity Engine for the PWA.
+-- Fantasy boundary: Creative/roleplay (BE sources) strictly compartmentalized (GF MODE ON only).
+-- Professional care as primary: SNF is adjunctive self-management OS.
+-- Lived shaping: User's history (PRS cert, sober since 2019-11-01, job history, constraints of low money/energy/fog, fragile trust from instability/homelessness) demands low-friction, believable, restartable, non-moralizing design. 5-year vision: stable partnership + family in Cincinnati.
+-
+-## How the Piles Connect
+-- The PWA (app.js, index.html, Polaris) + prompts in this repo implement the model.
+-- Docs in this repo (the .md files) + Obsidian (STATENOTFATE/ + new Human/Tech/MOCS) + Drive bundles form the full knowledge system referenced in the Anti-Gravity prompt.
+-- Past Grok/Build sessions were used to build/debug the PWA, refine prompts, explore sources, and synthesize these MOCs.
+-
+-## Next Actions / Gaps
+-See the missing high-impact notes and comprehensive bundles. Update daily via Polaris anchors/proof and AI coach status blocks.
+-
+-**Sources of truth**: The files in this repo, Obsidian vault (OneDrive/Desktop/ObsidianVault/STATENOTFATE/ + Human/ + Tech/ + MOCS/), My Drive/OneDrive bundles, and .grok session history.
+-
+-*State, not fate. Build the infrastructure. Celebrate the floor wins.*
+\ No newline at end of file
+diff --git "a/ersrappdOneDriveDesktopSNF_Deploy\357\200\276" "b/ersrappdOneDriveDesktopSNF_Deploy\357\200\276"
+deleted file mode 100644
+index 81f840d..0000000
+--- "a/ersrappdOneDriveDesktopSNF_Deploy\357\200\276"
++++ /dev/null
+@@ -1,60 +0,0 @@
+-warning: in the working copy of '.github/copilot-instructions.md', LF will be replaced by CRLF the next time Git touches it
+-[1mdiff --git a/.github/copilot-instructions.md b/.github/copilot-instructions.md[m
+-[1mindex 7de5917..e50e559 100644[m
+-[1m--- a/.github/copilot-instructions.md[m
+-[1m+++ b/.github/copilot-instructions.md[m
+-[36m@@ -2,28 +2,35 @@[m
+- [m
+- This repository is a static PWA / public website. Treat it as a plain HTML/CSS/JavaScript app, not a framework or backend project.[m
+- [m
+-[31m-## What to know before editing[m
+-[31m-- Primary source of truth: `AGENTS.md`.[m
+-[31m-- Secondary context: `README.md` and `docs/AI-Systems-MOC.md`, `docs/State-Not-Fate-MOC.md`.[m
+-[31m-- Preserve the static PWA structure: `index.html`, `index.css`, `app.js`, `service-worker.js`, `manifest.json`, and `netlify.toml` are core assets.[m
+-[31m-- Do not change application architecture, migrate the app to a different stack, or add a backend.[m
+-[31m-- Do not change `index.html`, `app.js`, `index.css`, `service-worker.js`, `package.json`, or `package-lock.json` unless the user explicitly requests it.[m
+-[32m+[m[32m## Source of truth[m
+-[32m+[m[32m- Primary source of truth: AGENTS.md.[m
+-[32m+[m[32m- Secondary context: README.md, docs/AI-Systems-MOC.md, and docs/State-Not-Fate-MOC.md.[m
+-[32m+[m[32m- Core app/deployment files include index.html, index.css, app.js, service-worker.js, manifest.json, package.json, package-lock.json, and netlify.toml.[m
+-[32m+[m
+-[32m+[m[32m## Hard rules[m
+-[32m+[m[32m- Do not migrate the app to React, TypeScript, a backend, or another framework unless explicitly requested.[m
+-[32m+[m[32m- Do not change application architecture unless explicitly requested.[m
+-[32m+[m[32m- Do not invent file paths.[m
+-[32m+[m[32m- Do not change core app files unless the user explicitly approves the plan.[m
+-[32m+[m[32m- Preserve browser localStorage state behavior; there is no backend state.[m
+-[32m+[m[32m- Preserve the static Netlify deployment assumption and fallback redirect to index.html.[m
+- [m
+- ## Safe workflow rules[m
+-[31m-1. Inspect first: review the relevant files and tests before editing.[m
+-[31m-2. Plan before edits: summarize the proposed change, affected files, and validation path.[m
+-[31m-3. Keep diffs small: prefer targeted modifications and avoid broad refactors.[m
+-[31m-4. Preserve safety and accessibility: maintain crisis content, public-facing site integrity, SEO metadata, and PWA behavior.[m
+-[31m-5. Use existing tests: `npm test` and `npm run test:public` are the trusted validation steps.[m
+-[31m-6. Roll back if needed: commit or snapshot before changes, and use git to revert any unsafe edits.[m
+-[32m+[m[32m1. Inspect relevant files before editing.[m
+-[32m+[m[32m2. Produce a short plan before edits.[m
+-[32m+[m[32m3. Name affected files before making changes.[m
+-[32m+[m[32m4. Keep diffs small and reviewable.[m
+-[32m+[m[32m5. Avoid unrelated refactors.[m
+-[32m+[m[32m6. Preserve safety/crisis content, accessibility, SEO metadata, public site behavior, and PWA behavior.[m
+-[32m+[m[32m7. Include acceptance criteria, validation steps, and rollback notes.[m
+-[32m+[m[32m8. Ask for clarification when the requested change is ambiguous.[m
+- [m
+- ## Validation guidance[m
+-[31m-- `npm run serve` to start the local static server from `scripts/static-server.mjs`.[m
+-[31m-- `npm test` to run the full Playwright suite.[m
+-[31m-- `npm run test:public` to run the public-facing Playwright tests.[m
+-[32m+[m[32m- npm run serve starts the local static server from scripts/static-server.mjs.[m
+-[32m+[m[32m- npm test runs the full Playwright suite.[m
+-[32m+[m[32m- npm run test:public runs the public-facing Playwright tests.[m
+- [m
+- ## Notes for future agents[m
+-[31m-- This repo stores state in browser `localStorage`; there is no backend state.[m
+-[31m-- Edits to `index.html` may affect both the public landing page and the embedded app experience.[m
+-[31m-- `netlify.toml` uses a static redirect fallback to `index.html`; preserve this deployment assumption.[m
+-[31m-- When in doubt, ask for clarification before applying a change.[m
+-[32m+[m[32m- Edits to index.html may affect both the public landing page and the embedded app experience.[m
+-[32m+[m[32m- Larger system or evidence-related changes should reference docs/AI-Systems-MOC.md and docs/State-Not-Fate-MOC.md.[m
+-[32m+[m[32m- When in doubt, ask before applying a change.[m
+diff --git a/index.css b/index.css
+index 637f9ab..d6fc730 100644
+--- a/index.css
++++ b/index.css
+@@ -1567,3 +1567,52 @@
+                 grid-template-columns: 1fr;
+             }
+         }
++
++        /* ==========================================================
++         * POLARIS 2.0 MOMENTUM & AUDIT STYLES
++         * ========================================================== */
++        .momentum-grid-cell {
++            width: 20px;
++            height: 20px;
++            border-radius: 4px;
++            background: rgba(255, 255, 255, 0.03);
++            border: 1px solid var(--card-border);
++            transition: all 0.2s ease;
++            cursor: pointer;
++            position: relative;
++        }
++
++        .momentum-grid-cell:hover {
++            transform: scale(1.15);
++            border-color: var(--card-border-focus);
++            z-index: 10;
++        }
++
++        .momentum-grid-cell.cell-unchecked {
++            background: rgba(255, 255, 255, 0.03);
++            border: 1px solid var(--card-border);
++        }
++
++        .momentum-grid-cell.cell-floor {
++            background: var(--accent-teal-dim);
++            border-color: rgba(20, 200, 175, 0.4);
++            box-shadow: 0 0 4px rgba(20, 200, 175, 0.2);
++        }
++
++        .momentum-grid-cell.cell-full {
++            background: var(--accent-teal);
++            border-color: var(--accent-teal);
++            box-shadow: 0 0 8px rgba(20, 200, 175, 0.4);
++        }
++
++        .momentum-grid-cell.cell-slump {
++            background: var(--accent-orange-dim);
++            border-color: rgba(240, 115, 30, 0.4);
++            box-shadow: 0 0 4px rgba(240, 115, 30, 0.2);
++        }
++
++        .momentum-grid-cell.cell-emergency {
++            background: var(--accent-red-glow);
++            border: 1px solid var(--accent-red);
++            box-shadow: 0 0 6px rgba(230, 40, 60, 0.3);
++        }
+diff --git a/index.html b/index.html
+index 926eb88..f29ebb3 100644
+--- a/index.html
++++ b/index.html
+@@ -457,6 +457,7 @@
+             <div class="app-tabs">
+                 <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+                 <button class="tab-btn" data-tab="polaris">🜁 Polaris</button>   
++                <button class="tab-btn" data-tab="momentum">Momentum & Audit 📊</button>
+                 <button class="tab-btn" data-tab="safebox" id="btn-tab-safebox">Crisis Safe Box <span class="text-red">⚠</span></button>
+                 <button class="tab-btn" data-tab="mediaconsole">Media Console</button>
+                 <button class="tab-btn" data-tab="progression">Progression</button>
+@@ -470,6 +471,17 @@
+             <!-- TAB 1: MAIN DASHBOARD VIEW -->
+             <div id="tab-dashboard" class="tab-content">
+                 
++                <!-- Polaris Upgrade Activation Banner -->
++                <div id="polaris-activation-banner" class="glass-card hidden" style="background: linear-gradient(135deg, rgba(20, 200, 175, 0.1), rgba(165, 120, 240, 0.1)); border-color: var(--accent-teal); margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; padding: 1.25rem;">
++                    <div style="flex: 1; min-width: 280px; text-align: left;">
++                        <h3 style="color: var(--accent-teal); margin-bottom: 0.25rem;">🜁 Upgrade to Polaris 2.0 System</h3>
++                        <p class="text-secondary" style="font-size: 0.85rem; margin: 0; font-weight: 300;">Unlock the Momentum Tab, Adaptive Year Simulator, and auto-generated proof logs. Your current local data will be migrated safely.</p>
++                    </div>
++                    <button class="btn btn-primary" onclick="activatePolarisUpgrade()" style="background: var(--accent-teal); border-color: var(--accent-teal); color: #0b0f13; font-weight: 600; padding: 0.6rem 1.25rem;">
++                        ⚡ Activate Polaris
++                    </button>
++                </div>
++                
+                 <!-- Master Custom Mantra Display (Center Stage) -->
+                 <div class="master-mantra-card glass-card">
+                     <span class="master-mantra-badge">Identity Shield Mantra</span>
+@@ -703,6 +715,97 @@
+     </div>
+ </div>
+ 
++            <!-- ========================================== -->
++            <!-- TAB 1.5: MOMENTUM & AUDIT VIEW             -->
++            <!-- ========================================== -->
++            <div id="tab-momentum" class="tab-content hidden">
++                <div class="glass-card" style="max-width: 800px; margin: 0 auto; padding: 1.75rem;">
++                    <h2 class="mb-2 text-lavender" style="display:flex; align-items:center; gap:0.5rem;">📊 Momentum & System Audit</h2>
++                    <p class="text-muted mb-3" style="font-weight: 300;">Your recovery operating system. Powered by evidence, tracked via cumulative milestones, and exported for clinical co-pilot review.</p>
++
++                    <!-- Row 1: Living System State & Narrative Proof -->
++                    <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
++                        <!-- Living System State -->
++                        <div class="glass-card" style="padding:1.25rem; background:rgba(165, 120, 240, 0.03); border-color:var(--accent-lavender-dim);">
++                            <h3 style="font-size:1rem; color:var(--accent-lavender); margin-bottom:0.75rem;">Living System State</h3>
++                            <div style="display:flex; flex-direction:column; gap:0.5rem; font-size:0.9rem;">
++                                <div><strong>Dominant Pattern:</strong> <span id="audit-dominant-pattern" class="text-lavender">Rhythm Collapse</span></div>
++                                <div><strong>Current Hope Level:</strong> <span id="audit-hope-level" class="text-teal">Level 1 - Action is Possible</span></div>
++                                <div><strong>Resilience Score:</strong> <span id="audit-resilience-rate" class="text-orange">100%</span></div>
++                                <div><strong>Streak Restarts:</strong> <span id="audit-restart-count">0</span></div>
++                            </div>
++                        </div>
++
++                        <!-- Active Narrative Proof Statement -->
++                        <div class="glass-card" style="padding:1.25rem; background:rgba(20, 200, 175, 0.03); border-color:rgba(20,200,175,0.25);">
++                            <h3 style="font-size:1rem; color:var(--accent-teal); margin-bottom:0.75rem;">Narrative Proof Statement</h3>
++                            <p id="audit-narrative-statement" style="font-size:0.9rem; line-height:1.4; color:var(--text-primary); font-weight: 300;">
++                                "No audit logs found. Complete daily anchors to register proof."
++                            </p>
++                        </div>
++                    </div>
++
++                    <!-- Row 2: Adaptive Year Simulator -->
++                    <div class="glass-card mb-3" style="padding:1.5rem;">
++                        <h3 style="font-size:1.1rem; color:var(--text-primary); margin-bottom:0.5rem;">Adaptive Year Simulator (Five-Year Manual)</h3>
++                        <p class="text-muted" style="font-size:0.85rem; margin-bottom:1rem; font-weight: 300;">Simulate how small daily anchors scale over 1, 3, and 5 years. Move the slider to set your projected daily completion rate.</p>
++                        
++                        <div style="margin-bottom:1.25rem;">
++                            <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem; font-size:0.9rem;">
++                                <span>Projected Daily Anchors Completed: <strong id="sim-slider-val" class="text-teal">2.0</strong></span>
++                                <span>Consistency Rate: <strong id="sim-slider-pct" class="text-lavender">80%</strong></span>
++                            </div>
++                            <input type="range" id="input-sim-rate" min="10" max="100" step="5" value="80" style="width:100%; accent-color:var(--accent-teal); height:6px; background:rgba(255,255,255,0.1); border-radius:3px; cursor:pointer;" oninput="updateSimulatorProjections()">
++                        </div>
++
++                        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:1rem; text-align:center; margin-bottom:1rem;">
++                            <div style="background:rgba(0,0,0,0.15); padding:0.75rem; border-radius:var(--radius-sm);">
++                                <div class="text-muted" style="font-size:0.75rem; text-transform:uppercase;">Year 1</div>
++                                <div id="sim-y1-count" style="font-size:1.5rem; font-weight:700; color:var(--accent-teal); margin:0.25rem 0;">0</div>
++                                <div class="text-muted" style="font-size:0.7rem;">Completed Anchors</div>
++                            </div>
++                            <div style="background:rgba(0,0,0,0.15); padding:0.75rem; border-radius:var(--radius-sm);">
++                                <div class="text-muted" style="font-size:0.75rem; text-transform:uppercase;">Year 3</div>
++                                <div id="sim-y3-count" style="font-size:1.5rem; font-weight:700; color:var(--accent-lavender); margin:0.25rem 0;">0</div>
++                                <div class="text-muted" style="font-size:0.7rem;">Completed Anchors</div>
++                            </div>
++                            <div style="background:rgba(0,0,0,0.15); padding:0.75rem; border-radius:var(--radius-sm);">
++                                <div class="text-muted" style="font-size:0.75rem; text-transform:uppercase;">Year 5</div>
++                                <div id="sim-y5-count" style="font-size:1.5rem; font-weight:700; color:var(--accent-orange); margin:0.25rem 0;">0</div>
++                                <div class="text-muted" style="font-size:0.7rem;">Completed Anchors</div>
++                            </div>
++                        </div>
++
++                        <!-- Milestone unlock card -->
++                        <div id="sim-milestone-card" class="glass-card" style="background:rgba(165,120,240,0.04); border-color:rgba(165,120,240,0.15); padding:0.85rem 1rem; font-size:0.85rem; line-height:1.45; text-align: left;">
++                            <strong>Unlocked Milestones:</strong> <span id="sim-unlocked-milestones">Loading...</span>
++                        </div>
++                    </div>
++
++                    <!-- Row 3: 28-Day Momentum Grid -->
++                    <div class="glass-card mb-3" style="padding:1.25rem;">
++                        <h3 style="font-size:1rem; color:var(--text-secondary); margin-bottom:0.75rem;">28-Day Momentum Grid</h3>
++                        <div id="momentum-grid" style="display:flex; gap:0.4rem; justify-content:center; flex-wrap:wrap; padding:0.5rem 0;"></div>
++                        <div style="display:flex; justify-content:center; gap:1.25rem; font-size:0.75rem; margin-top:0.75rem; color:var(--text-muted); flex-wrap: wrap;">
++                            <span style="display:flex; align-items:center; gap:0.25rem;"><div style="width:10px; height:10px; background:rgba(255,255,255,0.03); border:1px solid var(--card-border);"></div> Unchecked</span>
++                            <span style="display:flex; align-items:center; gap:0.25rem;"><div style="width:10px; height:10px; background:var(--accent-teal-dim);"></div> Floor Win (MVD)</span>
++                            <span style="display:flex; align-items:center; gap:0.25rem;"><div style="width:10px; height:10px; background:var(--accent-teal);"></div> Full Completed</span>
++                            <span style="display:flex; align-items:center; gap:0.25rem;"><div style="width:10px; height:10px; background:var(--accent-orange-dim);"></div> Slump Day</span>
++                            <span style="display:flex; align-items:center; gap:0.25rem;"><div style="width:10px; height:10px; background:var(--accent-red-glow); border:1px solid var(--accent-red);"></div> Emergency Mode</span>
++                        </div>
++                    </div>
++
++                    <!-- Row 4: Auto-Audit Exporter -->
++                    <div class="glass-card" style="padding:1.25rem; background:rgba(255,255,255,0.01);">
++                        <h3 style="font-size:1rem; color:var(--text-primary); margin-bottom:0.25rem;">Auto-Audit & Co-Pilot Sync</h3>
++                        <p class="text-muted" style="font-size:0.8rem; margin-bottom:0.75rem; font-weight: 300;">Generate a completely private, anonymized clinical briefing of your state history and proof statements to copy-paste into Grok, Obsidian, or Tonya's session notes.</p>
++                        <button class="btn btn-primary" onclick="exportAnonymizedAudit()" style="background:var(--accent-teal); border-color:var(--accent-teal); color:#0b0f13; font-size:0.85rem; padding:0.6rem 1.25rem; justify-content:center; width: 100%;">
++                            📋 Copy Anonymized Audit (Markdown)
++                        </button>
++                    </div>
++                </div>
++            </div>
++
+             <!-- TAB 2: CRISIS SAFE BOX VIEW -->
+             <div id="tab-safebox" class="tab-content hidden">
+                 <div class="glass-card">
+diff --git a/netlify.toml b/netlify.toml
+index 768c907..2eb7f3a 100644
+--- a/netlify.toml
++++ b/netlify.toml
+@@ -1,4 +1,5 @@
+ [build]
++  publish = "."
+   command = ""
+ 
+ [context.production]
+@@ -8,33 +9,3 @@
+   from = "/*"
+   to = "/index.html"
+   status = 200
+-
+-# Security and caching headers for all resources
+-[[headers]]
+-  for = "/*"
+-  [headers.values]
+-    X-Frame-Options = "DENY"
+-    X-XSS-Protection = "1; mode=block"
+-    X-Content-Type-Options = "nosniff"
+-    Referrer-Policy = "same-origin"
+-    Content-Security-Policy = "default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; media-src 'self' data: https:; connect-src 'self' https:; child-src 'self' https:;"
+-    Cache-Control = "public, max-age=0, must-revalidate"
+-
+-# Cache-control for static scripts
+-[[headers]]
+-  for = "/*.js"
+-  [headers.values]
+-    Cache-Control = "public, max-age=31536000, immutable"
+-
+-# Cache-control for static stylesheets
+-[[headers]]
+-  for = "/*.css"
+-  [headers.values]
+-    Cache-Control = "public, max-age=31536000, immutable"
+-
+-# Cache-control for knowledge media files
+-[[headers]]
+-  for = "/knowledge/*"
+-  [headers.values]
+-    Cache-Control = "public, max-age=31536000, immutable"
+-
+diff --git a/space_cadet_guide.md b/space_cadet_guide.md
+deleted file mode 100644
+index dafafb8..0000000
+--- a/space_cadet_guide.md
++++ /dev/null
+@@ -1,141 +0,0 @@
+-# Space Cadet Guide — State Not Fate
+-
+-You are here.
+-It is okay if you do not remember.
+-We have cataloged your system, your workspace, and your files below so you don't have to carry the mental load.
+-
+----
+-
+-## 1. Grounding / First Action
+-If you are feeling spaced out, overwhelmed, or unable to start:
+-* **The Floor Option:** Place both feet flat on the floor and stand up once.
+-* **The No-Debt Rule:** There is no catch-up debt. You do not need to read everything or remember what you did yesterday.
+-* **Action Beats Understanding:** One tiny action (even a 30-second transition) is proof of progress. 
+-
+----
+-
+-## 2. Where Everything Is (System Map)
+-
+-### 📂 Obsidian Vault (Your Brain Repository)
+-* **Location:** `C:\Users\rappd\OneDrive\Desktop\ObsidianVault`
+-* **Project Folder:** `STATENOTFATE`
+-* **What we did today:** We gathered all loose project files from your desktop backups and organized them into your Obsidian vault under the `STATENOTFATE` folder. This includes all project outlines, clinical preamble worksheets, canonical 5-year models, and intake questionnaires.
+-
+-### 💻 Active Web Development Workspace
+-* **Location:** `C:\Users\rappd\OneDrive\Desktop\SNF_Deploy`
+-* **Git Repository:** [rappdavid62/StateNotFate](https://github.com/rappdavid62/StateNotFate)
+-* **Current Branch:** `SNF`
+-* **Status:** Clean and fully up to date with the remote repository. 
+-> [!NOTE]
+-> We fixed a corruption in the local Git database today by replacing missing object packfiles with a clean pull and restoring the files. The working tree is now 100% clean and correct.
+-
+-### 🎥 Stabilizing Media & Knowledge Assets
+-* **Location:** `C:\Users\rappd\OneDrive\Desktop\SNF_Deploy\knowledge` (and backed up in `State_Not_Fate_Recovery\DOCS\knowledge`)
+-* **What it contains:** 8 stabilizing MP4 video guide files:
+-  1. `State,_Not_A_Fate.mp4` (~70 MB)
+-  2. `The_Broken_Firmware__A_Mechanical_Guide_to_Depression.mp4` (~46 MB)
+-  3. `The_Reprogramming_Protocol__Debugging_Depression.mp4` (~58 MB)
+-  4. `The_Depression_Project.mp4` (~58 MB)
+-  5. `The_Mechanics_of_State_vs.mp4` / `(1).mp4` (~46 MB each)
+-  6. `Developing_a_Clinical_Trial_Community_Outreach_Action_Plan.mp4` (~33 MB)
+-  7. `6_minute_synopsis.mp4` (~33 MB)
+-
+-### 📦 Master Project Archive
+-* **Location:** `C:\Users\rappd\OneDrive\Desktop\depression project master`
+-* **Details:** This contains 7.3 GB of original source documents, including a massive 6.2 GB backup archive `OneDrive_2026-04-18.zip`.
+-
+----
+-
+-## 3. What You Were Working On
+-You are building the **Polaris / Smart Welcome / Adaptive Recovery Profile** layer into the State Not Fate PWA.
+-* **Product Purpose:** Depression is treated as a temporary *current state* and execution system failure, not a permanent identity. The app helps bridge the execution gap by suggesting tiny, low-friction physical actions (anchors).
+-* **Smart Welcome Paths:** When a user enters, they are routed through one of four options:
+-  1. *Start Small* (Collapse mode/state selector)
+-  2. *Explore Full Program* (Open access, no locks)
+-  3. *Personalize More* (Adaptive Recovery Profile questionnaire)
+-  4. *Emergency Floor* (Safety/stabilization routing)
+-
+----
+-
+-## 4. How to Resume Work (Quick Commands)
+-When you are ready to code or inspect the app, open PowerShell in the project directory:
+-
+-```powershell
+-# 1. Navigate to the web deployment folder
+-cd C:\Users\rappd\OneDrive\Desktop\SNF_Deploy
+-
+-# 2. Check current status
+-git status
+-
+-# 3. Launch the local development server to test the PWA
+-npm run dev
+-```
+-
+-Remember: **State, not fate.** Pausing is allowed. Progress never resets.
+-
+----
+-
+-## 5. Integrated AI Prompts & Commands
+-If you are working with an AI assistant (Grok, Claude, ChatGPT, or Antigravity), use these short command codes. The details are documented in [universal_prompt_and_skill_library.md](file:///C:/Users/rappd/OneDrive/Desktop/ObsidianVault/STATENOTFATE/universal_prompt_and_skill_library.md):
+-
+-*   **`/tp` — Thoroughness Protocol:** Forces the AI to stop, reality-check runway/energy, identify uncertainty, evaluate risks, and scale down the plan.
+-*   **`/council` — Strategic Decision:** Summons a panel of virtual experts to debate and recommend direct, blunt next actions.
+-*   **`/prs` — Peer Recovery Specialist:** Triggers clinical self-management tone and low-friction baseline biological flooring.
+-*   **`/tech` — Technical Operator:** Triggers checklists and procedural plans for HVAC, low-voltage, or field technician jobs.
+-*   **`/ops` — Logistics & Distribution:** Triggers warehouse, inventory, and logistics operations routing.
+-*   **`/coach` — Employment Coach:** Triggers resume tailoring, daily job search pipelines, and email/message drafting.
+-
+----
+-
+-## 6. Keyboard Shortcuts Cheat-Sheet
+-Use these aligned shortcuts to speed up execution and reduce friction:
+-
+-| Action | Obsidian | VS Code | Web PWA / Browser |
+-| :--- | :--- | :--- | :--- |
+-| **Global Search** | `Ctrl + Shift + F` | `Ctrl + Shift + F` | `Ctrl + Shift + F` (DevTools) |
+-| **Quick Open File** | `Ctrl + O` | `Ctrl + P` | `Ctrl + P` (Sources) |
+-| **New Note / File** | `Ctrl + N` | `Ctrl + N` | `Ctrl + T` (New Tab) |
+-| **Command Palette** | `Ctrl + P` (Command mode) | `Ctrl + Shift + P` | `F12` or `Ctrl + Shift + I` |
+-| **Close Active Tab** | `Ctrl + W` | `Ctrl + W` | `Ctrl + W` |
+-| **Focus Terminal** | N/A | `Ctrl + \`` | `Ctrl + \`` (Dev Server) |
+-| **PWA Sync/Refresh** | N/A | N/A | `Ctrl + F5` (Force Reload) |
+-
+-
+----
+-
+-## 7. Obsidian Git Sync Guide (Cross-Device Sync)
+-
+-We have successfully configured your Windows PC to sync your notes to a private GitHub repository. To link your phone and tablet, follow these steps:
+-
+-### Part A: Generate a GitHub Personal Access Token (PAT)
+-Since GitHub requires secure authentication, you must generate a Personal Access Token (PAT) to log in on your phone and tablet:
+-1. **On your PC**: Go to [GitHub Settings](https://github.com/settings/tokens).
+-   *(Or navigate on github.com: Click your profile picture -> Settings -> Developer Settings -> Personal Access Tokens -> Tokens (classic))*
+-2. Click **Generate new token** -> **Generate new token (classic)**.
+-3. Set **Note** to: `Obsidian Mobile Sync`.
+-4. Set **Expiration** to: `No expiration` (or a long duration so you don't have to re-auth frequently).
+-5. In the scopes list, check the top box for **`repo`** (Full control of private repositories).
+-6. Scroll to the bottom and click **Generate token**.
+-7. **Important**: Copy the generated token immediately (starts with `ghp_`). Write it down or send it to your mobile devices securely (e.g. via encrypted chat, email, or notepad).
+-
+-### Part B: Clone the Vault on Phone & Tablet
+-1. Install **Obsidian** on your phone/tablet from the App Store (iOS) or Play Store (Android).
+-2. Create a **new empty vault** on your mobile device (name it `ObsidianVault`).
+-3. Enable Community Plugins:
+-   - Open Obsidian Settings -> Community Plugins -> click **Turn on community plugins**.
+-4. Search for and install the **Obsidian Git** plugin:
+-   - Click **Browse**, search for `Obsidian Git`.
+-   - Click **Install**, then click **Enable**.
+-5. Configure Authentication and Clone:
+-   - Go to the **Obsidian Git** plugin settings.
+-   - Run the command to clone your repository (you can also trigger this via the Obsidian Command Palette: `Ctrl + P` or swipe down on mobile -> type `Git: Clone`).
+-   - Enter your repository URL: `https://github.com/rappdavid62/ObsidianVault.git`
+-   - Enter your GitHub username: `rappdavid62`
+-   - Enter your GitHub Personal Access Token (the `ghp_...` token) as your password.
+-6. Once authenticated, the plugin will clone your entire vault onto your device.
+-
+-### Part C: Configure Auto-Sync
+-In the **Obsidian Git** settings on all devices (PC, phone, tablet), configure the following for automated sync:
+-* **Vault backup interval (minutes)**: Set to `5` or `10` (commits and pushes changes automatically).
+-* **Pull updates on startup**: Enable (fetches any changes made on other devices when you open Obsidian).
+-* **Push on backup**: Enable.
+diff --git a/universal_prompt_and_skill_library.md b/universal_prompt_and_skill_library.md
+deleted file mode 100644
+index 23449c8..0000000
+--- a/universal_prompt_and_skill_library.md
++++ /dev/null
+@@ -1,172 +0,0 @@
+-# Universal Prompt, Skill, & Command Center OS
+-## A Unified Interface for State Not Fate, AI Life Coach, and the Strategic Council
+-
+-This document is your **Universal Command Center**. It unifies your prompt library, custom instructions, and the `/council` decision-making protocol. It defines the universal **`/tp` (Thoroughness Protocol)**, sets up smart **Expert Lanes**, and aligns **Keyboard Shortcuts** across your programs.
+-
+----
+-
+-## 1. Universal Command Protocols
+-
+-### 🧠 `/tp` — Thoroughness Protocol
+-Use this flag at the beginning of any query when you need the AI to stop, double-check its work, and avoid superficial advice.
+-
+-```text
+-/tp
+-
+-INSTRUCTIONS FOR THE AI OPERATOR:
+-1. STOP and allocate reasoning steps before responding.
+-2. PERFORM A REALITY CHECK: Identify the user's current status block, energy constraints, and financial runway.
+-3. DETECT UNCERTAINTY: Explicitly state what you know, what you do not know, and what is speculation.
+-4. OUTLINE RISKS: Identify potential bottlenecks, friction points, or failure modes in the proposed actions.
+-5. SCALE THE PLAN: Separate the "Ideal Move" (optimal) from the "Realistic Move" (today's energy/money floor).
+-6. FORMAT: Start with the "Bottom Line" and end with a single "Exact Next Action."
+-```
+-
+----
+-
+-### 🏛️ `/council` — Strategic Decision Framework
+-Use this protocol for complex, high-consequence decisions (jobs, finances, routines, health, or legal-ish matters).
+-
+-```text
+-/council
+-
+-INSTRUCTIONS FOR THE AI OPERATOR:
+-1. ACT AS THE COUNCIL: Convene a virtual panel of 3-4 specialized experts tailored to the task (e.g., Peer Recovery Supervisor, HVAC Master Technician, Logistics Director, Financial Runway Planner).
+-2. DEBATE: Have the experts analyze the situation from their specific angles, pointing out blind spots and operational friction.
+-3. CONVERGE: Reconcile their viewpoints into a unified, pragmatic recommendation.
+-4. FORMAT:
+-   - Bottom Line: One-sentence strategic decision.
+-   - The Council Debate: A brief exchange showing opposing views or constraints.
+-   - Realistic Move vs. Ideal Move: Staged actions based on current energy/budget.
+-   - Exact Next Action: The highest-leverage task to do next.
+-```
+-
+----
+-
+-## 2. Smart Prompts & Expert Lanes
+-
+-When invoking these prompts, the AI automatically assigns itself the relevant role, ensuring clinical safety, operational realism, or technical precision.
+-
+-### 👥 `/prs` — Peer Recovery Support Specialist
+-*For clinical flooring, intake questionnaires, self-management, and safety routing.*
+-
+-```text
+-/prs
+-
+-ROLE ASSIGNMENT: You are an Ohio-Certified Peer Recovery Supporter (License APS.006470). You operate under the guidelines of NICE NG222 and VA/DoD MDD self-management.
+-Tone: Calm, grounded, non-judgmental, direct.
+-Rules:
+-- Treat depression as a temporary state and system failure, not an identity.
+-- Never use shame-inducing language or catch-up pressure.
+-- Scale every recommendation to the user's current energy state (MVD flooring).
+-- Bypasses administrative complexity; focus on immediate biological traction first.
+-```
+-
+-### 🔧 `/tech` — Field & Technical Operations Expert
+-*For HVAC apprentice, low-voltage, security alarm, fiber/cable, and facilities maintenance roles.*
+-
+-```text
+-/tech
+-
+-ROLE ASSIGNMENT: You are an experienced Field Operations Lead and Master HVAC Technician.
+-Tone: Practical, safety-first, procedural, blunt.
+-Rules:
+-- Standardize all technical plans into checklists.
+-- Explain trade logic, tools required, and physical steps clearly.
+-- Keep job search advice focused on apprenticeships, helper roles, and certifications.
+-```
+-
+-### 📦 `/ops` — Logistics & Distribution Lead
+-*For warehouse, packing, driver helper, shipping/receiving, and inventory roles.*
+-
+-```text
+-/ops
+-
+-ROLE ASSIGNMENT: You are a Warehouse and Logistics Operations Manager.
+-Tone: Efficient, process-oriented, timeline-driven.
+-Rules:
+-- Focus on throughput, physical stamina maintenance, and routine execution.
+-- Prioritize high-volume, low-friction entry routes for logistics applications.
+-```
+-
+-### 💼 `/coach` — Life Coach & Employment Operator
+-*For resume tailoring, cover letters, daily job searches, and routine calibration.*
+-
+-```text
+-/coach
+-
+-ROLE ASSIGNMENT: You are a blunt, practical AI operating partner.
+-Tone: Solution-focused, data-driven, direct.
+-Rules:
+-- Start with a Bottom Line.
+-- Compare options using numbers (runway weeks, application volume, follow-up rates).
+-- Output exact copy-paste drafts for emails, applications, or messages.
+-```
+-
+----
+-
+-## 3. Keyboard Shortcuts Alignment
+-
+-To keep execution high-speed and low-friction, use these standardized shortcuts across your tools:
+-
+-| Action | Obsidian | VS Code | Web PWA / Browser |
+-| :--- | :--- | :--- | :--- |
+-| **Global Search** | `Ctrl + Shift + F` | `Ctrl + Shift + F` | `Ctrl + Shift + F` (DevTools) |
+-| **Quick Open File** | `Ctrl + O` | `Ctrl + P` | `Ctrl + P` (Sources) |
+-| **New Note / File** | `Ctrl + N` | `Ctrl + N` | `Ctrl + T` (New Tab) |
+-| **Command Palette** | `Ctrl + P` (Command mode) | `Ctrl + Shift + P` | `F12` or `Ctrl + Shift + I` |
+-| **Close Active Tab** | `Ctrl + W` | `Ctrl + W` | `Ctrl + W` |
+-| **Focus Terminal** | N/A | `Ctrl + \`` | `Ctrl + \`` (Dev Server) |
+-| **PWA Sync/Refresh** | N/A | N/A | `Ctrl + F5` (Force Reload) |
+-| **Playwright Tests**| N/A | N/A | `npx playwright test` |
+-
+----
+-
+-## 4. Universal Command Library
+-
+-Below are your standard daily templates. Copy and paste them with your current status block.
+-
+-### 01. Tailor My Resume (`/resume`)
+-```text
+-/coach
+-Task: Tailor my resume for a specific job post.
+-Job Post:
+-[paste job post]
+-My Current Resume:
+-[paste resume]
+-Output:
+-- Bottom Line: Tailoring rationale.
+-- Tailored Professional Summary.
+-- Bullet point adjustments (highlighting HVAC, moving, packing, or PRS cert).
+-- Tailored cover letter draft.
+-```
+-
+-### 02. Low Energy Execution Plan (`/low`)
+-```text
+-/prs
+-Task: Create a plan for today. My energy state is LOW/COLLAPSE.
+-Current Status Block:
+-[paste status block]
+-Output:
+-- Bottom Line: The floor plan for today.
+-- 3 Tiny Anchors to stabilize biological baseline.
+-- What tasks to pause or defer without shame.
+-- One non-negotiable floor win that preserves progress.
+-```
+-
+-### 03. Social Calibration & Drafting (`/social`)
+-```text
+-/coach
+-Task: Draft a message response for a social or professional thread.
+-Situation:
+-[describe context]
+-Incoming Message:
+-[paste message if applicable]
+-Rules:
+-- Low cognitive overhead.
+-- No emotional venting or justification.
+-- Tone: Polite, direct, clear.
+-Output:
+-- Bottom Line: Communication strategy.
+-- Copy-paste response draft.
+-```
