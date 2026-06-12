@@ -633,11 +633,14 @@
                 </div>
             </div>
 
-            <!-- Day Message -->
-            <div id="polaris-day-message" class="glass-card" style="background: rgba(20, 200, 175, 0.04); border-color: rgba(20, 200, 175, 0.15); padding: 1rem; margin-bottom: 1rem;">
-                <div class="text-teal" style="font-size: 0.75rem; text-transform: uppercase; font-weight: 600; margin-bottom: 0.25rem;">Today</div>
-                <div id="polaris-message-text" style="font-size: 0.95rem; line-height: 1.5; color: var(--text-primary);">Loading...</div>
-                <div class="text-muted" style="font-size: 0.75rem; margin-top: 0.5rem;">Energy: <span id="polaris-energy-badge" class="badge badge-medium" style="font-size: 0.65rem; padding: 0.1rem 0.4rem;">MEDIUM</span></div>
+            <!-- Day Message with Companion -->
+            <div id="polaris-day-message" class="glass-card" style="background: rgba(20, 200, 175, 0.04); border-color: rgba(20, 200, 175, 0.15); padding: 1rem; margin-bottom: 1rem; display: flex; gap: 1rem; align-items: flex-start;">
+                <div id="polaris-companion-avatar" style="font-size: 2.5rem; line-height: 1; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); display: none;"></div>
+                <div style="flex: 1;">
+                    <div class="text-teal" style="font-size: 0.75rem; text-transform: uppercase; font-weight: 600; margin-bottom: 0.25rem;">Today</div>
+                    <div id="polaris-message-text" style="font-size: 0.95rem; line-height: 1.5; color: var(--text-primary);">Loading...</div>
+                    <div class="text-muted" style="font-size: 0.75rem; margin-top: 0.5rem;">Energy: <span id="polaris-energy-badge" class="badge badge-medium" style="font-size: 0.65rem; padding: 0.1rem 0.4rem;">MEDIUM</span></div>
+                </div>
             </div>
 
             <!-- Gap Notice (hidden by default) -->
@@ -700,6 +703,21 @@
                     <button class="btn btn-secondary" onclick="polarisRestart()" style="padding: 0.5rem 1rem; font-size: 0.8rem; color: var(--accent-teal); border-color: rgba(20, 200, 175, 0.3);">↻ Restart Day</button>
                 </div>
                 <div id="polaris-resilience-info" class="text-muted" style="font-size: 0.75rem; margin-top: 0.5rem;"></div>
+            </div>
+
+            <!-- Companion Settings -->
+            <div id="polaris-companion-settings" class="glass-card" style="background: rgba(165, 120, 240, 0.04); border-color: rgba(165, 120, 240, 0.15); padding: 1rem; margin-bottom: 1rem;">
+                <h3 style="font-size: 0.95rem; font-weight: 600; color: var(--accent-lavender); margin: 0 0 0.5rem 0;">Companion Presence</h3>
+                <p class="text-muted" style="font-size: 0.8rem; margin-bottom: 0.75rem;">Select a calm, slightly mythic presence to accompany you.</p>
+                <div id="companion-selector-list" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <button class="btn btn-secondary" onclick="setPolarisCompanion('')" style="padding: 0.5rem; font-size: 1.2rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" title="None">🚫</button>
+                    <button class="btn btn-secondary" onclick="setPolarisCompanion('🦇')" style="padding: 0.5rem; font-size: 1.2rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" title="Bat">🦇</button>
+                    <button class="btn btn-secondary" onclick="setPolarisCompanion('💀')" style="padding: 0.5rem; font-size: 1.2rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" title="Skeleton">💀</button>
+                    <button class="btn btn-secondary" onclick="setPolarisCompanion('👻')" style="padding: 0.5rem; font-size: 1.2rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" title="Ghost">👻</button>
+                    <button class="btn btn-secondary" onclick="setPolarisCompanion('🐻')" style="padding: 0.5rem; font-size: 1.2rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" title="Bear">🐻</button>
+                    <button class="btn btn-secondary" onclick="setPolarisCompanion('🦅')" style="padding: 0.5rem; font-size: 1.2rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" title="Raven">🦅</button>
+                    <button class="btn btn-secondary" onclick="setPolarisCompanion('🦋')" style="padding: 0.5rem; font-size: 1.2rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" title="Moth">🦋</button>
+                </div>
             </div>
 
             <!-- Settings -->
@@ -1444,6 +1462,43 @@
                     <button class="btn btn-primary" id="btn-download-export-briefing" style="background: var(--accent-teal); border-color: var(--accent-teal); color: #0b0f13; font-weight:600;">Download Briefing (.md)</button>
                 </div>
             </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- STATE SELECTOR SCREEN (Smart Welcome)      -->
+        <!-- ========================================== -->
+        <div id="screen-stateSelector" class="screen hidden">
+            <div class="glass-card" style="max-width: 460px; width: 100%; padding: 2rem;">
+                <h2 style="font-size: 1.25rem; font-weight: 600; color: var(--accent-lavender); margin-bottom: 0.5rem; text-align: center;">What is blocking action right now?</h2>
+                <p class="text-muted" style="text-align: center; margin-bottom: 1.5rem; font-size: 0.9rem;">No analysis needed. Just pick the floor.</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <button class="btn btn-secondary w-full" onclick="executeTinyAnchor('initiation')" style="padding: 1rem; text-align: left;">
+                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">🧱</span> I can't start
+                    </button>
+                    <button class="btn btn-secondary w-full" onclick="executeTinyAnchor('rhythm')" style="padding: 1rem; text-align: left;">
+                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">⏳</span> My rhythm is broken
+                    </button>
+                    <button class="btn btn-secondary w-full" onclick="executeTinyAnchor('space')" style="padding: 1rem; text-align: left;">
+                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">🗑️</span> My space is dragging me down
+                    </button>
+                    <button class="btn btn-secondary w-full" onclick="executeTinyAnchor('body')" style="padding: 1rem; text-align: left;">
+                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">💧</span> My body needs the floor
+                    </button>
+                    <button class="btn btn-secondary w-full" onclick="executeTinyAnchor('mind')" style="padding: 1rem; text-align: left;">
+                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">🌪️</span> My mind is spiraling
+                    </button>
+                    <button class="btn btn-danger w-full" onclick="goToEmergencyFloor()" style="padding: 1rem; text-align: left; margin-top: 1rem;">
+                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">🚨</span> Emergency mode
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- LOCK / PIN SCREEN                          -->
+        <!-- ========================================== -->
+        <div id="screen-lock" class="screen hidden">
         </div>
 
         <!-- ========================================== -->

@@ -2283,6 +2283,53 @@
         window.focusChecklist = focusChecklist;
 
 
+        function showSmartWelcomeScreen() {
+            // Check if we should show the Smart Welcome instead of just the generic welcome
+            const today = getTodayString();
+            if (state.polaris && state.polaris.day && state.polaris.day.lastCheckInDate !== today) {
+                // If it's a new day, route to the Welcome / Re-entry screen
+                showScreen("welcome");
+            } else {
+                showScreen("welcome"); // fallback to existing welcome
+            }
+        }
+
+        function executeTinyAnchor(category) {
+            // Map the category to a specific Tiny Anchor based on Master Prompt Rules
+            const map = {
+                initiation: { id: 'tiny_stand', text: 'Put both feet on the floor and stand once', isGeneric: true },
+                rhythm: { id: 'tiny_light', text: 'Open blinds or stand by a window for 30 seconds', isGeneric: true },
+                space: { id: 'tiny_trash', text: 'Put one visible piece of trash in a bin', isGeneric: true },
+                body: { id: 'tiny_water', text: 'Drink water or take prescribed meds if due', isGeneric: true },
+                mind: { id: 'tiny_mind', text: 'Say "This is a state, not a fate," then touch one physical object and name it', isGeneric: true }
+            };
+            
+            const anchor = map[category];
+            if (!anchor) return;
+            
+            // Set energy to low/collapse equivalent implicitly
+            state.todayEnergy = 'low';
+            
+            // Add it to today's active anchors list dynamically
+            if (!state.polaris.anchors.today) state.polaris.anchors.today = {};
+            state.polaris.anchors.today[anchor.id] = false; // Mark incomplete
+            
+            // We want to immediately show the Polaris tab with this anchor listed
+            saveState();
+            
+            // We temporarily add it to userAnchors so it renders, or we handle it via getAnchorsForToday
+            // Let's just push it to the top of the user anchors for today
+            if (!state.userAnchors.some(a => a.id === anchor.id)) {
+                state.userAnchors.unshift(anchor);
+            }
+            
+            showScreen("dashboard");
+            showTab("polaris");
+            renderPolarisTab();
+            
+            showToast("Tiny anchor activated. You only need to do this one thing.", "info", 6000);
+        }
+
         function startSmallAction() {
             // Opens state selector for immediate small action path
             showScreen('stateSelector');
@@ -2471,6 +2518,19 @@
             return map[dayState] || map.medium;
         }
 
+        function getCompanionMessage(dayState, defaultMsg) {
+            // Give the companion a slightly mythic/calm voice if enabled, overriding the default message
+            if (!state.polaris.profile.companionSkin) return defaultMsg;
+            
+            const map = {
+                high: 'The path is clear. Execute, then rest.',
+                medium: 'Anchor the day. Keep it simple.',
+                low: 'I am here. The floor remains. Do what you can.',
+                collapse: 'Rest. There is no failure on the floor.'
+            };
+            return map[dayState] || defaultMsg;
+        }
+
         function getAnchorsForToday(dayState) {
             // Collapse: always show generic floor items
             if (dayState === 'collapse') {
@@ -2494,6 +2554,18 @@
             }
             // No user anchors + medium/high: return empty (show "add first anchor" prompt)
             return [];
+        }
+
+        function setPolarisCompanion(skinEmoji) {
+            ensurePolarisState();
+            state.polaris.profile.companionSkin = skinEmoji;
+            saveState();
+            renderPolarisTab();
+            if (skinEmoji) {
+                showToast(`Companion selected: ${skinEmoji}`, "success");
+            } else {
+                showToast("Companion hidden.", "success");
+            }
         }
 
         // ---- RENDER: Main Polaris Tab ----
@@ -2537,7 +2609,8 @@
             state.polaris.day.lastCheckInDate = today;
 
             const dayState = (state.todayEnergy || 'medium').toLowerCase();
-            const message = getPolarisMessage(dayState);
+            let message = getPolarisMessage(dayState);
+            message = getCompanionMessage(dayState, message);
 
             // B2: Day counter
             const dayCounterEl = document.getElementById('polaris-day-counter');
@@ -2546,12 +2619,20 @@
             // B5: Hope level
             renderPolarisHopeLevel();
 
-            // Day message
+            // Day message and Companion Avatar
             document.getElementById('polaris-message-text').textContent = message;
             const energyBadge = document.getElementById('polaris-energy-badge');
             energyBadge.textContent = dayState.toUpperCase();
             energyBadge.className = 'badge badge-' + dayState;
             energyBadge.style.cssText = 'font-size: 0.65rem; padding: 0.1rem 0.4rem;';
+            
+            const avatarEl = document.getElementById('polaris-companion-avatar');
+            if (state.polaris.profile.companionSkin) {
+                avatarEl.textContent = state.polaris.profile.companionSkin;
+                avatarEl.style.display = 'block';
+            } else {
+                avatarEl.style.display = 'none';
+            }
 
             // B3: Gap notice
             renderGapNotice();
@@ -2983,9 +3064,9 @@
             showToast('Day restarted. Anchors reset.', 'info');
         }
 
-        function showSmartWelcomeScreen() {
-            showScreen("welcome");
-        }
+        // function showSmartWelcomeScreen() {
+        //     showScreen("welcome");
+        // }
 
         function executeMatchedFirstMove() {
             const energy = state.todayEnergy || "medium";
