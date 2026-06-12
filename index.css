@@ -2,41 +2,41 @@
 
         :root {
             /* Color Palette */
-            --bg-primary: hsl(220, 15%, 8%);
-            --bg-secondary: hsl(220, 15%, 11%);
-            --card-bg: rgba(26, 32, 44, 0.65);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --card-border-focus: rgba(255, 255, 255, 0.2);
+            --bg-primary: #07070a;
+            --bg-secondary: #0f0f14;
+            --card-bg: rgba(12, 12, 16, 0.85);
+            --card-border: rgba(0, 255, 200, 0.15);
+            --card-border-focus: rgba(0, 255, 200, 0.8);
             
-            --text-primary: hsl(220, 10%, 93%);
-            --text-secondary: hsl(220, 10%, 68%);
-            --text-muted: hsl(220, 10%, 54%);
+            --text-primary: #f0f0f5;
+            --text-secondary: #a0a0b0;
+            --text-muted: #606070;
             
-            /* Accents & Glows */
-            --accent-teal: hsl(175, 75%, 45%);
-            --accent-teal-dim: hsl(175, 50%, 30%);
-            --accent-teal-glow: rgba(20, 200, 175, 0.15);
+            /* Accents & Glows (Neon Cyberpunk/HUD) */
+            --accent-teal: hsl(180, 100%, 50%);
+            --accent-teal-dim: hsl(180, 100%, 20%);
+            --accent-teal-glow: rgba(0, 255, 255, 0.25);
             
-            --accent-orange: hsl(28, 85%, 55%);
-            --accent-orange-dim: hsl(28, 60%, 35%);
-            --accent-orange-glow: rgba(240, 115, 30, 0.15);
+            --accent-orange: hsl(40, 100%, 55%);
+            --accent-orange-dim: hsl(40, 100%, 20%);
+            --accent-orange-glow: rgba(255, 170, 0, 0.25);
             
-            --accent-lavender: hsl(260, 60%, 65%);
-            --accent-lavender-dim: hsl(260, 45%, 45%);
-            --accent-lavender-glow: rgba(165, 120, 240, 0.15);
+            --accent-lavender: hsl(300, 100%, 65%);
+            --accent-lavender-dim: hsl(300, 100%, 25%);
+            --accent-lavender-glow: rgba(255, 80, 255, 0.25);
             
-            --accent-red: hsl(355, 75%, 50%);
-            --accent-red-glow: rgba(230, 40, 60, 0.2);
+            --accent-red: hsl(0, 100%, 60%);
+            --accent-red-glow: rgba(255, 50, 50, 0.25);
 
             /* Fonts & Radii */
             --font-sans: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            --radius-sm: 8px;
-            --radius-md: 14px;
-            --radius-lg: 24px;
+            --radius-sm: 2px;
+            --radius-md: 4px;
+            --radius-lg: 8px;
             
-            --shadow-main: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
-            --transition-fast: 0.15s ease;
-            --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-main: 0 4px 15px rgba(0, 0, 0, 0.8);
+            --transition-fast: 0.1s ease;
+            --transition-normal: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* Reset & Scrollbar */
@@ -80,36 +80,41 @@
             flex-direction: column;
         }
 
-        /* Glassmorphic Utilities */
+        /* Glassmorphic Utilities -> HUD Cards */
         .glass-card {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
             border: 1px solid var(--card-border);
+            border-left: 2px solid var(--accent-teal-dim);
             border-radius: var(--radius-md);
             padding: 1.75rem;
             box-shadow: var(--shadow-main);
-            transition: border-color var(--transition-normal), transform var(--transition-fast);
+            transition: all var(--transition-normal);
         }
 
         .glass-card:hover {
             border-color: var(--card-border-focus);
+            border-left: 2px solid var(--accent-teal);
+            background: rgba(18, 18, 24, 0.95);
         }
 
-        /* Typography styling */
+        /* Typography styling -> HUD Type */
         h1, h2, h3, h4 {
-            font-weight: 600;
-            letter-spacing: -0.02em;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
             color: var(--text-primary);
         }
 
         p {
             color: var(--text-secondary);
-            font-weight: 300;
+            font-weight: 400;
+            letter-spacing: 0.02em;
         }
 
         strong {
-            font-weight: 500;
+            font-weight: 600;
             color: var(--text-primary);
         }
 
@@ -125,12 +130,12 @@
         }
 
         .logo-header {
-            font-size: 2.75rem;
+            font-size: 3rem;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--text-primary) 30%, var(--accent-lavender) 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-primary);
+            text-shadow: 0 0 10px var(--accent-teal-glow), 0 0 20px var(--accent-teal-glow);
             margin-bottom: 0.75rem;
         }
 
@@ -167,16 +172,18 @@
             font-weight: bold;
         }
 
-        /* Buttons */
+        /* Buttons -> HUD Actions */
         .btn {
             font-family: var(--font-sans);
-            font-weight: 500;
-            font-size: 0.95rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
             padding: 0.8rem 1.75rem;
             border-radius: var(--radius-sm);
             border: 1px solid transparent;
             cursor: pointer;
-            transition: all var(--transition-fast);
+            transition: all 0.1s ease;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
@@ -184,46 +191,53 @@
         }
 
         .btn-primary {
-            background-color: var(--accent-teal);
-            color: #0b0f13;
+            background-color: var(--accent-teal-dim);
+            border-color: var(--accent-teal);
+            color: var(--text-primary);
         }
 
         .btn-primary:hover {
-            background-color: hsl(175, 80%, 52%);
-            box-shadow: 0 0 15px rgba(20, 200, 175, 0.4);
+            background-color: var(--accent-teal);
+            color: #000;
+            box-shadow: 0 0 15px var(--accent-teal-glow);
             transform: translateY(-1px);
         }
 
         .btn-secondary {
-            background-color: transparent;
+            background-color: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--card-border);
             color: var(--text-primary);
         }
 
         .btn-secondary:hover {
-            border-color: var(--text-muted);
-            background: rgba(255, 255, 255, 0.03);
+            border-color: var(--accent-teal);
+            background: rgba(0, 255, 200, 0.05);
+            color: var(--accent-teal);
         }
 
         .btn-orange {
-            background-color: var(--accent-orange);
-            color: #0c0803;
+            background-color: var(--accent-orange-dim);
+            border-color: var(--accent-orange);
+            color: var(--text-primary);
         }
 
         .btn-orange:hover {
-            background-color: hsl(28, 90%, 60%);
-            box-shadow: 0 0 15px rgba(240, 115, 30, 0.4);
+            background-color: var(--accent-orange);
+            color: #000;
+            box-shadow: 0 0 15px var(--accent-orange-glow);
             transform: translateY(-1px);
         }
 
         .btn-danger {
-            background-color: var(--accent-red);
-            color: #fff;
+            background-color: rgba(255, 0, 0, 0.1);
+            border-color: var(--accent-red);
+            color: var(--accent-red);
         }
 
         .btn-danger:hover {
-            background-color: hsl(355, 85%, 55%);
-            box-shadow: 0 0 15px rgba(230, 40, 60, 0.4);
+            background-color: var(--accent-red);
+            color: #fff;
+            box-shadow: 0 0 15px var(--accent-red-glow);
         }
 
         .w-full {
