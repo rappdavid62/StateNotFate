@@ -76,23 +76,60 @@
             { title: "The Mechanics of State vs. Fate", file: "The_Mechanics_of_State_vs.mp4", type: "video", duration: "47:55" },
             { title: "The 6-Minute System Synopsis", file: "6_minute_synopsis.mp4", type: "video", duration: "6:00" }
         ];
-        const COMPANION_QUESTIONS = [
-            "I feel slowed down or weighed down much of the day.",
-            "My day feels harder to start than it should.",
-            "My depressive state is reducing how much life I can carry.",
-            "Basic tasks feel disproportionately expensive.",
-            "I lose large amounts of time to drifting, freezing, or shutting down.",
-            "My functioning is worse than my mood alone would suggest.",
-            "I feel less able to handle ordinary stress than I used to.",
-            "I am letting important tasks pile up because they feel too heavy.",
-            "My depression is damaging work, school, or household functioning.",
-            "I am having trouble maintaining hygiene or basic self-care.",
-            "My appetite or eating pattern has become less reliable.",
-            "I feel disconnected from pleasure, interest, or reward.",
-            "I feel like my range of action has narrowed.",
-            "Small setbacks hit me harder than they should.",
-            "My current functioning feels fragile or inconsistent."
-        ];
+        const COMPANION_QUESTION_TREE = {
+            "q1": {
+                text: "I feel slowed down or weighed down much of the day.",
+                next: { "0": "q2", "1": "q2", "2": "q1_a", "3": "q1_a", "4": "q1_a", "default": "q2" }
+            },
+            "q1_a": {
+                text: "Is this physical heaviness mostly happening in the morning?",
+                next: { "default": "q2" }
+            },
+            "q2": {
+                text: "My day feels harder to start than it should.",
+                next: { "0": "q3", "1": "q3", "2": "q2_a", "3": "q2_a", "4": "q2_a", "default": "q3" }
+            },
+            "q2_a": {
+                text: "Do you often stay in bed longer than intended specifically to avoid starting?",
+                next: { "default": "q3" }
+            },
+            "q3": {
+                text: "My depressive state is reducing how much life I can carry.",
+                next: { "default": "q4" }
+            },
+            "q4": {
+                text: "Basic tasks feel disproportionately expensive.",
+                next: { "default": "q5" }
+            },
+            "q5": {
+                text: "I lose large amounts of time to drifting, freezing, or shutting down.",
+                next: { "0": "q6", "1": "q6", "2": "q5_a", "3": "q5_a", "4": "q5_a", "default": "q6" }
+            },
+            "q5_a": {
+                text: "Does the shutting down usually happen after a specific trigger, or just randomly?",
+                next: { "default": "q6" }
+            },
+            "q6": {
+                text: "My functioning is worse than my mood alone would suggest.",
+                next: { "default": "q7" }
+            },
+            "q7": {
+                text: "I feel less able to handle ordinary stress than I used to.",
+                next: { "default": "q8" }
+            },
+            "q8": {
+                text: "I am letting important tasks pile up because they feel too heavy.",
+                next: { "default": "q9" }
+            },
+            "q9": {
+                text: "My depression is damaging work, school, or household functioning.",
+                next: { "default": "q10" }
+            },
+            "q10": {
+                text: "I am having trouble maintaining hygiene or basic self-care.",
+                next: { "default": "done" } // Ends the MVP tree here
+            }
+        };
 
         const PHQ9_QUESTIONS = [
             "Little interest or pleasure in doing things.",
@@ -2503,8 +2540,11 @@
                     enabled: true,
                     questionsAnswered: {},
                     lastQuestionDate: null,
-                    currentQuestionId: 0
+                    currentQuestionId: "q1"
                 };
+            } else if (typeof state.polaris.profile.evolvingIntake.currentQuestionId === 'number') {
+                // Migration from flat array to tree structure
+                state.polaris.profile.evolvingIntake.currentQuestionId = "q1";
             }
             if (!state.polaris.questionnaire) state.polaris.questionnaire = {};
             if (!state.polaris.routing) state.polaris.routing = {};
@@ -2614,7 +2654,20 @@
             // Save the answer
             intake.questionsAnswered[qId] = score;
             intake.lastQuestionDate = getTodayString();
-            intake.currentQuestionId++;
+            
+            // Determine next question
+            const currentQ = COMPANION_QUESTION_TREE[qId];
+            if (currentQ && currentQ.next) {
+                if (currentQ.next[score] !== undefined) {
+                    intake.currentQuestionId = currentQ.next[score];
+                } else if (currentQ.next["default"] !== undefined) {
+                    intake.currentQuestionId = currentQ.next["default"];
+                } else {
+                    intake.currentQuestionId = "done";
+                }
+            } else {
+                intake.currentQuestionId = "done";
+            }
             
             saveState();
             renderPolarisTab();
@@ -2712,8 +2765,9 @@
 
             const qCard = document.getElementById('polaris-companion-question');
             if (qCard) {
-                if (intake.enabled && state.polaris.profile.companionSkin && intake.lastQuestionDate !== getTodayString() && intake.currentQuestionId < COMPANION_QUESTIONS.length) {
-                    document.getElementById('companion-question-text').textContent = COMPANION_QUESTIONS[intake.currentQuestionId];
+                const currentQ = COMPANION_QUESTION_TREE[intake.currentQuestionId];
+                if (intake.enabled && state.polaris.profile.companionSkin && intake.lastQuestionDate !== getTodayString() && intake.currentQuestionId !== "done" && currentQ) {
+                    document.getElementById('companion-question-text').textContent = currentQ.text;
                     qCard.classList.remove('hidden');
                 } else {
                     qCard.classList.add('hidden');
