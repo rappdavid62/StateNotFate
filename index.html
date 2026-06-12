@@ -9,7 +9,7 @@
     <meta property="og:description" content="A public-facing, source-grounded depression project with adjunctive tools, crisis boundaries, and a private local beta app.">
     <meta property="og:type" content="website">
     <link rel="canonical" href="http://127.0.0.1:4173/">
-    <link rel="stylesheet" href="index.css?v=2.5">
+    <link rel="stylesheet" href="index.css?v=2.6">
 </head>
 <body>
     <a class="skip-link" href="#public-main">Skip to public project information</a>
@@ -765,6 +765,41 @@
                 </div>
             </div>
 
+            <!-- Polaris Interactive Chat Console (HUD style) -->
+            <div id="polaris-chat-container" class="polaris-chat-container">
+                <div class="polaris-chat-scanlines"></div>
+                <div class="polaris-chat-header">
+                    <span>🜁 Polaris Co-Pilot Sync</span>
+                </div>
+                <div id="polaris-chat-messages" class="polaris-chat-messages">
+                    <!-- Loaded dynamically -->
+                    <div class="polaris-chat-message system">
+                        <div class="polaris-chat-message-meta">
+                            <span>Polaris</span>
+                            <span class="chat-time">--:--</span>
+                        </div>
+                        Secure channel established. Ready to check functional alignment. Say anything to begin.
+                    </div>
+                </div>
+                <!-- Typing Indicator -->
+                <div id="polaris-chat-typing" class="polaris-chat-typing hidden">
+                    <span>Syncing neural firmware</span>
+                    <div class="polaris-chat-dot"></div>
+                    <div class="polaris-chat-dot"></div>
+                    <div class="polaris-chat-dot"></div>
+                </div>
+                <!-- Quick suggestions helper -->
+                <div id="polaris-chat-quick-actions" style="display: flex; gap: 0.35rem; padding: 0.5rem; flex-wrap: wrap; background: rgba(0,0,0,0.5); border-top: 1px solid rgba(255,255,255,0.05);">
+                    <button class="btn btn-secondary" onclick="sendQuickPolarisPrompt('Suggest next move')" style="font-size: 0.7rem; padding: 0.2rem 0.4rem; color: var(--accent-teal); border-color: rgba(20,200,175,0.2);">🜁 Suggest Next Move</button>
+                    <button class="btn btn-secondary" onclick="sendQuickPolarisPrompt('Check biological floor')" style="font-size: 0.7rem; padding: 0.2rem 0.4rem; color: var(--accent-lavender); border-color: rgba(165,120,240,0.2);">🔒 Check Biological Floor</button>
+                    <button class="btn btn-secondary" onclick="sendQuickPolarisPrompt('Decompress shame spiral')" style="font-size: 0.7rem; padding: 0.2rem 0.4rem; color: var(--accent-orange); border-color: rgba(240,115,30,0.2);">🔥 Decompress Shame Spiral</button>
+                </div>
+                <div class="polaris-chat-input-area">
+                    <input type="text" id="polaris-chat-input" class="polaris-chat-input" placeholder="Type functional telemetry..." onkeydown="if(event.key==='Enter') sendPolarisChatMessage()">
+                    <button class="polaris-chat-send" onclick="sendPolarisChatMessage()">SEND</button>
+                </div>
+            </div>
+
             <!-- Settings -->
             <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
                 <button class="btn btn-primary" onclick="showTab('dashboard')" style="padding: 0.5rem 1rem; font-size: 0.8rem; background: var(--accent-lavender); border-color: var(--accent-lavender); color: #0b0f13; font-weight: 600;">📊 View Full Dashboard</button>
@@ -1262,6 +1297,28 @@
                         </div>
                     </div>
 
+                    <!-- POLARIS AI CONFIGURATION PANEL -->
+                    <div class="glass-card" style="background: rgba(20, 200, 175, 0.015); border-color: rgba(20, 200, 175, 0.12); padding: 1.5rem; margin-top: 1.5rem;">
+                        <div class="safebox-header" style="margin-bottom:0.5rem;">
+                            <h3 class="text-teal" style="display:flex; align-items:center; gap:0.5rem; margin:0;">🜁 Polaris AI Sync Settings</h3>
+                            <span class="badge" style="background: var(--accent-teal); color:#0c0803; font-weight:600; font-size:0.7rem; padding:0.2rem 0.5rem;">AI Co-Pilot</span>
+                        </div>
+                        <p class="text-muted mb-3" style="font-size:0.8rem; line-height:1.45;">
+                            Configure the local OpenAI API integration. All processing happens directly in your browser. Your key is stored only in local browser memory.
+                        </p>
+
+                        <div class="safebox-grid style-settings-grid" style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label style="font-size:0.85rem; font-weight:600; color:var(--text-primary);">OpenAI API Key:</label>
+                                <div style="display: flex; gap: 0.5rem; margin-top: 0.35rem;">
+                                    <input type="password" id="input-openai-key" placeholder="sk-proj-..." style="font-size:0.85rem; padding:0.6rem; flex: 1; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sm); color: var(--text-primary);">
+                                    <button class="btn btn-secondary" onclick="saveOpenAIKey()" style="padding:0.6rem 1rem; font-size:0.8rem; border-color: rgba(20, 200, 175, 0.3); color: var(--accent-teal);">Save Key</button>
+                                </div>
+                                <div id="openai-key-status" class="text-muted" style="font-size:0.75rem; margin-top:0.4rem;">Checking key source...</div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -1563,6 +1620,6 @@
     <!-- Toast Notification Container -->
     <div id="toast-container" style="position: fixed; top: 1rem; right: 1rem; z-index: 10000; display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none; max-width: 380px;"></div>
 
-    <script src="app.js?v=2.5"></script>
+    <script src="app.js?v=2.6"></script>
 </body>
 </html>

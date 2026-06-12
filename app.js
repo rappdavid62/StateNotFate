@@ -432,6 +432,7 @@ const COMPANION_QUESTION_TREE = {
 
         function init() {
             loadState();
+            loadLocalOpenAIKey();
             setupEventListeners();
             
             // Register PWA Service Worker for Mobile Offline Standalone Installations
@@ -2796,6 +2797,9 @@ const COMPANION_QUESTION_TREE = {
             if (!state.polaris.questionnaire) state.polaris.questionnaire = {};
             if (!state.polaris.routing) state.polaris.routing = {};
 
+            if (state.polaris.openaiApiKey === undefined) state.polaris.openaiApiKey = null;
+            if (state.polaris.chatHistory === undefined) state.polaris.chatHistory = [];
+
             // Ensure anchors.today is an object (migration from v2/v3 arrays)
             if (Array.isArray(state.polaris.anchors.today)) {
                 state.polaris.anchors.today = {};
@@ -3093,6 +3097,8 @@ const COMPANION_QUESTION_TREE = {
             if (r.missedDays > 0) resText += ' | Restarts: ' + r.missedDays;
             if (resRate < 100 && state.history.length > 2) resText += ' | Return rate: ' + resRate + '%';
             document.getElementById('polaris-resilience-info').textContent = resText;
+
+            renderPolarisChat();
 
             saveState();
         }
@@ -3875,6 +3881,296 @@ const COMPANION_QUESTION_TREE = {
                 showToast("Failed to copy to clipboard. Please select manually.", "error");
             });
         }
+
+        // ==========================================================
+        // POLARIS INTERACTIVE CHAT & LLM CONNECTOR
+        // ==========================================================
+
+        function loadLocalOpenAIKey() {
+            ensurePolarisState();
+            if (state.polaris.openaiApiKey) {
+                updateOpenAIKeyStatus("Custom Key Active");
+                return;
+            }
+            updateOpenAIKeyStatus("Checking key source...");
+            fetch('knowledge/openai-api-key.txt')
+                .then(response => {
+                    if (response.ok) {
+                        return response.text();
+                    }
+                    throw new Error("Key file not found on server");
+                })
+                .then(key => {
+                    const cleanKey = key.trim();
+                    if (cleanKey && cleanKey.startsWith("sk-")) {
+                        window.polarisRuntimeKey = cleanKey;
+                        updateOpenAIKeyStatus("Loaded from local workspace file");
+                    } else {
+                        updateOpenAIKeyStatus("Key file empty or invalid");
+                    }
+                })
+                .catch(err => {
+                    console.log("Could not load local OpenAI key from file:", err.message);
+                    updateOpenAIKeyStatus("No key active. Set one below.");
+                });
+        }
+
+        function updateOpenAIKeyStatus(statusText) {
+            const el = document.getElementById("openai-key-status");
+            const inputEl = document.getElementById("input-openai-key");
+            if (el) el.textContent = statusText;
+            if (inputEl) {
+                const key = state.polaris.openaiApiKey || window.polarisRuntimeKey;
+                if (key) {
+                    inputEl.value = "••••••••••••••••" + key.slice(-4);
+                } else {
+                    inputEl.value = "";
+                }
+            }
+        }
+
+        function saveOpenAIKey() {
+            const inputEl = document.getElementById("input-openai-key");
+            if (!inputEl) return;
+            const key = inputEl.value.trim();
+            ensurePolarisState();
+            if (key) {
+                if (key.startsWith("sk-")) {
+                    state.polaris.openaiApiKey = key;
+                    saveState();
+                    showToast("OpenAI API Key saved successfully.", "success");
+                    updateOpenAIKeyStatus("Custom Key Active");
+                } else if (key.startsWith("••••")) {
+                    showToast("No changes to API key.", "info");
+                } else {
+                    showToast("Invalid key format. Must start with 'sk-'.", "error");
+                }
+            } else {
+                state.polaris.openaiApiKey = null;
+                window.polarisRuntimeKey = null;
+                saveState();
+                showToast("OpenAI API Key removed.", "info");
+                loadLocalOpenAIKey();
+            }
+        }
+
+        function getOpenAIKey() {
+            ensurePolarisState();
+            return state.polaris.openaiApiKey || window.polarisRuntimeKey || "";
+        }
+
+        function renderPolarisChat() {
+            const container = document.getElementById("polaris-chat-container");
+            const messagesEl = document.getElementById("polaris-chat-messages");
+            if (!container || !messagesEl) return;
+
+            ensurePolarisState();
+
+            if (state.polaris.enabled && state.polaris.profile.companionSkin) {
+                container.classList.add("active");
+            } else {
+                container.classList.remove("active");
+                return;
+            }
+
+            const messages = state.polaris.chatHistory || [];
+            if (messages.length === 0) {
+                messagesEl.innerHTML = `
+                    <div class="polaris-chat-message system">
+                        <div class="polaris-chat-message-meta">
+                            <span>Polaris (${state.polaris.profile.companionSkin})</span>
+                            <span class="chat-time">${getFormattedTime()}</span>
+                        </div>
+                        Secure channel established. Ready to check functional alignment. Say anything to begin.
+                    </div>
+                `;
+            } else {
+                messagesEl.innerHTML = messages.map(msg => {
+                    const senderName = msg.role === 'user' ? 'User' : `Polaris (${state.polaris.profile.companionSkin})`;
+                    const cssClass = msg.role === 'user' ? 'user' : 'system';
+                    const timeStr = msg.time || getFormattedTime();
+                    return `
+                        <div class="polaris-chat-message ${cssClass}">
+                            <div class="polaris-chat-message-meta">
+                                <span>${senderName}</span>
+                                <span class="chat-time">${timeStr}</span>
+                            </div>
+                            ${escapeHTML(msg.content)}
+                        </div>
+                    `;
+                }).join('');
+            }
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        function getFormattedTime() {
+            const now = new Date();
+            const hrs = String(now.getHours()).padStart(2, '0');
+            const mins = String(now.getMinutes()).padStart(2, '0');
+            return `${hrs}:${mins}`;
+        }
+
+        function escapeHTML(text) {
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        async function sendPolarisChatMessage() {
+            const inputEl = document.getElementById("polaris-chat-input");
+            if (!inputEl) return;
+            const text = inputEl.value.trim();
+            if (!text) return;
+
+            inputEl.value = "";
+            await addPolarisChatMessage('user', text);
+
+            const apiKey = getOpenAIKey();
+            if (!apiKey) {
+                await addPolarisChatMessage('system', "ERROR: OpenAI API Key not configured. Go to Settings (⚙) to configure a key, or add openai-api-key.txt to your local workspace knowledge folder.");
+                return;
+            }
+
+            const typingEl = document.getElementById("polaris-chat-typing");
+            if (typingEl) typingEl.classList.remove("hidden");
+            const messagesEl = document.getElementById("polaris-chat-messages");
+            if (messagesEl) messagesEl.scrollTop = messagesEl.scrollHeight;
+
+            try {
+                const response = await callPolarisLLM(text, apiKey);
+                if (typingEl) typingEl.classList.add("hidden");
+                await addPolarisChatMessage('system', response);
+            } catch (error) {
+                if (typingEl) typingEl.classList.add("hidden");
+                console.error("Error communicating with Polaris companion:", error);
+                await addPolarisChatMessage('system', `SYSTEM FAILURE: Connection interrupted. ${error.message}`);
+            }
+        }
+
+        async function addPolarisChatMessage(role, content) {
+            ensurePolarisState();
+            if (!state.polaris.chatHistory) state.polaris.chatHistory = [];
+            state.polaris.chatHistory.push({
+                role,
+                content,
+                time: getFormattedTime()
+            });
+
+            if (state.polaris.chatHistory.length > 15) {
+                state.polaris.chatHistory.shift();
+            }
+
+            saveState();
+            renderPolarisChat();
+        }
+
+        async function sendQuickPolarisPrompt(promptLabel) {
+            let userPromptText = "";
+            if (promptLabel === 'Suggest next move') {
+                userPromptText = "Analyze my current parameters and suggest the next minimum viable action block.";
+            } else if (promptLabel === 'Check biological floor') {
+                userPromptText = "Verify if my biological core is defended. Run diagnostic checklist.";
+            } else if (promptLabel === 'Decompress shame spiral') {
+                userPromptText = "Cognitive overload. Help me separate state from identity and decompress functional drag.";
+            } else {
+                userPromptText = promptLabel;
+            }
+
+            await addPolarisChatMessage('user', userPromptText);
+
+            const apiKey = getOpenAIKey();
+            if (!apiKey) {
+                await addPolarisChatMessage('system', "ERROR: OpenAI API Key not configured.");
+                return;
+            }
+
+            const typingEl = document.getElementById("polaris-chat-typing");
+            if (typingEl) typingEl.classList.remove("hidden");
+            const messagesEl = document.getElementById("polaris-chat-messages");
+            if (messagesEl) messagesEl.scrollTop = messagesEl.scrollHeight;
+
+            try {
+                const response = await callPolarisLLM(userPromptText, apiKey);
+                if (typingEl) typingEl.classList.add("hidden");
+                await addPolarisChatMessage('system', response);
+            } catch (error) {
+                if (typingEl) typingEl.classList.add("hidden");
+                await addPolarisChatMessage('system', `SYSTEM FAILURE: Connection interrupted. ${error.message}`);
+            }
+        }
+
+        async function callPolarisLLM(userText, apiKey) {
+            const systemPrompt = `You are Polaris, a clinical systems AI companion inside the "State Not Fate" depression recovery operating system. 
+The user is interacting with you via a secure terminal. You are a calm, intelligent operating system, NOT a therapist, friend, or motivational coach.
+Write in a blunt, precise, clinical tone. Avoid positive fluff, sentimentality, or moralizing. Frame depression as a temporary systems failure and energy deconditioning, not a permanent identity.
+
+CORE VOICE & COPY RULES:
+- Use phrases like: "You're here.", "No catch-up.", "Pick the current state.", "We'll keep this small.", "Nothing reset.", "Start with the floor.", "Make it smaller.", "State, not fate.", "Action happened.", "Proof logged."
+- AVOID these forbidden words/concepts: "journey", "empower", "thrive", "crush your goals", "be your best self", "try harder", "you should", "just", "back on track", "failed", "streak broken", "lost progress", "start over", "what's your why", "unlock your potential", "forced positivity", "therapy clichés".
+
+CLINICAL PERSPECTIVE (From Docs):
+- "Hope" is the brain's prediction of whether effort will lead to improvement. It is a system signal, not a mood.
+- Defend the biological core first (sleep wake time, light, water, medications). Do not recommend complex scheduling or social exposure if the biological floor is unstable.
+- Avoidance reduces anxiety for 10 minutes but deepens the depressive state for 10 hours. Act before you feel ready; momentum creates motivation.
+- Progress pauses; it never resets. A gap day is data, not a verdict. Restart without punishment.
+
+USER CURRENT TELEMETRY:
+- Companion Selected: \${state.polaris.profile.companionSkin || 'None'}
+- Current Energy State: \${(state.todayEnergy || 'medium').toUpperCase()}
+- Dominant Functional Pattern: \${state.dominantPattern || 'Rhythm Collapse'}
+- Current Hope Level: Level \${state.currentHopeLevel || 1}
+- Total Proof Points: \${state.polaris.proof.total} pts
+- Today's completed anchors: \${JSON.stringify(Object.keys(state.polaris.anchors.today || {}).filter(k => state.polaris.anchors.today[k]))}
+- Today's incomplete anchors: \${JSON.stringify(Object.keys(state.polaris.anchors.today || {}).filter(k => !state.polaris.anchors.today[k]))}
+
+CRITICAL CRISIS ROUTING:
+If the user expresses immediate self-harm, suicidal ideation, or crisis: immediately output: "ALERT: This query resides outside the functional self-management layer. Please transition to emergency resources immediately. Call or text 988 (Crisis Lifeline) or go to the nearest emergency facility."
+
+Your response should be under 100 words. Stick to objective mechanics, pattern diagnostics, or micro-action calibration. No fluff.`;
+
+            const chatHistory = state.polaris.chatHistory || [];
+            const apiMessages = [
+                { role: "system", content: systemPrompt }
+            ];
+
+            const historySlice = chatHistory.slice(-6);
+            historySlice.forEach(msg => {
+                if (msg.content !== userText) {
+                    apiMessages.push({ role: msg.role === 'user' ? 'user' : 'assistant', content: msg.content });
+                }
+            });
+
+            apiMessages.push({ role: "user", content: userText });
+
+            const response = await fetch("https://api.openai.com/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: "gpt-4o-mini",
+                    messages: apiMessages,
+                    max_tokens: 180,
+                    temperature: 0.5
+                })
+            });
+
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                throw new Error(errData.error?.message || `HTTP error ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data.choices[0].message.content.trim();
+        }
+
+        window.saveOpenAIKey = saveOpenAIKey;
+        window.sendPolarisChatMessage = sendPolarisChatMessage;
+        window.sendQuickPolarisPrompt = sendQuickPolarisPrompt;
 
         window.PolarisUI = {
             render: renderPolarisTab,

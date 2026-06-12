@@ -1723,53 +1723,235 @@
         }
 
 /* POLARIS GOTH THEMES */
-#polaris-content[data-companion-theme="??"] .glass-card {
+#polaris-content[data-companion-theme="🦇"] .glass-card {
     border-left-color: #8a0303 !important;
     background: linear-gradient(135deg, rgba(138,3,3,0.05), rgba(0,0,0,0.6)) !important;
 }
-#polaris-content[data-companion-theme="??"] .text-teal { color: #ff3333 !important; text-shadow: 0 0 10px rgba(255, 51, 51, 0.5) !important; }
-#polaris-content[data-companion-theme="??"] #polaris-hope-fill { background: #ff3333 !important; }
+#polaris-content[data-companion-theme="🦇"] .text-teal { color: #ff3333 !important; text-shadow: 0 0 10px rgba(255, 51, 51, 0.5) !important; }
+#polaris-content[data-companion-theme="🦇"] #polaris-hope-fill { background: #ff3333 !important; }
 
-#polaris-content[data-companion-theme="??"] .glass-card {
+#polaris-content[data-companion-theme="🧛"] .glass-card {
     border-left-color: #aa0000 !important;
     background: linear-gradient(135deg, rgba(170,0,0,0.05), rgba(0,0,0,0.6)) !important;
 }
-#polaris-content[data-companion-theme="??"] .text-teal { color: #ff0000 !important; text-shadow: 0 0 10px rgba(255, 0, 0, 0.5) !important; }
-#polaris-content[data-companion-theme="??"] #polaris-hope-fill { background: #ff0000 !important; }
+#polaris-content[data-companion-theme="🧛"] .text-teal { color: #ff0000 !important; text-shadow: 0 0 10px rgba(255, 0, 0, 0.5) !important; }
+#polaris-content[data-companion-theme="🧛"] #polaris-hope-fill { background: #ff0000 !important; }
 
-#polaris-content[data-companion-theme="??"] .glass-card {
+#polaris-content[data-companion-theme="🕷️"] .glass-card {
     border-left-color: #4a7c2a !important;
     background: linear-gradient(135deg, rgba(74,124,42,0.05), rgba(0,0,0,0.6)) !important;
 }
-#polaris-content[data-companion-theme="??"] .text-teal { color: #66ff00 !important; text-shadow: 0 0 10px rgba(102, 255, 0, 0.5) !important; }
-#polaris-content[data-companion-theme="??"] #polaris-hope-fill { background: #66ff00 !important; }
+#polaris-content[data-companion-theme="🕷️"] .text-teal { color: #66ff00 !important; text-shadow: 0 0 10px rgba(102, 255, 0, 0.5) !important; }
+#polaris-content[data-companion-theme="🕷️"] #polaris-hope-fill { background: #66ff00 !important; }
 
-#polaris-content[data-companion-theme="??"] .glass-card {
+#polaris-content[data-companion-theme="👻"] .glass-card {
     border-left-color: #ffffff !important;
     background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(0,0,0,0.6)) !important;
 }
-#polaris-content[data-companion-theme="??"] .text-teal { color: #ffffff !important; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5) !important; }
-#polaris-content[data-companion-theme="??"] #polaris-hope-fill { background: #ffffff !important; }
+#polaris-content[data-companion-theme="👻"] .text-teal { color: #ffffff !important; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5) !important; }
+#polaris-content[data-companion-theme="👻"] #polaris-hope-fill { background: #ffffff !important; }
 
-#polaris-content[data-companion-theme="???"] .glass-card {
+#polaris-content[data-companion-theme="🐦‍⬛"] .glass-card {
     border-left-color: #555555 !important;
     background: radial-gradient(circle at top right, rgba(255,255,255,0.05) 1px, transparent 1px), rgba(0,0,0,0.6) !important;
     background-size: 15px 15px, 100% 100% !important;
 }
-#polaris-content[data-companion-theme="???"] .text-teal { color: #aaaaaa !important; }
-#polaris-content[data-companion-theme="???"] #polaris-hope-fill { background: #aaaaaa !important; }
+#polaris-content[data-companion-theme="🐦‍⬛"] .text-teal { color: #aaaaaa !important; }
+#polaris-content[data-companion-theme="🐦‍⬛"] #polaris-hope-fill { background: #aaaaaa !important; }
 
-#polaris-content[data-companion-theme="????"] .glass-card {
+#polaris-content[data-companion-theme="🧟"] .glass-card {
     border-left-color: #5d3fd3 !important;
     background: linear-gradient(135deg, rgba(93,63,211,0.05), rgba(0,0,0,0.6)) !important;
 }
-#polaris-content[data-companion-theme="????"] .text-teal { color: #9d7cff !important; text-shadow: 0 0 10px rgba(157, 124, 255, 0.5) !important; }
-#polaris-content[data-companion-theme="????"] #polaris-hope-fill { background: #9d7cff !important; }
+#polaris-content[data-companion-theme="🧟"] .text-teal { color: #9d7cff !important; text-shadow: 0 0 10px rgba(157, 124, 255, 0.5) !important; }
+#polaris-content[data-companion-theme="🧟"] #polaris-hope-fill { background: #9d7cff !important; }
 
-#polaris-content[data-companion-theme="??"] .glass-card {
-    border-left-color: rgba(255,255,255,0.4) !important;
-    background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,0,0,0.3)) !important;
-    backdrop-filter: blur(8px) !important;
+#polaris-content[data-companion-theme="💀"] .glass-card {
+    border-left-color: #ff731e !important;
+    background: linear-gradient(135deg, rgba(255, 115, 30, 0.05), rgba(0,0,0,0.6)) !important;
 }
-#polaris-content[data-companion-theme="??"] .text-teal { color: rgba(255,255,255,0.8) !important; }
-#polaris-content[data-companion-theme="??"] #polaris-hope-fill { background: rgba(255,255,255,0.8) !important; }
+#polaris-content[data-companion-theme="💀"] .text-teal { color: #ff731e !important; text-shadow: 0 0 10px rgba(255, 115, 30, 0.5) !important; }
+#polaris-content[data-companion-theme="💀"] #polaris-hope-fill { background: #ff731e !important; }
+
+/* POLARIS ANIME HUD & CHAT STYLING */
+.polaris-chat-container {
+    margin-top: 1.5rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.85rem;
+    border: 1px solid rgba(20, 200, 175, 0.2);
+    border-radius: var(--radius-sm);
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    position: relative;
+    display: none; /* Only visible when companion selected */
+}
+
+.polaris-chat-container.active {
+    display: block;
+}
+
+.polaris-chat-header {
+    background: rgba(20, 200, 175, 0.08);
+    border-bottom: 1px solid rgba(20, 200, 175, 0.2);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--accent-teal);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    letter-spacing: 0.05em;
+}
+
+.polaris-chat-header::after {
+    content: "● ONLINE";
+    color: #39ff14;
+    animation: blink 1.5s infinite;
+}
+
+.polaris-chat-messages {
+    max-height: 240px;
+    overflow-y: auto;
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    scroll-behavior: smooth;
+}
+
+.polaris-chat-message {
+    max-width: 85%;
+    line-height: 1.4;
+    position: relative;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-sm);
+    word-break: break-word;
+}
+
+.polaris-chat-message.user {
+    align-self: flex-end;
+    background: rgba(20, 200, 175, 0.1);
+    border: 1px solid rgba(20, 200, 175, 0.3);
+    color: var(--text-primary);
+    border-bottom-right-radius: 2px;
+}
+
+.polaris-chat-message.system {
+    align-self: flex-start;
+    background: rgba(165, 120, 240, 0.08);
+    border: 1px solid rgba(165, 120, 240, 0.3);
+    color: var(--text-primary);
+    border-bottom-left-radius: 2px;
+}
+
+.polaris-chat-message-meta {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-bottom: 0.2rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.polaris-chat-input-area {
+    display: flex;
+    gap: 0.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.5);
+    padding: 0.5rem;
+}
+
+.polaris-chat-input {
+    flex: 1;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    padding: 0.55rem 0.75rem;
+    font-family: inherit;
+    font-size: 0.8rem;
+    outline: none;
+}
+
+.polaris-chat-input:focus {
+    border-color: var(--accent-teal);
+    box-shadow: 0 0 5px rgba(20, 200, 175, 0.3);
+}
+
+.polaris-chat-send {
+    background: var(--accent-teal);
+    color: #0b0f13;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 0 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+}
+
+.polaris-chat-send:hover {
+    background: #1ae5c9;
+    box-shadow: 0 0 8px rgba(20, 200, 175, 0.5);
+}
+
+.polaris-chat-typing {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.5rem;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-family: inherit;
+}
+
+.polaris-chat-dot {
+    width: 4px;
+    height: 4px;
+    background: var(--text-muted);
+    border-radius: 50%;
+    animation: typing 1s infinite alternate;
+}
+
+.polaris-chat-dot:nth-child(2) { animation-delay: 0.2s; }
+.polaris-chat-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing {
+    0% { transform: translateY(0); opacity: 0.3; }
+    100% { transform: translateY(-4px); opacity: 1; }
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* Monospace scanline decoration overlay */
+.polaris-chat-scanlines {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.25) 50%
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    opacity: 0.15;
+}
+
+/* neon goth overrides for chat container */
+#polaris-content[data-companion-theme="🦇"] .polaris-chat-container { border-color: rgba(255, 51, 51, 0.3); }
+#polaris-content[data-companion-theme="🦇"] .polaris-chat-header { color: #ff3333; }
+#polaris-content[data-companion-theme="🧛"] .polaris-chat-container { border-color: rgba(255, 0, 0, 0.3); }
+#polaris-content[data-companion-theme="🧛"] .polaris-chat-header { color: #ff0000; }
+#polaris-content[data-companion-theme="🕷️"] .polaris-chat-container { border-color: rgba(102, 255, 0, 0.3); }
+#polaris-content[data-companion-theme="🕷️"] .polaris-chat-header { color: #66ff00; }
+#polaris-content[data-companion-theme="🧟"] .polaris-chat-container { border-color: rgba(157, 124, 255, 0.3); }
+#polaris-content[data-companion-theme="🧟"] .polaris-chat-header { color: #9d7cff; }
+#polaris-content[data-companion-theme="💀"] .polaris-chat-container { border-color: rgba(255, 115, 30, 0.3); }
+#polaris-content[data-companion-theme="💀"] .polaris-chat-header { color: #ff731e; }
+#polaris-content[data-companion-theme="👻"] .polaris-chat-container { border-color: rgba(255, 255, 255, 0.3); }
+#polaris-content[data-companion-theme="👻"] .polaris-chat-header { color: #ffffff; }
+#polaris-content[data-companion-theme="🐦‍⬛"] .polaris-chat-container { border-color: rgba(170, 170, 170, 0.3); }
+#polaris-content[data-companion-theme="🐦‍⬛"] .polaris-chat-header { color: #aaaaaa; }

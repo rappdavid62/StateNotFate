@@ -1,4 +1,4 @@
-const CACHE_NAME = 'state-not-fate-cache-v6';
+const CACHE_NAME = 'state-not-fate-cache-v7';
 const ASSETS_TO_CACHE = [
   './index.html',
   './evidence.html',
