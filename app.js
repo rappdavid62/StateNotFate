@@ -76,6 +76,23 @@
             { title: "The Mechanics of State vs. Fate", file: "The_Mechanics_of_State_vs.mp4", type: "video", duration: "47:55" },
             { title: "The 6-Minute System Synopsis", file: "6_minute_synopsis.mp4", type: "video", duration: "6:00" }
         ];
+        const COMPANION_QUESTIONS = [
+            "I feel slowed down or weighed down much of the day.",
+            "My day feels harder to start than it should.",
+            "My depressive state is reducing how much life I can carry.",
+            "Basic tasks feel disproportionately expensive.",
+            "I lose large amounts of time to drifting, freezing, or shutting down.",
+            "My functioning is worse than my mood alone would suggest.",
+            "I feel less able to handle ordinary stress than I used to.",
+            "I am letting important tasks pile up because they feel too heavy.",
+            "My depression is damaging work, school, or household functioning.",
+            "I am having trouble maintaining hygiene or basic self-care.",
+            "My appetite or eating pattern has become less reliable.",
+            "I feel disconnected from pleasure, interest, or reward.",
+            "I feel like my range of action has narrowed.",
+            "Small setbacks hit me harder than they should.",
+            "My current functioning feels fragile or inconsistent."
+        ];
 
         const PHQ9_QUESTIONS = [
             "Little interest or pleasure in doing things.",
@@ -2481,6 +2498,14 @@
             if (!state.polaris.anchors) state.polaris.anchors = { today: {} };
             if (!state.polaris.quests) state.polaris.quests = { daily: [] };
             if (!state.polaris.profile) state.polaris.profile = {};
+            if (!state.polaris.profile.evolvingIntake) {
+                state.polaris.profile.evolvingIntake = {
+                    enabled: true,
+                    questionsAnswered: {},
+                    lastQuestionDate: null,
+                    currentQuestionId: 0
+                };
+            }
             if (!state.polaris.questionnaire) state.polaris.questionnaire = {};
             if (!state.polaris.routing) state.polaris.routing = {};
 
@@ -2568,6 +2593,42 @@
             }
         }
 
+        function toggleCompanionQuestions() {
+            ensurePolarisState();
+            const intake = state.polaris.profile.evolvingIntake;
+            intake.enabled = !intake.enabled;
+            saveState();
+            renderPolarisTab();
+            if (intake.enabled) {
+                showToast("Evolving intake enabled.", "success");
+            } else {
+                showToast("Evolving intake disabled.", "info");
+            }
+        }
+
+        function answerCompanionQuestion(score) {
+            ensurePolarisState();
+            const intake = state.polaris.profile.evolvingIntake;
+            const qId = intake.currentQuestionId;
+            
+            // Save the answer
+            intake.questionsAnswered[qId] = score;
+            intake.lastQuestionDate = getTodayString();
+            intake.currentQuestionId++;
+            
+            saveState();
+            renderPolarisTab();
+            showToast("Companion noted your answer.", "success");
+        }
+
+        function skipCompanionQuestion() {
+            ensurePolarisState();
+            const intake = state.polaris.profile.evolvingIntake;
+            intake.lastQuestionDate = getTodayString(); // count as asked today
+            saveState();
+            renderPolarisTab();
+        }
+
         // ---- RENDER: Main Polaris Tab ----
 
         function renderPolarisTab() {
@@ -2632,6 +2693,31 @@
                 avatarEl.style.display = 'block';
             } else {
                 avatarEl.style.display = 'none';
+            }
+
+            // Evolving Questionnaire logic
+            const qToggleKnob = document.getElementById('companion-questions-knob');
+            const qToggle = document.getElementById('companion-questions-toggle');
+            const intake = state.polaris.profile.evolvingIntake;
+            
+            if (qToggle && qToggleKnob) {
+                if (intake.enabled) {
+                    qToggle.style.background = 'var(--accent-lavender)';
+                    qToggleKnob.style.left = '18px';
+                } else {
+                    qToggle.style.background = 'rgba(255,255,255,0.1)';
+                    qToggleKnob.style.left = '2px';
+                }
+            }
+
+            const qCard = document.getElementById('polaris-companion-question');
+            if (qCard) {
+                if (intake.enabled && state.polaris.profile.companionSkin && intake.lastQuestionDate !== getTodayString() && intake.currentQuestionId < COMPANION_QUESTIONS.length) {
+                    document.getElementById('companion-question-text').textContent = COMPANION_QUESTIONS[intake.currentQuestionId];
+                    qCard.classList.remove('hidden');
+                } else {
+                    qCard.classList.add('hidden');
+                }
             }
 
             // B3: Gap notice
