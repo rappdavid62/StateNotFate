@@ -2368,15 +2368,15 @@
             if (!state.polaris.anchors.today) state.polaris.anchors.today = {};
             state.polaris.anchors.today[anchor.id] = false; // Mark incomplete
             
-            // We want to immediately show the Polaris tab with this anchor listed
-            saveState();
-            
             // We temporarily add it to userAnchors so it renders, or we handle it via getAnchorsForToday
             // Let's just push it to the top of the user anchors for today
             if (!state.userAnchors.some(a => a.id === anchor.id)) {
                 state.userAnchors.unshift(anchor);
             }
             
+            saveState();
+            
+            // We want to immediately show the Polaris tab with this anchor listed
             showScreen("dashboard");
             showTab("polaris");
             renderPolarisTab();
