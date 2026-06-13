@@ -871,6 +871,62 @@ const COMPANION_QUESTION_TREE = {
             document.getElementById("input-reasons-live").value = state.reasonsLive;
             document.getElementById("input-safe-contacts").value = state.safeContacts;
             document.getElementById("input-distraction-activities").value = state.distractions;
+
+            // Helper to match legacy values to closest new allowed option
+            function getClosestValue(val, allowed) {
+                return allowed.reduce((prev, curr) => Math.abs(curr - val) < Math.abs(prev - val) ? curr : prev);
+            }
+
+            // Restore rating buttons with closest-match mapping
+            const ratingConfig = {
+                sleep: [0, 2, 4],
+                morning: [0, 2, 4],
+                initiation: [0, 2, 4],
+                clutter: [0, 2, 4],
+                energy: [0, 1, 3, 4],
+                shame: [0, 2, 4],
+                hygiene: [0, 4],
+                eating: [0, 4],
+                social: [0, 4],
+                meaning: [0, 2, 4]
+            };
+
+            Object.keys(ratingConfig).forEach(metric => {
+                const rawVal = state.ratings[metric] !== undefined ? state.ratings[metric] : 0;
+                const allowed = ratingConfig[metric];
+                const closestVal = getClosestValue(rawVal, allowed);
+                
+                // Keep state synchronized with closest available UI option
+                state.ratings[metric] = closestVal;
+
+                const container = document.querySelector(`.rating-buttons[data-metric="${metric}"]`);
+                if (container) {
+                    container.querySelectorAll(".rating-btn").forEach(btn => {
+                        const btnVal = parseInt(btn.getAttribute("data-val"));
+                        if (btnVal === closestVal) {
+                            btn.classList.add("selected");
+                        } else {
+                            btn.classList.remove("selected");
+                        }
+                    });
+                }
+            });
+
+            // Restore safety choices
+            Object.keys(state.safety).forEach(safetyType => {
+                const val = state.safety[safetyType] !== undefined ? state.safety[safetyType] : 0;
+                const row = document.querySelector(`.safety-row[data-safety-type="${safetyType}"]`);
+                if (row) {
+                    row.querySelectorAll(".safety-option-btn").forEach(btn => {
+                        const btnVal = parseInt(btn.getAttribute("data-val"));
+                        if (btnVal === val) {
+                            btn.classList.add("selected");
+                        } else {
+                            btn.classList.remove("selected");
+                        }
+                    });
+                }
+            });
             
             document.querySelectorAll(".accordion-section").forEach((sec, idx) => {
                 if (idx === 0) sec.classList.add("active");
