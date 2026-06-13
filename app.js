@@ -2998,6 +2998,17 @@ const COMPANION_QUESTION_TREE = {
             showToast("Companion noted your answer.", "success");
         }
 
+        function submitCompanionTextAnswer() {
+            const textarea = document.getElementById('companion-question-text-input');
+            if (!textarea) return;
+            const textVal = textarea.value.trim();
+            if (!textVal) {
+                showToast("Please type a reflection before saving.", "warning");
+                return;
+            }
+            answerCompanionQuestion(textVal);
+        }
+
         function skipCompanionQuestion() {
             ensurePolarisState();
             const intake = state.polaris.profile.evolvingIntake;
@@ -3100,11 +3111,37 @@ const COMPANION_QUESTION_TREE = {
             // B2: Evolving Questionnaire
             const qCard = document.getElementById('polaris-companion-question');
             const askAnotherCard = document.getElementById('polaris-answer-another-container');
+            const qControls = document.getElementById('companion-question-controls');
             if (qCard) {
                 const intake = state.polaris.profile.evolvingIntake;
                 const currentQ = COMPANION_QUESTION_TREE[intake.currentQuestionId];
                 if (intake.enabled && state.polaris.profile.companionSkin && intake.lastQuestionDate !== getTodayString() && intake.currentQuestionId !== "done" && currentQ) {
                     document.getElementById('companion-question-text').textContent = currentQ.text;
+                    
+                    // Render dynamic inputs based on question type
+                    if (qControls) {
+                        const isTextQuestion = currentQ.next && currentQ.next['0'] === undefined && currentQ.next['default'] !== undefined;
+                        
+                        if (isTextQuestion) {
+                            qControls.innerHTML = `
+                                <textarea id="companion-question-text-input" rows="3" placeholder="Type your reflection here..." style="width: 100%; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--card-border); border-radius: var(--radius-sm); color: var(--text-primary); padding: 0.75rem; font-family: var(--font-sans); font-size: 0.9rem; margin-bottom: 0.75rem; resize: vertical;" autofocus></textarea>
+                                <button class="btn btn-primary w-full" id="btn-submit-companion-text" style="justify-content: center; background: var(--accent-lavender); border-color: var(--accent-lavender); color: #0b0713; font-weight: 600;">Save Reflection</button>
+                            `;
+                            // Attach click listener directly
+                            document.getElementById('btn-submit-companion-text').addEventListener('click', submitCompanionTextAnswer);
+                        } else {
+                            qControls.innerHTML = `
+                                <div style="display: flex; gap: 0.5rem; flex-direction: column; margin-bottom: 0.75rem;">
+                                    <button class="btn btn-secondary w-full" onclick="answerCompanionQuestion(0)" style="padding: 0.6rem; font-size: 0.85rem; justify-content: center;">Not at all</button>
+                                    <button class="btn btn-secondary w-full" onclick="answerCompanionQuestion(1)" style="padding: 0.6rem; font-size: 0.85rem; justify-content: center;">Rare / Mild</button>
+                                    <button class="btn btn-secondary w-full" onclick="answerCompanionQuestion(2)" style="padding: 0.6rem; font-size: 0.85rem; justify-content: center;">Sometimes</button>
+                                    <button class="btn btn-secondary w-full" onclick="answerCompanionQuestion(3)" style="padding: 0.6rem; font-size: 0.85rem; justify-content: center;">Often</button>
+                                    <button class="btn btn-secondary w-full" onclick="answerCompanionQuestion(4)" style="padding: 0.6rem; font-size: 0.85rem; justify-content: center;">Almost Always</button>
+                                </div>
+                            `;
+                        }
+                    }
+                    
                     qCard.classList.remove('hidden');
                 } else {
                     qCard.classList.add('hidden');
