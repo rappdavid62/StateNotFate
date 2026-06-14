@@ -11,6 +11,7 @@ const types = {
   '.html': 'text/html; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
   '.json': 'application/json; charset=utf-8',
+  '.svg': 'image/svg+xml; charset=utf-8',
   '.txt': 'text/plain; charset=utf-8',
   '.xml': 'application/xml; charset=utf-8'
 };
@@ -23,6 +24,7 @@ function resolveRequestPath(url) {
   if (pathname === '/evidence' || pathname === '/sources') return join(root, 'evidence.html');
   if (pathname === '/contact' || pathname === '/join') return join(root, 'contact.html');
   if (pathname === '/crisis' || pathname === '/help') return join(root, 'crisis.html');
+  if (pathname === '/favicon.ico') return join(root, 'favicon.svg');
 
   const normalized = normalize(pathname).replace(/^(\.\.[/\\])+/, '');
   return join(root, normalized);
