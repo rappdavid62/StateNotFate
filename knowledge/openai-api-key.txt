@@ -1,2 +1,0 @@
-# Optional local-only OpenAI API key placeholder.
-# Do not put a real key in the deployed site.
