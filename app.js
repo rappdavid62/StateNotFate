@@ -3985,6 +3985,11 @@ const COMPANION_QUESTION_TREE = {
                 updateOpenAIKeyStatus("Custom Key Active");
                 return;
             }
+            const isLocalRuntime = ["localhost", "127.0.0.1"].includes(window.location.hostname) || window.location.protocol === "file:";
+            if (!isLocalRuntime) {
+                updateOpenAIKeyStatus("No key active. Set one below.");
+                return;
+            }
             updateOpenAIKeyStatus("Checking key source...");
             fetch('knowledge/openai-api-key.txt')
                 .then(response => {
