@@ -1,9 +1,9 @@
-node_modules/
-test-results/
-playwright-report/
-.env
-.DS_Store
-*.log
-knowledge/
+.npm-cache/
+.npm-cache-netlify-2/
 .tmp.driveupload/
-.tmp.drivedownload/
+node_modules/
+dist/
+knowledge/
+*.env
+.env
+openai-api-key.txt
