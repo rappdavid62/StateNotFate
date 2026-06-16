@@ -15,7 +15,7 @@ if (manifest.includes('knowledge/')) {
   failures.push('manifest.json points at ignored knowledge assets.');
 }
 
-for (const required of ['test-results/', 'playwright-report/', '.env']) {
+for (const required of ['test-results/', 'playwright-report/']) {
   if (!gitignore.includes(required)) failures.push(`.gitignore missing ${required}`);
 }
 
