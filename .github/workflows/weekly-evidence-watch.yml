@@ -1,0 +1,47 @@
+name: Weekly Evidence Watch
+
+on:
+  schedule:
+    - cron: "23 13 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: weekly-evidence-watch
+  cancel-in-progress: false
+
+jobs:
+  evidence-watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: npm ci
+
+      - name: Refresh evidence files
+        run: |
+          python scripts/expand_pubmed.py
+          python scripts/inject_studies.py
+
+      - name: Check external links and write report
+        run: npm run check:links -- --external-only --soft --report reports/link-check-report.md
+
+      - name: Open review PR if files changed
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "chore: refresh evidence and link report"
+          title: "Weekly evidence and link refresh"
+          body: "Automated evidence refresh and external link report. Review before merge."
+          branch: automation/weekly-evidence-watch
