@@ -7,3 +7,6 @@ knowledge/
 *.env
 .env
 openai-api-key.txt
+
+# Local Netlify folder
+.netlify
