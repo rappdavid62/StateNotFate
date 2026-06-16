@@ -1,0 +1,29 @@
+name: Weekly Privacy Boundary Watch
+
+on:
+  schedule:
+    - cron: "41 14 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: weekly-privacy-watch
+  cancel-in-progress: false
+
+jobs:
+  privacy-watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+
+      - run: npm ci
+
+      - name: Run privacy boundary audit
+        run: npm run audit:privacy
