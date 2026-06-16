@@ -1,8 +1,20 @@
 node_modules/
-test-results/
-playwright-report/
-.env
-.DS_Store
-*.log
-knowledge/
+dist/
+coverage/
 
+playwright-report/
+test-results/
+
+.npm-cache/
+.npm-cache-netlify-2/
+.tmp.driveupload/
+.DS_Store
+Thumbs.db
+*.log
+
+knowledge/
+*.env
+.env
+.env.*
+!.env.example
+openai-api-key.txt
