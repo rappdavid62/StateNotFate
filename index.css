@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Space+Grotesk:wght@400;500;600&display=swap');
+
         :root {
             /* Color Palette */
             --bg-primary: #07070a;
@@ -27,7 +29,8 @@
             --accent-red-glow: rgba(255, 50, 50, 0.25);
 
             /* Fonts & Radii */
-            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            --font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-futuristic: 'Orbitron', sans-serif;
             --radius-sm: 2px;
             --radius-md: 4px;
             --radius-lg: 8px;
@@ -128,6 +131,7 @@
         }
 
         .logo-header {
+            font-family: var(--font-futuristic);
             font-size: 3rem;
             font-weight: 700;
             letter-spacing: 0.1em;
@@ -172,7 +176,7 @@
 
         /* Buttons -> HUD Actions */
         .btn {
-            font-family: var(--font-sans);
+            font-family: var(--font-futuristic);
             font-weight: 600;
             font-size: 0.85rem;
             text-transform: uppercase;
@@ -2167,4 +2171,72 @@
 
 .grounding-menu .btn {
   width: 100%;
+}
+
+/* ======================================================== */
+/* POLARIS CYBERPUNK / FUTURISTIC ANIME THEME: CYBER KITSUNE (🦊) */
+/* ======================================================== */
+#polaris-content[data-companion-theme="🦊"] .glass-card {
+    border-left-color: #ff007f !important;
+    border-color: rgba(0, 240, 255, 0.25) !important;
+    background: linear-gradient(135deg, rgba(255,0,127,0.08) 0%, rgba(0,240,255,0.03) 50%, rgba(0,0,0,0.85) 100%) !important;
+    box-shadow: 0 0 15px rgba(255, 0, 127, 0.1), inset 0 0 10px rgba(0, 240, 255, 0.05) !important;
+    position: relative;
+    border-radius: var(--radius-sm);
+}
+
+#polaris-content[data-companion-theme="🦊"] .glass-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 240, 255, 0.04) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+    background-size: 100% 4px, 6px 100%;
+    pointer-events: none;
+    opacity: 0.75;
+    z-index: 1;
+}
+
+#polaris-content[data-companion-theme="🦊"] .glass-card::after {
+    content: "";
+    position: absolute;
+    top: 6px; right: 6px;
+    width: 8px; height: 8px;
+    border-top: 2px solid #00f0ff;
+    border-right: 2px solid #00f0ff;
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+#polaris-content[data-companion-theme="🦊"] .text-teal {
+    color: #00f0ff !important;
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.6), 0 0 20px rgba(0, 240, 255, 0.2) !important;
+    font-family: var(--font-futuristic);
+    letter-spacing: 0.05em;
+}
+
+#polaris-content[data-companion-theme="🦊"] #polaris-hope-fill {
+    background: linear-gradient(90deg, #ff007f, #00f0ff) !important;
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+}
+
+#polaris-content[data-companion-theme="🦊"] .polaris-chat-container {
+    border-color: rgba(255, 0, 127, 0.4) !important;
+    box-shadow: 0 0 15px rgba(255, 0, 127, 0.15), inset 0 0 10px rgba(0, 240, 255, 0.1) !important;
+}
+
+#polaris-content[data-companion-theme="🦊"] .polaris-chat-header {
+    color: #ff007f !important;
+    font-family: var(--font-futuristic);
+    text-shadow: 0 0 5px rgba(255, 0, 127, 0.5) !important;
+    letter-spacing: 0.1em;
+}
+
+#polaris-content[data-companion-theme="🦊"] #polaris-companion-avatar {
+    filter: drop-shadow(0 0 8px rgba(255, 0, 127, 0.8)) !important;
+    animation: kitsune-float 3s ease-in-out infinite;
+}
+
+@keyframes kitsune-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
 }

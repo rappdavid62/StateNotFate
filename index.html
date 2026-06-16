@@ -99,8 +99,18 @@
 <!-- SMART WELCOME / RE-ENTRY LAYER             -->
 <!-- ========================================== -->
 <div id="screen-welcome" class="welcome-screen">
-    <h1 class="logo-header">STATE, NOT FATE</h1>
-    <h3 class="text-lavender mb-2" id="welcome-greeting">You’re here.</h3>
+    <h1 class="logo-header" style="font-family: var(--font-futuristic); letter-spacing: 0.15em;">
+        STATE, NOT FATE
+        <span style="display: block; font-size: 0.65rem; letter-spacing: 0.4em; color: var(--accent-teal); margin-top: 0.35rem; opacity: 0.85; font-weight: 500;">
+            状態・運命ではない
+        </span>
+    </h1>
+    <h3 class="text-lavender mb-2" id="welcome-greeting" style="position: relative; font-family: var(--font-futuristic); letter-spacing: 0.05em;">
+        You’re here.
+        <span style="display: block; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--accent-teal); opacity: 0.8; margin-top: 0.25rem;">
+            システム起動 // STATUS: ACTIVE
+        </span>
+    </h3>
     <p class="intro" id="welcome-subtitle" style="max-width: 420px;">No catch-up. Pick the current state.</p>
 
     <div class="glass-card" style="max-width: 420px; width: 100%; padding: 1.5rem; margin-bottom: 1.5rem;">
@@ -800,6 +810,7 @@
                     <button class="btn btn-secondary" onclick="setPolarisCompanion('🧟')" style="padding: 0.5rem; font-size: 1.2rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" title="Zombie">🧟</button>
                     <button class="btn btn-secondary" onclick="setPolarisCompanion('🧛')" style="padding: 0.5rem; font-size: 1.2rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" title="Vampire">🧛</button>
                     <button class="btn btn-secondary" onclick="setPolarisCompanion('🐦‍⬛')" style="padding: 0.5rem; font-size: 1.2rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" title="Raven">🐦‍⬛</button>
+                    <button class="btn btn-secondary" onclick="setPolarisCompanion('🦊')" style="padding: 0.5rem; font-size: 1.2rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-color: rgba(255, 0, 127, 0.45);" title="Cyber Kitsune">🦊</button>
                 </div>
                 
                 <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.75rem; margin-top: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
