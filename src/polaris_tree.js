@@ -1,6 +1,4 @@
 const COMPANION_QUESTION_TREE = {
-    "q0": { text: "1", next: {'0': 'q1', '1': 'q1', '2': 'q0_a', '3': 'q0_a', '4': 'q0_a', 'default': 'q1'} },
-    "q0_a": { text: "What specific triggers consistently lead to this high level of severity for you?", next: {'default': 'q1'} },
     "q1": { text: "I feel slowed down or weighed down much of the day.", next: {'0': 'q2', '1': 'q2', '2': 'q1_a', '3': 'q1_a', '4': 'q1_a', 'default': 'q2'} },
     "q1_a": { text: "What daily activities are most impacted when you feel slowed down or weighed down?", next: {'default': 'q2'} },
     "q2": { text: "My day feels harder to start than it should.", next: {'0': 'q3', '1': 'q3', '2': 'q2_a', '3': 'q2_a', '4': 'q2_a', 'default': 'q3'} },

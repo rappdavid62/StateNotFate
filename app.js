@@ -1,4 +1,30 @@
 // INJECTED JAVASCRIPT Logic Engine
+        let PolarisEnhancedSafety = null;
+        let SafetyDetectionModule = null;
+        let CrisisProtocol = null;
+        let safetyDetection = null;
+        let polarisEnhanced = null;
+
+        async function loadSafetyModules() {
+            try {
+                const detectionMod = await import('./src/safety-detection.js');
+                const protocolMod = await import('./src/crisis-protocol.js');
+                const integrationMod = await import('./src/polaris-safety-integration.js');
+                
+                SafetyDetectionModule = detectionMod.default || detectionMod.SafetyDetectionModule;
+                CrisisProtocol = protocolMod.default || protocolMod.CrisisProtocol;
+                PolarisEnhancedSafety = integrationMod.default || integrationMod.PolarisEnhancedSafety;
+                
+                // Initialize safety modules
+                safetyDetection = new SafetyDetectionModule(state);
+                polarisEnhanced = new PolarisEnhancedSafety(state);
+                
+                console.log("Polaris Enhanced Safety modules loaded successfully.");
+            } catch (err) {
+                console.error("Failed to load Polaris Enhanced Safety modules:", err);
+            }
+        }
+
         const DEFAULT_STATE = {
             isOnboarded: false,
             ratings: {
@@ -77,8 +103,6 @@
             { title: "The 6-Minute System Synopsis", file: "6_minute_synopsis.mp4", type: "video", duration: "6:00" }
         ];
 const COMPANION_QUESTION_TREE = {
-    "q0": { text: "1", next: {'0': 'q1', '1': 'q1', '2': 'q0_a', '3': 'q0_a', '4': 'q0_a', 'default': 'q1'} },
-    "q0_a": { text: "What specific triggers consistently lead to this high level of severity for you?", next: {'default': 'q1'} },
     "q1": { text: "I feel slowed down or weighed down much of the day.", next: {'0': 'q2', '1': 'q2', '2': 'q1_a', '3': 'q1_a', '4': 'q1_a', 'default': 'q2'} },
     "q1_a": { text: "What daily activities are most impacted when you feel slowed down or weighed down?", next: {'default': 'q2'} },
     "q2": { text: "My day feels harder to start than it should.", next: {'0': 'q3', '1': 'q3', '2': 'q2_a', '3': 'q2_a', '4': 'q2_a', 'default': 'q3'} },
@@ -432,6 +456,7 @@ const COMPANION_QUESTION_TREE = {
 
         function init() {
             loadState();
+            loadSafetyModules();
             loadLocalOpenAIKey();
             setupEventListeners();
             
@@ -758,9 +783,91 @@ const COMPANION_QUESTION_TREE = {
                     }
                     
                     saveState();
-                    renderDailyChecklist();
-                    updateDashboardMetrics();
+                    
+                    const safetyCard = document.getElementById("safety-checkin-card");
+                    if (safetyCard) {
+                        safetyCard.style.display = "block";
+                    } else {
+                        renderDailyChecklist();
+                        updateDashboardMetrics();
+                    }
                 });
+            });
+
+            // Toggle active state on safety buttons
+            const safetyButtons = document.querySelectorAll("#safety-buttons-container .btn");
+            safetyButtons.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    safetyButtons.forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+                });
+            });
+
+            // Submit safety check-in responses
+            document.getElementById("submit-safety-check").addEventListener("click", () => {
+                const ideationVal = parseInt(document.querySelector('input[name="ideation-24h"]:checked')?.value || "0");
+                const safetyBtn = document.querySelector("#safety-buttons-container .btn.active");
+                const safetyVal = safetyBtn ? safetyBtn.getAttribute("data-safety") : "yes";
+                
+                const assessment = {
+                    id: "assessment-" + Date.now(),
+                    timestamp: new Date().toISOString(),
+                    type: "quick-screen",
+                    ideation: { value: ideationVal },
+                    safety: { value: safetyVal },
+                    responses: {
+                        ideationPresence: ideationVal,
+                        feeling_safe: safetyVal === "yes"
+                    }
+                };
+                
+                // Initialize safety tracking in state if needed
+                state.safetyAssessments = state.safetyAssessments || [];
+                state.safetyAssessments.push(assessment);
+                
+                // Calculate risk
+                let riskLevel = { level: 'low', score: 0 };
+                if (safetyDetection) {
+                    riskLevel = safetyDetection.calculateRiskLevel({
+                        quickScreen: assessment,
+                        patterns: safetyDetection.detectRiskPatterns ? safetyDetection.detectRiskPatterns(state) : []
+                    });
+                } else {
+                    let score = ideationVal;
+                    if (safetyVal === "no") score += 5;
+                    else if (safetyVal === "unsure") score += 2;
+                    let level = 'low';
+                    if (score >= 8) level = 'acute';
+                    else if (score >= 5) level = 'elevated';
+                    else if (score >= 3) level = 'moderate';
+                    else if (score >= 1) level = 'low-moderate';
+                    riskLevel = { level, score };
+                }
+                
+                // Hide card
+                document.getElementById("safety-checkin-card").style.display = "none";
+                
+                // Update safety state
+                state.safety = state.safety || {};
+                if (riskLevel.level === "acute" || riskLevel.level === "elevated" || safetyVal === "no") {
+                    state.safety.suicide = 2; // High alert
+                    triggerCrisisOverlay();
+                } else if (riskLevel.level === "moderate" || safetyVal === "unsure") {
+                    state.safety.suicide = 1;
+                } else {
+                    state.safety.suicide = 0;
+                }
+                
+                // Adapt anchors based on risk
+                if (polarisEnhanced && polarisEnhanced.generateAdaptiveAnchors) {
+                    state.polaris = polarisEnhanced.generateAdaptiveAnchors(riskLevel, state.polaris || {});
+                }
+                
+                saveState();
+                renderDailyChecklist();
+                updateDashboardMetrics();
+                
+                showToast("Safety check complete. Risk level: " + riskLevel.level.toUpperCase(), "success");
             });
 
             document.getElementById("btn-check-mantra").addEventListener("click", () => {
@@ -1226,6 +1333,13 @@ const COMPANION_QUESTION_TREE = {
                         tasks.push({ label: task, isMvd: false });
                     });
                 }
+            }
+
+            // Inject adaptive safety anchors
+            if (state.polaris && state.polaris.safetyAnchors && state.polaris.safetyAnchors.length > 0) {
+                state.polaris.safetyAnchors.forEach(a => {
+                    tasks.push({ label: a.text, isMvd: a.critical || false });
+                });
             }
             
             const today = getTodayString();
@@ -2665,6 +2779,9 @@ const COMPANION_QUESTION_TREE = {
             const anchor = map[category];
             if (!anchor) return;
             
+            ensurePolarisState();
+            state.lastVisitDate = getTodayString();
+            
             // Set energy to low/collapse equivalent implicitly
             state.todayEnergy = 'low';
             
@@ -2696,6 +2813,8 @@ const COMPANION_QUESTION_TREE = {
         function exploreFullProgram() {
             // Go to normal intake if not onboarded, or dashboard if already onboarded
             if (state.isOnboarded) {
+                state.lastVisitDate = getTodayString();
+                saveState();
                 showScreen('dashboard');
                 showTab('dashboard');
                 renderDashboard();
@@ -2732,6 +2851,7 @@ const COMPANION_QUESTION_TREE = {
                 state.isOnboarded = true;
                 state.todayEnergy = 'medium';
                 state.currentLayer = 1;
+                state.lastVisitDate = getTodayString();
                 saveState();
                 showScreen('dashboard');
                 showTab('dashboard');
@@ -2741,7 +2861,9 @@ const COMPANION_QUESTION_TREE = {
 
         function goToEmergencyFloor() {
             // If onboarded, go to safebox tab. If not, do minimal onboard then safebox.
+            state.lastVisitDate = getTodayString();
             if (state.isOnboarded) {
+                saveState();
                 showScreen('dashboard');
                 showTab('safebox');
                 renderSafeBox();
@@ -3159,6 +3281,7 @@ const COMPANION_QUESTION_TREE = {
 
             // B4: Clinical Insights
             renderPolarisInsights();
+            renderPolarisIntakeHistory();
 
             // B8: Yesterday incomplete
             renderYesterdayIncomplete();
@@ -3253,6 +3376,79 @@ const COMPANION_QUESTION_TREE = {
                     <div style="font-size: 0.85rem; color: var(--text-primary); line-height: 1.4;">${i.text}</div>
                 </div>
             `).join('');
+        }
+
+        // ---- RENDER: Evolving Intake History Log ----
+
+        function renderPolarisIntakeHistory() {
+            const container = document.getElementById('polaris-intake-history-container');
+            const list = document.getElementById('polaris-intake-history-list');
+            if (!container || !list) return;
+
+            const intake = state.polaris.profile.evolvingIntake;
+            if (!intake || !intake.answers || !intake.enabled || !state.polaris.profile.companionSkin) {
+                container.classList.add('hidden');
+                return;
+            }
+
+            const historyItems = [];
+            const dates = Object.keys(intake.answers).sort();
+            for (const date of dates) {
+                const dayAnswers = intake.answers[date];
+                for (const qId in dayAnswers) {
+                    historyItems.push({
+                        qId,
+                        answer: dayAnswers[qId],
+                        date
+                    });
+                }
+            }
+
+            if (historyItems.length === 0) {
+                container.classList.add('hidden');
+                return;
+            }
+
+            container.classList.remove('hidden');
+
+            const scoreLabels = {
+                0: "Not at all",
+                1: "Rare / Mild",
+                2: "Sometimes",
+                3: "Often",
+                4: "Almost Always"
+            };
+
+            list.innerHTML = historyItems.map(item => {
+                const qId = item.qId;
+                const ans = item.answer;
+                const currentQ = COMPANION_QUESTION_TREE[qId];
+                if (!currentQ) return '';
+
+                if (qId.endsWith('_a')) {
+                    const parentQId = qId.replace('_a', '');
+                    const parentQ = COMPANION_QUESTION_TREE[parentQId];
+                    const parentText = parentQ ? parentQ.text : 'Previous Question';
+                    return `
+                        <div style="padding: 0.6rem; background: rgba(165, 120, 240, 0.05); border-left: 2px solid var(--accent-lavender); border-radius: var(--radius-sm); font-size: 0.85rem; text-align: left;">
+                            <div class="text-muted" style="font-size: 0.75rem; margin-bottom: 0.2rem;">Reflection on: ${escapeHtml(parentText)}</div>
+                            <div class="text-lavender" style="font-size: 0.8rem; font-style: italic; margin-bottom: 0.3rem;">"${escapeHtml(currentQ.text)}"</div>
+                            <div style="color: var(--text-primary); white-space: pre-wrap; line-height: 1.4;">${escapeHtml(ans.toString())}</div>
+                            <div class="text-muted" style="font-size: 0.7rem; text-align: right; margin-top: 0.25rem;">${item.date}</div>
+                        </div>
+                    `;
+                } else {
+                    const label = scoreLabels[ans] || ans;
+                    const qNum = qId.replace('q', '');
+                    return `
+                        <div style="padding: 0.6rem; background: rgba(0,0,0,0.15); border-left: 2px solid rgba(255,255,255,0.15); border-radius: var(--radius-sm); font-size: 0.85rem; text-align: left;">
+                            <div class="text-muted" style="font-size: 0.75rem; margin-bottom: 0.2rem;">Question ${qNum}: ${escapeHtml(currentQ.text)}</div>
+                            <div style="color: var(--text-primary); font-weight: 500;">Answer: ${escapeHtml(label.toString())}</div>
+                            <div class="text-muted" style="font-size: 0.7rem; text-align: right; margin-top: 0.25rem;">${item.date}</div>
+                        </div>
+                    `;
+                }
+            }).filter(h => h !== '').join('');
         }
 
         // ---- RENDER: Hope Level in Polaris ----

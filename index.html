@@ -141,19 +141,33 @@
         </div>
 
         <!-- STATE SELECTOR SCREEN -->
-        <div id="screen-state-selector" class="welcome-screen hidden" style="max-width: 520px;">
-            <h2 class="mb-2 text-lavender">What is blocking action right now?</h2>
-            <div class="glass-card" style="padding: 1.25rem;">
-                <div style="display: flex; flex-direction: column; gap: 0.6rem;">
-                    <button class="btn btn-secondary" onclick="selectState('initiation')">I can't start</button>
-                    <button class="btn btn-secondary" onclick="selectState('rhythm')">My rhythm is broken</button>
-                    <button class="btn btn-secondary" onclick="selectState('environment')">My space is dragging me down</button>
-                    <button class="btn btn-secondary" onclick="selectState('body')">My body needs the floor</button>
-                    <button class="btn btn-secondary" onclick="selectState('mind')">My mind is spiraling</button>
-                    <button class="btn btn-danger" onclick="selectState('emergency')">Emergency mode</button>
+        <div id="screen-state-selector" class="welcome-screen hidden">
+            <div class="glass-card" style="max-width: 460px; width: 100%; padding: 2rem;">
+                <h2 style="font-size: 1.25rem; font-weight: 600; color: var(--accent-lavender); margin-bottom: 0.5rem; text-align: center;">What is blocking action right now?</h2>
+                <p class="text-muted" style="text-align: center; margin-bottom: 1.5rem; font-size: 0.9rem;">No analysis needed. Just pick the floor.</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <button class="btn btn-secondary w-full" onclick="executeTinyAnchor('initiation')" style="padding: 1rem; text-align: left;">
+                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">🧱</span> I can't start
+                    </button>
+                    <button class="btn btn-secondary w-full" onclick="executeTinyAnchor('rhythm')" style="padding: 1rem; text-align: left;">
+                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">⏳</span> My rhythm is broken
+                    </button>
+                    <button class="btn btn-secondary w-full" onclick="executeTinyAnchor('space')" style="padding: 1rem; text-align: left;">
+                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">🗑️</span> My space is dragging me down
+                    </button>
+                    <button class="btn btn-secondary w-full" onclick="executeTinyAnchor('body')" style="padding: 1rem; text-align: left;">
+                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">💧</span> My body needs the floor
+                    </button>
+                    <button class="btn btn-secondary w-full" onclick="executeTinyAnchor('mind')" style="padding: 1rem; text-align: left;">
+                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">🌪️</span> My mind is spiraling
+                    </button>
+                    <button class="btn btn-danger w-full" onclick="goToEmergencyFloor()" style="padding: 1rem; text-align: left; margin-top: 1rem;">
+                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">🚨</span> Emergency mode
+                    </button>
                 </div>
+                <button class="btn btn-secondary mt-3 w-full" onclick="showScreen('welcome')" style="justify-content: center;">← Back</button>
             </div>
-            <button class="btn btn-secondary mt-3" onclick="showScreen('welcome')">← Back</button>
         </div>
 
         <!-- PROFILE DEPTH SELECTOR SCREEN -->
@@ -508,6 +522,57 @@
                             <button class="btn btn-secondary text-red" id="btn-quick-safety" style="padding: 0.5rem 0.75rem; font-size: 0.75rem; margin-top: 0.75rem; width: 100%; justify-content: center; gap: 0.4rem; color: var(--accent-red); border-color: rgba(230, 40, 60, 0.2);">🚨 Quick Safety Plan</button>
                         </div>
 
+                        <!-- SAFETY CHECK-IN (Integrated Naturally) -->
+                        <div id="safety-checkin-card" class="glass-card safety-gradient mb-3" style="display: none; padding: 1.25rem;">
+                            <h3 class="card-title" style="font-size:1rem; margin-bottom: 0.75rem; color: var(--text-primary);">Quick Safety Check</h3>
+                            
+                            <div class="safety-question">
+                                <p class="question-text">
+                                    In the last 24 hours, have you had any thoughts that life might be better if you weren't here?
+                                </p>
+                                <p class="question-subtext">
+                                    This might feel like wanting to disappear, wishing you weren't alive, or a general sense of hopelessness.
+                                </p>
+                                
+                                <div class="response-scale" id="ideation-scale">
+                                    <label class="scale-option">
+                                        <input type="radio" name="ideation-24h" value="0" checked>
+                                        <span class="scale-label">Not at all</span>
+                                    </label>
+                                    <label class="scale-option">
+                                        <input type="radio" name="ideation-24h" value="1">
+                                        <span class="scale-label">Briefly</span>
+                                    </label>
+                                    <label class="scale-option">
+                                        <input type="radio" name="ideation-24h" value="2">
+                                        <span class="scale-label">Off and on</span>
+                                    </label>
+                                    <label class="scale-option">
+                                        <input type="radio" name="ideation-24h" value="3">
+                                        <span class="scale-label">Most of day</span>
+                                    </label>
+                                    <label class="scale-option">
+                                        <input type="radio" name="ideation-24h" value="4">
+                                        <span class="scale-label">Almost always</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="safety-question" style="margin-top: 1rem;">
+                                <p class="question-text">Do you feel safe right now?</p>
+                                
+                                <div class="response-buttons" id="safety-buttons-container">
+                                    <button class="btn btn-secondary btn-small active" data-safety="yes">Yes, I feel safe</button>
+                                    <button class="btn btn-secondary btn-small" data-safety="no">No, I don't feel safe</button>
+                                    <button class="btn btn-secondary btn-small" data-safety="unsure">I'm not sure</button>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary mt-2" id="submit-safety-check" style="width: 100%; justify-content: center;">
+                                Continue
+                            </button>
+                        </div>
+
                         <!-- Daily Tasks Checkbox Area -->
                         <div class="checklist-card glass-card">
                             <div class="checklist-title-bar">
@@ -645,6 +710,17 @@
                     Companion Clinical Insights
                 </h4>
                 <div id="polaris-insights-list" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+            <!-- Evolving Intake History & Reflections Log -->
+            <div id="polaris-intake-history-container" class="glass-card hidden" style="background: rgba(165, 120, 240, 0.03); border-color: rgba(165, 120, 240, 0.15); padding: 1rem; margin-bottom: 1.5rem;">
+                <h4 class="text-lavender" style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.4rem;">
+                    <span style="display:inline-block; width:8px; height:8px; background:var(--accent-lavender); border-radius:50%;"></span>
+                    Intake History & Reflections
+                </h4>
+                <div id="polaris-intake-history-list" style="display: flex; flex-direction: column; gap: 0.6rem; max-height: 250px; overflow-y: auto; padding-right: 0.25rem;">
                     <!-- Dynamically populated -->
                 </div>
             </div>
@@ -1537,36 +1613,7 @@
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- STATE SELECTOR SCREEN (Smart Welcome)      -->
-        <!-- ========================================== -->
-        <div id="screen-stateSelector" class="screen hidden">
-            <div class="glass-card" style="max-width: 460px; width: 100%; padding: 2rem;">
-                <h2 style="font-size: 1.25rem; font-weight: 600; color: var(--accent-lavender); margin-bottom: 0.5rem; text-align: center;">What is blocking action right now?</h2>
-                <p class="text-muted" style="text-align: center; margin-bottom: 1.5rem; font-size: 0.9rem;">No analysis needed. Just pick the floor.</p>
-                
-                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                    <button class="btn btn-secondary w-full" onclick="executeTinyAnchor('initiation')" style="padding: 1rem; text-align: left;">
-                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">🧱</span> I can't start
-                    </button>
-                    <button class="btn btn-secondary w-full" onclick="executeTinyAnchor('rhythm')" style="padding: 1rem; text-align: left;">
-                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">⏳</span> My rhythm is broken
-                    </button>
-                    <button class="btn btn-secondary w-full" onclick="executeTinyAnchor('space')" style="padding: 1rem; text-align: left;">
-                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">🗑️</span> My space is dragging me down
-                    </button>
-                    <button class="btn btn-secondary w-full" onclick="executeTinyAnchor('body')" style="padding: 1rem; text-align: left;">
-                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">💧</span> My body needs the floor
-                    </button>
-                    <button class="btn btn-secondary w-full" onclick="executeTinyAnchor('mind')" style="padding: 1rem; text-align: left;">
-                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">🌪️</span> My mind is spiraling
-                    </button>
-                    <button class="btn btn-danger w-full" onclick="goToEmergencyFloor()" style="padding: 1rem; text-align: left; margin-top: 1rem;">
-                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">🚨</span> Emergency mode
-                    </button>
-                </div>
-            </div>
-        </div>
+
 
         <!-- ========================================== -->
         <!-- LOCK / PIN SCREEN                          -->
