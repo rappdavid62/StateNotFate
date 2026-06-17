@@ -129,8 +129,8 @@
                 <ul>
                     <li><strong>Action before motivation:</strong> We start tiny to prove to your brain that actions produce consequences.</li>
                     <li><strong>Streak purity is a trap:</strong> Streak systems build shame. We track <em>resilience</em> and restart speed instead.</li>
-                    <li><strong>Interactive Media Console:</strong> Play your clinical recordings and podcasts directly inside your local app.</li>
-                    <li><strong>Clinical Progression tracking:</strong> Standardized PHQ-9 assessments and 10-Layer progression metrics built-in.</li>
+                    <li><strong>Interactive Media Console:</strong> Play your program recordings and podcasts directly inside your local app.</li>
+                    <li><strong>Structured Progression tracking:</strong> Standardized PHQ-9 assessments and 10-Layer progression metrics built-in.</li>
                 </ul>
             </div>
             
@@ -166,7 +166,7 @@
                         <strong>Quick Setup (2 min)</strong><br><span class="text-muted" style="font-size:0.8rem;">Set your mantra and MVD floor. Skip detailed burden mapping.</span>
                     </button>
                     <button class="btn btn-secondary" onclick="applyProfileDepth('standard')" style="padding: 1rem; text-align: left;">
-                        <strong>Standard Intake (5-10 min)</strong><br><span class="text-muted" style="font-size:0.8rem;">Full clinical intake with all sections. Recommended for first use.</span>
+                        <strong>Standard Intake (5-10 min)</strong><br><span class="text-muted" style="font-size:0.8rem;">Full recovery intake with all sections. Recommended for first use.</span>
                     </button>
                     <button class="btn btn-secondary" onclick="applyProfileDepth('minimal')" style="padding: 1rem; text-align: left;">
                         <strong>Minimal — Just Dashboard</strong><br><span class="text-muted" style="font-size:0.8rem;">Skip intake entirely. Use default settings and go straight to dashboard.</span>
@@ -185,10 +185,10 @@
             
             <div class="accordion-container">
                 
-                <!-- SECTION 1: CLINICAL SAFETY SCREENING -->
+                <!-- SECTION 1: SAFETY SCREENING -->
                 <div class="accordion-section active" data-section="safety">
                     <button class="accordion-header">
-                        <span>1. Clinical Safety & Security PIN</span>
+                        <span>1. Safety & Security PIN</span>
                         <span class="icon">▼</span>
                     </button>
                     <div class="accordion-content">
@@ -198,7 +198,7 @@
                             <div class="description center-text">Remember this PIN. It will be required to unlock your dashboard and Crisis Safe Box every time you launch.</div>
                         </div>
 
-                        <p class="mb-2 text-muted">Because depression can affect safety and clinical risks, we check these first. Your data remains fully private in your browser.</p>
+                        <p class="mb-2 text-muted">Because depression can affect safety and functional risks, we check these first. Your data remains fully private in your browser.</p>
                         
                         <div class="safety-row" data-safety-type="suicide">
                             <span class="question-header">Are you currently experiencing thoughts of hurting yourself or ending your life?</span>
@@ -365,6 +365,61 @@
                             <label for="input-still-works">Residual Capacity: What is one small thing that still works a little even on bad days?</label>
                             <input type="text" id="input-still-works" placeholder="e.g. Making a cup of tea, drinking water, feeding the cat.">
                         </div>
+
+                        <div class="form-group">
+                            <label for="select-future-narrowing">When you imagine the future, how many believable positive outcomes can you currently picture?</label>
+                            <select id="select-future-narrowing">
+                                <option value="none">None.</option>
+                                <option value="weak">One or two, but they feel weak.</option>
+                                <option value="far">Some, but they feel far away.</option>
+                                <option value="noaction">Several, but I cannot act toward them.</option>
+                                <option value="action">I can still imagine a future and take some action.</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="select-startup-drag">What happens when you try to start a basic helpful action?</label>
+                            <select id="select-startup-drag">
+                                <option value="none">I can usually start.</option>
+                                <option value="delay">I delay but eventually start.</option>
+                                <option value="freeze">I freeze or stay stuck for a long time.</option>
+                                <option value="stuck">I know what to do but cannot initiate.</option>
+                                <option value="nochoice">I cannot even choose the first step.</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="select-rumination">When your mind gets pulled into the past or future, what happens?</label>
+                            <select id="select-rumination">
+                                <option value="redirect">I can redirect.</option>
+                                <option value="spiral">I spiral but eventually come back.</option>
+                                <option value="losehours">I lose hours.</option>
+                                <option value="ruinsday">It ruins the day.</option>
+                                <option value="unsafe">It makes me feel unsafe or unable to function.</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="select-social-isolation">How does being alone affect your depression?</label>
+                            <select id="select-social-isolation">
+                                <option value="recover">It helps me recover.</option>
+                                <option value="neutral">It is neutral.</option>
+                                <option value="worse">It makes rumination worse.</option>
+                                <option value="trapped">It makes me feel unreal or trapped.</option>
+                                <option value="nocare">It makes me believe nobody cares.</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="select-external-anchor">Optional External Anchor (Responsibility Anchor): Do you have a pet, plant, or scheduled chore to use as an external trigger?</label>
+                            <select id="select-external-anchor">
+                                <option value="none">None / Skip</option>
+                                <option value="pet">Feed / care for a pet</option>
+                                <option value="plant">Water plants / care for environment</option>
+                                <option value="checkin">Structured check-in with a partner</option>
+                                <option value="duty">Scheduled obligation or recurring chore</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -524,6 +579,47 @@
                             </div>
                         </div>
 
+                        <!-- Startup Drag Action Ladder Card -->
+                        <div id="startup-drag-card" class="glass-card mt-2" style="background: rgba(240, 115, 30, 0.03); border-color: rgba(240, 115, 30, 0.15); padding: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="toggleStartupDragLadder()">
+                                <h4 style="margin: 0; color: var(--accent-orange); font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem;">⚡ Stuck Starting? (Startup Drag Ladder)</h4>
+                                <span id="startup-drag-toggle-icon" style="font-size: 0.8rem; color: var(--text-muted);">[ Show ]</span>
+                            </div>
+                            <div id="startup-drag-ladder-content" class="hidden" style="margin-top: 0.75rem; font-size: 0.85rem; border-top: 1px solid rgba(240, 115, 30, 0.1); padding-top: 0.75rem;">
+                                <p class="text-muted" style="margin-top: 0; margin-bottom: 0.75rem; font-style: italic;">“Starting is the failure point. Make the first action smaller.”</p>
+                                <div style="display: flex; flex-direction: column; gap: 0.6rem;" id="startup-drag-steps-container">
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text-primary);">
+                                        <input type="checkbox" onchange="checkDragStep(1)" style="accent-color: var(--accent-orange);">
+                                        <span>1. Sit up.</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text-primary);">
+                                        <input type="checkbox" onchange="checkDragStep(2)" style="accent-color: var(--accent-orange);">
+                                        <span>2. Put feet on floor.</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text-primary);">
+                                        <input type="checkbox" onchange="checkDragStep(3)" style="accent-color: var(--accent-orange);">
+                                        <span>3. Drink water.</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text-primary);">
+                                        <input type="checkbox" onchange="checkDragStep(4)" style="accent-color: var(--accent-orange);">
+                                        <span>4. Open curtain or stand near light.</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text-primary);">
+                                        <input type="checkbox" onchange="checkDragStep(5)" style="accent-color: var(--accent-orange);">
+                                        <span>5. Take medication if prescribed.</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text-primary);">
+                                        <input type="checkbox" onchange="checkDragStep(6)" style="accent-color: var(--accent-orange);">
+                                        <span>6. Stand for 30 seconds.</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text-primary);">
+                                        <input type="checkbox" onchange="checkDragStep(7)" style="accent-color: var(--accent-orange);">
+                                        <span>7. Complete one tiny proof action.</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
                     <!-- Right: Analytics, Hope Meter, Reminders -->
@@ -642,7 +738,7 @@
             <div id="polaris-insights-container" class="hidden" style="margin-bottom: 1.5rem;">
                 <h4 class="text-lavender" style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
                     <span style="display:inline-block; width:8px; height:8px; background:var(--accent-lavender); border-radius:50%;"></span>
-                    Companion Clinical Insights
+                    Companion Program Insights
                 </h4>
                 <div id="polaris-insights-list" style="display: flex; flex-direction: column; gap: 0.5rem;">
                     <!-- Dynamically populated -->
@@ -793,7 +889,7 @@
             <div id="tab-momentum" class="tab-content hidden">
                 <div class="glass-card" style="max-width: 800px; margin: 0 auto; padding: 1.75rem;">
                     <h2 class="mb-2 text-lavender" style="display:flex; align-items:center; gap:0.5rem;">📊 Momentum & System Audit</h2>
-                    <p class="text-muted mb-3" style="font-weight: 300;">Your recovery operating system. Powered by evidence, tracked via cumulative milestones, and exported for clinical co-pilot review.</p>
+                    <p class="text-muted mb-3" style="font-weight: 300;">Your recovery operating system. Powered by evidence, tracked via cumulative milestones, and exported for co-pilot review.</p>
 
                     <!-- Row 1: Living System State & Narrative Proof -->
                     <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
@@ -870,7 +966,7 @@
                     <!-- Row 4: Auto-Audit Exporter -->
                     <div class="glass-card" style="padding:1.25rem; background:rgba(255,255,255,0.01);">
                         <h3 style="font-size:1rem; color:var(--text-primary); margin-bottom:0.25rem;">Auto-Audit & Co-Pilot Sync</h3>
-                        <p class="text-muted" style="font-size:0.8rem; margin-bottom:0.75rem; font-weight: 300;">Generate a completely private, anonymized clinical briefing of your state history and proof statements to copy-paste into Grok, Obsidian, or Tonya's session notes.</p>
+                        <p class="text-muted" style="font-size:0.8rem; margin-bottom:0.75rem; font-weight: 300;">Generate a completely private, anonymized progress briefing of your state history and proof statements to copy-paste into Grok, Obsidian, or Tonya's session notes.</p>
                         <button class="btn btn-primary" onclick="exportAnonymizedAudit()" style="background:var(--accent-teal); border-color:var(--accent-teal); color:#0b0f13; font-size:0.85rem; padding:0.6rem 1.25rem; justify-content:center; width: 100%;">
                             📋 Copy Anonymized Audit (Markdown)
                         </button>
@@ -967,7 +1063,7 @@
             <div id="tab-mediaconsole" class="tab-content hidden">
                 <div class="glass-card">
                     <h2 class="mb-1 text-teal">Interactive Media Console</h2>
-                    <p class="text-secondary mb-3">Absorb your recovery guides, talks, and clinical outreach briefs locally and privately.</p>
+                    <p class="text-secondary mb-3">Absorb your recovery guides, talks, and program outreach briefs locally and privately.</p>
                     
                     <div class="safebox-grid">
                         
@@ -1016,11 +1112,11 @@
                 </div>
             </div>
 
-            <!-- TAB 4: CLINICAL PROGRESS & PHQ-9 -->
+            <!-- TAB 4: PROGRESS & PHQ-9 -->
             <div id="tab-progression" class="tab-content hidden">
                 <div class="glass-card">
-                    <h2 class="mb-1 text-lavender">Clinical Progression Dashboard</h2>
-                    <p class="text-secondary mb-3">Monitor your 10-Layer behavioral roadmap and track clinical symptom scores over time.</p>
+                    <h2 class="mb-1 text-lavender">Progression Dashboard</h2>
+                    <p class="text-secondary mb-3">Monitor your 10-Layer behavioral roadmap and track symptom scores over time.</p>
 
                     <div class="safebox-grid">
                         
@@ -1050,12 +1146,12 @@
                             </div>
 
                             <div class="glass-card">
-                                <div class="safebox-field-label">PHQ-9 Clinical History</div>
+                                <div class="safebox-field-label">PHQ-9 History</div>
                                 <div class="chart-container" style="position:relative; width:100%; height:200px; background:rgba(0,0,0,0.3); border-radius: var(--radius-sm); border: 1px solid rgba(255,255,255,0.03); overflow:hidden;">
                                     <svg id="phq-history-svg" width="100%" height="200" style="padding: 10px 15px 25px 25px;">
                                     </svg>
                                     <div id="chart-empty-text" class="text-muted" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:0.85rem; text-align:center;">
-                                        Take your first assessment to begin graphing clinical outcome history.
+                                        Take your first assessment to begin graphing outcome history.
                                     </div>
                                 </div>
                                 <p class="text-muted mt-1" style="font-size:0.75rem;">A score below 10 generally indicates mild-to-minimal severity, showing that behavioral activation is rebuilding the floor.</p>
@@ -1073,7 +1169,7 @@
                     
                     <div class="glass-card">
                         <h2>The State, Not Fate Concept Reference</h2>
-                        <p class="text-secondary mt-1">Access the underlying philosophy and clinical evidence of this operating system at any time.</p>
+                        <p class="text-secondary mt-1">Access the underlying philosophy and evidence base of this operating system at any time.</p>
                     </div>
 
                     <h3 class="text-lavender mt-2">The 12 Load-Bearing Design Pillars</h3>
@@ -1112,15 +1208,15 @@
                         </div>
                     </div>
 
-                    <h3 class="text-teal mt-2">Clinical Outreach & Cooperation briefs</h3>
+                    <h3 class="text-teal mt-2">Program Outreach & Cooperation briefs</h3>
                     <div class="glass-card">
-                        <div class="concept-pill-title text-teal">Section 13: Clinical Collaboration Brief</div>
+                        <div class="concept-pill-title text-teal">Section 13: Collaboration Brief</div>
                         <p class="text-secondary mt-1" style="font-size:0.9rem; line-height:1.5;">
                             State, Not Fate is designed as an adjunctive operating system. It bridges the gap between insights gained in therapy and daily execution.
                             <br><br>
                             <strong>Outreach template for professionals:</strong>
                             <br>
-                            <em>"I am utilizing a structured behavioral activation and circadian timing system to manage my daily energy and function. It helps me track anchors, record restart speed, and manage task-entry friction. It is designed to complement our clinical therapy objectives by tracking my floor wins and PHQ-9 progress."</em>
+                            <em>"I am utilizing a structured behavioral activation and circadian timing system to manage my daily energy and function. It helps me track anchors, record restart speed, and manage task-entry friction. It is designed to complement our recovery objectives by tracking my floor wins and PHQ-9 progress."</em>
                         </p>
                     </div>
                 </div>
@@ -1202,27 +1298,87 @@
 
                     </div>
 
+                    <!-- Rumination Stop-Loss Card -->
+                    <div class="glass-card mt-3" style="background: rgba(230, 40, 60, 0.02); border-color: rgba(230, 40, 60, 0.15); padding: 1.5rem;">
+                        <h3 class="text-orange mb-1" style="color: var(--accent-orange); display: flex; align-items: center; gap: 0.5rem; margin-top: 0;">🛑 Rumination Stop-Loss Protocol</h3>
+                        <p class="text-muted mb-3" style="font-size:0.8rem; line-height: 1.4;">
+                            You do not need to win the argument in your head. You need to stop it from taking the whole day. Set a hard time limit, define the loop, and pre-commit to a redirect action.
+                        </p>
+
+                        <div class="safebox-grid" style="gap: 1.5rem;">
+                            <!-- Left Column: Inputs & Timer -->
+                            <div>
+                                <div class="form-group mb-3">
+                                    <label style="font-size:0.85rem; font-weight:500; color:var(--text-primary);">1. Name the Loop / Distraction Topic:</label>
+                                    <input type="text" id="input-rumination-loop" placeholder="e.g. Spiral about yesterday's meeting comment">
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label style="font-size:0.85rem; font-weight:500; color:var(--text-primary);">2. Write the issue (1 to 3 sentences only):</label>
+                                    <textarea id="input-rumination-issue" rows="2" placeholder="e.g. I felt embarrassed, and now I keep thinking people don't respect me. I am losing my workday replay-watching."></textarea>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;" class="mb-3">
+                                    <div class="form-group">
+                                        <label style="font-size:0.85rem; font-weight:500; color:var(--text-primary);">3. Bounded Time Window:</label>
+                                        <select id="select-rumination-duration">
+                                            <option value="10">10 Minutes</option>
+                                            <option value="20">20 Minutes</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label style="font-size:0.85rem; font-weight:500; color:var(--text-primary);">4. Pre-committed Redirect Thought:</label>
+                                        <input type="text" id="input-rumination-redirect" placeholder="Write another thought/topic to focus on (e.g. garden layout, physical task backup)" style="font-size:0.85rem; padding:0.6rem; width: 100%;">
+                                    </div>
+                                </div>
+
+                                <div id="rumination-timer-container" class="hidden mb-3" style="background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(230, 40, 60, 0.2); padding: 1rem; border-radius: var(--radius-sm); text-align: center;">
+                                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Timer Active &bull; Bounded Window</div>
+                                    <div id="rumination-timer-countdown" style="font-size: 2rem; font-weight: 700; color: var(--accent-orange); margin: 0.25rem 0; font-family: monospace;">10:00</div>
+                                    <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.75rem;">Write or sit with it, but once the clock hits 0:00, you must redirect.</div>
+                                </div>
+
+                                <div style="display: flex; gap: 0.75rem;">
+                                    <button class="btn btn-primary" id="btn-start-rumination" onclick="startRuminationStopLoss()" style="flex: 1; background: var(--accent-orange); border-color: var(--accent-orange); color: #0c0803; justify-content: center; font-weight: 600;">
+                                        ⚡ Start Bounded Window
+                                    </button>
+                                    <button class="btn btn-secondary hidden" id="btn-complete-rumination" onclick="completeRuminationStopLoss()" style="flex: 1; background: var(--accent-teal); border-color: var(--accent-teal); color: #0b0f13; justify-content: center; font-weight: 600;">
+                                        ✓ Complete & Redirect
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Right Column: History Logs -->
+                            <div>
+                                <div class="safebox-field-label" style="color: var(--accent-orange);">Stop-Loss Logs (Active Loops Time-Bounded)</div>
+                                <div class="linked-files-list" id="rumination-history-container" style="max-height: 280px; overflow-y:auto; display:flex; flex-direction:column; gap:0.5rem;">
+                                    <!-- Injected dynamically -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <hr style="border:0; border-top:1px solid rgba(255,255,255,0.08); margin: 2rem 0 1.5rem 0;">
 
-                    <!-- CLINICIAN CUSTOMIZER PANEL -->
+                    <!-- PLAN CUSTOMIZER PANEL -->
                     <div class="glass-card" style="background: rgba(240, 115, 30, 0.015); border-color: rgba(240, 115, 30, 0.12); padding: 1.5rem; margin-top: 1rem;">
                         <div class="safebox-header" style="margin-bottom:0.5rem;">
-                            <h3 class="text-orange" style="display:flex; align-items:center; gap:0.5rem; margin:0;">⚙ Clinician's Plan Customizer</h3>
+                            <h3 class="text-orange" style="display:flex; align-items:center; gap:0.5rem; margin:0;">⚙ Recovery Plan Customizer</h3>
                             <span class="badge" style="background: var(--accent-orange); color:#0c0803; font-weight:600; font-size:0.7rem; padding:0.2rem 0.5rem;">Adaptive Customizer</span>
                         </div>
                         <p class="text-muted mb-3" style="font-size:0.8rem; line-height:1.45;">
                             Work with your therapist or peer leader to adapt your recovery checklist. 
-                            Choose a clinically pre-configured treatment plan template, or customize your MVD Floor and active checklist actions directly.
+                            Choose a pre-configured recovery template, or customize your MVD Floor and active checklist actions directly.
                         </p>
 
                         <!-- Preset templates -->
                         <div class="form-group mb-3" style="background:rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.03); padding:0.75rem; border-radius:var(--radius-sm);">
-                            <label style="font-size:0.85rem; font-weight:600; color:var(--text-primary);">Load Pre-Configured Clinical Template:</label>
+                            <label style="font-size:0.85rem; font-weight:600; color:var(--text-primary);">Load Pre-Configured Template:</label>
                             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:0.5rem; margin-top:0.35rem;">
-                                <button class="btn btn-secondary" onclick="loadClinicalTemplate('circadian')" style="padding:0.5rem; font-size:0.75rem; justify-content:center; text-align:center;">Template A: Circadian & Wake Focus</button>
-                                <button class="btn btn-secondary" onclick="loadClinicalTemplate('environmental')" style="padding:0.5rem; font-size:0.75rem; justify-content:center; text-align:center;">Template B: Environmental Reset</button>
-                                <button class="btn btn-secondary" onclick="loadClinicalTemplate('graded')" style="padding:0.5rem; font-size:0.75rem; justify-content:center; text-align:center;">Template C: Graded Activation</button>
-                                <button class="btn btn-secondary" onclick="loadClinicalTemplate('lowshame')" style="padding:0.5rem; font-size:0.75rem; justify-content:center; text-align:center;">Template D: Low-Shame Recovery Floor</button>
+                                <button class="btn btn-secondary" onclick="loadProgramTemplate('circadian')" style="padding:0.5rem; font-size:0.75rem; justify-content:center; text-align:center;">Template A: Circadian & Wake Focus</button>
+                                <button class="btn btn-secondary" onclick="loadProgramTemplate('environmental')" style="padding:0.5rem; font-size:0.75rem; justify-content:center; text-align:center;">Template B: Environmental Reset</button>
+                                <button class="btn btn-secondary" onclick="loadProgramTemplate('graded')" style="padding:0.5rem; font-size:0.75rem; justify-content:center; text-align:center;">Template C: Graded Activation</button>
+                                <button class="btn btn-secondary" onclick="loadProgramTemplate('lowshame')" style="padding:0.5rem; font-size:0.75rem; justify-content:center; text-align:center;">Template D: Low-Shame Recovery Floor</button>
                             </div>
                         </div>
 
@@ -1263,7 +1419,7 @@
                         <div class="flex-between mt-3" style="border-top: 1px dashed rgba(255,255,255,0.06); padding-top:1rem;">
                             <button class="btn btn-secondary" onclick="resetChecklistToDefaults()" style="font-size:0.8rem; padding:0.5rem 1rem;">Reset Checklist to Defaults</button>
                             <button class="btn btn-primary" id="btn-save-custom-treatment" style="background:var(--accent-orange); border-color:var(--accent-orange); color:#0c0803; font-weight:600; padding:0.6rem 1.25rem; font-size:0.85rem;">
-                                ✓ Save Treatment Plan Customization
+                                ✓ Save Recovery Plan Customization
                             </button>
                         </div>
                     </div>
@@ -1301,7 +1457,7 @@
                         <span class="badge" style="background: var(--accent-teal); color:#0b0f13; font-weight:600;">System Registry</span>
                     </div>
                     <p class="text-secondary mb-3 mt-1" style="font-size:0.9rem;">
-                        A centralized offline console to track your clinical assessment history, review completed cognitive sheets, and browse your portable file system directory.
+                        A centralized offline console to track your assessment history, review completed cognitive sheets, and browse your portable file system directory.
                     </p>
 
                     <div class="safebox-grid">
@@ -1376,7 +1532,7 @@
         </div>
 
         <!-- ========================================== -->
-        <!-- PHQ-9 CLINICAL ASSESSMENT OVERLAY MODAL    -->
+        <!-- PHQ-9 ASSESSMENT OVERLAY MODAL    -->
         <!-- ========================================== -->
         <div id="phq9-modal" class="modal-overlay">
             <div class="modal-content" style="max-width: 650px; max-height: 90vh; overflow-y: auto;">
@@ -1423,7 +1579,7 @@
                 <div class="modal-desc">
                     Your recent inputs indicate a high level of active distress, suicidal intent, or extreme functioning collapse. 
                     <br><br>
-                    <strong>State, Not Fate is an adjunctive recovery framework, but in active crisis, professional clinical support is required.</strong>
+                    <strong>State, Not Fate is an adjunctive recovery framework, but in active crisis, professional medical or crisis support is required.</strong>
                     <br><br>
                     We want you to remain safe. Please review your <strong>Crisis Safety Plan</strong> inside the Safe Box, and immediately reach out to your support network or a professional.
                 </div>
@@ -1526,7 +1682,7 @@
             <div class="modal-content" style="max-width: 600px; max-height: 90vh; overflow-y: auto; border-color: var(--accent-teal);">
                 <button class="modal-close-btn" id="btn-close-export-modal">×</button>
                 <h3 class="text-teal mb-2">📋 Export Progress Share Briefing</h3>
-                <p class="text-muted mb-3" style="font-size: 0.85rem;">This briefing summarizes your clinical data locally, fully anonymized. Share this with your therapist to optimize your recovery templates.</p>
+                <p class="text-muted mb-3" style="font-size: 0.85rem;">This briefing summarizes your progress data locally, fully anonymized. Share this with your therapist to optimize your recovery templates.</p>
                 
                 <textarea id="textarea-export-briefing" readonly style="width: 100%; height: 300px; font-family: monospace; font-size: 0.85rem; background: rgba(0, 0, 0, 0.3); color: var(--text-primary); border: 1px solid var(--card-border); border-radius: var(--radius-sm); padding: 0.75rem; margin-bottom: 1rem; resize: none;"></textarea>
                 

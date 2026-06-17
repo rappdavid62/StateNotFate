@@ -12,7 +12,7 @@ test('join/contact infrastructure works without collecting sensitive mental-heal
   await expect(page.getByText(/enter a valid email/i)).toBeVisible();
 
   await email.fill('person@example.com');
-  await page.getByLabel(/interest/i).selectOption('clinician-researcher');
+  await page.getByLabel(/interest/i).selectOption('professional-researcher');
   await page.getByRole('button', { name: /submit|send|join/i }).click();
   await expect(page.getByText(/not connected yet/i)).toBeVisible();
 

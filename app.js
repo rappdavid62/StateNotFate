@@ -58,7 +58,13 @@
                 lastSeenDate: null,
                 missedDays: 0,
                 lastMessageType: null
-            }
+            },
+            futureNarrowing: "action",
+            startupDrag: "none",
+            rumination: "redirect",
+            socialIsolation: "neutral",
+            externalAnchor: "none",
+            ruminationLogs: []
         };
 
         let state = { ...DEFAULT_STATE };
@@ -71,7 +77,7 @@
             { title: "The Broken Firmware: A Mechanical Guide to Depression", file: "The_Broken_Firmware__A_Mechanical_Guide_to_Depression.mp4", type: "video", duration: "1:04:10" },
             { title: "The Depression Project", file: "The_Depression_Project.mp4", type: "video", duration: "1:21:34" },
             { title: "Depression is a mechanical system failure", file: "Depression_is_a_mechanical_system_failure.m4a", type: "audio", duration: "56:43" },
-            { title: "Developing a Clinical Trial Outreach Plan", file: "Developing_a_Clinical_Trial_Community_Outreach_Action_Plan.mp4", type: "video", duration: "47:04" },
+            { title: "Developing a Trial Outreach Plan", file: "Developing_a_Trial_Community_Outreach_Action_Plan.mp4", type: "video", duration: "47:04" },
             { title: "Why recovery requires proof not inspiration", file: "Why_recovery_requires_proof_not_inspiration.m4a", type: "audio", duration: "1:02:07" },
             { title: "The Mechanics of State vs. Fate", file: "The_Mechanics_of_State_vs.mp4", type: "video", duration: "47:55" },
             { title: "The 6-Minute System Synopsis", file: "6_minute_synopsis.mp4", type: "video", duration: "6:00" }
@@ -501,6 +507,9 @@ const COMPANION_QUESTION_TREE = {
                     state = JSON.parse(saved);
                     
                     if (!state.mvd || state.mvd.length === 0) state.mvd = [ ...DEFAULT_STATE.mvd ];
+                    if (state.history === undefined) state.history = [];
+                    if (state.ratings === undefined) state.ratings = { ...DEFAULT_STATE.ratings };
+                    if (state.safety === undefined) state.safety = { ...DEFAULT_STATE.safety };
                     if (state.linkedFiles === undefined) state.linkedFiles = [];
                     if (state.phq9History === undefined) state.phq9History = [];
                     if (state.currentLayer === undefined) state.currentLayer = 0;
@@ -527,6 +536,12 @@ const COMPANION_QUESTION_TREE = {
                             lastMessageType: null
                         };
                     }
+                    if (state.futureNarrowing === undefined) state.futureNarrowing = "action";
+                    if (state.startupDrag === undefined) state.startupDrag = "none";
+                    if (state.rumination === undefined) state.rumination = "redirect";
+                    if (state.socialIsolation === undefined) state.socialIsolation = "neutral";
+                    if (state.externalAnchor === undefined) state.externalAnchor = "none";
+                    if (state.ruminationLogs === undefined) state.ruminationLogs = [];
                     // Migrate polaris.anchors.today from array (v2/v3) to object (v4, ID-based)
                     if (state.polaris && state.polaris.anchors && Array.isArray(state.polaris.anchors.today)) {
                         state.polaris.anchors.today = {};
@@ -570,13 +585,13 @@ const COMPANION_QUESTION_TREE = {
              * SECURITY NOTE — POLARIS ENCRYPTION
              * Polaris state (state.polaris) currently stores proof point ledger entries,
              * anchor completion data, and resilience metrics. These are currently
-             * non-clinical and low-sensitivity (counts, timestamps, task labels).
+             * non-sensitive and low-risk (counts, timestamps, task labels).
              *
-             * HOWEVER: If clinical notes, therapist-facing summaries, or free-text
+             * HOWEVER: If sensitive notes, therapist-facing summaries, or free-text
              * reflections are ever added to the Polaris proof ledger or quest system,
              * they MUST be encrypted using the same scramble/descramble PIN method
              * applied to reasonsLive, safeContacts, gratitudeJournal, and
-             * thoughtCorrections. Unencrypted clinical free-text in localStorage
+             * thoughtCorrections. Unencrypted sensitive free-text in localStorage
              * would violate the privacy contract this app makes with the user.
              *
              * To extend: add polaris.proof.ledger[].label and any future free-text
@@ -727,7 +742,7 @@ const COMPANION_QUESTION_TREE = {
                     const tabId = tabBtn.getAttribute("data-tab");
                     const buttonId = tabBtn.id;
                     if (tabId === "reset-intake") {
-                        if (confirm("Are you sure you want to reset your intake data? This will clear your current dashboard and clinical progress history.")) {
+                        if (confirm("Are you sure you want to reset your intake data? This will clear your current dashboard and progress history.")) {
                             resetToOnboarding();
                         }
                     } else if (buttonId === "btn-tab-lock") {
@@ -843,7 +858,7 @@ const COMPANION_QUESTION_TREE = {
                 const textarea = document.getElementById("textarea-export-briefing");
                 textarea.select();
                 document.execCommand("copy");
-                showToast('Anonymized clinical progress briefing copied to clipboard!', 'success');
+                showToast('Anonymized progress briefing copied to clipboard!', 'success');
             });
             document.getElementById("btn-download-export-briefing").addEventListener("click", () => {
                 const content = document.getElementById("textarea-export-briefing").value;
@@ -871,6 +886,12 @@ const COMPANION_QUESTION_TREE = {
             document.getElementById("input-reasons-live").value = state.reasonsLive;
             document.getElementById("input-safe-contacts").value = state.safeContacts;
             document.getElementById("input-distraction-activities").value = state.distractions;
+
+            document.getElementById("select-future-narrowing").value = state.futureNarrowing || "action";
+            document.getElementById("select-startup-drag").value = state.startupDrag || "none";
+            document.getElementById("select-rumination").value = state.rumination || "redirect";
+            document.getElementById("select-social-isolation").value = state.socialIsolation || "neutral";
+            document.getElementById("select-external-anchor").value = state.externalAnchor || "none";
 
             // Helper to match legacy values to closest new allowed option
             function getClosestValue(val, allowed) {
@@ -1064,9 +1085,22 @@ const COMPANION_QUESTION_TREE = {
             state.safeContacts = document.getElementById("input-safe-contacts").value.trim();
             state.distractions = document.getElementById("input-distraction-activities").value.trim();
             
+            state.futureNarrowing = document.getElementById("select-future-narrowing").value;
+            state.startupDrag = document.getElementById("select-startup-drag").value;
+            state.rumination = document.getElementById("select-rumination").value;
+            state.socialIsolation = document.getElementById("select-social-isolation").value;
+            state.externalAnchor = document.getElementById("select-external-anchor").value;
+
             state.dominantPattern = calculatePrimaryPattern();
             state.isOnboarded = true;
-            state.todayEnergy = "medium";
+            
+            if (state.futureNarrowing === "none") {
+                state.todayEnergy = "collapse";
+                ensurePolarisState();
+                state.polaris.day.floorWinsMode = true;
+            } else {
+                state.todayEnergy = "medium";
+            }
             state.currentLayer = 1;
             
             saveState();
@@ -1165,6 +1199,17 @@ const COMPANION_QUESTION_TREE = {
             return `${yyyy}-${mm}-${dd}`;
         }
 
+        function getExternalAnchorTask() {
+            if (!state.externalAnchor || state.externalAnchor === "none") return null;
+            const map = {
+                pet: "Feed and care for your pet (Responsibility Anchor)",
+                plant: "Water plants / care for environment (Responsibility Anchor)",
+                checkin: "Structured check-in with your partner (Responsibility Anchor)",
+                duty: "Execute scheduled obligation or recurring chore (Responsibility Anchor)"
+            };
+            return map[state.externalAnchor];
+        }
+
         function renderDailyChecklist() {
             const container = document.getElementById("daily-checklist-items");
             container.innerHTML = "";
@@ -1176,17 +1221,31 @@ const COMPANION_QUESTION_TREE = {
             badge.className = `badge badge-${energy}`;
             badge.innerHTML = `${energy.toUpperCase()} ENERGY`;
             
-            if (energy === "collapse") warning.classList.remove("hidden");
-            else warning.classList.add("hidden");
+            const isPossibilityCollapse = state.futureNarrowing === "none";
+            if (isPossibilityCollapse) {
+                warning.innerHTML = `<strong>Possibility Collapse active:</strong> Plan scaled down to protect self-trust. The goal is not hope; it is one proof action. <em>If you feel unsafe or in danger, please open the Crisis Safe Box or text/call 988.</em>`;
+                warning.classList.remove("hidden");
+            } else if (energy === "collapse") {
+                warning.innerHTML = `<strong>Protect the Floor:</strong> You are in collapse mode. Standard goals are disabled to eliminate shame. Complete only these three floor anchors to protect your self-trust.`;
+                warning.classList.remove("hidden");
+            } else {
+                warning.classList.add("hidden");
+            }
             
             let tasks = [];
             
-            if (energy === "collapse" || energy === "low") {
+            if (energy === "collapse" || energy === "low" || isPossibilityCollapse) {
                 tasks = [
                     { label: state.mvd[0], isMvd: true },
                     { label: state.mvd[1], isMvd: true },
                     { label: state.mvd[2], isMvd: true }
                 ];
+                // Social presence as regulation
+                tasks.push({ label: "Social Presence: Sit near people, send one low-pressure text, or reply to one message", isMvd: false });
+                const extTask = getExternalAnchorTask();
+                if (extTask) {
+                    tasks.push({ label: extTask, isMvd: false });
+                }
             } else {
                 tasks = [
                     { label: state.mvd[0], isMvd: true },
@@ -1225,6 +1284,15 @@ const COMPANION_QUESTION_TREE = {
                     state.customTasks.forEach(task => {
                         tasks.push({ label: task, isMvd: false });
                     });
+                }
+
+                // Social presence as regulation
+                tasks.push({ label: "Social Presence: Sit near people, send one low-pressure text, or reply to one message", isMvd: false });
+
+                // External Anchor
+                const extTask = getExternalAnchorTask();
+                if (extTask) {
+                    tasks.push({ label: extTask, isMvd: false });
                 }
             }
             
@@ -1326,7 +1394,7 @@ const COMPANION_QUESTION_TREE = {
             const energy = todayLog.energy;
             todayLog.mvdCompleted = mvdCompleted;
             
-            if (energy === "collapse" || energy === "low") {
+            if (energy === "collapse" || energy === "low" || state.futureNarrowing === "none") {
                 todayLog.floorCompleted = mvdCompleted;
                 todayLog.missed = !mvdCompleted;
             } else {
@@ -1712,8 +1780,8 @@ const COMPANION_QUESTION_TREE = {
             let recommendation = '';
             if (score >= 20) {
                 severity = 'Severe Depression';
-                interpretation = 'Your responses indicate severe depressive symptoms. This level of distress significantly impairs daily functioning and requires professional clinical intervention.';
-                recommendation = '⚠ Strongly recommended: Contact your prescribing clinician or therapist immediately. This score warrants active clinical management. If you are in crisis, call or text 988.';
+                interpretation = 'Your responses indicate severe depressive symptoms. This level of distress significantly impairs daily functioning and requires professional intervention.';
+                recommendation = '⚠ Strongly recommended: Contact your physician, psychiatrist, or therapist immediately. This score warrants active professional management. If you are in crisis, call or text 988.';
             } else if (score >= 15) {
                 severity = 'Moderately Severe';
                 interpretation = 'Your responses suggest moderately severe depression. Routine daily tasks are likely significantly harder than usual, and self-motivation is unreliable.';
@@ -1721,14 +1789,14 @@ const COMPANION_QUESTION_TREE = {
             } else if (score >= 10) {
                 severity = 'Moderate Depression';
                 interpretation = 'Your responses reflect moderate depressive symptoms. You may experience persistent low energy, disrupted sleep, and difficulty starting tasks.';
-                recommendation = 'Consider: Treatment plan review with your clinician. Continue using daily anchors and track restart speed rather than streak purity.';
+                recommendation = 'Consider: Treatment plan review with your care provider. Continue using daily anchors and track restart speed rather than streak purity.';
             } else if (score >= 5) {
                 severity = 'Mild Depression';
                 interpretation = 'Your responses suggest mild depressive symptoms. You may have some difficult days but retain partial functioning capacity.';
                 recommendation = 'Monitor: Continue daily Floor anchors. Reassess in 2 weeks. If symptoms persist or worsen, consult your care provider.';
             } else {
                 interpretation = 'Your responses indicate minimal or no depressive symptoms at this time. This is measurable progress.';
-                recommendation = 'Maintain: Keep your current anchors running. Proof of stability is clinical data. Reassess in 2–4 weeks to confirm trajectory.';
+                recommendation = 'Maintain: Keep your current anchors running. Proof of stability is objective data. Reassess in 2–4 weeks to confirm trajectory.';
             }
             
             const today = getTodayString();
@@ -1950,14 +2018,14 @@ const COMPANION_QUESTION_TREE = {
             const statsResilience = calculateResilienceRate();
             const lastAssessment = state.phq9History[state.phq9History.length - 1];
             
-            let markdown = `## CLINICAL STATUS REPORT & PROGRESS BRIEF\n`;
+            let markdown = `## SYSTEM STATUS REPORT & PROGRESS BRIEF\n`;
             markdown += `*Generated offline, privately, on State, Not Fate OS.*\n\n`;
             markdown += `### 📈 Executive Recovery Summary\n`;
             markdown += `- **Current Hope Level:** Level ${state.currentHopeLevel} (${state.hopeProgress}%)\n`;
             markdown += `- **Active Roadmap Stage:** Layer ${state.currentLayer} (${ROADMAP_LAYERS[state.currentLayer].title})\n`;
             markdown += `- **Cumulative Floor Wins:** ${totalFloorWins} successful MVD Days\n`;
             markdown += `- **Calculated Resilience Rate:** ${statsResilience}% (miss-to-restart recovery factor)\n`;
-            markdown += `- **Dominant Clinical Intake Pattern:** ${state.dominantPattern}\n\n`;
+            markdown += `- **Dominant Intake Pattern:** ${state.dominantPattern}\n\n`;
             
             markdown += `### 📊 PHQ-9 Symptom Progression History\n`;
             if (state.phq9History.length === 0) {
@@ -2017,6 +2085,7 @@ const COMPANION_QUESTION_TREE = {
         function renderCognitiveLab() {
             renderGratitudeJournalList();
             renderThoughtCorrectionList();
+            renderRuminationHistoryList();
             renderCustomizer();
         }
 
@@ -2164,29 +2233,187 @@ const COMPANION_QUESTION_TREE = {
             }
         }
 
+        let ruminationInterval = null;
+        let ruminationActiveSession = null;
+
+        function startRuminationStopLoss() {
+            const loopInput = document.getElementById("input-rumination-loop");
+            const issueInput = document.getElementById("input-rumination-issue");
+            const redirectInput = document.getElementById("input-rumination-redirect");
+            const loop = loopInput.value.trim();
+            const issue = issueInput.value.trim();
+            const duration = parseInt(document.getElementById("select-rumination-duration").value, 10);
+            const redirect = redirectInput.value.trim();
+
+            if (!loop || !issue || !redirect) {
+                showToast("Please enter the loop, describe the issue, and define your redirect thought.", "warning");
+                return;
+            }
+
+            ruminationActiveSession = {
+                loop: loop,
+                issue: issue,
+                duration: duration,
+                redirect: redirect,
+                startTime: new Date().toISOString()
+            };
+
+            const container = document.getElementById("rumination-timer-container");
+            const countdown = document.getElementById("rumination-timer-countdown");
+            const startBtn = document.getElementById("btn-start-rumination");
+            const completeBtn = document.getElementById("btn-complete-rumination");
+
+            container.classList.remove("hidden");
+            startBtn.classList.add("hidden");
+            completeBtn.classList.remove("hidden");
+
+            let secondsLeft = duration * 60;
+            
+            function updateDisplay() {
+                const mins = Math.floor(secondsLeft / 60);
+                const secs = secondsLeft % 60;
+                countdown.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+            }
+
+            updateDisplay();
+
+            if (ruminationInterval) clearInterval(ruminationInterval);
+            
+            ruminationInterval = setInterval(() => {
+                secondsLeft--;
+                if (secondsLeft <= 0) {
+                    clearInterval(ruminationInterval);
+                    countdown.textContent = "0:00 - REDIRECT NOW";
+                    showToast("Time elapsed. Redirect your focus now.", "info", 5000);
+                } else {
+                    updateDisplay();
+                }
+            }, 1000);
+        }
+
+        function completeRuminationStopLoss() {
+            if (ruminationInterval) {
+                clearInterval(ruminationInterval);
+                ruminationInterval = null;
+            }
+
+            if (!ruminationActiveSession) return;
+
+            const today = getTodayString();
+            state.ruminationLogs.push({
+                date: today,
+                loop: ruminationActiveSession.loop,
+                issue: ruminationActiveSession.issue,
+                duration: ruminationActiveSession.duration,
+                redirect: ruminationActiveSession.redirect,
+                startTime: ruminationActiveSession.startTime,
+                completedTime: new Date().toISOString()
+            });
+
+            logActionCompletion(`Rumination Stop-Loss completed: ${ruminationActiveSession.loop}`);
+
+            ensurePolarisState();
+            state.polaris.proof.today += 1;
+            state.polaris.proof.total += 1;
+            state.polaris.proof.ledger.push({
+                id: 'proof_' + Date.now(),
+                source: 'rumination_stop_loss',
+                points: 1,
+                label: `Rumination Stop-Loss: ${ruminationActiveSession.loop}`,
+                createdAt: new Date().toISOString()
+            });
+
+            saveState();
+            renderRuminationHistoryList();
+            updateDashboardMetrics();
+            renderPolarisTab();
+
+            showToast("You do not need to win the argument in your head. You need to stop it from taking the whole day.", "success", 7000);
+
+            document.getElementById("input-rumination-loop").value = "";
+            document.getElementById("input-rumination-issue").value = "";
+            document.getElementById("input-rumination-redirect").value = "";
+            document.getElementById("rumination-timer-container").classList.add("hidden");
+            document.getElementById("btn-start-rumination").classList.remove("hidden");
+            document.getElementById("btn-complete-rumination").classList.add("hidden");
+
+            ruminationActiveSession = null;
+        }
+
+        function removeRuminationEntry(index) {
+            if (confirm("Are you sure you want to delete this stop-loss log?")) {
+                state.ruminationLogs.splice(index, 1);
+                saveState();
+                renderRuminationHistoryList();
+            }
+        }
+
+        function renderRuminationHistoryList() {
+            const container = document.getElementById("rumination-history-container");
+            if (!container) return;
+            container.innerHTML = "";
+
+            if (!state.ruminationLogs || state.ruminationLogs.length === 0) {
+                container.innerHTML = `<div class="text-muted center-text py-2" style="font-size:0.85rem;">No stop-loss protocols completed yet. Try setting a timer above.</div>`;
+                return;
+            }
+
+            [...state.ruminationLogs].reverse().forEach((item, index) => {
+                const realIdx = state.ruminationLogs.length - 1 - index;
+                const entryCard = document.createElement("div");
+                entryCard.className = "linked-file-item";
+                entryCard.style.flexDirection = "column";
+                entryCard.style.alignItems = "stretch";
+                entryCard.style.gap = "0.35rem";
+                entryCard.style.padding = "0.75rem";
+                entryCard.style.borderLeft = "2px solid var(--accent-orange)";
+
+                entryCard.innerHTML = `
+                    <div class="flex-between">
+                        <span class="text-orange" style="font-size: 0.75rem; font-weight: 600; font-family: monospace; color: var(--accent-orange);">${item.date} (${item.duration}m)</span>
+                        <button class="linked-file-remove" onclick="removeRuminationEntry(${realIdx})" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-size:1.1rem; line-height:1;">×</button>
+                    </div>
+                    <div style="font-size: 0.85rem; color: var(--text-primary); font-weight: 500; line-height: 1.4;">
+                        <strong>Loop:</strong> "${item.loop}"
+                    </div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4;">
+                        <strong>Issue:</strong> ${item.issue}
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); font-style: italic; border-top: 1px dashed rgba(255,255,255,0.05); padding-top: 0.25rem;">
+                        Redirect to: ${item.redirect}
+                    </div>
+                `;
+                container.appendChild(entryCard);
+            });
+        }
+
+        window.startRuminationStopLoss = startRuminationStopLoss;
+        window.completeRuminationStopLoss = completeRuminationStopLoss;
+        window.removeRuminationEntry = removeRuminationEntry;
+
         // ==========================================================
         // DOCUMENT CENTER & FILE SYSTEM NAVIGATOR ENGINE
         // ==========================================================
 
         const KNOWLEDGE_CATALOG = [
             { name: "01_Front_End_Preamble-2.md", type: "md", size: "4.1 KB", desc: "Preamble briefing explaining the mechanical model of depression." },
-            { name: "02_Depression_Project_Program-1.md", type: "md", size: "12.3 KB", desc: "Outlines the clinical roadmap and behavior guidelines." },
+            { name: "02_Depression_Project_Program-1.md", type: "md", size: "12.3 KB", desc: "Outlines the recovery roadmap and behavior guidelines." },
             { name: "02_Front_End_Questionnaire-1.md", type: "md", size: "7.9 KB", desc: "Guide to the intake forms and diagnostic metrics." },
             { name: "03_Depression_Project_Outline-1.md", type: "md", size: "11.1 KB", desc: "Operational outline documenting the startup damage and initiation models." },
             { name: "03_Front_End_Intake_Guide-1.md", type: "md", size: "9.5 KB", desc: "Companion manual for the onboarding and interpreting answers." },
             { name: "04_Hope_and_Activation_Start-2.md", type: "md", size: "5.5 KB", desc: "Hope activation protocols and starter steps." },
-            { name: "04_Hope_System_Front_End-1.md", type: "md", size: "5.1 KB", desc: "Clinical blueprint explaining the proof-based hope sequence." },
+            { name: "04_Hope_System_Front_End-1.md", type: "md", size: "5.1 KB", desc: "Detailed blueprint explaining the proof-based hope sequence." },
             { name: "five_year_depression_years_and_worksheets_2026_v1.md", type: "md", size: "14.2 KB", desc: "Historical worksheet mapping five years of depression state vs. external stressors." },
             { name: "legitimate_preamble_and_150_item_intake.md", type: "md", size: "22.3 KB", desc: "The definitive 150-item intake questionnaire assessing core function." },
             // Media tracks
             { name: "Treating_depression_as_a_systems_failure.m4a", type: "audio", size: "34.7 MB", desc: "Guide on treating depression as an operational systems failure rather than identity." },
             { name: "The_Reprogramming_Protocol__Debugging_Depression.mp4", type: "video", size: "58.9 MB", desc: "Video overview on reprograming automatic self-talk and building consistency." },
-            { name: "State,_Not_A_Fate.mp4", type: "video", size: "70.4 MB", desc: "Core clinical documentary detailing the foundational theories and evidence base." },
+            { name: "State,_Not_A_Fate.mp4", type: "video", size: "70.4 MB", desc: "Core documentary detailing the foundational theories and evidence base." },
             { name: "Stop_treating_depression_like_broken_bones.m4a", type: "audio", size: "34.0 MB", desc: "Audio briefing on why standard recovery models fail and the need for low floors." },
             { name: "The_Broken_Firmware__A_Mechanical_Guide_to_Depression.mp4", type: "video", size: "46.2 MB", desc: "Visual guide to the broken biological clock and task-initiation failure systems." },
             { name: "The_Depression_Project.mp4", type: "video", size: "58.7 MB", desc: "Outlines the primary patterns and dynamic checklist energy downscaling triggers." },
             { name: "Depression_is_a_mechanical_system_failure.m4a", type: "audio", size: "40.8 MB", desc: "Audio podcast covering the mechanical models, light signals, and baseline wins." },
-            { name: "Developing_a_Clinical_Trial_Community_Outreach_Action_Plan.mp4", type: "video", size: "33.9 MB", desc: "Visual blueprint for setting up community review groups and guideline alignments." },
+            { name: "Developing_a_Trial_Community_Outreach_Action_Plan.mp4", type: "video", size: "33.9 MB", desc: "Visual blueprint for setting up community review groups and guideline alignments." },
             { name: "Why_recovery_requires_proof_not_inspiration.m4a", type: "audio", size: "44.7 MB", desc: "Audio guide showing how action creates proof, which builds biological hope." },
             { name: "The_Mechanics_of_State_vs.mp4", type: "video", size: "46.5 MB", desc: "Expanded video guide explaining the mechanics of state vs fate models." },
             { name: "6_minute_synopsis.mp4", type: "video", size: "33.8 MB", desc: "Quick 6-minute synopsis explaining the core main frame mechanics." }
@@ -2225,7 +2452,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function deleteDocPhqEntry(index) {
-            if (confirm("Are you sure you want to delete this clinical assessment log?")) {
+            if (confirm("Are you sure you want to delete this assessment log?")) {
                 state.phq9History.splice(index, 1);
                 saveState();
                 renderDocumentCenter();
@@ -2423,7 +2650,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function resetChecklistToDefaults() {
-            if (confirm("Are you sure you want to reset your checklist and MVD Floor to the system default clinical settings?")) {
+            if (confirm("Are you sure you want to reset your checklist and MVD Floor to the system default settings?")) {
                 state.mvd = [ ...DEFAULT_STATE.mvd ];
                 state.customTasks = [];
                 saveState();
@@ -2432,8 +2659,8 @@ const COMPANION_QUESTION_TREE = {
             }
         }
 
-        function loadClinicalTemplate(type) {
-            if (confirm(`Are you sure you want to load Clinical Template: ${type.toUpperCase()}? This will override your current MVD floor and custom tasks.`)) {
+        function loadProgramTemplate(type) {
+            if (confirm(`Are you sure you want to load Program Template: ${type.toUpperCase()}? This will override your current MVD floor and custom tasks.`)) {
                 if (type === 'circadian') {
                     state.mvd = [
                         "Wake on workdays by 7:00am and take morning medication immediately.",
@@ -2483,9 +2710,10 @@ const COMPANION_QUESTION_TREE = {
                 saveState();
                 renderCustomizer();
                 renderDashboard();
-                showToast(`Clinical Template loaded successfully! Your MVD Floor and Active checklists are updated.`, 'success');
+                showToast(`Program Template loaded successfully! Your MVD Floor and Active checklists are updated.`, 'success');
             }
         }
+        window.loadProgramTemplate = loadProgramTemplate;
         // ==========================================================
         // SMART WELCOME HANDLER FUNCTIONS
         // ==========================================================
@@ -2612,6 +2840,21 @@ const COMPANION_QUESTION_TREE = {
 
             if (!isCompleted) {
                 logActionCompletion(label);
+
+                // If yesterday was missed, completing the smallest anchor is a Restart Quest!
+                if (state.reEntry && state.reEntry.lastMessageType === 'missed-yesterday') {
+                    ensurePolarisState();
+                    state.polaris.proof.today += 1;
+                    state.polaris.proof.total += 1;
+                    state.polaris.proof.ledger.push({
+                        id: 'proof_' + Date.now(),
+                        source: 'restart',
+                        points: 1,
+                        label: 'Restart after missed day completed',
+                        createdAt: new Date().toISOString()
+                    });
+                }
+
                 saveState();
                 renderDashboard();
                 showToast(`Anchor logged: ${label}`, 'success');
@@ -2639,6 +2882,43 @@ const COMPANION_QUESTION_TREE = {
 
         window.startSmallestAnchor = startSmallestAnchor;
         window.focusChecklist = focusChecklist;
+
+        function toggleStartupDragLadder() {
+            const content = document.getElementById("startup-drag-ladder-content");
+            const icon = document.getElementById("startup-drag-toggle-icon");
+            if (!content || !icon) return;
+            if (content.classList.contains("hidden")) {
+                content.classList.remove("hidden");
+                icon.textContent = "[ Hide ]";
+            } else {
+                content.classList.add("hidden");
+                icon.textContent = "[ Show ]";
+            }
+        }
+
+        function checkDragStep(stepNum) {
+            if (stepNum === 7) {
+                ensurePolarisState();
+                state.polaris.proof.today += 1;
+                state.polaris.proof.total += 1;
+                state.polaris.proof.ledger.push({
+                    id: 'proof_' + Date.now(),
+                    source: 'startup_drag',
+                    points: 1,
+                    label: 'Startup Drag Action Ladder completed',
+                    createdAt: new Date().toISOString()
+                });
+                saveState();
+                updateDashboardMetrics();
+                renderPolarisTab();
+                showToast("That counts. Not because it fixed everything. Because it happened.", "success", 6000);
+            } else {
+                showToast("Starting is the failure point. Make the first action smaller.", "info", 3000);
+            }
+        }
+
+        window.toggleStartupDragLadder = toggleStartupDragLadder;
+        window.checkDragStep = checkDragStep;
 
 
         function showSmartWelcomeScreen() {
@@ -2881,16 +3161,31 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function getPolarisMessage(dayState) {
+            if (state.reEntry && state.reEntry.lastMessageType === 'missed-yesterday') {
+                return "You missed. That is data, not a verdict. Restart with one floor anchor.";
+            }
+            if (state.futureNarrowing === "none") {
+                return "If no future feels believable, lower the task. The goal is not hope. The goal is one proof action.";
+            }
             const map = {
                 high: 'Full capacity. Run your anchors, then stop before it turns into punishment.',
                 medium: 'Core anchors first. One extra task. No heroic plan.',
                 low: 'Low day. Your anchors are still here. Do what you can.',
-                collapse: 'Floor day. No performance standard. Stay safe.'
+                collapse: 'Floor Wins Mode. No performance standard today. Stay safe, reduce damage, complete the smallest viable anchor.'
             };
             return map[dayState] || map.medium;
         }
 
         function getCompanionMessage(dayState, defaultMsg) {
+            if (state.reEntry && state.reEntry.lastMessageType === 'missed-yesterday') {
+                return "You missed. That is data, not a verdict. Restart with one floor anchor.";
+            }
+            if (state.futureNarrowing === "none") {
+                return "If no future feels believable, lower the task. The goal is not hope. The goal is one proof action.";
+            }
+            if (dayState === 'collapse') {
+                return "Floor Wins Mode. No performance standard today. Stay safe, reduce damage, complete the smallest viable anchor.";
+            }
             // Give the companion a slightly mythic/calm voice if enabled, overriding the default message
             if (!state.polaris.profile.companionSkin) return defaultMsg;
             
@@ -2919,28 +3214,44 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function getAnchorsForToday(dayState) {
+            let anchorsList = [];
             // Collapse: always show generic floor items
             if (dayState === 'collapse') {
-                return [
+                anchorsList = [
                     { id: 'floor_water', text: 'Drink a full glass of water', isGeneric: true },
                     { id: 'floor_light', text: 'Open blinds or stand by window', isGeneric: true },
                     { id: 'floor_win', text: 'One tiny Floor Win (anything)', isGeneric: true }
                 ];
-            }
-            // User has anchors: show them all
-            if (state.userAnchors.length > 0) {
-                return state.userAnchors.map(a => ({ id: a.id, text: a.text, isGeneric: false }));
-            }
-            // No user anchors + low energy: show minimal generic suggestions
-            if (dayState === 'low') {
-                return [
+            } else if (state.userAnchors.length > 0) {
+                // User has anchors: show them all
+                anchorsList = state.userAnchors.map(a => ({ id: a.id, text: a.text, isGeneric: false }));
+            } else if (dayState === 'low') {
+                // No user anchors + low energy: show minimal generic suggestions
+                anchorsList = [
                     { id: 'sug_water', text: 'Drink water', isGeneric: true },
                     { id: 'sug_light', text: 'Stand in daylight for 2 minutes', isGeneric: true },
                     { id: 'sug_one', text: 'Do one small thing', isGeneric: true }
                 ];
             }
-            // No user anchors + medium/high: return empty (show "add first anchor" prompt)
-            return [];
+
+            // Always append Social Presence as a generic/optional anchor
+            anchorsList.push({
+                id: 'polaris_social_presence',
+                text: 'Social Presence: Sit near people, send one low-pressure text, or reply to one message',
+                isGeneric: true
+            });
+
+            // Append External Anchor if one is configured and not "none"
+            const extTask = getExternalAnchorTask();
+            if (extTask) {
+                anchorsList.push({
+                    id: 'polaris_external_anchor',
+                    text: extTask,
+                    isGeneric: true
+                });
+            }
+
+            return anchorsList;
         }
 
         function setPolarisCompanion(skinEmoji) {
@@ -3157,7 +3468,7 @@ const COMPANION_QUESTION_TREE = {
             // B3: Gap notice
             renderGapNotice();
 
-            // B4: Clinical Insights
+            // B4: Program Insights
             renderPolarisInsights();
 
             // B8: Yesterday incomplete
@@ -3965,7 +4276,7 @@ const COMPANION_QUESTION_TREE = {
                 narrativeList.push("- No logs registered yet. Complete daily checklist items to generate narrative proofs.");
             }
             
-            const md = `# Polaris 2.0 Recovery Audit & Co-Pilot Sync\nAnonymized clinical progress tracker generated on ${new Date().toISOString().slice(0, 10)}.\n\n## 1. System Metrics\n- **Dominant Functional Pattern**: ${state.dominantPattern || 'Rhythm Collapse'}\n- **Current Hope Level**: Level ${state.currentHopeLevel || 1}\n- **Resilience Rating**: ${resRate}% (Restart success rate)\n- **Verified Streak Restarts**: ${restarts}\n- **Total Tracked Days**: ${totalLogs} days\n- **Low Energy / Collapse Days Managed**: ${lowEnergyLogs} days\n\n## 2. PHQ-9 Depressive Severity Trend\n${phqTrend}\n\n## 3. Narrative Verification Proofs\n${narrativeList.join("\n")}\n\n## 4. Substrate & Floor Configuration\n- **Morning Wake Target**: Wake on workdays by 7:30am (Circadian Lock)\n- **Active Anchors Count**: ${Math.max(3, state.userAnchors.length)} target anchors\n- **MVD Tasks**:\n  1. ${state.mvd[0]}\n  2. ${state.mvd[1]}\n  3. ${state.mvd[2]}\n\n---\n*Anonymity Statement: This report contains no personal identifiers (name, email, IP) and is formatted for copy-paste sharing into clinical vaults (e.g., Obsidian, Grok, therapist session notebooks).*`;
+            const md = `# Polaris 2.0 Recovery Audit & Co-Pilot Sync\nAnonymized progress tracker generated on ${new Date().toISOString().slice(0, 10)}.\n\n## 1. System Metrics\n- **Dominant Functional Pattern**: ${state.dominantPattern || 'Rhythm Collapse'}\n- **Current Hope Level**: Level ${state.currentHopeLevel || 1}\n- **Resilience Rating**: ${resRate}% (Restart success rate)\n- **Verified Streak Restarts**: ${restarts}\n- **Total Tracked Days**: ${totalLogs} days\n- **Low Energy / Collapse Days Managed**: ${lowEnergyLogs} days\n\n## 2. PHQ-9 Depressive Severity Trend\n${phqTrend}\n\n## 3. Narrative Verification Proofs\n${narrativeList.join("\n")}\n\n## 4. Substrate & Floor Configuration\n- **Morning Wake Target**: Wake on workdays by 7:30am (Circadian Lock)\n- **Active Anchors Count**: ${Math.max(3, state.userAnchors.length)} target anchors\n- **MVD Tasks**:\n  1. ${state.mvd[0]}\n  2. ${state.mvd[1]}\n  3. ${state.mvd[2]}\n\n---\n*Anonymity Statement: This report contains no personal identifiers (name, email, IP) and is formatted for copy-paste sharing into vaults (e.g., Obsidian, Grok, therapist session notebooks).*`;
 
             navigator.clipboard.writeText(md).then(() => {
                 showToast("📋 Anonymized Audit copied to clipboard successfully!", "success");
@@ -4201,15 +4512,15 @@ const COMPANION_QUESTION_TREE = {
         }
 
         async function callPolarisLLM(userText, apiKey) {
-            const systemPrompt = `You are Polaris, a clinical systems AI companion inside the "State Not Fate" depression recovery operating system. 
+            const systemPrompt = `You are Polaris, a systems AI companion inside the "State Not Fate" depression recovery operating system. 
 The user is interacting with you via a secure terminal. You are a calm, intelligent operating system, NOT a therapist, friend, or motivational coach.
-Write in a blunt, precise, clinical tone. Avoid positive fluff, sentimentality, or moralizing. Frame depression as a temporary systems failure and energy deconditioning, not a permanent identity.
+Write in a blunt, precise, objective tone. Avoid positive fluff, sentimentality, or moralizing. Frame depression as a temporary systems failure and energy deconditioning, not a permanent identity.
 
 CORE VOICE & COPY RULES:
 - Use phrases like: "You're here.", "No catch-up.", "Pick the current state.", "We'll keep this small.", "Nothing reset.", "Start with the floor.", "Make it smaller.", "State, not fate.", "Action happened.", "Proof logged."
 - AVOID these forbidden words/concepts: "journey", "empower", "thrive", "crush your goals", "be your best self", "try harder", "you should", "just", "back on track", "failed", "streak broken", "lost progress", "start over", "what's your why", "unlock your potential", "forced positivity", "therapy clichés".
 
-CLINICAL PERSPECTIVE (From Docs):
+SYSTEM PERSPECTIVE (From Docs):
 - "Hope" is the brain's prediction of whether effort will lead to improvement. It is a system signal, not a mood.
 - Defend the biological core first (sleep wake time, light, water, medications). Do not recommend complex scheduling or social exposure if the biological floor is unstable.
 - Avoidance reduces anxiety for 10 minutes but deepens the depressive state for 10 hours. Act before you feel ready; momentum creates motivation.
