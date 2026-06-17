@@ -457,7 +457,6 @@ const COMPANION_QUESTION_TREE = {
         function init() {
             loadState();
             loadSafetyModules();
-            loadLocalOpenAIKey();
             setupEventListeners();
             
             // Register PWA Service Worker for Mobile Offline Standalone Installations
@@ -664,6 +663,12 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function showTab(tabId) {
+            ensurePolarisState();
+            const hiddenTabs = ["progression", "documentcenter", "explorer"];
+            if (state.polaris.futureNarrowingActive && hiddenTabs.includes(tabId)) {
+                showToast("Future Narrowing Active. Horizon restricted to Polaris/Dashboard.", "warning");
+                return;
+            }
             Object.keys(tabs).forEach(key => {
                 if (key === tabId) {
                     tabs[key].classList.remove("hidden");
@@ -2977,6 +2982,10 @@ const COMPANION_QUESTION_TREE = {
 
             if (state.polaris.openaiApiKey === undefined) state.polaris.openaiApiKey = null;
             if (state.polaris.chatHistory === undefined) state.polaris.chatHistory = [];
+            if (state.polaris.futureNarrowingActive === undefined) state.polaris.futureNarrowingActive = false;
+            if (state.polaris.possibilityCollapseInterventions === undefined) state.polaris.possibilityCollapseInterventions = 0;
+            if (state.polaris.startupDragHistory === undefined) state.polaris.startupDragHistory = [];
+            if (state.polaris.ruminationStopLossCount === undefined) state.polaris.ruminationStopLossCount = 0;
 
             // Ensure anchors.today is an object (migration from v2/v3 arrays)
             if (Array.isArray(state.polaris.anchors.today)) {
@@ -3315,6 +3324,41 @@ const COMPANION_QUESTION_TREE = {
             if (resRate < 100 && state.history.length > 2) resText += ' | Return rate: ' + resRate + '%';
             document.getElementById('polaris-resilience-info').textContent = resText;
 
+            // Future Narrowing Toggle state
+            const narrowingBanner = document.getElementById('future-narrowing-banner');
+            const narrowingBtn = document.getElementById('btn-toggle-future-narrowing');
+            const narrowingBadge = document.getElementById('badge-narrowing-status');
+            
+            if (state.polaris.futureNarrowingActive) {
+                document.body.classList.add('future-narrowing-active');
+                if (narrowingBanner) narrowingBanner.classList.remove('hidden');
+                if (narrowingBtn) {
+                    narrowingBtn.textContent = 'Expand Horizon';
+                    narrowingBtn.style.borderColor = 'var(--accent-orange)';
+                    narrowingBtn.style.color = 'var(--accent-orange)';
+                }
+                if (narrowingBadge) {
+                    narrowingBadge.textContent = 'NARROWED';
+                    narrowingBadge.style.background = 'rgba(20, 200, 175, 0.2)';
+                    narrowingBadge.style.borderColor = 'rgba(20, 200, 175, 0.4)';
+                    narrowingBadge.style.color = 'var(--accent-teal)';
+                }
+            } else {
+                document.body.classList.remove('future-narrowing-active');
+                if (narrowingBanner) narrowingBanner.classList.add('hidden');
+                if (narrowingBtn) {
+                    narrowingBtn.textContent = 'Narrow Horizon';
+                    narrowingBtn.style.borderColor = 'rgba(20,200,175,0.25)';
+                    narrowingBtn.style.color = 'var(--accent-teal)';
+                }
+                if (narrowingBadge) {
+                    narrowingBadge.textContent = 'Normal';
+                    narrowingBadge.style.background = 'rgba(255,255,255,0.05)';
+                    narrowingBadge.style.color = 'var(--text-secondary)';
+                }
+            }
+
+            void ensurePolarisOpenAIKeyLoaded();
             renderPolarisChat();
 
             saveState();
@@ -4052,6 +4096,24 @@ const COMPANION_QUESTION_TREE = {
             if (narrativeEl) {
                 narrativeEl.textContent = `"${generateNarrativeProof()}"`;
             }
+
+            // Update Recovery Engine metrics
+            const fnStatusEl = document.getElementById("audit-future-narrowing-status");
+            const pcCountEl = document.getElementById("audit-collapse-count");
+            const sdCountEl = document.getElementById("audit-startup-count");
+            const rslCountEl = document.getElementById("audit-stop-loss-count");
+
+            if (fnStatusEl) fnStatusEl.textContent = state.polaris.futureNarrowingActive ? "ACTIVE (HORIZON COMPRESSED)" : "INACTIVE";
+            if (fnStatusEl) {
+                if (state.polaris.futureNarrowingActive) {
+                    fnStatusEl.style.color = "var(--accent-orange)";
+                } else {
+                    fnStatusEl.style.color = "var(--accent-teal)";
+                }
+            }
+            if (pcCountEl) pcCountEl.textContent = state.polaris.possibilityCollapseInterventions || 0;
+            if (sdCountEl) sdCountEl.textContent = (state.polaris.startupDragHistory || []).length;
+            if (rslCountEl) rslCountEl.textContent = state.polaris.ruminationStopLossCount || 0;
             
             // Update Year Simulator
             updateSimulatorProjections();
@@ -4162,7 +4224,7 @@ const COMPANION_QUESTION_TREE = {
                 narrativeList.push("- No logs registered yet. Complete daily checklist items to generate narrative proofs.");
             }
             
-            const md = `# Polaris 2.0 Recovery Audit & Co-Pilot Sync\nAnonymized clinical progress tracker generated on ${new Date().toISOString().slice(0, 10)}.\n\n## 1. System Metrics\n- **Dominant Functional Pattern**: ${state.dominantPattern || 'Rhythm Collapse'}\n- **Current Hope Level**: Level ${state.currentHopeLevel || 1}\n- **Resilience Rating**: ${resRate}% (Restart success rate)\n- **Verified Streak Restarts**: ${restarts}\n- **Total Tracked Days**: ${totalLogs} days\n- **Low Energy / Collapse Days Managed**: ${lowEnergyLogs} days\n\n## 2. PHQ-9 Depressive Severity Trend\n${phqTrend}\n\n## 3. Narrative Verification Proofs\n${narrativeList.join("\n")}\n\n## 4. Substrate & Floor Configuration\n- **Morning Wake Target**: Wake on workdays by 7:30am (Circadian Lock)\n- **Active Anchors Count**: ${Math.max(3, state.userAnchors.length)} target anchors\n- **MVD Tasks**:\n  1. ${state.mvd[0]}\n  2. ${state.mvd[1]}\n  3. ${state.mvd[2]}\n\n---\n*Anonymity Statement: This report contains no personal identifiers (name, email, IP) and is formatted for copy-paste sharing into clinical vaults (e.g., Obsidian, Grok, therapist session notebooks).*`;
+            const md = `# Polaris 2.0 Recovery Audit & Co-Pilot Sync\nAnonymized clinical progress tracker generated on ${new Date().toISOString().slice(0, 10)}.\n\n## 1. System Metrics\n- **Dominant Functional Pattern**: ${state.dominantPattern || 'Rhythm Collapse'}\n- **Current Hope Level**: Level ${state.currentHopeLevel || 1}\n- **Resilience Rating**: ${resRate}% (Restart success rate)\n- **Verified Streak Restarts**: ${restarts}\n- **Total Tracked Days**: ${totalLogs} days\n- **Low Energy / Collapse Days Managed**: ${lowEnergyLogs} days\n- **Future Narrowing**: ${state.polaris.futureNarrowingActive ? 'ACTIVE (Horizon compressed)' : 'INACTIVE'}\n- **Choice Overload Interventions**: ${state.polaris.possibilityCollapseInterventions || 0}\n- **Startup Drag Timer Count**: ${(state.polaris.startupDragHistory || []).length}\n- **Rumination Breakers Reset**: ${state.polaris.ruminationStopLossCount || 0}\n\n## 2. PHQ-9 Depressive Severity Trend\n${phqTrend}\n\n## 3. Narrative Verification Proofs\n${narrativeList.join("\n")}\n\n## 4. Substrate & Floor Configuration\n- **Morning Wake Target**: Wake on workdays by 7:30am (Circadian Lock)\n- **Active Anchors Count**: ${Math.max(3, state.userAnchors.length)} target anchors\n- **MVD Tasks**:\n  1. ${state.mvd[0]}\n  2. ${state.mvd[1]}\n  3. ${state.mvd[2]}\n\n---\n*Anonymity Statement: This report contains no personal identifiers (name, email, IP) and is formatted for copy-paste sharing into clinical vaults (e.g., Obsidian, Grok, therapist session notebooks).*`;
 
             navigator.clipboard.writeText(md).then(() => {
                 showToast("📋 Anonymized Audit copied to clipboard successfully!", "success");
@@ -4176,33 +4238,58 @@ const COMPANION_QUESTION_TREE = {
         // POLARIS INTERACTIVE CHAT & LLM CONNECTOR
         // ==========================================================
 
-        function loadLocalOpenAIKey() {
+        async function loadLocalOpenAIKey(forceRefresh = false) {
             ensurePolarisState();
             if (state.polaris.openaiApiKey) {
                 updateOpenAIKeyStatus("Custom Key Active");
-                return;
+                return state.polaris.openaiApiKey;
             }
+            if (window.polarisRuntimeKey) {
+                updateOpenAIKeyStatus("Loaded from local workspace file");
+                return window.polarisRuntimeKey;
+            }
+            if (window.polarisLocalKeyProbeAttempted && !forceRefresh) {
+                updateOpenAIKeyStatus("No key active. Set one below.");
+                return "";
+            }
+
+            window.polarisLocalKeyProbeAttempted = true;
             updateOpenAIKeyStatus("Checking key source...");
-            fetch('knowledge/openai-api-key.txt')
-                .then(response => {
-                    if (response.ok) {
-                        return response.text();
-                    }
+            try {
+                const response = await fetch('knowledge/openai-api-key.txt');
+                if (!response.ok) {
                     throw new Error("Key file not found on server");
-                })
-                .then(key => {
-                    const cleanKey = key.trim();
-                    if (cleanKey && cleanKey.startsWith("sk-")) {
-                        window.polarisRuntimeKey = cleanKey;
-                        updateOpenAIKeyStatus("Loaded from local workspace file");
-                    } else {
-                        updateOpenAIKeyStatus("Key file empty or invalid");
-                    }
-                })
-                .catch(err => {
-                    console.log("Could not load local OpenAI key from file:", err.message);
-                    updateOpenAIKeyStatus("No key active. Set one below.");
-                });
+                }
+
+                const key = await response.text();
+                const cleanKey = key.trim();
+                if (cleanKey && cleanKey.startsWith("sk-")) {
+                    window.polarisRuntimeKey = cleanKey;
+                    updateOpenAIKeyStatus("Loaded from local workspace file");
+                    return cleanKey;
+                }
+
+                updateOpenAIKeyStatus("Key file empty or invalid");
+                return "";
+            } catch (err) {
+                console.log("Could not load local OpenAI key from file:", err.message);
+                updateOpenAIKeyStatus("No key active. Set one below.");
+                return "";
+            }
+        }
+
+        async function ensurePolarisOpenAIKeyLoaded(forceRefresh = false) {
+            ensurePolarisState();
+            if (state.polaris.openaiApiKey) {
+                updateOpenAIKeyStatus("Custom Key Active");
+                return state.polaris.openaiApiKey;
+            }
+            if (window.polarisRuntimeKey) {
+                updateOpenAIKeyStatus("Loaded from local workspace file");
+                return window.polarisRuntimeKey;
+            }
+
+            return loadLocalOpenAIKey(forceRefresh);
         }
 
         function updateOpenAIKeyStatus(statusText) {
@@ -4238,9 +4325,10 @@ const COMPANION_QUESTION_TREE = {
             } else {
                 state.polaris.openaiApiKey = null;
                 window.polarisRuntimeKey = null;
+                window.polarisLocalKeyProbeAttempted = false;
                 saveState();
                 showToast("OpenAI API Key removed.", "info");
-                loadLocalOpenAIKey();
+                updateOpenAIKeyStatus("No key active. Set one below.");
             }
         }
 
@@ -4258,6 +4346,7 @@ const COMPANION_QUESTION_TREE = {
 
             if (state.polaris.enabled && state.polaris.profile.companionSkin) {
                 container.classList.add("active");
+                void ensurePolarisOpenAIKeyLoaded();
             } else {
                 container.classList.remove("active");
                 return;
@@ -4317,6 +4406,7 @@ const COMPANION_QUESTION_TREE = {
 
             inputEl.value = "";
             await addPolarisChatMessage('user', text);
+            await ensurePolarisOpenAIKeyLoaded();
 
             const apiKey = getOpenAIKey();
             if (!apiKey) {
@@ -4370,6 +4460,7 @@ const COMPANION_QUESTION_TREE = {
             }
 
             await addPolarisChatMessage('user', userPromptText);
+            await ensurePolarisOpenAIKeyLoaded();
 
             const apiKey = getOpenAIKey();
             if (!apiKey) {
@@ -4458,9 +4549,208 @@ Your response should be under 100 words. Stick to objective mechanics, pattern d
             return data.choices[0].message.content.trim();
         }
 
+        // ==========================================================
+        // RECOVERY ENGINE CONTROLLER INTERVENTIONS
+        // ==========================================================
+
+        function toggleFutureNarrowing() {
+            ensurePolarisState();
+            state.polaris.futureNarrowingActive = !state.polaris.futureNarrowingActive;
+            
+            if (state.polaris.futureNarrowingActive) {
+                var activeTabBtn = document.querySelector('.tab-btn.active');
+                var activeTab = activeTabBtn ? activeTabBtn.getAttribute('data-tab') : '';
+                var hiddenTabs = ["progression", "documentcenter", "explorer"];
+                if (hiddenTabs.includes(activeTab)) {
+                    showTab('polaris');
+                }
+                showToast("Future Narrowing Active. Horizon compressed to today.", "info");
+            } else {
+                showToast("Time horizon expanded. Long-term projection models available.", "info");
+            }
+            
+            saveState();
+            renderPolarisTab();
+        }
+
+        function openPossibilityCollapseModal() {
+            ensurePolarisState();
+            const modal = document.getElementById('possibility-collapse-modal');
+            if (modal) modal.classList.add('active');
+        }
+
+        function closePossibilityCollapseModal() {
+            const modal = document.getElementById('possibility-collapse-modal');
+            if (modal) modal.classList.remove('active');
+        }
+
+        function selectCollapseLane(lane) {
+            ensurePolarisState();
+            const textMap = {
+                rhythm: "Circadian Lock (Wake window & light)",
+                space: "Space Reset (Clear 1 surface / trash)",
+                body: "Bio Floor (Water, meds, 60s stand)"
+            };
+            
+            if (!state.userAnchors) state.userAnchors = [];
+            const anchorId = 'anchor_collapse_' + Date.now();
+            state.userAnchors.push({ id: anchorId, text: textMap[lane], active: true });
+            
+            state.polaris.possibilityCollapseInterventions = (state.polaris.possibilityCollapseInterventions || 0) + 1;
+            state.polaris.proof.today += 1;
+            state.polaris.proof.total += 1;
+            state.polaris.proof.ledger.push({
+                id: 'proof_' + Date.now(),
+                source: 'possibility_collapse',
+                points: 1,
+                label: 'Possibility Collapse: ' + textMap[lane] + ' lane selected',
+                createdAt: new Date().toISOString()
+            });
+            
+            saveState();
+            closePossibilityCollapseModal();
+            renderPolarisTab();
+            showToast('Bypassed paralysis. ' + textMap[lane] + ' added to anchors. Proof points earned.', 'success');
+        }
+
+        function openStartupDragModal() {
+            ensurePolarisState();
+            const modal = document.getElementById('startup-drag-modal');
+            if (modal) {
+                modal.classList.add('active');
+                document.getElementById('startup-drag-setup').classList.remove('hidden');
+                document.getElementById('startup-drag-timer-container').classList.add('hidden');
+                document.getElementById('input-startup-task').value = '';
+                document.getElementById('input-startup-step').value = '';
+            }
+        }
+
+        function closeStartupDragModal() {
+            const modal = document.getElementById('startup-drag-modal');
+            if (modal) modal.classList.remove('active');
+            if (window.startupTimerInterval) {
+                clearInterval(window.startupTimerInterval);
+                window.startupTimerInterval = null;
+            }
+        }
+
+        function startStartupDragTimer() {
+            const task = document.getElementById('input-startup-task').value.trim() || 'Blocked action';
+            const step = document.getElementById('input-startup-step').value.trim() || 'First 10s step';
+            
+            document.getElementById('startup-drag-setup').classList.add('hidden');
+            document.getElementById('startup-drag-timer-container').classList.remove('hidden');
+            document.getElementById('startup-timer-instruction').innerHTML = `Task: <strong class="text-orange">${escapeHtml(task)}</strong><br>Do ONLY this: <em>${escapeHtml(step)}</em>`;
+            
+            let seconds = 10;
+            const display = document.getElementById('startup-timer-display');
+            display.textContent = seconds;
+            
+            document.getElementById('startup-timer-actions').classList.add('hidden');
+            
+            if (window.startupTimerInterval) clearInterval(window.startupTimerInterval);
+            
+            window.startupTimerInterval = setInterval(() => {
+                seconds--;
+                display.textContent = seconds;
+                if (seconds <= 0) {
+                    clearInterval(window.startupTimerInterval);
+                    window.startupTimerInterval = null;
+                    display.textContent = "DONE";
+                    document.getElementById('startup-timer-actions').classList.remove('hidden');
+                }
+            }, 1000);
+        }
+
+        function verifyStartupDrag(success) {
+            ensurePolarisState();
+            if (success) {
+                const task = document.getElementById('input-startup-task').value.trim() || 'Blocked action';
+                const step = document.getElementById('input-startup-step').value.trim() || 'First 10s step';
+                
+                state.polaris.startupDragHistory.push({
+                    id: 'startup_' + Date.now(),
+                    task: task,
+                    step: step,
+                    date: getTodayString()
+                });
+                
+                state.polaris.proof.today += 2;
+                state.polaris.proof.total += 2;
+                state.polaris.proof.ledger.push({
+                    id: 'proof_' + Date.now(),
+                    source: 'startup_drag',
+                    points: 2,
+                    label: 'Startup Drag Bypass: ' + task,
+                    createdAt: new Date().toISOString()
+                });
+                
+                showToast('Action initiated. 2 proof points earned. Deconditioning success.', 'success');
+            } else {
+                showToast('Intervention cancelled.', 'info');
+            }
+            saveState();
+            closeStartupDragModal();
+            renderPolarisTab();
+        }
+
+        function openRuminationStopLossModal() {
+            ensurePolarisState();
+            const modal = document.getElementById('rumination-stop-loss-modal');
+            if (modal) {
+                modal.classList.add('active');
+                advanceStopLossStep(1);
+            }
+        }
+
+        function closeRuminationStopLossModal() {
+            const modal = document.getElementById('rumination-stop-loss-modal');
+            if (modal) modal.classList.remove('active');
+        }
+
+        function advanceStopLossStep(step) {
+            document.getElementById('stop-loss-step-1').classList.add('hidden');
+            document.getElementById('stop-loss-step-2').classList.add('hidden');
+            document.getElementById('stop-loss-step-3').classList.add('hidden');
+            
+            document.getElementById('stop-loss-step-' + step).classList.remove('hidden');
+        }
+
+        function completeStopLoss() {
+            ensurePolarisState();
+            state.polaris.ruminationStopLossCount = (state.polaris.ruminationStopLossCount || 0) + 1;
+            
+            state.polaris.proof.today += 1;
+            state.polaris.proof.total += 1;
+            state.polaris.proof.ledger.push({
+                id: 'proof_' + Date.now(),
+                source: 'rumination_stop_loss',
+                points: 1,
+                label: 'Rumination Stop-Loss triggered & grounded',
+                createdAt: new Date().toISOString()
+            });
+            
+            saveState();
+            closeRuminationStopLossModal();
+            renderPolarisTab();
+            showToast('Stop-loss triggered. Breaker switch activated. Rumination intercepted.', 'success');
+        }
+
         window.saveOpenAIKey = saveOpenAIKey;
         window.sendPolarisChatMessage = sendPolarisChatMessage;
         window.sendQuickPolarisPrompt = sendQuickPolarisPrompt;
+        window.toggleFutureNarrowing = toggleFutureNarrowing;
+        window.openPossibilityCollapseModal = openPossibilityCollapseModal;
+        window.closePossibilityCollapseModal = closePossibilityCollapseModal;
+        window.selectCollapseLane = selectCollapseLane;
+        window.openStartupDragModal = openStartupDragModal;
+        window.closeStartupDragModal = closeStartupDragModal;
+        window.startStartupDragTimer = startStartupDragTimer;
+        window.verifyStartupDrag = verifyStartupDrag;
+        window.openRuminationStopLossModal = openRuminationStopLossModal;
+        window.closeRuminationStopLossModal = closeRuminationStopLossModal;
+        window.advanceStopLossStep = advanceStopLossStep;
+        window.completeStopLoss = completeStopLoss;
 
         window.PolarisUI = {
             render: renderPolarisTab,

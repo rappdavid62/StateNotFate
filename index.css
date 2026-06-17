@@ -2240,3 +2240,28 @@
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-5px); }
 }
+
+/* ==========================================================
+ * RECOVERY ENGINE CONTROLLER STYLES
+ * ========================================================== */
+.recovery-tool-card {
+    transition: all 0.2s ease;
+}
+
+.recovery-tool-card:hover {
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+body.future-narrowing-active [data-tab="progression"],
+body.future-narrowing-active [data-tab="documentcenter"],
+body.future-narrowing-active [data-tab="explorer"],
+body.future-narrowing-active #adaptive-year-simulator,
+body.future-narrowing-active #auto-audit-exporter,
+body.future-narrowing-active #polaris-personal-bests,
+body.future-narrowing-active #polaris-activity-calendar,
+body.future-narrowing-active #audit-narrative-statement {
+    display: none !important;
+}
+
