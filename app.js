@@ -3237,7 +3237,8 @@ const COMPANION_QUESTION_TREE = {
             if (qCard) {
                 const intake = state.polaris.profile.evolvingIntake;
                 const currentQ = COMPANION_QUESTION_TREE[intake.currentQuestionId];
-                if (intake.enabled && state.polaris.profile.companionSkin && intake.lastQuestionDate !== getTodayString() && intake.currentQuestionId !== "done" && currentQ) {
+                const isReflection = intake.currentQuestionId && intake.currentQuestionId.endsWith('_a');
+                if (intake.enabled && state.polaris.profile.companionSkin && (intake.lastQuestionDate !== getTodayString() || isReflection) && intake.currentQuestionId !== "done" && currentQ) {
                     document.getElementById('companion-question-text').textContent = currentQ.text;
                     
                     // Render dynamic inputs based on question type
@@ -3269,7 +3270,7 @@ const COMPANION_QUESTION_TREE = {
                     qCard.classList.add('hidden');
                 }
 
-                if (intake.enabled && state.polaris.profile.companionSkin && intake.lastQuestionDate === getTodayString() && intake.currentQuestionId !== "done") {
+                if (intake.enabled && state.polaris.profile.companionSkin && intake.lastQuestionDate === getTodayString() && !isReflection && intake.currentQuestionId !== "done") {
                     if(askAnotherCard) askAnotherCard.classList.remove('hidden');
                 } else {
                     if(askAnotherCard) askAnotherCard.classList.add('hidden');
