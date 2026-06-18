@@ -99,8 +99,18 @@
 <!-- SMART WELCOME / RE-ENTRY LAYER             -->
 <!-- ========================================== -->
 <div id="screen-welcome" class="welcome-screen">
-    <h1 class="logo-header">STATE, NOT FATE</h1>
-    <h3 class="text-lavender mb-2" id="welcome-greeting">You’re here.</h3>
+    <h1 class="logo-header" style="font-family: var(--font-futuristic); letter-spacing: 0.15em;">
+        STATE, NOT FATE
+        <span style="display: block; font-size: 0.65rem; letter-spacing: 0.4em; color: var(--accent-teal); margin-top: 0.35rem; opacity: 0.85; font-weight: 500;">
+            状態・運命ではない
+        </span>
+    </h1>
+    <h3 class="text-lavender mb-2" id="welcome-greeting" style="position: relative; font-family: var(--font-futuristic); letter-spacing: 0.05em;">
+        You’re here.
+        <span style="display: block; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--accent-teal); opacity: 0.8; margin-top: 0.25rem;">
+            システム起動 // STATUS: ACTIVE
+        </span>
+    </h3>
     <p class="intro" id="welcome-subtitle" style="max-width: 420px;">No catch-up. Pick the current state.</p>
 
     <div class="glass-card" style="max-width: 420px; width: 100%; padding: 1.5rem; margin-bottom: 1.5rem;">
@@ -141,19 +151,33 @@
         </div>
 
         <!-- STATE SELECTOR SCREEN -->
-        <div id="screen-state-selector" class="welcome-screen hidden" style="max-width: 520px;">
-            <h2 class="mb-2 text-lavender">What is blocking action right now?</h2>
-            <div class="glass-card" style="padding: 1.25rem;">
-                <div style="display: flex; flex-direction: column; gap: 0.6rem;">
-                    <button class="btn btn-secondary" onclick="selectState('initiation')">I can't start</button>
-                    <button class="btn btn-secondary" onclick="selectState('rhythm')">My rhythm is broken</button>
-                    <button class="btn btn-secondary" onclick="selectState('environment')">My space is dragging me down</button>
-                    <button class="btn btn-secondary" onclick="selectState('body')">My body needs the floor</button>
-                    <button class="btn btn-secondary" onclick="selectState('mind')">My mind is spiraling</button>
-                    <button class="btn btn-danger" onclick="selectState('emergency')">Emergency mode</button>
+        <div id="screen-state-selector" class="welcome-screen hidden">
+            <div class="glass-card" style="max-width: 460px; width: 100%; padding: 2rem;">
+                <h2 style="font-size: 1.25rem; font-weight: 600; color: var(--accent-lavender); margin-bottom: 0.5rem; text-align: center;">What is blocking action right now?</h2>
+                <p class="text-muted" style="text-align: center; margin-bottom: 1.5rem; font-size: 0.9rem;">No analysis needed. Just pick the floor.</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <button class="btn btn-secondary w-full" onclick="executeTinyAnchor('initiation')" style="padding: 1rem; text-align: left;">
+                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">🧱</span> I can't start
+                    </button>
+                    <button class="btn btn-secondary w-full" onclick="executeTinyAnchor('rhythm')" style="padding: 1rem; text-align: left;">
+                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">⏳</span> My rhythm is broken
+                    </button>
+                    <button class="btn btn-secondary w-full" onclick="executeTinyAnchor('space')" style="padding: 1rem; text-align: left;">
+                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">🗑️</span> My space is dragging me down
+                    </button>
+                    <button class="btn btn-secondary w-full" onclick="executeTinyAnchor('body')" style="padding: 1rem; text-align: left;">
+                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">💧</span> My body needs the floor
+                    </button>
+                    <button class="btn btn-secondary w-full" onclick="executeTinyAnchor('mind')" style="padding: 1rem; text-align: left;">
+                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">🌪️</span> My mind is spiraling
+                    </button>
+                    <button class="btn btn-danger w-full" onclick="goToEmergencyFloor()" style="padding: 1rem; text-align: left; margin-top: 1rem;">
+                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">🚨</span> Emergency mode
+                    </button>
                 </div>
+                <button class="btn btn-secondary mt-3 w-full" onclick="showScreen('welcome')" style="justify-content: center;">← Back</button>
             </div>
-            <button class="btn btn-secondary mt-3" onclick="showScreen('welcome')">← Back</button>
         </div>
 
         <!-- PROFILE DEPTH SELECTOR SCREEN -->
@@ -502,6 +526,11 @@
                 <button class="tab-btn" data-tab="reset-intake" id="btn-tab-reset" style="margin-left: auto; color: var(--text-muted);">Reset Intake</button>
             </div>
 
+            <!-- Future Narrowing Notice Banner -->
+            <div id="future-narrowing-banner" class="hidden" style="background: rgba(20, 200, 175, 0.15); border-bottom: 1px solid var(--accent-teal); padding: 0.5rem 1rem; font-size: 0.8rem; text-align: center; color: var(--accent-teal); font-weight: 500;">
+                ⚡ <strong>Future Narrowing Mode Active:</strong> Horizon compressed to today. Long-term goals and projections hidden to protect energy.
+            </div>
+
             <!-- TAB 1: MAIN DASHBOARD VIEW -->
             <div id="tab-dashboard" class="tab-content">
                 
@@ -561,6 +590,57 @@
                                 </button>
                             </div>
                             <button class="btn btn-secondary text-red" id="btn-quick-safety" style="padding: 0.5rem 0.75rem; font-size: 0.75rem; margin-top: 0.75rem; width: 100%; justify-content: center; gap: 0.4rem; color: var(--accent-red); border-color: rgba(230, 40, 60, 0.2);">🚨 Quick Safety Plan</button>
+                        </div>
+
+                        <!-- SAFETY CHECK-IN (Integrated Naturally) -->
+                        <div id="safety-checkin-card" class="glass-card safety-gradient mb-3" style="display: none; padding: 1.25rem;">
+                            <h3 class="card-title" style="font-size:1rem; margin-bottom: 0.75rem; color: var(--text-primary);">Quick Safety Check</h3>
+                            
+                            <div class="safety-question">
+                                <p class="question-text">
+                                    In the last 24 hours, have you had any thoughts that life might be better if you weren't here?
+                                </p>
+                                <p class="question-subtext">
+                                    This might feel like wanting to disappear, wishing you weren't alive, or a general sense of hopelessness.
+                                </p>
+                                
+                                <div class="response-scale" id="ideation-scale">
+                                    <label class="scale-option">
+                                        <input type="radio" name="ideation-24h" value="0" checked>
+                                        <span class="scale-label">Not at all</span>
+                                    </label>
+                                    <label class="scale-option">
+                                        <input type="radio" name="ideation-24h" value="1">
+                                        <span class="scale-label">Briefly</span>
+                                    </label>
+                                    <label class="scale-option">
+                                        <input type="radio" name="ideation-24h" value="2">
+                                        <span class="scale-label">Off and on</span>
+                                    </label>
+                                    <label class="scale-option">
+                                        <input type="radio" name="ideation-24h" value="3">
+                                        <span class="scale-label">Most of day</span>
+                                    </label>
+                                    <label class="scale-option">
+                                        <input type="radio" name="ideation-24h" value="4">
+                                        <span class="scale-label">Almost always</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="safety-question" style="margin-top: 1rem;">
+                                <p class="question-text">Do you feel safe right now?</p>
+                                
+                                <div class="response-buttons" id="safety-buttons-container">
+                                    <button class="btn btn-secondary btn-small active" data-safety="yes">Yes, I feel safe</button>
+                                    <button class="btn btn-secondary btn-small" data-safety="no">No, I don't feel safe</button>
+                                    <button class="btn btn-secondary btn-small" data-safety="unsure">I'm not sure</button>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary mt-2" id="submit-safety-check" style="width: 100%; justify-content: center;">
+                                Continue
+                            </button>
                         </div>
 
                         <!-- Daily Tasks Checkbox Area -->
@@ -745,6 +825,17 @@
                 </div>
             </div>
 
+            <!-- Evolving Intake History & Reflections Log -->
+            <div id="polaris-intake-history-container" class="glass-card hidden" style="background: rgba(165, 120, 240, 0.03); border-color: rgba(165, 120, 240, 0.15); padding: 1rem; margin-bottom: 1.5rem;">
+                <h4 class="text-lavender" style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.4rem;">
+                    <span style="display:inline-block; width:8px; height:8px; background:var(--accent-lavender); border-radius:50%;"></span>
+                    Intake History & Reflections
+                </h4>
+                <div id="polaris-intake-history-list" style="display: flex; flex-direction: column; gap: 0.6rem; max-height: 250px; overflow-y: auto; padding-right: 0.25rem;">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
             <!-- Gap Notice (hidden by default) -->
             <div id="polaris-gap-notice" class="hidden" style="padding: 0.6rem 0.75rem; margin-bottom: 0.75rem; border-radius: var(--radius-sm); background: rgba(240,115,30,0.06); border: 1px solid rgba(240,115,30,0.12); font-size: 0.85rem; color: var(--text-secondary);"></div>
 
@@ -796,6 +887,52 @@
                 </div>
             </div>
 
+            <!-- Recovery Engine Module (6 Core Pillars) -->
+            <div id="polaris-recovery-engine" class="glass-card" style="background: rgba(20, 200, 175, 0.02); border-color: rgba(20, 200, 175, 0.12); padding: 1.25rem; margin-bottom: 1rem;">
+                <h3 style="font-size: 1rem; font-weight: 600; color: var(--accent-teal); margin: 0 0 0.25rem 0; display: flex; align-items: center; gap: 0.5rem;">
+                    🎛️ Recovery Engine Controllers
+                </h3>
+                <p class="text-muted" style="font-size: 0.8rem; margin-bottom: 1rem; font-weight: 300;">Actionable tools to bypass cognitive deconditioning, limit rumination, and log proof.</p>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+                    <!-- Future Narrowing Card -->
+                    <div class="glass-card recovery-tool-card" id="card-future-narrowing" style="padding: 0.75rem; background: rgba(0, 0, 0, 0.2); border-color: rgba(255,255,255,0.05); transition: all 0.2s;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                            <span style="font-size: 0.85rem; font-weight: 600; color: var(--accent-teal);">Future Narrowing</span>
+                            <span class="badge" id="badge-narrowing-status" style="font-size: 0.6rem; background: rgba(255,255,255,0.05); color: var(--text-secondary); padding: 0.1rem 0.3rem;">Normal</span>
+                        </div>
+                        <p style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.5rem; line-height: 1.3;">Compress time horizon. Hide long-term goals & projections.</p>
+                        <button class="btn btn-secondary w-full" id="btn-toggle-future-narrowing" onclick="toggleFutureNarrowing()" style="font-size: 0.7rem; padding: 0.3rem 0.5rem; justify-content: center; width: 100%; border-color: rgba(20,200,175,0.25); color: var(--accent-teal);">Narrow Horizon</button>
+                    </div>
+
+                    <!-- Possibility Collapse Card -->
+                    <div class="glass-card recovery-tool-card" style="padding: 0.75rem; background: rgba(0, 0, 0, 0.2); border-color: rgba(255,255,255,0.05);">
+                        <span style="font-size: 0.85rem; font-weight: 600; color: var(--accent-lavender); display: block; margin-bottom: 0.25rem;">Possibility Collapse</span>
+                        <p style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.5rem; line-height: 1.3;">Bypass choice paralysis. View a simple 3-lane starter menu.</p>
+                        <button class="btn btn-secondary w-full" onclick="openPossibilityCollapseModal()" style="font-size: 0.7rem; padding: 0.3rem 0.5rem; justify-content: center; width: 100%; color: var(--accent-lavender); border-color: rgba(165,120,240,0.25);">Decompress Paths</button>
+                    </div>
+
+                    <!-- Startup Drag Card -->
+                    <div class="glass-card recovery-tool-card" style="padding: 0.75rem; background: rgba(0, 0, 0, 0.2); border-color: rgba(255,255,255,0.05);">
+                        <span style="font-size: 0.85rem; font-weight: 600; color: var(--accent-orange); display: block; margin-bottom: 0.25rem;">Startup Drag</span>
+                        <p style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.5rem; line-height: 1.3;">Commit to only the first 10 seconds of a difficult action.</p>
+                        <button class="btn btn-secondary w-full" onclick="openStartupDragModal()" style="font-size: 0.7rem; padding: 0.3rem 0.5rem; justify-content: center; width: 100%; color: var(--accent-orange); border-color: rgba(240,115,30,0.25);">Launch 10s Timer</button>
+                    </div>
+
+                    <!-- Rumination Stop-Loss Card -->
+                    <div class="glass-card recovery-tool-card" style="padding: 0.75rem; background: rgba(0, 0, 0, 0.2); border-color: rgba(255,255,255,0.05);">
+                        <span style="font-size: 0.85rem; font-weight: 600; color: var(--accent-red); display: block; margin-bottom: 0.25rem;">Rumination Stop-Loss</span>
+                        <p style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.5rem; line-height: 1.3;">Interrupt loop thinking. Trigger a brief physical ground sequence.</p>
+                        <button class="btn btn-secondary w-full" onclick="openRuminationStopLossModal()" style="font-size: 0.7rem; padding: 0.3rem 0.5rem; justify-content: center; width: 100%; color: var(--accent-red); border-color: rgba(230,40,60,0.25);">Activate Stop-Loss</button>
+                    </div>
+                </div>
+
+                <!-- Hope Theory Banner -->
+                <div style="background: rgba(255,255,255,0.02); padding: 0.6rem 0.8rem; border-radius: var(--radius-sm); border: 1px solid rgba(255,255,255,0.04); font-size: 0.75rem; line-height: 1.4; color: var(--text-secondary);">
+                    💡 <strong class="text-teal">Proof-Based Hope:</strong> Snyder's Hope Theory defines hope as the prediction that effort leads to results. When the striatal reward system is blunted by depressive bias, registering <span class="text-lavender">Floor Wins</span> and micro-actions is the literal biological repair mechanism to update this forward prediction.
+                </div>
+            </div>
+
             <!-- Restart / Floor Win -->
             <div id="polaris-restart-section" class="glass-card" style="background: rgba(240, 115, 30, 0.04); border-color: rgba(240, 115, 30, 0.15); padding: 1rem; margin-bottom: 1rem;">
                 <h3 style="font-size: 0.95rem; font-weight: 600; color: var(--accent-orange); margin: 0 0 0.5rem 0;">Restart / Floor Win</h3>
@@ -820,6 +957,7 @@
                     <button class="btn btn-secondary" onclick="setPolarisCompanion('🧟')" style="padding: 0.5rem; font-size: 1.2rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" title="Zombie">🧟</button>
                     <button class="btn btn-secondary" onclick="setPolarisCompanion('🧛')" style="padding: 0.5rem; font-size: 1.2rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" title="Vampire">🧛</button>
                     <button class="btn btn-secondary" onclick="setPolarisCompanion('🐦‍⬛')" style="padding: 0.5rem; font-size: 1.2rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" title="Raven">🐦‍⬛</button>
+                    <button class="btn btn-secondary" onclick="setPolarisCompanion('🦊')" style="padding: 0.5rem; font-size: 1.2rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-color: rgba(255, 0, 127, 0.45);" title="Cyber Kitsune">🦊</button>
                 </div>
                 
                 <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.75rem; margin-top: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
@@ -901,6 +1039,10 @@
                                 <div><strong>Current Hope Level:</strong> <span id="audit-hope-level" class="text-teal">Level 1 - Action is Possible</span></div>
                                 <div><strong>Resilience Score:</strong> <span id="audit-resilience-rate" class="text-orange">100%</span></div>
                                 <div><strong>Streak Restarts:</strong> <span id="audit-restart-count">0</span></div>
+                                <div><strong>Future Narrowing:</strong> <span id="audit-future-narrowing-status" class="text-teal">INACTIVE</span></div>
+                                <div><strong>Possibility Collapse Interventions:</strong> <span id="audit-collapse-count">0</span></div>
+                                <div><strong>Startup Drag Successes:</strong> <span id="audit-startup-count">0</span></div>
+                                <div><strong>Rumination Stop-Loss Runs:</strong> <span id="audit-stop-loss-count">0</span></div>
                             </div>
                         </div>
 
@@ -914,7 +1056,7 @@
                     </div>
 
                     <!-- Row 2: Adaptive Year Simulator -->
-                    <div class="glass-card mb-3" style="padding:1.5rem;">
+                    <div id="adaptive-year-simulator" class="glass-card mb-3" style="padding:1.5rem;">
                         <h3 style="font-size:1.1rem; color:var(--text-primary); margin-bottom:0.5rem;">Adaptive Year Simulator (Five-Year Manual)</h3>
                         <p class="text-muted" style="font-size:0.85rem; margin-bottom:1rem; font-weight: 300;">Simulate how small daily anchors scale over 1, 3, and 5 years. Move the slider to set your projected daily completion rate.</p>
                         
@@ -964,7 +1106,7 @@
                     </div>
 
                     <!-- Row 4: Auto-Audit Exporter -->
-                    <div class="glass-card" style="padding:1.25rem; background:rgba(255,255,255,0.01);">
+                    <div id="auto-audit-exporter" class="glass-card" style="padding:1.25rem; background:rgba(255,255,255,0.01);">
                         <h3 style="font-size:1rem; color:var(--text-primary); margin-bottom:0.25rem;">Auto-Audit & Co-Pilot Sync</h3>
                         <p class="text-muted" style="font-size:0.8rem; margin-bottom:0.75rem; font-weight: 300;">Generate a completely private, anonymized progress briefing of your state history and proof statements to copy-paste into Grok, Obsidian, or Tonya's session notes.</p>
                         <button class="btn btn-primary" onclick="exportAnonymizedAudit()" style="background:var(--accent-teal); border-color:var(--accent-teal); color:#0b0f13; font-size:0.85rem; padding:0.6rem 1.25rem; justify-content:center; width: 100%;">
@@ -1675,6 +1817,105 @@
             </div>
         </div>
 
+        <!-- POSSIBILITY COLLAPSE INTERVENTION MODAL -->
+        <div id="possibility-collapse-modal" class="modal-overlay">
+            <div class="modal-content" style="max-width: 500px; border-color: var(--accent-lavender); box-shadow: 0 0 20px rgba(165,120,240,0.2);">
+                <button class="modal-close-btn" onclick="closePossibilityCollapseModal()">×</button>
+                <div class="modal-title" style="color: var(--accent-lavender);">
+                    🌀 Possibility Collapse Bypass
+                </div>
+                <div class="modal-desc" style="font-size: 0.85rem; margin-bottom: 1.25rem;">
+                    Overwhelming choices detected. When the brain predicts "nothing works," exit infinite choices. Commit to exactly ONE of these pre-designed, constrained lanes.
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <div onclick="selectCollapseLane('rhythm')" class="glass-card" style="padding: 0.85rem; border-color: rgba(20,200,175,0.2); background: rgba(20,200,175,0.02); cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent-teal)'; this.style.background='rgba(20,200,175,0.05)';" onmouseout="this.style.borderColor='rgba(20,200,175,0.2)'; this.style.background='rgba(20,200,175,0.02)';">
+                        <strong class="text-teal" style="font-size: 0.9rem;">Lane 1: Rhythm Lock</strong>
+                        <p style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.25rem; line-height: 1.35;">Wake up within your target window tomorrow. Open the blinds immediately to anchor your circadian clock.</p>
+                    </div>
+                    <div onclick="selectCollapseLane('space')" class="glass-card" style="padding: 0.85rem; border-color: rgba(165,120,240,0.2); background: rgba(165,120,240,0.02); cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent-lavender)'; this.style.background='rgba(165,120,240,0.05)';" onmouseout="this.style.borderColor='rgba(165,120,240,0.2)'; this.style.background='rgba(165,120,240,0.02)';">
+                        <strong class="text-lavender" style="font-size: 0.9rem;">Lane 2: Space Reset</strong>
+                        <p style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.25rem; line-height: 1.35;">Clear one flat surface (desk, counter) or gather one bag of trash. Create 1 square foot of visible order.</p>
+                    </div>
+                    <div onclick="selectCollapseLane('body')" class="glass-card" style="padding: 0.85rem; border-color: rgba(240,115,30,0.2); background: rgba(240,115,30,0.02); cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent-orange)'; this.style.background='rgba(240,115,30,0.05)';" onmouseout="this.style.borderColor='rgba(240,115,30,0.2)'; this.style.background='rgba(240,115,30,0.02)';">
+                        <strong class="text-orange" style="font-size: 0.9rem;">Lane 3: Bio Floor</strong>
+                        <p style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.25rem; line-height: 1.35;">Drink one glass of water, stand up for 60 seconds, or take your prescribed medications. Do not negotiate.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STARTUP DRAG BYPASS MODAL -->
+        <div id="startup-drag-modal" class="modal-overlay">
+            <div class="modal-content text-center" style="max-width: 420px; border-color: var(--accent-orange); box-shadow: 0 0 20px rgba(240,115,30,0.2);">
+                <button class="modal-close-btn" onclick="closeStartupDragModal()">×</button>
+                <div class="modal-title" style="color: var(--accent-orange); justify-content: center;">
+                    ⚡ Startup Drag Bypass
+                </div>
+                <div class="modal-desc" style="font-size: 0.85rem; margin-bottom: 1.25rem;">
+                    Bypass initiation friction. Don't think about the whole task. Commit to ONLY the first 10 seconds.
+                </div>
+                
+                <div id="startup-drag-setup">
+                    <div style="text-align: left; margin-bottom: 0.75rem;">
+                        <label style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">What task is blocked?</label>
+                        <input type="text" id="input-startup-task" placeholder="e.g. Folding laundry, writing code, calling client" style="width:100%; padding:0.6rem; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:var(--radius-sm); color:var(--text-primary); font-size:0.85rem; margin-top:0.25rem;">
+                    </div>
+                    <div style="text-align: left; margin-bottom: 1.25rem;">
+                        <label style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">What is the first 10-second action?</label>
+                        <input type="text" id="input-startup-step" placeholder="e.g. Pick up one shirt, open IDE, dial number" style="width:100%; padding:0.6rem; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:var(--radius-sm); color:var(--text-primary); font-size:0.85rem; margin-top:0.25rem;">
+                    </div>
+                    <button class="btn btn-primary" onclick="startStartupDragTimer()" style="background:var(--accent-orange); border-color:var(--accent-orange); color:#0b0f13; font-weight:600; width:100%; justify-content:center;">Initiate 10-Second Countdown</button>
+                </div>
+
+                <div id="startup-drag-timer-container" class="hidden">
+                    <div id="startup-timer-display" style="font-size: 4.5rem; font-weight: 700; color: var(--accent-orange); font-family: monospace; text-shadow: 0 0 15px rgba(240, 115, 30, 0.4); margin: 1rem 0;">10</div>
+                    <p id="startup-timer-instruction" style="font-size: 0.9rem; color: var(--text-primary); font-weight: 500; min-height: 2.5rem; line-height: 1.4;"></p>
+                    <div id="startup-timer-actions" class="hidden" style="margin-top: 1rem; display: flex; gap: 0.5rem; justify-content: center;">
+                        <button class="btn btn-primary" onclick="verifyStartupDrag(true)" style="background:var(--accent-teal); border-color:var(--accent-teal); color:#0b0f13; font-weight:600;">✓ Completed First Step</button>
+                        <button class="btn btn-secondary" onclick="verifyStartupDrag(false)" style="color:var(--accent-red); border-color:rgba(230,40,60,0.3);">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RUMINATION STOP-LOSS MODAL -->
+        <div id="rumination-stop-loss-modal" class="modal-overlay">
+            <div class="modal-content" style="max-width: 440px; border-color: var(--accent-red); box-shadow: 0 0 20px rgba(230,40,60,0.2);">
+                <button class="modal-close-btn" onclick="closeRuminationStopLossModal()">×</button>
+                <div class="modal-title" style="color: var(--accent-red); justify-content: center;">
+                    🛑 Rumination Stop-Loss
+                </div>
+                <div class="modal-desc" style="font-size: 0.85rem; margin-bottom: 1.25rem; text-align: center;">
+                    Recursive over-thinking detected. Activating mental breaker switch. Follow these grounding telemetry directives.
+                </div>
+                
+                <div id="stop-loss-step-1">
+                    <div style="background:rgba(230,40,60,0.04); border:1px solid rgba(230,40,60,0.15); padding:1rem; border-radius:var(--radius-sm); margin-bottom:1.25rem;">
+                        <span class="text-red" style="font-weight:600; display:block; margin-bottom:0.25rem;">Directive 1: Physical Grounding</span>
+                        Identify 3 distinct physical objects in your immediate field of vision. Go touch one of them.
+                    </div>
+                    <button class="btn btn-primary" onclick="advanceStopLossStep(2)" style="background:var(--accent-red); border-color:var(--accent-red); color:#fff; font-weight:600; width:100%; justify-content:center;">Object Touched</button>
+                </div>
+
+                <div id="stop-loss-step-2" class="hidden">
+                    <div style="background:rgba(165,120,240,0.04); border:1px solid rgba(165,120,240,0.15); padding:1rem; border-radius:var(--radius-sm); margin-bottom:1.25rem;">
+                        <span class="text-lavender" style="font-weight:600; display:block; margin-bottom:0.25rem;">Directive 2: Cognitive Intercept</span>
+                        Speak this script aloud: <br>
+                        <em style="color:#fff; display:block; margin-top:0.5rem; font-size:0.95rem; line-height:1.45;">"State is information. Fate is a story I stop telling. This mood is telemetry, not identity."</em>
+                    </div>
+                    <button class="btn btn-primary" onclick="advanceStopLossStep(3)" style="background:var(--accent-lavender); border-color:var(--accent-lavender); color:#0b0f13; font-weight:600; width:100%; justify-content:center;">Mantra Spoken Aloud</button>
+                </div>
+
+                <div id="stop-loss-step-3" class="hidden">
+                    <div style="background:rgba(20,200,175,0.04); border:1px solid rgba(20,200,175,0.15); padding:1rem; border-radius:var(--radius-sm); margin-bottom:1.25rem;">
+                        <span class="text-teal" style="font-weight:600; display:block; margin-bottom:0.25rem;">Directive 3: Autonomic Reset</span>
+                        Inhale for 4 seconds, hold for 4, exhale slowly for 4. Ground the state.
+                    </div>
+                    <button class="btn btn-primary" onclick="completeStopLoss()" style="background:var(--accent-teal); border-color:var(--accent-teal); color:#0b0f13; font-weight:600; width:100%; justify-content:center;">Grounding Sequence Complete</button>
+                </div>
+            </div>
+        </div>
+
         <!-- ========================================== -->
         <!-- PROGRESS EXPORT MODAL                      -->
         <!-- ========================================== -->
@@ -1693,36 +1934,7 @@
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- STATE SELECTOR SCREEN (Smart Welcome)      -->
-        <!-- ========================================== -->
-        <div id="screen-stateSelector" class="screen hidden">
-            <div class="glass-card" style="max-width: 460px; width: 100%; padding: 2rem;">
-                <h2 style="font-size: 1.25rem; font-weight: 600; color: var(--accent-lavender); margin-bottom: 0.5rem; text-align: center;">What is blocking action right now?</h2>
-                <p class="text-muted" style="text-align: center; margin-bottom: 1.5rem; font-size: 0.9rem;">No analysis needed. Just pick the floor.</p>
-                
-                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                    <button class="btn btn-secondary w-full" onclick="executeTinyAnchor('initiation')" style="padding: 1rem; text-align: left;">
-                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">🧱</span> I can't start
-                    </button>
-                    <button class="btn btn-secondary w-full" onclick="executeTinyAnchor('rhythm')" style="padding: 1rem; text-align: left;">
-                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">⏳</span> My rhythm is broken
-                    </button>
-                    <button class="btn btn-secondary w-full" onclick="executeTinyAnchor('space')" style="padding: 1rem; text-align: left;">
-                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">🗑️</span> My space is dragging me down
-                    </button>
-                    <button class="btn btn-secondary w-full" onclick="executeTinyAnchor('body')" style="padding: 1rem; text-align: left;">
-                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">💧</span> My body needs the floor
-                    </button>
-                    <button class="btn btn-secondary w-full" onclick="executeTinyAnchor('mind')" style="padding: 1rem; text-align: left;">
-                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">🌪️</span> My mind is spiraling
-                    </button>
-                    <button class="btn btn-danger w-full" onclick="goToEmergencyFloor()" style="padding: 1rem; text-align: left; margin-top: 1rem;">
-                        <span style="font-size: 1.2rem; margin-right: 0.5rem;">🚨</span> Emergency mode
-                    </button>
-                </div>
-            </div>
-        </div>
+
 
         <!-- ========================================== -->
         <!-- LOCK / PIN SCREEN                          -->
