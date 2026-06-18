@@ -10,7 +10,7 @@ This MOC ties together the canonical project documents (already distilled in the
 - **Long Horizon**: 5-year-architecture-one-pager.md and five-year materials
 - **Implementation / PWA + AI Engine**: See grok_build_polaris_master_prompt_v2.md, app.js, index.html, and the new Tech/ notes
 - **AI Execution Layer**: AI Life Coach Friend system (blunt execution, status blocks, trackers) + David prompt library + Anti-Gravity Engine
-- **Evidence & Rationale**: evidence.html, expanded_pubmed_evidence.json, pubmed_evidence.json
+- **Evidence & Rationale**: evidence.html, expanded_pubmed_evidence.json, pubmed_evidence.json, docs/MASTER_SOURCE_LIST.md
 - **Source Bundles & Maps**: See the comprehensive PDFs in Drive (00_READ_THIS_FIRST_COMPREHENSIVE, Project File Map, Current Main Elements) and local copies
 - **Conversations & Synthesis**: .grok/sessions records (build history for PWA, prompts, bundles) and the chat themes folded into the bundles
 
@@ -35,6 +35,10 @@ This MOC ties together the canonical project documents (already distilled in the
 
 ## Next Actions / Gaps
 See the missing high-impact notes and comprehensive bundles. Update daily via Polaris anchors/proof and AI coach status blocks.
+
+## Source Maintenance
+
+Use `docs/MASTER_SOURCE_LIST.md` as the source-of-truth checklist before evidence updates, live-site reviews, simulated intake/persona runs, and automation-driven QA. Each pass should separate hosted-site state, local test state, knowledge-base drift, clinical/source support, and one new breadth lane so the project compounds instead of repeating the same scan.
 
 **Sources of truth**: The files in this repo, Obsidian vault (OneDrive/Desktop/ObsidianVault/STATENOTFATE/ + Human/ + Tech/ + MOCS/), My Drive/OneDrive bundles, and .grok session history.
 
