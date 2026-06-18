@@ -1391,7 +1391,7 @@ const COMPANION_QUESTION_TREE = {
                     tasks.push({ label: "Handle 1 admin micro-task (open mail, file one document, pay one bill)", isMvd: false });
                 }
 
-                // Inject custom clinician/user recovery tasks
+                // Inject custom professional/user recovery tasks
                 if (state.customTasks && state.customTasks.length > 0) {
                     state.customTasks.forEach(task => {
                         tasks.push({ label: task, isMvd: false });
@@ -2692,7 +2692,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         // ==========================================================
-        // CLINICIAN'S ADAPTIVE PLAN CUSTOMIZER ENGINE
+        // PROFESSIONAL'S ADAPTIVE PLAN CUSTOMIZER ENGINE
         // ==========================================================
 
         function renderCustomizer() {

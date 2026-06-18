@@ -467,12 +467,12 @@ export class PredictiveDeterioration {
   }
 
   /**
-   * EXPORT PREDICTION FOR CLINICIAN
+   * EXPORT PREDICTION FOR PROFESSIONAL
    */
   exportPredictionReport() {
     const currentState = this.history[this.history.length - 1];
     const prediction = this.predictDeteriorationRisk(currentState);
-
+ 
     return {
       reportDate: new Date().toISOString(),
       reportPeriod: `Last ${this.history.length} days`,
@@ -480,7 +480,7 @@ export class PredictiveDeterioration {
       riskScore: (prediction.overallRiskScore * 100).toFixed(1) + '%',
       keyIndicators: prediction.warnings,
       recommendedInterventions: prediction.interventionsRecommended,
-      note: 'This is a predictive tool, not a replacement for clinical judgment.'
+      note: 'This is a predictive tool, not a replacement for professional judgment.'
     };
   }
 }

@@ -635,7 +635,7 @@ export class AdvancedAnalytics {
         ...dashboard.charts,
         ...dashboard.recommendations
       ],
-      disclaimer: 'This analytics is for personal reflection. Share with therapist for clinical interpretation.'
+      disclaimer: 'This analytics is for personal reflection. Share with therapist for professional interpretation.'
     };
   }
 

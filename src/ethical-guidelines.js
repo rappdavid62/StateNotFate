@@ -204,7 +204,7 @@ export const ETHICAL_FRAMEWORK = {
    */
   limitationsAndBoundaries: {
     notAReplacement: 'This app is adjunctive support, not a replacement for professional care',
-    crisisManagement: 'For acute crisis, person needs human clinician, not algorithm',
+    crisisManagement: 'For acute crisis, person needs human specialist, not algorithm',
     mandatoryScenarios: [
       'Active suicidal planning with imminent timeline',
       'Psychotic features (delusions, hallucinations)',
@@ -275,7 +275,7 @@ export const ETHICAL_FRAMEWORK = {
       items: [
         '☐ Track false positives (flagging safe people as at-risk)',
         '☐ Track false negatives (missing people at actual risk)',
-        '☐ Regular review with mental health clinicians',
+        '☐ Regular review with mental health professionals',
         '☐ Continuous improvement based on outcomes',
         '☐ Transparency report on assessment accuracy published annually'
       ]
@@ -306,16 +306,16 @@ export const ETHICAL_FRAMEWORK = {
     
     This app is a support tool for people also connected to professional care.
     `,
-    forClinicians: `
+    forProfessionals: `
     This assessment is a screening tool, not a diagnostic instrument.
     
-    Use this data to inform your clinical judgment, not replace it.
+    Use this data to inform your professional judgment, not replace it.
     
     Key limitations:
     - Self-report bias (people may minimize or exaggerate)
     - Context collapse (text-based assessment misses nonverbal cues)
     - Algorithm bias (created by specific people with specific values)
-    - No substitute for direct clinical evaluation
+    - No substitute for direct professional evaluation
     
     Recommended: Use this alongside your standard suicide risk assessment.
     `

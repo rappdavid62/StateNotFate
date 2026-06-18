@@ -391,10 +391,10 @@ export class PolarisEnhancedSafety {
   }
 
   /**
-   * DOCUMENTATION FOR CLINICAL HANDOFF
+   * DOCUMENTATION FOR PROGRESS HANDOFF
    * Create shareable assessment for therapist
    */
-  prepareForClinicalHandoff(state, assessments, riskLevel) {
+  prepareForProgressHandoff(state, assessments, riskLevel) {
     return {
       preparedDate: new Date().toISOString(),
       summary: {

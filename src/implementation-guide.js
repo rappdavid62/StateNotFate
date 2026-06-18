@@ -181,7 +181,7 @@ export const IMPLEMENTATION_GUIDE = {
         steps: [
           'Create recovery timeline (0-24h, 24-72h, 1wk, 2-4wk)',
           'Build relapse prevention checklist',
-          'Create clinical handoff documentation',
+          'Create progress handoff documentation',
           'Set up follow-up reminders',
           'Design re-entry into normal anchors'
         ]
@@ -417,7 +417,7 @@ export const LAUNCH_CHECKLIST = [
       '☐ Printable resources created',
       '☐ Safety planning templates available',
       '☐ Post-crisis follow-up templates created',
-      '☐ Clinical handoff documentation ready'
+      '☐ Progress handoff documentation ready'
     ]
   },
   {
@@ -425,7 +425,7 @@ export const LAUNCH_CHECKLIST = [
     items: [
       '☐ Implementation guide written',
       '☐ User guide created',
-      '☐ Clinician guide created',
+      '☐ Professional guide created',
       '☐ Change log documented',
       '☐ Incident response plan written',
       '☐ Training materials prepared'

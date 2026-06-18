@@ -602,7 +602,7 @@ export class SafetyDetectionModule {
 
   /**
    * DOCUMENTATION & COMPLIANCE
-   * Track assessments for clinical review
+   * Track assessments for professional review
    */
   logAssessment(assessmentData, response) {
     const log = {
@@ -611,7 +611,7 @@ export class SafetyDetectionModule {
       responses: assessmentData,
       riskLevel: response.riskLevel,
       actionsInitiated: response.immediateActions,
-      clinicalNotes: 'User completed suicide risk assessment'
+      reviewNotes: 'User completed suicide risk assessment'
     };
 
     this.assessmentHistory.push(log);

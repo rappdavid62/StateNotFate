@@ -26,9 +26,9 @@ This repository is a static PWA / public website. Treat it as a plain HTML/CSS/J
 8. Ask for clarification when the requested change is ambiguous.
 
 ## Validation guidance
-- npm run serve starts the local static server from scripts/static-server.mjs.
-- npm test runs the full Playwright suite.
-- npm run test:public runs the public-facing Playwright tests.
+- npm run serve starts the local static server from scripts/static-server.mjs. On Windows PowerShell, prefer `npm.cmd run serve`.
+- npm test runs the full Playwright suite. On Windows PowerShell, prefer `npm.cmd test`.
+- npm run test:public runs the public-facing Playwright tests. On Windows PowerShell, prefer `npm.cmd run test:public`.
 
 ## Notes for future agents
 - Edits to index.html may affect both the public landing page and the embedded app experience.

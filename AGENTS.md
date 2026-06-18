@@ -17,14 +17,16 @@ This repository is a static PWA / public website for the State Not Fate recovery
 - Prefer minimal, precise changes. This is a static site, so do not introduce a JavaScript framework or server-side dependencies unless the user explicitly requests them.
 - Preserve accessibility, SEO, and safety/care guidance. The site includes mental health safety content, crisis pages, and public-facing evidence resources.
 - Keep PWA semantics intact: service worker registration, manifest usage, and `localStorage` state persistence are core behaviors.
-- Use `npm test` and `npm run test:public` to validate changes with Playwright.
-- Use `npm run serve` to run the local static server before verifying UI changes in a browser.
+- Use `npm test` and `npm run test:public` to validate changes with Playwright. On Windows PowerShell, prefer `npm.cmd test` and `npm.cmd run test:public`.
+- Use `npm run serve` to run the local static server before verifying UI changes in a browser. On Windows PowerShell, prefer `npm.cmd run serve`.
 
 ## Build / Test Commands
 - `npm install` - install dev dependencies
 - `npm run serve` - launch the static server from `scripts/static-server.mjs`
 - `npm test` - run full Playwright suite
 - `npm run test:public` - run the public-facing test subset in `tests/public`
+
+Windows note: if bare `npm` hits PowerShell execution-policy friction, use `npm.cmd` and `npx.cmd`.
 
 ## Important Notes
 - This repo is not a framework-based app. It uses plain HTML, CSS, and vanilla JavaScript.
