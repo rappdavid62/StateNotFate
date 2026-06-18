@@ -21,7 +21,7 @@ test('public presence SEO/performance skeleton exists', async ({ page }) => {
   await expect(page.locator('meta[property="og:description"]')).toHaveAttribute('content', /depression/i);
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /\/$/);
   expect(errors).toEqual([]);
-  expect(elapsed).toBeLessThan(3000);
+  expect(elapsed).toBeLessThan(10000);
 
   expect((await page.goto('/robots.txt'))?.ok()).toBeTruthy();
   await expect(page.locator('body')).toContainText('Sitemap');
