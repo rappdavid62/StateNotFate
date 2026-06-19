@@ -466,12 +466,12 @@ const COMPANION_QUESTION_TREE = {
             setupEventListeners();
             
             // Register PWA Service Worker for Mobile Offline Standalone Installations
+            // Note: init() is already invoked via window.onload, so we register directly
+            // instead of adding another 'load' listener (which would never fire at this point).
             if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('./service-worker.js')
-                        .then(reg => console.log('[PWA] Service Worker registered successfully:', reg.scope))
-                        .catch(err => console.error('[PWA] Service Worker registration failed:', err));
-                });
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(reg => console.log('[PWA] Service Worker registered successfully:', reg.scope))
+                    .catch(err => console.error('[PWA] Service Worker registration failed:', err));
             }
             
             handleRouting();
