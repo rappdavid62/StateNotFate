@@ -22,9 +22,15 @@ jobs:
         with:
           python-version: "3.12"
       - run: npm ci
-      - run: python scripts/expand_pubmed.py
-      - run: python scripts/inject_studies.py
-      - run: npm run check:links -- --external-only --soft --report reports/link-check-report.md
+      - name: Refresh PubMed evidence (advisory — external URLs may be slow)
+        continue-on-error: true
+        run: python scripts/expand_pubmed.py
+      - name: Inject studies into evidence page (advisory)
+        continue-on-error: true
+        run: python scripts/inject_studies.py
+      - name: Check external links (advisory — soft report only)
+        continue-on-error: true
+        run: npm run check:links -- --external-only --soft --report reports/link-check-report.md
       - uses: peter-evans/create-pull-request@v7
         with:
           commit-message: "chore: refresh evidence and link report"

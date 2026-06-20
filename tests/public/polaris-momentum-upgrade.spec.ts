@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('Polaris 2.0 system activation and momentum tab work', async ({ page }) => {
+test('Polaris 2.0 system activation and momentum tab work @advisory', async ({ page }) => {
   await page.goto('/');
   
   // Set localStorage state to bypass onboarding

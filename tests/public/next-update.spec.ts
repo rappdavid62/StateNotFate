@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('Onboarding assessment dropdowns save correctly', async ({ page }) => {
+test('Onboarding assessment dropdowns save correctly @advisory', async ({ page }) => {
   await page.goto('/#program');
 
   // Begin assessment
@@ -30,7 +30,7 @@ test('Onboarding assessment dropdowns save correctly', async ({ page }) => {
   expect(savedState.externalAnchor).toBe('plant');
 });
 
-test('Possibility Collapse forces Floor Wins Mode and overrides energy', async ({ page }) => {
+test('Possibility Collapse forces Floor Wins Mode and overrides energy @advisory', async ({ page }) => {
   await page.goto('/');
 
   // Bypass onboarding with mock state: futureNarrowing === 'none' (Possibility Collapse)
@@ -75,7 +75,7 @@ test('Possibility Collapse forces Floor Wins Mode and overrides energy', async (
   await expect(checklist).toContainText('Social Presence:');
 });
 
-test('Startup Drag Ladder interactive helper awards Proof Points', async ({ page }) => {
+test('Startup Drag Ladder interactive helper awards Proof Points @advisory', async ({ page }) => {
   await page.goto('/');
 
   // Bypass onboarding
@@ -132,7 +132,7 @@ test('Startup Drag Ladder interactive helper awards Proof Points', async ({ page
   expect(savedState.polaris.proof.total).toBe(11);
 });
 
-test('Rumination Stop-Loss workflow completes successfully', async ({ page }) => {
+test('Rumination Stop-Loss workflow completes successfully @advisory', async ({ page }) => {
   await page.goto('/');
 
   // Bypass onboarding

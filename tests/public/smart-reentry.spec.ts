@@ -10,7 +10,7 @@ function getRelativeDateStr(daysAgo: number): string {
   return `${yyyy}-${mm}-${dd}`;
 }
 
-test('Smart Re-Entry Card - Missed Yesterday Message', async ({ page }) => {
+test('Smart Re-Entry Card - Missed Yesterday Message @advisory', async ({ page }) => {
   await page.goto('/');
 
   // Set state for missed yesterday
@@ -61,7 +61,7 @@ test('Smart Re-Entry Card - Missed Yesterday Message', async ({ page }) => {
   await expect(firstTaskItem).toHaveClass(/checked/);
 });
 
-test('Smart Re-Entry Card - Away Multiple Days Message', async ({ page }) => {
+test('Smart Re-Entry Card - Away Multiple Days Message @advisory', async ({ page }) => {
   await page.goto('/');
 
   // Set state for 3 days ago
@@ -101,7 +101,7 @@ test('Smart Re-Entry Card - Away Multiple Days Message', async ({ page }) => {
   await expect(card).toContainText('You were away for a bit. No penalty. The system resumes at the smallest useful step.');
 });
 
-test('Smart Re-Entry Card - Low/Collapse Energy Override', async ({ page }) => {
+test('Smart Re-Entry Card - Low/Collapse Energy Override @advisory', async ({ page }) => {
   await page.goto('/');
 
   // Set state with todayEnergy = collapse

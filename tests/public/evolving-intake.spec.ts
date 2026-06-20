@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('Evolving intake questionnaire flows through reflection questions and clears daily limits correctly', async ({ page }) => {
+test('Evolving intake questionnaire flows through reflection questions and clears daily limits correctly @advisory', async ({ page }) => {
   await page.goto('/');
   
   // Set localStorage state with intake enabled at q21

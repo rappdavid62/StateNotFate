@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('public presence SEO/performance skeleton exists', async ({ page }) => {
+test('public presence SEO/performance skeleton exists @advisory', async ({ page }) => {
   const errors: string[] = [];
   page.on('console', (message) => {
     if (message.type() === 'error') {

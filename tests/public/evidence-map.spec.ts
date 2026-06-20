@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('evidence/source path exists and separates claim strength', async ({ page }) => {
+test('evidence/source path exists and separates claim strength @advisory', async ({ page }) => {
   const response = await page.goto('/evidence');
   expect(response?.ok()).toBeTruthy();
 

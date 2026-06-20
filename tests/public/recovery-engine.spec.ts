@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('Recovery Engine Controllers work correctly', async ({ page }) => {
+test('Recovery Engine Controllers work correctly @advisory', async ({ page }) => {
   await page.goto('/');
   
   // Set localStorage state to bypass onboarding and activate Polaris

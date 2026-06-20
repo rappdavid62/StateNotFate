@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('scope, safety, and professional-care boundaries are visible', async ({ page }) => {
+test('scope, safety, and professional-care boundaries are visible @critical', async ({ page }) => {
   await page.goto('/');
 
   await expect(page.getByText(/adjunctive support/i)).toBeVisible();

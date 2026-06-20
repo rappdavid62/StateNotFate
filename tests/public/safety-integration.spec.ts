@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('Polaris safety check-in card appears and triggers crisis modal on unsafe response', async ({ page }) => {
+test('Polaris safety check-in card appears and triggers crisis modal on unsafe response @critical', async ({ page }) => {
   await page.goto('/');
   
   // Set localStorage state to bypass onboarding

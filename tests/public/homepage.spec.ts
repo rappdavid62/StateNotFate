@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('public homepage exists and communicates the project clearly', async ({ page }) => {
+test('public homepage exists and communicates the project clearly @critical', async ({ page }) => {
   const response = await page.goto('/');
   expect(response?.ok()).toBeTruthy();
 
