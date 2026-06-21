@@ -1,0 +1,41 @@
+name: Sync Beta Branch
+
+# Every time code lands on SNF (production), this workflow automatically
+# fast-forwards the beta branch to match. This keeps statenotfatebeta.netlify.app
+# always in sync as a hot standby — one Netlify deploy behind production.
+
+on:
+  push:
+    branches: [SNF]
+  workflow_dispatch: # allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  sync-beta:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Fast-forward beta to match SNF
+        run: |
+          git checkout beta
+          git merge --ff-only origin/SNF
+          git push origin beta
+        # Fast-forward only — if beta has diverged (manual changes), this fails
+        # loudly instead of silently overwriting things.
+
+      - name: Report sync result
+        run: |
+          echo "✅ beta is now synced to $(git rev-parse --short HEAD)"
+          echo "statenotfatebeta.netlify.app will deploy this commit shortly."

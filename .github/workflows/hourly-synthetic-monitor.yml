@@ -37,3 +37,16 @@ jobs:
           npx playwright test tests/public
           --config=playwright.production.config.ts
           --grep "@advisory"
+
+      # ── Beta site pulse ───────────────────────────────────────────────────────
+      # Quick check that the backup site is up. Advisory — never blocks the job.
+      - name: "🔵 Beta site pulse — statenotfatebeta.netlify.app"
+        continue-on-error: true
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://statenotfatebeta.netlify.app)
+          if [ "$STATUS" = "200" ]; then
+            echo "✅ Beta site is up (HTTP $STATUS)"
+          else
+            echo "🟡 Beta site returned HTTP $STATUS — advisory warning only"
+            exit 1
+          fi
