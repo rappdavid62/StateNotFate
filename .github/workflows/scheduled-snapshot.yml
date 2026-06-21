@@ -1,0 +1,69 @@
+name: Scheduled Snapshot Backup
+
+# Creates a dated snapshot of SNF every 3 days.
+# This is the "backup backup" — a time-delayed safety net that beta doesn't provide.
+# If a bad push corrupts SNF and beta simultaneously, you can always roll back to
+# the most recent snapshot from up to 3 days ago.
+#
+# Snapshots are stored as:
+#   - A git tag:    snapshot/YYYY-MM-DD
+#   - A git branch: backup/stable  (always points to the latest snapshot)
+#
+# To roll back to any snapshot:
+#   git checkout snapshot/YYYY-MM-DD
+#
+# To see all snapshots:
+#   git tag -l "snapshot/*" --sort=-version:refname
+
+on:
+  schedule:
+    - cron: "0 3 */3 * *"  # 3am UTC every 3 days
+  workflow_dispatch:        # also triggerable manually at any time
+
+permissions:
+  contents: write
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create dated snapshot tag
+        run: |
+          DATE=$(date -u +%Y-%m-%d)
+          COMMIT=$(git rev-parse --short HEAD)
+          TAG="snapshot/${DATE}"
+
+          # Tag this commit (force-update if already exists today)
+          git tag -f "$TAG" -m "Scheduled snapshot: ${DATE} @ ${COMMIT}"
+          git push origin "$TAG" --force
+
+          echo "✅ Tagged snapshot: $TAG → $COMMIT"
+
+      - name: Update backup/stable branch
+        run: |
+          # backup/stable always points to the latest snapshot
+          git checkout -B backup/stable
+          git push origin backup/stable --force
+
+          echo "✅ backup/stable updated to $(git rev-parse --short HEAD)"
+
+      - name: List recent snapshots
+        run: |
+          echo ""
+          echo "📦 Recent snapshots:"
+          git ls-remote --tags origin "refs/tags/snapshot/*" \
+            | awk '{print $2}' \
+            | sed 's|refs/tags/||' \
+            | sort -r \
+            | head -10
