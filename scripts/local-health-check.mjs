@@ -129,7 +129,7 @@ check('monitor has job-level timeout-minutes', () => {
 console.log('\n📋  package.json scripts');
 
 const pkg = readJson('package.json');
-const requiredScripts = ['serve', 'test', 'test:public', 'test:unit', 'test:integration', 'health'];
+const requiredScripts = ['serve', 'test', 'test:public', 'test:beta', 'test:production', 'test:unit', 'test:integration', 'health'];
 for (const script of requiredScripts) {
   check(`npm run ${script} is defined`, () => {
     if (!pkg.scripts?.[script]) throw new Error(`Script "${script}" missing from package.json`);
@@ -149,6 +149,12 @@ check('playwright.production.config.ts references live site', () => {
   const content = readText('playwright.production.config.ts');
   if (!content.includes('statenotfate.netlify.app')) throw new Error('Production config not pointing to live site');
   if (!content.includes('globalTimeout')) return '⚠️ No globalTimeout — production runs can hang';
+});
+
+check('playwright.beta.config.ts references beta work area', () => {
+  const content = readText('playwright.beta.config.ts');
+  if (!content.includes('statenotfatebeta.netlify.app')) throw new Error('Beta config not pointing to beta site');
+  if (!content.includes('globalTimeout')) return '⚠️ No globalTimeout — beta runs can hang';
 });
 
 // ─── Section 7: netlify.toml has SPA fallback ────────────────────────────────

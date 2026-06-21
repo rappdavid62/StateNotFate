@@ -7,6 +7,8 @@
     "serve": "node scripts/static-server.mjs",
     "test": "playwright test",
     "test:public": "playwright test tests/public",
+    "test:beta": "playwright test tests/public --config=playwright.beta.config.ts",
+    "test:production": "playwright test tests/public --config=playwright.production.config.ts",
     "test:unit": "node --test tests/unit/*.test.mjs",
     "test:integration": "node --test tests/integration/*.test.mjs",
     "check:links": "node scripts/check-links.mjs",
