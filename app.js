@@ -706,6 +706,7 @@ const COMPANION_QUESTION_TREE = {
                 renderMediaConsole();
             } else if (tabId === "progression") {
                 renderProgressionDashboard();
+                if (typeof renderPolarisGrowthLayer === 'function') renderPolarisGrowthLayer();
             } else if (tabId === "cognitivelab") {
                 renderCognitiveLab();
             } else if (tabId === "documentcenter") {
@@ -5069,6 +5070,432 @@ Your response should be under 100 words. Stick to objective mechanics, pattern d
         window.closeRuminationStopLossModal = closeRuminationStopLossModal;
         window.advanceStopLossStep = advanceStopLossStep;
         window.completeStopLoss = completeStopLoss;
+        window.showTab = showTab;
+        window.showScreen = showScreen;
+        window.answerCompanionQuestion = answerCompanionQuestion;
+        window.removeGratitudeEntry = removeGratitudeEntry;
+        window.removeThoughtCorrection = removeThoughtCorrection;
+        window.deleteDocPhqEntry = deleteDocPhqEntry;
+        window.removeCustomTask = removeCustomTask;
+        window.addTomorrowRecallAsAnchor = addTomorrowRecallAsAnchor;
+        window.dismissTomorrowRecall = dismissTomorrowRecall;
+        window.togglePolaris = togglePolaris;
+        window.exportAnonymizedAudit = exportAnonymizedAudit;
+        window.resetChecklistToDefaults = resetChecklistToDefaults;
+        window.filterDocumentExplorer = filterDocumentExplorer;
+
+        // ==========================================================
+        // POLARIS EXPERIENCE GROWTH SYSTEM v1
+        // Recovery labor made visible. No gamification, no hype,
+        // no levels, no badges, no streaks, no motivational language.
+        // Derives all signals from existing proof/history — zero duplication.
+        // ==========================================================
+
+        // ---- Growth stages (adult names, thresholds in proof points) ----
+        const POLARIS_GROWTH_STAGES = [
+            {
+                id: 'grounding',
+                name: 'Grounding',
+                threshold: 0,
+                description: 'Actions happening. Proof accumulating.'
+            },
+            {
+                id: 'stabilizing',
+                name: 'Stabilizing',
+                threshold: 10,
+                description: 'Repeated action. Pattern beginning.'
+            },
+            {
+                id: 'consolidating',
+                name: 'Consolidating',
+                threshold: 30,
+                description: 'Consistency across varied states.'
+            },
+            {
+                id: 'extending',
+                name: 'Extending',
+                threshold: 75,
+                description: 'Recovery labor persisting after collapse.'
+            },
+            {
+                id: 'integrating',
+                name: 'Integrating',
+                threshold: 150,
+                description: 'Sustained continuity. Growth through repeated action.'
+            }
+        ];
+
+        // ---- 5 constellation dimensions mapped to data sources ----
+        // regulation → floor_wins + rumination_stop_loss
+        // action     → anchor completions
+        // restart    → post-missed days with action
+        // continuity → days with any proof across the last 28d
+        // expansion  → startup_drag + possibility_collapse
+        const PGL_DIMS = [
+            { key: 'regulation', label: 'Regulation',  color: 'hsl(40,100%,55%)' },
+            { key: 'action',     label: 'Action',      color: 'hsl(180,100%,50%)' },
+            { key: 'restart',    label: 'Restart',     color: 'hsl(300,100%,65%)' },
+            { key: 'continuity', label: 'Continuity',  color: 'hsl(200,80%,55%)' },
+            { key: 'expansion',  label: 'Expansion',   color: 'hsl(160,70%,50%)' }
+        ];
+
+        // ---- Ensure polaris.growth substate ----
+        function ensurePolarisGrowthState() {
+            ensurePolarisState();
+            if (!state.polaris.growth) {
+                state.polaris.growth = {
+                    schemaVersion: 1,
+                    // signals are always derived fresh — not stored
+                };
+            }
+            if (!state.polaris.growth.schemaVersion) {
+                state.polaris.growth.schemaVersion = 1;
+            }
+        }
+
+        // ---- Derive signals from existing proof + history ----
+        // Returns an object with normalized [0..1] scores for each dimension
+        // and raw counts. No PHQ-9, no safety, no crisis text touched.
+        function derivePGLSignals() {
+            ensurePolarisGrowthState();
+            const ledger = (state.polaris && state.polaris.proof && state.polaris.proof.ledger) || [];
+            const history = state.history || [];
+            const today = new Date();
+
+            // --- action: anchor proof entries ---
+            const anchorCount = ledger.filter(function(e) {
+                return e && e.source === 'anchor';
+            }).length;
+
+            // --- regulation: floor wins + rumination stop loss ---
+            const regulationCount = ledger.filter(function(e) {
+                return e && (e.source === 'floor_win' || e.source === 'rumination_stop_loss');
+            }).length;
+
+            // --- restart: after a missed-day log, how many times was there action the next day? ---
+            var restartCount = 0;
+            for (var i = 0; i < history.length - 1; i++) {
+                if (history[i] && history[i].missed) {
+                    var nextLog = history[i + 1];
+                    if (nextLog && (nextLog.floorCompleted || nextLog.mvdCompleted ||
+                        (nextLog.completed && nextLog.completed.length > 0))) {
+                        restartCount++;
+                    }
+                }
+            }
+
+            // --- continuity: days with any proof entry in last 28 days ---
+            var activeDays28 = new Set();
+            ledger.forEach(function(e) {
+                if (!e || !e.createdAt) return;
+                var d = new Date(e.createdAt);
+                var diffMs = today - d;
+                var diffDays = diffMs / 86400000;
+                if (diffDays >= 0 && diffDays < 28) {
+                    activeDays28.add(e.createdAt.slice(0, 10));
+                }
+            });
+            history.forEach(function(log) {
+                if (!log || !log.date) return;
+                var d = new Date(log.date + 'T00:00:00');
+                var diffMs = today - d;
+                var diffDays = diffMs / 86400000;
+                if (diffDays >= 0 && diffDays < 28 &&
+                    (log.floorCompleted || log.mvdCompleted ||
+                     (log.completed && log.completed.length > 0))) {
+                    activeDays28.add(log.date);
+                }
+            });
+            var continuityCount = activeDays28.size;
+
+            // --- expansion: startup_drag + possibility_collapse ---
+            var expansionCount = ledger.filter(function(e) {
+                return e && (e.source === 'startup_drag' || e.source === 'possibility_collapse');
+            }).length;
+
+            // Normalize to 0..1 with soft caps
+            function norm(val, cap) {
+                return Math.min(1, val / cap);
+            }
+
+            return {
+                raw: {
+                    regulation: regulationCount,
+                    action:     anchorCount,
+                    restart:    restartCount,
+                    continuity: continuityCount,
+                    expansion:  expansionCount
+                },
+                scores: {
+                    regulation: norm(regulationCount, 20),
+                    action:     norm(anchorCount, 50),
+                    restart:    norm(restartCount, 10),
+                    continuity: norm(continuityCount, 20),
+                    expansion:  norm(expansionCount, 15)
+                }
+            };
+        }
+
+        // ---- Determine current growth stage from total proof ----
+        function getPGLCurrentStage() {
+            ensurePolarisGrowthState();
+            var total = (state.polaris && state.polaris.proof && state.polaris.proof.total) || 0;
+            var stage = POLARIS_GROWTH_STAGES[0];
+            for (var i = POLARIS_GROWTH_STAGES.length - 1; i >= 0; i--) {
+                if (total >= POLARIS_GROWTH_STAGES[i].threshold) {
+                    stage = POLARIS_GROWTH_STAGES[i];
+                    break;
+                }
+            }
+            // Progress within this stage toward next
+            var stageIdx = POLARIS_GROWTH_STAGES.indexOf(stage);
+            var nextStage = POLARIS_GROWTH_STAGES[stageIdx + 1];
+            var progress = 1; // at final stage
+            if (nextStage) {
+                var rangeStart = stage.threshold;
+                var rangeEnd = nextStage.threshold;
+                progress = Math.min(1, (total - rangeStart) / (rangeEnd - rangeStart));
+            }
+            return { stage: stage, stageIdx: stageIdx, progress: progress, total: total };
+        }
+
+        // ---- Build pentagon SVG constellation ----
+        // 5 vertices around a circle, scaled by dimension score
+        function buildConstellationSVG(scores) {
+            var W = 140, H = 140, cx = 70, cy = 70, maxR = 55;
+            var count = PGL_DIMS.length;
+            // Vertex positions (top vertex at -90deg, clockwise)
+            function vertex(i, r) {
+                var angle = (Math.PI * 2 * i / count) - (Math.PI / 2);
+                return [
+                    cx + r * Math.cos(angle),
+                    cy + r * Math.sin(angle)
+                ];
+            }
+
+            var svgParts = [
+                '<svg class="pgl-constellation-svg" width="' + W + '" height="' + H + '" role="img" aria-hidden="true" viewBox="0 0 ' + W + ' ' + H + '">'
+            ];
+
+            // Guide ring (max extent)
+            var guidePts = PGL_DIMS.map(function(_, i) { return vertex(i, maxR); });
+            svgParts.push(
+                '<polygon points="' + guidePts.map(function(p) { return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ') +
+                '" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>'
+            );
+
+            // Mid ring
+            var midPts = PGL_DIMS.map(function(_, i) { return vertex(i, maxR * 0.5); });
+            svgParts.push(
+                '<polygon points="' + midPts.map(function(p) { return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ') +
+                '" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>'
+            );
+
+            // Spokes
+            PGL_DIMS.forEach(function(_, i) {
+                var outer = vertex(i, maxR);
+                svgParts.push(
+                    '<line x1="' + cx + '" y1="' + cy + '" x2="' + outer[0].toFixed(1) + '" y2="' + outer[1].toFixed(1) +
+                    '" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>'
+                );
+            });
+
+            // Data polygon
+            var dataPts = PGL_DIMS.map(function(dim, i) {
+                return vertex(i, maxR * (scores[dim.key] || 0));
+            });
+            svgParts.push(
+                '<polygon points="' + dataPts.map(function(p) { return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ') +
+                '" fill="rgba(0,255,200,0.07)" stroke="rgba(0,255,200,0.35)" stroke-width="1.5" stroke-linejoin="round"/>'
+            );
+
+            // Vertex dots (colored per dimension)
+            PGL_DIMS.forEach(function(dim, i) {
+                var score = scores[dim.key] || 0;
+                var pos = vertex(i, maxR * score);
+                var r = score > 0 ? 4 : 2;
+                var opacity = score > 0 ? 1 : 0.25;
+                svgParts.push(
+                    '<circle cx="' + pos[0].toFixed(1) + '" cy="' + pos[1].toFixed(1) +
+                    '" r="' + r + '" fill="' + dim.color + '" opacity="' + opacity + '"/>'
+                );
+            });
+
+            // Center dot
+            svgParts.push('<circle cx="' + cx + '" cy="' + cy + '" r="2" fill="rgba(255,255,255,0.3)"/>');
+
+            svgParts.push('</svg>');
+            return svgParts.join('');
+        }
+
+        // ---- Build proof timeline (last N entries, max 60) ----
+        function buildProofTimeline() {
+            var ledger = (state.polaris && state.polaris.proof && state.polaris.proof.ledger) || [];
+            if (ledger.length === 0) {
+                return '<span class="pgl-pt-empty">No proof entries yet. Complete an anchor or log a Floor Win.</span>';
+            }
+            var recent = ledger.slice(-60);
+            return recent.map(function(e) {
+                if (!e) return '';
+                var src = e.source || 'other';
+                var label = e.label || src;
+                var date = e.createdAt ? e.createdAt.slice(0, 10) : '';
+                return '<div class="pgl-pt-dot" data-src="' + src + '" ' +
+                       'tabindex="0" role="img" ' +
+                       'aria-label="' + label.replace(/"/g, '') + ' (' + date + ')' + '" ' +
+                       'title="' + label.replace(/"/g, '') + ' — ' + date + '"></div>';
+            }).join('');
+        }
+
+        // ---- Build state-pattern strip (last 28 history days) ----
+        // Each cell height represents actions completed; color = energy state
+        // Completely avoids PHQ-9, crisis, or safety fields
+        function buildStatePatternStrip() {
+            var history = state.history || [];
+            // Take last 28 with any record; pad earlier with empty
+            var today = new Date();
+            var cells = [];
+            for (var i = 27; i >= 0; i--) {
+                var d = new Date(today);
+                d.setDate(today.getDate() - i);
+                var yyyy = d.getFullYear();
+                var mm = String(d.getMonth() + 1).padStart(2, '0');
+                var dd = String(d.getDate()).padStart(2, '0');
+                var dateStr = yyyy + '-' + mm + '-' + dd;
+                var log = history.find(function(h) { return h && h.date === dateStr; });
+                cells.push({ dateStr: dateStr, log: log || null });
+            }
+
+            var energyColor = {
+                high: 'hsl(180,100%,45%)',
+                medium: 'hsl(300,80%,55%)',
+                low: 'hsl(40,100%,55%)',
+                collapse: 'hsl(0,80%,60%)'
+            };
+            var DEFAULT_HEIGHT = 6;
+            var MAX_HEIGHT = 28;
+
+            return cells.map(function(c) {
+                if (!c.log) {
+                    return '<div class="pgl-ps-cell" style="height:' + DEFAULT_HEIGHT + 'px;background:rgba(255,255,255,0.04);" ' +
+                           'title="' + c.dateStr + ': no entry" aria-label="' + c.dateStr + ': no entry" tabindex="0" role="img"></div>';
+                }
+                var log = c.log;
+                var completedCount = (log.completed ? log.completed.length : 0) +
+                                     (log.floorCompleted ? 1 : 0) +
+                                     (log.mvdCompleted ? 1 : 0);
+                var heightPx = Math.max(DEFAULT_HEIGHT, Math.min(MAX_HEIGHT, DEFAULT_HEIGHT + completedCount * 4));
+                var energy = log.energy || 'medium';
+                var color = energyColor[energy] || energyColor.medium;
+                var opacity = log.missed ? 0.2 : 0.65;
+                var label = c.dateStr + ': ' + (log.energy ? log.energy : '') +
+                            (completedCount > 0 ? ', ' + completedCount + ' actions' : '') +
+                            (log.missed ? ', missed' : '');
+                return '<div class="pgl-ps-cell" style="height:' + heightPx + 'px;background:' + color + ';opacity:' + opacity + ';" ' +
+                       'title="' + label + '" aria-label="' + label + '" tabindex="0" role="img"></div>';
+            }).join('');
+        }
+
+        // ---- Build legend HTML ----
+        function buildConstellationLegend(rawSignals) {
+            return PGL_DIMS.map(function(dim) {
+                var rawVal = rawSignals[dim.key] || 0;
+                return '<div class="pgl-legend-row">' +
+                       '<div class="pgl-legend-dot" style="background:' + dim.color + ';"></div>' +
+                       '<span>' + dim.label + '</span>' +
+                       '<span style="margin-left:auto;color:var(--text-muted);font-size:0.72rem;">' + rawVal + '</span>' +
+                       '</div>';
+            }).join('');
+        }
+
+        // ---- Build accessible text summary ----
+        function buildPGLTextSummary(stageInfo, signals) {
+            var total = stageInfo.total;
+            var stage = stageInfo.stage;
+            var r = signals.raw;
+            var parts = [];
+
+            parts.push(total + ' proof actions accumulated. Stage: ' + stage.name + '.');
+            if (r.action > 0) parts.push(r.action + ' anchor' + (r.action === 1 ? '' : 's') + ' completed.');
+            if (r.regulation > 0) parts.push(r.regulation + ' regulation action' + (r.regulation === 1 ? '' : 's') + ' (floor wins + stop-loss).');
+            if (r.restart > 0) parts.push(r.restart + ' restart' + (r.restart === 1 ? '' : 's') + ' after a missed day.');
+            if (r.continuity > 0) parts.push(r.continuity + ' active day' + (r.continuity === 1 ? '' : 's') + ' in the last 28.');
+            if (r.expansion > 0) parts.push(r.expansion + ' expansion action' + (r.expansion === 1 ? '' : 's') + ' (startup drag + possibility collapse).');
+
+            return parts.join(' ');
+        }
+
+        // ---- Main render function ----
+        function renderPolarisGrowthLayer() {
+            var mount = document.getElementById('polaris-growth-layer');
+            if (!mount) return;
+
+            // Safety gate: do not render if Polaris is not enabled
+            ensurePolarisGrowthState();
+            if (!state.polaris || !state.polaris.enabled) {
+                mount.innerHTML = '';
+                return;
+            }
+
+            var stageInfo = getPGLCurrentStage();
+            var signals = derivePGLSignals();
+            var progressPct = Math.round(stageInfo.progress * 100);
+            var totalPts = stageInfo.total;
+
+            var nextStage = POLARIS_GROWTH_STAGES[stageInfo.stageIdx + 1];
+            var progressBarTitle = nextStage
+                ? (progressPct + '% toward ' + nextStage.name + ' (' + (nextStage.threshold - totalPts) + ' pts remaining)')
+                : (totalPts + ' pts — ' + stageInfo.stage.name);
+
+            var html = [
+                '<div class="glass-card" style="background:rgba(0,0,0,0.2);border-color:rgba(0,255,200,0.1);padding:1rem;margin-bottom:1rem;">',
+
+                // ---- Stage header ----
+                '<div class="pgl-stage-header">',
+                '<span class="pgl-stage-name">' + stageInfo.stage.name + '</span>',
+                '<span class="pgl-stage-desc">' + stageInfo.stage.description + '</span>',
+                '<span style="font-size:0.72rem;color:var(--text-muted);white-space:nowrap;">' + totalPts + ' pts</span>',
+                '</div>',
+
+                // Progress bar toward next stage
+                '<div class="pgl-stage-progress-bar" title="' + progressBarTitle + '" aria-label="' + progressBarTitle + '">',
+                '<div class="pgl-stage-progress-fill" style="width:' + progressPct + '%"></div>',
+                '</div>',
+
+                // ---- Constellation ----
+                '<div class="pgl-constellation-wrap">',
+                buildConstellationSVG(signals.scores),
+                '<div class="pgl-constellation-legend">',
+                '<div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:0.4rem;">Recovery dimensions</div>',
+                buildConstellationLegend(signals.raw),
+                '</div>',
+                '</div>',
+
+                // ---- Proof Timeline ----
+                '<div class="pgl-section-label">Proof timeline (recent ' + Math.min(60, ((state.polaris.proof && state.polaris.proof.ledger && state.polaris.proof.ledger.length) || 0)) + ' actions)</div>',
+                '<div class="pgl-proof-timeline" role="list" aria-label="Proof timeline">',
+                buildProofTimeline(),
+                '</div>',
+
+                // ---- State-Pattern Strip ----
+                '<div class="pgl-section-label">State pattern — last 28 days</div>',
+                '<div class="pgl-pattern-strip" role="list" aria-label="State pattern strip, last 28 days">',
+                buildStatePatternStrip(),
+                '</div>',
+
+                // ---- Text summary (screen-reader accessible, also visible) ----
+                '<div class="pgl-text-summary" aria-live="polite">',
+                buildPGLTextSummary(stageInfo, signals),
+                '</div>',
+
+                '</div>'
+            ].join('');
+
+            mount.innerHTML = html;
+        }
+
+        // Export so other callers can trigger growth layer re-render
+        window.renderPolarisGrowthLayer = renderPolarisGrowthLayer;
 
         window.PolarisUI = {
             render: renderPolarisTab,

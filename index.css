@@ -2265,3 +2265,171 @@ body.future-narrowing-active #audit-narrative-statement {
     display: none !important;
 }
 
+/* ==========================================================
+ * POLARIS GROWTH LAYER v1
+ * Recovery labor made visible. No gamification.
+ * ========================================================== */
+
+/* Wrapper */
+#polaris-growth-layer {
+    margin-bottom: 1.5rem;
+}
+
+/* ---- Stage header ---- */
+.pgl-stage-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 0.25rem;
+    flex-wrap: wrap;
+}
+.pgl-stage-name {
+    font-family: var(--font-futuristic);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-teal);
+}
+.pgl-stage-desc {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    flex: 1;
+}
+.pgl-stage-progress-bar {
+    height: 3px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 2px;
+    margin-bottom: 1.25rem;
+    overflow: hidden;
+}
+.pgl-stage-progress-fill {
+    height: 100%;
+    background: var(--accent-teal);
+    border-radius: 2px;
+    transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ---- Constellation SVG ---- */
+.pgl-constellation-wrap {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+}
+.pgl-constellation-svg {
+    flex-shrink: 0;
+}
+.pgl-constellation-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    min-width: 160px;
+    flex: 1;
+}
+.pgl-legend-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+}
+.pgl-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* ---- Section labels ---- */
+.pgl-section-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+/* ---- Proof Timeline ---- */
+.pgl-proof-timeline {
+    display: flex;
+    gap: 3px;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+    min-height: 16px;
+}
+.pgl-pt-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+    cursor: default;
+    transition: transform 0.15s ease;
+}
+.pgl-pt-dot:hover,
+.pgl-pt-dot:focus {
+    transform: scale(1.4);
+    outline: none;
+}
+.pgl-pt-dot[data-src="anchor"]           { background: var(--accent-teal); opacity: 0.8; }
+.pgl-pt-dot[data-src="floor_win"]        { background: var(--accent-orange); opacity: 0.85; }
+.pgl-pt-dot[data-src="startup_drag"]     { background: var(--accent-lavender); opacity: 0.8; }
+.pgl-pt-dot[data-src="rumination_stop_loss"] { background: hsl(200,80%,55%); opacity: 0.8; }
+.pgl-pt-dot[data-src="possibility_collapse"] { background: hsl(160,70%,50%); opacity: 0.8; }
+.pgl-pt-dot[data-src="other"]            { background: rgba(255,255,255,0.18); }
+.pgl-pt-empty {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-style: italic;
+    padding: 0.2rem 0;
+}
+
+/* ---- State-Pattern Strip ---- */
+.pgl-pattern-strip {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 1rem;
+    align-items: flex-end;
+}
+.pgl-ps-cell {
+    width: 14px;
+    border-radius: 2px 2px 0 0;
+    cursor: default;
+    transition: transform 0.15s ease;
+}
+.pgl-ps-cell:hover,
+.pgl-ps-cell:focus {
+    transform: scaleY(1.15) translateY(-1px);
+    outline: none;
+}
+
+/* ---- Text summary (screen-reader + sighted) ---- */
+.pgl-text-summary {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 0.75rem;
+    margin-top: 0.25rem;
+}
+
+/* ---- Reduced-motion: kill all transitions & animations ---- */
+@media (prefers-reduced-motion: reduce) {
+    .pgl-stage-progress-fill,
+    .pgl-pt-dot,
+    .pgl-ps-cell {
+        transition: none !important;
+        animation: none !important;
+    }
+    .pgl-pt-dot:hover,
+    .pgl-pt-dot:focus { transform: none; }
+    .pgl-ps-cell:hover,
+    .pgl-ps-cell:focus { transform: none; }
+}
+
+/* ---- Future-narrowing: hide growth layer ---- */
+body.future-narrowing-active #polaris-growth-layer {
+    display: none !important;
+}

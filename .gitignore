@@ -19,3 +19,8 @@ openai-api-key.txt
 
 # Local Netlify folder
 .netlify
+
+# OneDrive/Google Drive sync conflict files
+*-DESKTOP-*
+*-Laptop-*
+
