@@ -2424,6 +2424,201 @@ body.future-narrowing-active #audit-narrative-statement {
         animation: none !important;
     }
     .pgl-pt-dot:hover,
+}
+
+#polaris-content[data-companion-theme="🦊"] #polaris-companion-avatar {
+    filter: drop-shadow(0 0 8px rgba(255, 0, 127, 0.8)) !important;
+    animation: kitsune-float 3s ease-in-out infinite;
+}
+
+@keyframes kitsune-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* ==========================================================
+ * RECOVERY ENGINE CONTROLLER STYLES
+ * ========================================================== */
+.recovery-tool-card {
+    transition: all 0.2s ease;
+}
+
+.recovery-tool-card:hover {
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+body.future-narrowing-active [data-tab="progression"],
+body.future-narrowing-active [data-tab="documentcenter"],
+body.future-narrowing-active [data-tab="explorer"],
+body.future-narrowing-active #adaptive-year-simulator,
+body.future-narrowing-active #auto-audit-exporter,
+body.future-narrowing-active #polaris-personal-bests,
+body.future-narrowing-active #polaris-activity-calendar,
+body.future-narrowing-active #audit-narrative-statement {
+    display: none !important;
+}
+
+/* ==========================================================
+ * POLARIS GROWTH LAYER v1
+ * Recovery labor made visible. No gamification.
+ * ========================================================== */
+
+/* Wrapper */
+#polaris-growth-layer {
+    margin-bottom: 1.5rem;
+}
+
+/* ---- Stage header ---- */
+.pgl-stage-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 0.25rem;
+    flex-wrap: wrap;
+}
+.pgl-stage-name {
+    font-family: var(--font-futuristic);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-teal);
+}
+.pgl-stage-desc {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    flex: 1;
+}
+.pgl-stage-progress-bar {
+    height: 3px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 2px;
+    margin-bottom: 1.25rem;
+    overflow: hidden;
+}
+.pgl-stage-progress-fill {
+    height: 100%;
+    background: var(--accent-teal);
+    border-radius: 2px;
+    transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ---- Constellation SVG ---- */
+.pgl-constellation-wrap {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+}
+.pgl-constellation-svg {
+    flex-shrink: 0;
+}
+.pgl-constellation-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    min-width: 160px;
+    flex: 1;
+}
+.pgl-legend-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+}
+.pgl-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* ---- Section labels ---- */
+.pgl-section-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+/* ---- Proof Timeline ---- */
+.pgl-proof-timeline {
+    display: flex;
+    gap: 3px;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+    min-height: 16px;
+}
+.pgl-pt-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+    cursor: default;
+    transition: transform 0.15s ease;
+}
+.pgl-pt-dot:hover,
+.pgl-pt-dot:focus {
+    transform: scale(1.4);
+    outline: none;
+}
+.pgl-pt-dot[data-src="anchor"]           { background: var(--accent-teal); opacity: 0.8; }
+.pgl-pt-dot[data-src="floor_win"]        { background: var(--accent-orange); opacity: 0.85; }
+.pgl-pt-dot[data-src="startup_drag"]     { background: var(--accent-lavender); opacity: 0.8; }
+.pgl-pt-dot[data-src="rumination_stop_loss"] { background: hsl(200,80%,55%); opacity: 0.8; }
+.pgl-pt-dot[data-src="possibility_collapse"] { background: hsl(160,70%,50%); opacity: 0.8; }
+.pgl-pt-dot[data-src="other"]            { background: rgba(255,255,255,0.18); }
+.pgl-pt-empty {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-style: italic;
+    padding: 0.2rem 0;
+}
+
+/* ---- State-Pattern Strip ---- */
+.pgl-pattern-strip {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 1rem;
+    align-items: flex-end;
+}
+.pgl-ps-cell {
+    width: 14px;
+    border-radius: 2px 2px 0 0;
+    cursor: default;
+    transition: transform 0.15s ease;
+}
+.pgl-ps-cell:hover,
+.pgl-ps-cell:focus {
+    transform: scaleY(1.15) translateY(-1px);
+    outline: none;
+}
+
+/* ---- Text summary (screen-reader + sighted) ---- */
+.pgl-text-summary {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 0.75rem;
+    margin-top: 0.25rem;
+}
+
+/* ---- Reduced-motion: kill all transitions & animations ---- */
+@media (prefers-reduced-motion: reduce) {
+    .pgl-stage-progress-fill,
+    .pgl-pt-dot,
+    .pgl-ps-cell {
+        transition: none !important;
+        animation: none !important;
+    }
+    .pgl-pt-dot:hover,
     .pgl-pt-dot:focus { transform: none; }
     .pgl-ps-cell:hover,
     .pgl-ps-cell:focus { transform: none; }
@@ -2432,4 +2627,119 @@ body.future-narrowing-active #audit-narrative-statement {
 /* ---- Future-narrowing: hide growth layer ---- */
 body.future-narrowing-active #polaris-growth-layer {
     display: none !important;
+}
+
+/* ---- Suicide Prevention Subtabs & Parables & Journal ---- */
+.sp-subnav .sp-subtab-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--card-border);
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.sp-subnav .sp-subtab-btn:hover {
+    border-color: var(--accent-teal-dim);
+    color: var(--text-primary);
+}
+
+.sp-subnav .sp-subtab-btn.active {
+    background: var(--accent-teal-dim);
+    border-color: var(--accent-teal);
+    color: #0b0713;
+    font-weight: 600;
+}
+
+.sp-subpanel.hidden {
+    display: none !important;
+}
+
+.parable-card {
+    transition: all var(--transition-normal);
+}
+
+.parable-card.completed {
+    border-left-color: var(--accent-teal) !important;
+    background: rgba(0, 255, 200, 0.02);
+}
+
+.parable-card.completed .parable-status-badge {
+    background: rgba(0, 255, 200, 0.2) !important;
+    color: var(--accent-teal) !important;
+}
+
+.parable-reflection-input:focus {
+    outline: none;
+    border-color: var(--card-border-focus);
+}
+
+/* Timeline Items */
+.sp-journal-item {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-left: 3px solid var(--accent-teal);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem;
+    transition: all var(--transition-fast);
+}
+
+.sp-journal-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.sp-journal-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.4rem;
+}
+
+.sp-journal-distress-badge {
+    font-size: 0.7rem;
+    font-weight: bold;
+    padding: 0.15rem 0.4rem;
+    border-radius: 2px;
+}
+
+.sp-journal-distress-low {
+    background: rgba(0, 255, 200, 0.15);
+    color: var(--accent-teal);
+}
+
+.sp-journal-distress-medium {
+    background: rgba(255, 80, 255, 0.15);
+    color: var(--accent-lavender);
+}
+
+.sp-journal-distress-high {
+    background: rgba(255, 170, 0, 0.15);
+    color: var(--accent-orange);
+}
+
+.sp-journal-distress-acute {
+    background: rgba(255, 50, 50, 0.15);
+    color: var(--accent-red);
+}
+
+/* Custom Distress Slider styling */
+#input-sp-journal-distress {
+    -webkit-appearance: none;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(to right, var(--accent-teal), var(--accent-lavender), var(--accent-orange), var(--accent-red));
+    outline: none;
+}
+
+#input-sp-journal-distress::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    cursor: pointer;
 }

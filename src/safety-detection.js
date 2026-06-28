@@ -357,6 +357,23 @@ export class SafetyDetectionModule {
     const acutePatterns = patterns.filter(p => p.severity === 'acute').length;
     riskScore += acutePatterns * 2;
 
+    // Journal distress integration
+    const journalEntries = (this.state && this.state.safetyJournal) ? this.state.safetyJournal : [];
+    if (journalEntries.length > 0) {
+      const latestEntry = journalEntries[journalEntries.length - 1];
+      const entryTime = new Date(latestEntry.timestamp);
+      const isRecent = (new Date() - entryTime) < 24 * 60 * 60 * 1000;
+      if (isRecent) {
+        if (latestEntry.distressLevel >= 8) {
+          riskScore += 4;
+          warnings.push(`ACUTE JOURNAL EVENT: Distress level ${latestEntry.distressLevel}/10 logged in last 24 hours.`);
+        } else if (latestEntry.distressLevel >= 5) {
+          riskScore += 2;
+          warnings.push(`MODERATE JOURNAL EVENT: Distress level ${latestEntry.distressLevel}/10 logged in last 24 hours.`);
+        }
+      }
+    }
+
     // Calculate level
     let level = 'low';
     if (riskScore >= 12) {

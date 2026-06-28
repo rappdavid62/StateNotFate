@@ -90,7 +90,9 @@
             rumination: "redirect",
             socialIsolation: "neutral",
             externalAnchor: "none",
-            ruminationLogs: []
+            ruminationLogs: [],
+            safetyJournal: [],
+            parablesCompleted: {}
         };
 
         let state = { ...DEFAULT_STATE };
@@ -454,7 +456,8 @@ const COMPANION_QUESTION_TREE = {
             progression: document.getElementById("tab-progression"),
             cognitivelab: document.getElementById("tab-cognitivelab"),
             documentcenter: document.getElementById("tab-documentcenter"),
-            explorer: document.getElementById("tab-explorer")
+            explorer: document.getElementById("tab-explorer"),
+            suicideprevention: document.getElementById("tab-suicideprevention")
         };
 
         let tempPhqAnswers = new Array(9).fill(null);
@@ -566,6 +569,8 @@ const COMPANION_QUESTION_TREE = {
                     if (state.socialIsolation === undefined) state.socialIsolation = "neutral";
                     if (state.externalAnchor === undefined) state.externalAnchor = "none";
                     if (state.ruminationLogs === undefined) state.ruminationLogs = [];
+                    if (state.safetyJournal === undefined) state.safetyJournal = [];
+                    if (state.parablesCompleted === undefined) state.parablesCompleted = {};
                     // Migrate polaris.anchors.today from array (v2/v3) to object (v4, ID-based)
                     if (state.polaris && state.polaris.anchors && Array.isArray(state.polaris.anchors.today)) {
                         state.polaris.anchors.today = {};
@@ -604,6 +609,14 @@ const COMPANION_QUESTION_TREE = {
                 }));
 
                 stateToSave.customTasks = state.customTasks.map(task => scramble(task, state.securityPin));
+                stateToSave.safetyJournal = state.safetyJournal.map(item => ({
+                    id: item.id,
+                    timestamp: item.timestamp,
+                    rawThoughts: scramble(item.rawThoughts, state.securityPin),
+                    counterScript: scramble(item.counterScript, state.securityPin),
+                    distressLevel: item.distressLevel,
+                    parableRef: item.parableRef
+                }));
             }
             /*
              * SECURITY NOTE — POLARIS ENCRYPTION
@@ -649,6 +662,14 @@ const COMPANION_QUESTION_TREE = {
             }));
 
             state.customTasks = state.customTasks.map(task => descramble(task, pin));
+            state.safetyJournal = state.safetyJournal.map(item => ({
+                id: item.id,
+                timestamp: item.timestamp,
+                rawThoughts: descramble(item.rawThoughts, pin),
+                counterScript: descramble(item.counterScript, pin),
+                distressLevel: item.distressLevel,
+                parableRef: item.parableRef
+            }));
         }
 
         function toggleAppView(showApp) {
@@ -715,6 +736,8 @@ const COMPANION_QUESTION_TREE = {
                 renderPolarisTab();
             } else if (tabId === "momentum") {
                 renderMomentumTab();
+            } else if (tabId === "suicideprevention") {
+                renderSuicidePreventionTab();
             }
         }
 
@@ -985,6 +1008,7 @@ const COMPANION_QUESTION_TREE = {
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
             });
+            setupSafetyPreventionListeners();
         }
 
         function initIntakeForm() {
@@ -2124,6 +2148,774 @@ const COMPANION_QUESTION_TREE = {
             if (breatheInterval) {
                 clearInterval(breatheInterval);
                 breatheInterval = null;
+            }
+        }
+
+        // ==========================================
+        // SUICIDE PREVENTION MODULE INTEGRATION
+        // ==========================================
+        let currentSensoryStep = 1;
+        const sensorySteps = [
+            { title: "Step 1: Sight", text: "Name 5 things you can SEE around you right now (focus on colors, shapes, light)." },
+            { title: "Step 2: Touch", text: "Name 4 things you can TOUCH/FEEL (e.g. your clothes, the floor, the table, your skin)." },
+            { title: "Step 3: Sound", text: "Name 3 things you can HEAR (e.g. traffic, computer hum, wind, birds)." },
+            { title: "Step 4: Smell", text: "Name 2 things you can SMELL (e.g. coffee, paper, air, soap)." },
+            { title: "Step 5: Taste / Self", text: "Name 1 thing you can TASTE or one small positive capability of your body/mind." }
+        ];
+
+        let inlineBreathingInterval = null;
+        let inlineBreathingPhase = 0;
+
+        function populateRegionalResources(country) {
+            const listContainer = document.getElementById("sp-regional-resources-list");
+            if (!listContainer) return;
+            listContainer.innerHTML = "";
+            
+            let resources = [];
+            if (country === "us") {
+                resources = [
+                    { name: "Suicide & Crisis Lifeline", details: "Call/Text 988" },
+                    { name: "Crisis Text Line", details: "Text HOME to 741741" },
+                    { name: "The Trevor Project (LGBTQ)", details: "Call 866-488-7386 or Text START to 678-678" },
+                    { name: "Veterans Crisis Line", details: "Call 988, Press 1 or Text 838255" }
+                ];
+            } else if (country === "ca") {
+                resources = [
+                    { name: "Suicide Crisis Helpline", details: "Call/Text 988" },
+                    { name: "Kids Help Phone (Youth)", details: "Call 1-800-668-6868 or Text CONNECT to 686868" },
+                    { name: "Hope for Wellness (Indigenous)", details: "Call 1-855-242-3310" }
+                ];
+            } else if (country === "uk") {
+                resources = [
+                    { name: "Samaritans helpline", details: "Call 116 123" },
+                    { name: "Shout Crisis Text Line", details: "Text SHOUT to 85258" },
+                    { name: "SANEline (Mental Health Support)", details: "Call 0300 304 7000" }
+                ];
+            } else if (country === "au") {
+                resources = [
+                    { name: "Lifeline Australia", details: "Call 13 11 14" },
+                    { name: "Beyond Blue", details: "Call 1300 22 4636" },
+                    { name: "Kids Helpline (5-25 yr)", details: "Call 1800 55 1800" }
+                ];
+            } else {
+                resources = [
+                    { name: "Befrienders Worldwide", details: "Find local lifelines at befrienders.org" },
+                    { name: "International Association for Suicide Prevention", details: "Find crisis centers at iasp.info" }
+                ];
+            }
+
+            resources.forEach(r => {
+                const li = document.createElement("div");
+                li.style.display = "flex";
+                li.style.justifyContent = "space-between";
+                li.style.alignItems = "center";
+                li.style.borderBottom = "1px solid rgba(255,255,255,0.03)";
+                li.style.padding = "0.4rem 0";
+                li.style.fontSize = "0.8rem";
+                li.innerHTML = `<span>${r.name}</span><strong style="color: var(--accent-orange);">${r.details}</strong>`;
+                listContainer.appendChild(li);
+            });
+        }
+
+        function renderSafetyJournalList() {
+            const container = document.getElementById("sp-journal-history-list");
+            if (!container) return;
+            container.innerHTML = "";
+
+            const searchQuery = document.getElementById("input-sp-journal-search")?.value.toLowerCase().trim() || "";
+
+            const entries = state.safetyJournal || [];
+            const filtered = entries.filter(e => {
+                if (!searchQuery) return true;
+                const matchThoughts = e.rawThoughts && e.rawThoughts.toLowerCase().includes(searchQuery);
+                const matchCounter = e.counterScript && e.counterScript.toLowerCase().includes(searchQuery);
+                const matchParable = e.parableRef && e.parableRef.toLowerCase().includes(searchQuery);
+                return matchThoughts || matchCounter || matchParable;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="text-muted center-text py-3" style="font-size:0.85rem; font-style:italic;">No restraint journal entries recorded yet.</div>`;
+                return;
+            }
+
+            [...filtered].reverse().forEach(item => {
+                const card = document.createElement("div");
+                card.className = "sp-journal-item mb-2";
+
+                let distressClass = "sp-journal-distress-low";
+                if (item.distressLevel >= 8) distressClass = "sp-journal-distress-acute";
+                else if (item.distressLevel >= 5) distressClass = "sp-journal-distress-high";
+                else if (item.distressLevel >= 3) distressClass = "sp-journal-distress-medium";
+
+                const dateStr = new Date(item.timestamp).toLocaleString();
+                const parableLabel = item.parableRef ? ` | Reflected: ${item.parableRef}` : "";
+
+                card.innerHTML = `
+                    <div class="sp-journal-item-header">
+                        <span style="font-size:0.75rem; color:var(--text-muted); font-family:monospace;">${dateStr}${parableLabel}</span>
+                        <div style="display:flex; gap:0.5rem; align-items:center;">
+                            <span class="sp-journal-distress-badge ${distressClass}">Distress: ${item.distressLevel}/10</span>
+                            <button class="sp-journal-remove-btn" data-id="${item.id}" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-size:1.1rem; line-height:1; padding:0 0.25rem;">×</button>
+                        </div>
+                    </div>
+                    <div style="font-size:0.8rem; color:var(--accent-red); text-decoration:line-through; opacity:0.65; margin-bottom:0.35rem; font-style:italic; line-height:1.4;">
+                        <strong>Urge:</strong> "${item.rawThoughts}"
+                    </div>
+                    <div style="font-size:0.85rem; color:var(--accent-teal); font-weight:500; line-height:1.4;">
+                        <strong>Restraint Script:</strong> "${item.counterScript}"
+                    </div>
+                `;
+
+                // Wire up delete event
+                card.querySelector(".sp-journal-remove-btn").addEventListener("click", (e) => {
+                    const idToDelete = parseInt(e.target.getAttribute("data-id"));
+                    if (confirm("Are you sure you want to delete this restraint journal entry?")) {
+                        state.safetyJournal = state.safetyJournal.filter(entry => entry.id !== idToDelete);
+                        saveState();
+                        renderSafetyJournalList();
+                    }
+                });
+
+                container.appendChild(card);
+            });
+        }
+
+        function renderSuicidePreventionTab() {
+            // Fill Safety Plan Editor textareas
+            document.getElementById("input-sp-reasons").value = state.reasonsLive || "";
+            document.getElementById("input-sp-distractions").value = state.distractions || "";
+            document.getElementById("input-sp-contacts").value = state.safeContacts || "";
+
+            // Calculate active risk level
+            let riskLevel = { level: 'low', score: 0 };
+            if (safetyDetection) {
+                const latestCheckin = state.safetyAssessments && state.safetyAssessments.length > 0
+                    ? state.safetyAssessments[state.safetyAssessments.length - 1]
+                    : null;
+                riskLevel = safetyDetection.calculateRiskLevel({
+                    quickScreen: latestCheckin,
+                    patterns: safetyDetection.detectRiskPatterns ? safetyDetection.detectRiskPatterns(state) : []
+                });
+            } else {
+                let score = 0;
+                if (state.safety && state.safety.suicide === 2) score = 8;
+                else if (state.safety && state.safety.suicide === 1) score = 4;
+                let level = 'low';
+                if (score >= 8) level = 'acute';
+                else if (score >= 5) level = 'elevated';
+                else if (score >= 3) level = 'moderate';
+                riskLevel = { level, score };
+            }
+
+            // Update active risk badge
+            const badge = document.getElementById("safety-sp-risk-badge");
+            if (badge) {
+                badge.innerText = riskLevel.level.toUpperCase();
+                
+                badge.className = ""; // clear all custom classes
+                if (riskLevel.level === "acute") {
+                    badge.style.color = "var(--accent-red)";
+                } else if (riskLevel.level === "elevated") {
+                    badge.style.color = "var(--accent-orange)";
+                } else if (riskLevel.level === "moderate") {
+                    badge.style.color = "var(--accent-lavender)";
+                } else {
+                    badge.style.color = "var(--accent-teal)";
+                }
+            }
+
+            // Show deterioration warnings if any
+            const warningsContainer = document.getElementById("safety-sp-warnings-container");
+            const warningsList = document.getElementById("safety-sp-warnings-list");
+            if (warningsContainer && warningsList) {
+                warningsList.innerHTML = "";
+                
+                let activeWarnings = [];
+                if (safetyDetection && safetyDetection.detectRiskPatterns) {
+                    const patterns = safetyDetection.detectRiskPatterns(state);
+                    patterns.forEach(p => activeWarnings.push(p.description));
+                }
+                
+                // If distress is very high on recent journal check-ins, add alert
+                const recentJournal = state.safetyJournal || [];
+                if (recentJournal.length > 0 && recentJournal[recentJournal.length - 1].distressLevel >= 8) {
+                    activeWarnings.push(`Recent acute distress check-in (Level ${recentJournal[recentJournal.length - 1].distressLevel}/10)`);
+                }
+
+                if (activeWarnings.length > 0) {
+                    warningsContainer.classList.remove("hidden");
+                    activeWarnings.forEach(w => {
+                        const li = document.createElement("li");
+                        li.innerText = w;
+                        warningsList.appendChild(li);
+                    });
+                } else {
+                    warningsContainer.classList.add("hidden");
+                }
+            }
+
+            // Next Safety Screening schedule
+            const checkinTime = document.getElementById("safety-sp-checkin-time");
+            if (checkinTime) {
+                if (state.safetyAssessments && state.safetyAssessments.length > 0) {
+                    const last = new Date(state.safetyAssessments[state.safetyAssessments.length - 1].timestamp);
+                    const diffDays = Math.ceil((new Date() - last) / (1000 * 60 * 60 * 24));
+                    if (diffDays >= 7) {
+                        checkinTime.innerText = "Overdue (Check-in Required)";
+                        checkinTime.style.color = "var(--accent-orange)";
+                    } else {
+                        checkinTime.innerText = `Completed (${diffDays}d ago)`;
+                        checkinTime.style.color = "var(--text-secondary)";
+                    }
+                } else {
+                    checkinTime.innerText = "Pending Initial Assessment";
+                    checkinTime.style.color = "var(--accent-orange)";
+                }
+            }
+
+            // Populate regional hotlines based on country select
+            const countrySelect = document.getElementById("select-sp-country");
+            if (countrySelect) {
+                populateRegionalResources(countrySelect.value);
+            }
+
+            // Populate parable cards completion status
+            const parables = ["chioran", "restraint", "gap10", "council"];
+            parables.forEach(pid => {
+                const card = document.getElementById(`parable-card-${pid}`);
+                const badge = document.getElementById(`parable-badge-${pid}`);
+                if (card && badge) {
+                    if (state.parablesCompleted && state.parablesCompleted[pid]) {
+                        card.classList.add("completed");
+                        badge.innerText = "Completed ✓";
+                        badge.style.background = "rgba(0, 255, 200, 0.15)";
+                        badge.style.color = "var(--accent-teal)";
+                        // Set textarea reflection if already done
+                        const reflectTextarea = document.getElementById(`reflect-${pid}`);
+                        if (reflectTextarea) {
+                            reflectTextarea.value = state.parablesCompleted[pid].reflection || "";
+                        }
+                    } else {
+                        card.classList.remove("completed");
+                        badge.innerText = "Unread";
+                        badge.style.background = "rgba(255, 255, 255, 0.05)";
+                        badge.style.color = "var(--text-secondary)";
+                    }
+                }
+            });
+
+            // Render the safety journal timeline list
+            renderSafetyJournalList();
+        }
+
+        function generateClinicianHandoff() {
+            // Compile a structured clinician handoff document
+            let md = `# CLINICIAN COLLABORATIVE BRIEFING\n`;
+            md += `*CONFIDENTIAL | Generated locally by State, Not Fate OS on ${new Date().toLocaleDateString()}*\n\n`;
+            md += `This document provides structured behavioral and safety data to help collaborate with your therapist, psychiatrist, or coach.\n\n`;
+            
+            md += `## 🎗️ Current Safety Status\n`;
+            const recentJournal = state.safetyJournal || [];
+            let latestDistress = "N/A";
+            if (recentJournal.length > 0) {
+                latestDistress = `${recentJournal[recentJournal.length - 1].distressLevel}/10 (Logged: ${new Date(recentJournal[recentJournal.length - 1].timestamp).toLocaleDateString()})`;
+            }
+            
+            md += `- **Last Check-in distress:** ${latestDistress}\n`;
+            md += `- **Hope Level:** Level ${state.currentHopeLevel} (${state.hopeProgress}% progression)\n`;
+            md += `- **MVD Completion Count:** ${state.history ? state.history.filter(h => h.floorCompleted).length : 0} days\n\n`;
+            
+            md += `## 🛠️ Collaborative Safety Plan\n`;
+            md += `### Reasons to Live:\n${state.reasonsLive || "*None recorded yet. Fill out in the Suicide Prevention tab.*"}\n\n`;
+            md += `### Safe Contacts:\n${state.safeContacts || "*None recorded yet.*"}\n\n`;
+            md += `### Distraction Activities:\n${state.distractions || "*None recorded yet.*"}\n\n`;
+            
+            md += `## 📝 Safety & Restraint Journal Timeline (Last 5 Entries)\n`;
+            if (recentJournal.length === 0) {
+                md += `*No restraint journal logs written yet.*\n`;
+            } else {
+                md += `| Date | Distress | Restraint Counter-Script |\n`;
+                md += `|---|---|---|\n`;
+                [...recentJournal].slice(-5).reverse().forEach(rj => {
+                    md += `| ${new Date(rj.timestamp).toLocaleDateString()} | ${rj.distressLevel}/10 | ${rj.counterScript} |\n`;
+                });
+                md += `\n`;
+            }
+            
+            md += `## 📖 Parables completed:\n`;
+            const completedParables = [];
+            if (state.parablesCompleted) {
+                Object.keys(state.parablesCompleted).forEach(pid => {
+                    completedParables.push(`${pid.toUpperCase()} (${new Date(state.parablesCompleted[pid].timestamp).toLocaleDateString()}): "${state.parablesCompleted[pid].reflection}"`);
+                });
+            }
+            if (completedParables.length === 0) {
+                md += `*No parable reflections completed yet.*\n`;
+            } else {
+                completedParables.forEach(cp => {
+                    md += `- ${cp}\n`;
+                });
+            }
+
+            // Export Modal display
+            const modal = document.getElementById("export-modal");
+            const textarea = document.getElementById("textarea-export-briefing");
+            if (modal && textarea) {
+                textarea.value = md;
+                modal.classList.add("active");
+                showToast("Clinician handoff file compiled successfully.", "success");
+            }
+        }
+
+        function setupSafetyPreventionListeners() {
+            // Sub-nav tab toggles
+            const subtabs = ["crisis", "parables", "journal"];
+            subtabs.forEach(tab => {
+                const btn = document.getElementById(`btn-sp-subtab-${tab}`);
+                if (btn) {
+                    btn.addEventListener("click", () => {
+                        subtabs.forEach(t => {
+                            const b = document.getElementById(`btn-sp-subtab-${t}`);
+                            const panel = document.getElementById(`sp-panel-${t}`);
+                            if (t === tab) {
+                                if (b) b.classList.add("active");
+                                if (panel) panel.classList.remove("hidden");
+                            } else {
+                                if (b) b.classList.remove("active");
+                                if (panel) panel.classList.add("hidden");
+                            }
+                        });
+                    });
+                }
+            });
+
+            // Save Safety Plan updates
+            const savePlanBtn = document.getElementById("btn-sp-save-plan");
+            if (savePlanBtn) {
+                savePlanBtn.addEventListener("click", () => {
+                    state.reasonsLive = document.getElementById("input-sp-reasons").value.trim();
+                    state.distractions = document.getElementById("input-sp-distractions").value.trim();
+                    state.safeContacts = document.getElementById("input-sp-contacts").value.trim();
+                    saveState();
+                    showToast("Safety Plan Updates Saved successfully.", "success");
+                });
+            }
+
+            // Country change for regional resources
+            const countrySelect = document.getElementById("select-sp-country");
+            if (countrySelect) {
+                countrySelect.addEventListener("change", (e) => {
+                    populateRegionalResources(e.target.value);
+                });
+            }
+
+            // Grounding tools navigation
+            const grounding54321 = document.getElementById("btn-sp-grounding-54321");
+            if (grounding54321) {
+                grounding54321.addEventListener("click", () => {
+                    document.getElementById("sp-grounding-default-msg").classList.add("hidden");
+                    document.getElementById("sp-grounding-54321-tool").classList.remove("hidden");
+                    document.getElementById("sp-grounding-breathing-tool").classList.add("hidden");
+                    document.getElementById("sp-grounding-cold-tool").classList.add("hidden");
+                    currentSensoryStep = 1;
+                    updateSensoryStep();
+                });
+            }
+
+            const sp54321Prev = document.getElementById("btn-sp-54321-prev");
+            if (sp54321Prev) {
+                sp54321Prev.addEventListener("click", () => {
+                    if (currentSensoryStep > 1) {
+                        currentSensoryStep--;
+                        updateSensoryStep();
+                    }
+                });
+            }
+
+            const sp54321Next = document.getElementById("btn-sp-54321-next");
+            if (sp54321Next) {
+                sp54321Next.addEventListener("click", () => {
+                    if (currentSensoryStep < 5) {
+                        currentSensoryStep++;
+                        updateSensoryStep();
+                    } else {
+                        // Reset to default
+                        document.getElementById("sp-grounding-54321-tool").classList.add("hidden");
+                        document.getElementById("sp-grounding-default-msg").classList.remove("hidden");
+                        showToast("Sensory grounding complete. Heart rate down-regulated.", "success");
+                    }
+                });
+            }
+
+            function updateSensoryStep() {
+                const step = sensorySteps[currentSensoryStep - 1];
+                document.getElementById("sp-54321-step-title").innerText = step.title;
+                document.getElementById("sp-54321-step-instruction").innerText = step.text;
+                document.getElementById("sp-54321-progress").innerText = `Step ${currentSensoryStep} of 5`;
+                document.getElementById("btn-sp-54321-prev").disabled = currentSensoryStep === 1;
+                document.getElementById("btn-sp-54321-next").innerText = currentSensoryStep === 5 ? "Finish" : "Next Step";
+            }
+
+            // Box breathing somatic grounding toggle
+            const groundingBreathing = document.getElementById("btn-sp-grounding-breathing");
+            if (groundingBreathing) {
+                groundingBreathing.addEventListener("click", () => {
+                    document.getElementById("sp-grounding-default-msg").classList.add("hidden");
+                    document.getElementById("sp-grounding-54321-tool").classList.add("hidden");
+                    document.getElementById("sp-grounding-breathing-tool").classList.remove("hidden");
+                    document.getElementById("sp-grounding-cold-tool").classList.add("hidden");
+                    
+                    // Stop any running interval
+                    stopInlineBreathing();
+                });
+            }
+
+            const breathingToggle = document.getElementById("btn-sp-breathing-toggle");
+            if (breathingToggle) {
+                breathingToggle.addEventListener("click", () => {
+                    const btn = document.getElementById("btn-sp-breathing-toggle");
+                    if (inlineBreathingInterval) {
+                        stopInlineBreathing();
+                        btn.innerText = "Start Pacer";
+                    } else {
+                        startInlineBreathing();
+                        btn.innerText = "Stop Pacer";
+                    }
+                });
+            }
+
+            function startInlineBreathing() {
+                const circle = document.getElementById("sp-breathing-circle");
+                const text = document.getElementById("sp-breathing-action-text");
+                inlineBreathingPhase = 0;
+                
+                if (text) text.innerText = "Inhale...";
+                if (circle) {
+                    circle.style.transform = "scale(1.5)";
+                    circle.style.background = "linear-gradient(135deg, var(--accent-teal), var(--accent-lavender))";
+                }
+
+                inlineBreathingInterval = setInterval(() => {
+                    inlineBreathingPhase = (inlineBreathingPhase + 1) % 4;
+                    const c = document.getElementById("sp-breathing-circle");
+                    const t = document.getElementById("sp-breathing-action-text");
+                    if (inlineBreathingPhase === 0) {
+                        if (t) t.innerText = "Inhale...";
+                        if (c) {
+                            c.style.transform = "scale(1.5)";
+                            c.style.filter = "drop-shadow(0 0 10px var(--accent-teal))";
+                        }
+                    } else if (inlineBreathingPhase === 1) {
+                        if (t) t.innerText = "Hold...";
+                        if (c) c.style.filter = "drop-shadow(0 0 16px var(--accent-teal))";
+                    } else if (inlineBreathingPhase === 2) {
+                        if (t) t.innerText = "Exhale...";
+                        if (c) {
+                            c.style.transform = "scale(1.0)";
+                            c.style.filter = "drop-shadow(0 0 10px var(--accent-lavender))";
+                        }
+                    } else if (inlineBreathingPhase === 3) {
+                        if (t) t.innerText = "Hold...";
+                        if (c) c.style.filter = "drop-shadow(0 0 4px var(--accent-lavender))";
+                    }
+                }, 4000);
+            }
+
+            function stopInlineBreathing() {
+                if (inlineBreathingInterval) {
+                    clearInterval(inlineBreathingInterval);
+                    inlineBreathingInterval = null;
+                }
+                const circle = document.getElementById("sp-breathing-circle");
+                if (circle) {
+                    circle.style.transform = "scale(1.0)";
+                    circle.style.filter = "none";
+                }
+                const text = document.getElementById("sp-breathing-action-text");
+                if (text) text.innerText = "Breath Pacer Ready";
+            }
+
+            // Cold water shock
+            const groundingCold = document.getElementById("btn-sp-grounding-cold");
+            if (groundingCold) {
+                groundingCold.addEventListener("click", () => {
+                    document.getElementById("sp-grounding-default-msg").classList.add("hidden");
+                    document.getElementById("sp-grounding-54321-tool").classList.add("hidden");
+                    document.getElementById("sp-grounding-breathing-tool").classList.add("hidden");
+                    document.getElementById("sp-grounding-cold-tool").classList.remove("hidden");
+                    stopInlineBreathing();
+                });
+            }
+
+            // Provider template copy button
+            const copyTemplateBtn = document.getElementById("btn-sp-copy-template");
+            if (copyTemplateBtn) {
+                copyTemplateBtn.addEventListener("click", () => {
+                    const text = "I am utilizing a structured behavioral activation and circadian timing system to manage my daily energy and function. It helps me track anchors, record restart speed, and manage task-entry friction. It is designed to complement our recovery objectives by tracking my floor wins and PHQ-9 progress.";
+                    navigator.clipboard.writeText(text).then(() => {
+                        showToast("Collaboration template copied to clipboard!", "success");
+                    }).catch(err => {
+                        console.error("Failed to copy template: ", err);
+                    });
+                });
+            }
+
+            // Full Safety Assessment trigger buttons
+            const triggerAssessmentBtn = document.getElementById("btn-sp-trigger-assessment");
+            if (triggerAssessmentBtn) {
+                triggerAssessmentBtn.addEventListener("click", openSafetyAssessmentModal);
+            }
+            
+            const closeAssessmentBtn = document.getElementById("btn-close-safety-assessment-modal");
+            if (closeAssessmentBtn) {
+                closeAssessmentBtn.addEventListener("click", closeSafetyAssessmentModal);
+            }
+            
+            const cancelAssessmentBtn = document.getElementById("btn-sa-cancel");
+            if (cancelAssessmentBtn) {
+                cancelAssessmentBtn.addEventListener("click", closeSafetyAssessmentModal);
+            }
+
+            // Safety Assessment navigation steps
+            let saCurrentStep = 1;
+            
+            function openSafetyAssessmentModal() {
+                saCurrentStep = 1;
+                document.getElementById("sa-step-1").classList.remove("hidden");
+                document.getElementById("sa-step-2").classList.add("hidden");
+                document.getElementById("btn-sa-prev").classList.add("hidden");
+                document.getElementById("btn-sa-next").classList.remove("hidden");
+                document.getElementById("btn-sa-submit").classList.add("hidden");
+                
+                // Set default inputs
+                document.getElementById("input-sa-conviction").value = 0;
+                document.getElementById("display-sa-conviction").innerText = 0;
+                
+                // Set radios to first option
+                document.querySelectorAll("input[name='sa-access']")[0].checked = true;
+                document.querySelectorAll("input[name='sa-timeline']")[0].checked = true;
+                
+                // Clear checkboxes
+                document.querySelectorAll("#sa-deterrents-container input").forEach(c => c.checked = false);
+                document.querySelectorAll("#sa-behaviors-container input").forEach(c => c.checked = false);
+
+                document.getElementById("safety-assessment-modal").classList.add("active");
+            }
+
+            function closeSafetyAssessmentModal() {
+                document.getElementById("safety-assessment-modal").classList.remove("active");
+            }
+
+            const saConvictionSlider = document.getElementById("input-sa-conviction");
+            if (saConvictionSlider) {
+                saConvictionSlider.addEventListener("input", (e) => {
+                    document.getElementById("display-sa-conviction").innerText = e.target.value;
+                });
+            }
+
+            const saNextBtn = document.getElementById("btn-sa-next");
+            if (saNextBtn) {
+                saNextBtn.addEventListener("click", () => {
+                    saCurrentStep = 2;
+                    document.getElementById("sa-step-1").classList.add("hidden");
+                    document.getElementById("sa-step-2").classList.remove("hidden");
+                    document.getElementById("btn-sa-prev").classList.remove("hidden");
+                    document.getElementById("btn-sa-next").classList.add("hidden");
+                    document.getElementById("btn-sa-submit").classList.remove("hidden");
+                });
+            }
+
+            const saPrevBtn = document.getElementById("btn-sa-prev");
+            if (saPrevBtn) {
+                saPrevBtn.addEventListener("click", () => {
+                    saCurrentStep = 1;
+                    document.getElementById("sa-step-1").classList.remove("hidden");
+                    document.getElementById("sa-step-2").classList.add("hidden");
+                    document.getElementById("btn-sa-prev").classList.add("hidden");
+                    document.getElementById("btn-sa-next").classList.remove("hidden");
+                    document.getElementById("btn-sa-submit").classList.add("hidden");
+                });
+            }
+
+            // Submit safety assessment
+            const saSubmitBtn = document.getElementById("btn-sa-submit");
+            if (saSubmitBtn) {
+                saSubmitBtn.addEventListener("click", () => {
+                    const convictionVal = parseInt(document.getElementById("input-sa-conviction").value, 10);
+                    const accessVal = parseInt(document.querySelector("input[name='sa-access']:checked").value, 10);
+                    const timelineVal = parseInt(document.querySelector("input[name='sa-timeline']:checked").value, 10);
+                    
+                    const selectedDeterrents = [];
+                    document.querySelectorAll("#sa-deterrents-container input:checked").forEach(c => {
+                        selectedDeterrents.push(c.value);
+                    });
+
+                    const selectedBehaviors = [];
+                    document.querySelectorAll("#sa-behaviors-container input:checked").forEach(c => {
+                        selectedBehaviors.push(c.value);
+                    });
+
+                    const assessment = {
+                        id: Date.now(),
+                        timestamp: new Date().toISOString(),
+                        ideation: { value: Math.ceil(convictionVal / 2.5) }, // normalize conviction 0-10 to 0-4
+                        intentAssessment: {
+                            intent: { value: convictionVal > 5 ? 3 : (convictionVal > 1 ? 1 : 0) },
+                            access: { value: accessVal },
+                            timeline: { value: timelineVal },
+                            protective: { selected: selectedDeterrents }
+                        }
+                    };
+
+                    state.safetyAssessments = state.safetyAssessments || [];
+                    state.safetyAssessments.push(assessment);
+
+                    // Run safety detection logic
+                    let riskLevel = { level: 'low', score: 0 };
+                    if (safetyDetection) {
+                        riskLevel = safetyDetection.calculateRiskLevel({
+                            quickScreen: assessment,
+                            intentAssessment: assessment.intentAssessment,
+                            patterns: safetyDetection.detectRiskPatterns ? safetyDetection.detectRiskPatterns(state) : []
+                        });
+                    } else {
+                        let score = convictionVal;
+                        if (accessVal >= 2) score += 3;
+                        if (timelineVal >= 2) score += 3;
+                        let level = 'low';
+                        if (score >= 12) level = 'acute';
+                        else if (score >= 8) level = 'elevated';
+                        else if (score >= 4) level = 'moderate';
+                        riskLevel = { level, score };
+                    }
+
+                    // Update safety state
+                    state.safety = state.safety || {};
+                    if (riskLevel.level === "acute" || riskLevel.level === "elevated") {
+                        state.safety.suicide = 2; // High alert
+                        triggerCrisisOverlay();
+                    } else if (riskLevel.level === "moderate") {
+                        state.safety.suicide = 1;
+                    } else {
+                        state.safety.suicide = 0;
+                    }
+
+                    saveState();
+                    closeSafetyAssessmentModal();
+                    renderSuicidePreventionTab();
+                    updateDashboardMetrics();
+                    
+                    showToast("Safety Assessment completed successfully. Risk status updated: " + riskLevel.level.toUpperCase(), "success");
+                });
+            }
+
+            // Clinician Handoff Export
+            const exportHandoffBtn = document.getElementById("btn-sp-export-handoff");
+            if (exportHandoffBtn) {
+                exportHandoffBtn.addEventListener("click", generateClinicianHandoff);
+            }
+
+            // Log reflections for parables
+            const parablesList = ["chioran", "restraint", "gap10", "council"];
+            parablesList.forEach(pid => {
+                const btn = document.getElementById(`btn-sp-reflect-${pid}`);
+                if (btn) {
+                    btn.addEventListener("click", () => {
+                        const text = document.getElementById(`reflect-${pid}`).value.trim();
+                        if (!text) {
+                            showToast("Please enter a brief reflection before logging.", "warning");
+                            return;
+                        }
+                        state.parablesCompleted = state.parablesCompleted || {};
+                        state.parablesCompleted[pid] = {
+                            timestamp: new Date().toISOString(),
+                            reflection: text
+                        };
+                        
+                        // Increment hope scale slightly / log micro-win
+                        state.hopeProgress = Math.min((state.hopeProgress || 0) + 15, 100);
+                        if (state.hopeProgress >= 100) {
+                            state.hopeProgress = 0;
+                            state.currentHopeLevel = Math.min((state.currentHopeLevel || 1) + 1, 10);
+                        }
+
+                        logActionCompletion(`Edge Parable Reflection logged: ${pid.toUpperCase()}`);
+                        saveState();
+                        renderSuicidePreventionTab();
+                        updateDashboardMetrics();
+                        showToast("Reflection logged. Perspective shift registered.", "success");
+                    });
+                }
+            });
+
+            // Restraint Journal entries
+            const distressSlider = document.getElementById("input-sp-journal-distress");
+            const distressDisplay = document.getElementById("display-sp-journal-distress");
+            
+            if (distressSlider && distressDisplay) {
+                distressSlider.addEventListener("input", (e) => {
+                    distressDisplay.innerText = `${e.target.value} / 10`;
+                });
+            }
+
+            const saveJournalBtn = document.getElementById("btn-sp-save-journal");
+            if (saveJournalBtn) {
+                saveJournalBtn.addEventListener("click", () => {
+                    const rawThoughtsInput = document.getElementById("input-sp-journal-thoughts");
+                    const counterScriptInput = document.getElementById("input-sp-journal-counter");
+                    const parableSelect = document.getElementById("select-sp-journal-parable");
+
+                    const rawThoughts = rawThoughtsInput.value.trim();
+                    const counterScript = counterScriptInput.value.trim();
+                    const distressLevel = distressSlider ? parseInt(distressSlider.value, 10) : 5;
+                    const parableRef = parableSelect ? parableSelect.value : "";
+
+                    if (!rawThoughts || !counterScript) {
+                        showToast("Please enter raw thoughts/urges and your balanced counter-script.", "warning");
+                        return;
+                    }
+
+                    // Push new entry
+                    state.safetyJournal = state.safetyJournal || [];
+                    state.safetyJournal.push({
+                        id: Date.now(),
+                        timestamp: new Date().toISOString(),
+                        rawThoughts: rawThoughts,
+                        counterScript: counterScript,
+                        distressLevel: distressLevel,
+                        parableRef: parableRef
+                    });
+
+                    // Clear input form
+                    rawThoughtsInput.value = "";
+                    counterScriptInput.value = "";
+                    if (distressSlider) distressSlider.value = 5;
+                    if (distressDisplay) distressDisplay.innerText = "5 / 10";
+                    if (parableSelect) parableSelect.value = "";
+
+                    // If distress >= 8, trigger somatic grounding or alert
+                    if (distressLevel >= 8) {
+                        showToast("🚨 High distress detected. Initializing Box Breathing somatic helper.", "danger");
+                        // Switch subtabs to somatic grounding
+                        const subtabCrisisBtn = document.getElementById("btn-sp-subtab-crisis");
+                        if (subtabCrisisBtn) subtabCrisisBtn.click();
+                        const groundingBreathingBtn = document.getElementById("btn-sp-grounding-breathing");
+                        if (groundingBreathingBtn) groundingBreathingBtn.click();
+                        const breathingToggleBtn = document.getElementById("btn-sp-breathing-toggle");
+                        if (breathingToggleBtn) breathingToggleBtn.click();
+                    } else {
+                        showToast("Restraint journal entry successfully logged and encrypted.", "success");
+                    }
+
+                    saveState();
+                    renderSuicidePreventionTab();
+                });
+            }
+
+            // Search search timeline listener
+            const journalSearch = document.getElementById("input-sp-journal-search");
+            if (journalSearch) {
+                journalSearch.addEventListener("input", renderSafetyJournalList);
             }
         }
 
