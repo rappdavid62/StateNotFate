@@ -2406,6 +2406,12 @@ const COMPANION_QUESTION_TREE = {
 
             // Render the safety journal timeline list
             renderSafetyJournalList();
+
+            // Render Compendium if active
+            const compendiumBtn = document.getElementById("btn-sp-subtab-compendium");
+            if (compendiumBtn && compendiumBtn.classList.contains("active")) {
+                renderCompendiumSubpanel();
+            }
         }
 
         function generateClinicianHandoff() {
@@ -2469,7 +2475,7 @@ const COMPANION_QUESTION_TREE = {
 
         function setupSafetyPreventionListeners() {
             // Sub-nav tab toggles
-            const subtabs = ["crisis", "parables", "journal"];
+            const subtabs = ["crisis", "parables", "journal", "compendium"];
             subtabs.forEach(tab => {
                 const btn = document.getElementById(`btn-sp-subtab-${tab}`);
                 if (btn) {
@@ -2485,6 +2491,9 @@ const COMPANION_QUESTION_TREE = {
                                 if (panel) panel.classList.add("hidden");
                             }
                         });
+                        if (tab === "compendium") {
+                            renderCompendiumSubpanel();
+                        }
                     });
                 }
             });
@@ -2659,6 +2668,63 @@ const COMPANION_QUESTION_TREE = {
                     });
                 });
             }
+
+            const actionMapButtons = document.querySelectorAll(".suicide-map-btn");
+            actionMapButtons.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    actionMapButtons.forEach(other => {
+                        other.classList.remove("active");
+                        other.setAttribute("aria-pressed", "false");
+                    });
+                    btn.classList.add("active");
+                    btn.setAttribute("aria-pressed", "true");
+                    renderSuicideActionMap(btn.getAttribute("data-map"));
+                });
+            });
+
+            const scriptButtons = document.querySelectorAll(".suicide-script-btn");
+            scriptButtons.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    scriptButtons.forEach(other => {
+                        other.classList.remove("active");
+                        other.setAttribute("aria-pressed", "false");
+                    });
+                    btn.classList.add("active");
+                    btn.setAttribute("aria-pressed", "true");
+                    renderSupporterScript(btn.getAttribute("data-script"));
+                });
+            });
+
+            const copyActiveScriptBtn = document.getElementById("btn-sp-copy-active-script");
+            if (copyActiveScriptBtn) {
+                copyActiveScriptBtn.addEventListener("click", copyActiveSupporterScript);
+            }
+
+            const scenarioButtons = document.querySelectorAll(".suicide-scenario-btn");
+            scenarioButtons.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    scenarioButtons.forEach(other => {
+                        other.classList.remove("active");
+                        other.setAttribute("aria-pressed", "false");
+                    });
+                    btn.classList.add("active");
+                    btn.setAttribute("aria-pressed", "true");
+                    renderSuicideScenario(btn.getAttribute("data-scenario"));
+                });
+            });
+
+            const settingButtons = document.querySelectorAll(".suicide-setting-btn");
+            settingButtons.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    settingButtons.forEach(other => {
+                        other.classList.remove("active");
+                        other.setAttribute("aria-pressed", "false");
+                    });
+                    btn.classList.add("active");
+                    btn.setAttribute("aria-pressed", "true");
+                    renderSuicideSetting(btn.getAttribute("data-setting"));
+                });
+            });
 
             // Full Safety Assessment trigger buttons
             const triggerAssessmentBtn = document.getElementById("btn-sp-trigger-assessment");
@@ -2917,6 +2983,41 @@ const COMPANION_QUESTION_TREE = {
             if (journalSearch) {
                 journalSearch.addEventListener("input", renderSafetyJournalList);
             }
+
+            // Compendium select section listener
+            const selectCompSection = document.getElementById("select-compendium-section");
+            if (selectCompSection) {
+                selectCompSection.addEventListener("change", (e) => {
+                    switchCompendiumTable(e.target.value);
+                });
+            }
+
+            // Compendium module reflection input listener
+            const modReflectionInput = document.getElementById("module-reflection-input");
+            if (modReflectionInput) {
+                modReflectionInput.addEventListener("input", updateModuleCharCount);
+            }
+
+            // Compendium submit module button listener
+            const submitModBtn = document.getElementById("btn-submit-module");
+            if (submitModBtn) {
+                submitModBtn.addEventListener("click", submitCurrentModule);
+            }
+
+            // Compendium module nav button listeners
+            for (let i = 1; i <= 4; i++) {
+                const modBtn = document.getElementById(`btn-module-${i}`);
+                if (modBtn) {
+                    modBtn.addEventListener("click", () => {
+                        selectCourseModule(i);
+                    });
+                }
+            }
+
+            renderSuicideActionMap("distress");
+            renderSupporterScript("self");
+            renderSuicideScenario("self_low");
+            renderSuicideSetting("home");
         }
 
         function renderQuickSafety() {
@@ -4059,6 +4160,13 @@ const COMPANION_QUESTION_TREE = {
             if (state.polaris.possibilityCollapseInterventions === undefined) state.polaris.possibilityCollapseInterventions = 0;
             if (state.polaris.startupDragHistory === undefined) state.polaris.startupDragHistory = [];
             if (state.polaris.ruminationStopLossCount === undefined) state.polaris.ruminationStopLossCount = 0;
+
+            if (!state.compendiumCourse) {
+                state.compendiumCourse = {
+                    completedModules: [],
+                    reflections: {}
+                };
+            }
 
             // Ensure anchors.today is an object (migration from v2/v3 arrays)
             if (Array.isArray(state.polaris.anchors.today)) {
@@ -6293,5 +6401,840 @@ Your response should be under 100 words. Stick to objective mechanics, pattern d
             render: renderPolarisTab,
             toggle: togglePolaris
         };
+
+        // ==========================================================
+        // SUICIDE & SUICIDE PREVENTION COMPENDIUM & COURSE MODULES
+        // ==========================================================
+
+        const COURSE_MODULES = [
+            {
+                id: 1,
+                title: "Module 1: Differentiating Ideation & Intent",
+                objective: "Differentiate passive, intrusive thoughts from active suicidal intent using C-SSRS and ASQ metrics, and build a collaborative safety plan.",
+                psychology: "Under severe depression, the brain's prefrontal cortex shuts down, causing 'possibility collapse.' Suicide risk screening tools (C-SSRS, ASQ) help clinicians and individuals map current thoughts to prevent panic. Intrusive thoughts are unwanted fictions generated by a hijacked state; active intent is structured planning. Recognizing this difference helps you pause and choose safety.",
+                exercise: "Read the C-SSRS/ASQ criteria in Table 2. Under the 'Crisis Plan & Somatics' subtab, complete or review your Collaborative Safety Plan (reasons to live, safe contacts, and coping tools). Reflect on how separating intrusive passive thoughts of death from active planning changes your panic levels.",
+                placeholder: "Differentiating passive thoughts from active planning makes me realize..."
+            },
+            {
+                id: 2,
+                title: "Module 2: Cioran's Solace (The Thought as a Relief Valve)",
+                objective: "Explore Emil Cioran's quote: 'Without the thought of suicide, I certainly would have killed myself.'",
+                psychology: "Severe mental pain makes the mind feel trapped. The concept of suicide often serves as a mental escape hatch—a release valve that lets you believe you are not permanently trapped. This thought reduces pressure. The error occurs when the brain interprets this relief valve as a command to act. By separating the thought (relief valve) from action (command), you can breathe, let the thought exist, and choose to stay one more day.",
+                exercise: "Examine Cioran's quote. Write a reflection on how treating the thought of suicide as a passive relief valve to lower psychological pressure—rather than an active command—affects your ability to tolerate distress.",
+                placeholder: "Viewing the thought as a relief valve rather than an action command..."
+            },
+            {
+                id: 3,
+                title: "Module 3: The Cerebral Council & Restraint Principle",
+                objective: "Understand state-dependent cognitive hijacking and apply the Restraint Principle.",
+                psychology: "Severe depressive states act like a hostile takeover of your mind (e.g. Bruce Banner trapped while the Hulk runs the body). The thoughts generated in this state are 'errors of state'—they are the Hulk's dark fictions, not your true self. The Restraint Principle dictates that your character and worth are defined by the restraint you show in not acting on these fictions, even when you have nothing left to give.",
+                exercise: "Identify an automatic negative 'Hulk thought' your brain has generated (e.g. 'I am a failure'). Script a 'Restraint Statement' (e.g. 'These thoughts are biological errors of my current state. They do not define me. My choice is to stay on the floor and protect myself today.')",
+                placeholder: "The automatic thought is... My Restraint Statement is..."
+            },
+            {
+                id: 4,
+                title: "Module 4: Advanced Clinical Interventions (2026 Guide)",
+                objective: "Explore modern clinical options for Treatment-Resistant Depression (TRD) and acute suicidality.",
+                psychology: "By 2026, psychiatry has shifted away from slow trial-and-error antidepressant cycles during crises. Advanced protocols like fMRI-guided SAINT TMS (5 days), Esketamine (Spravato) nasal sprays, and sub-anesthetic IV Ketamine can resolve acute suicidality in hours to days. Safe prescribing (limiting outpatient medication supply) is a critical standard. You can work with your clinician to navigate these options.",
+                exercise: "Review the modern rapid-acting therapies in the compendium tables. Draft a one-sentence message/bullet you would share with a trusted doctor to discuss these modern neuromodulation or rapid-acting options (e.g. SAINT TMS, Esketamine) for your treatment plan.",
+                placeholder: "I want to discuss rapid-acting interventions like SAINT TMS or Spravato because..."
+            }
+        ];
+
+        const COMPENDIUM_TABLES = {
+            table1: `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--accent-lavender);">
+                            <th style="text-align: left; padding: 0.5rem; color: var(--accent-lavender); font-weight: bold; width: 30%;">Group / Factor</th>
+                            <th style="text-align: left; padding: 0.5rem; color: var(--accent-lavender); font-weight: bold;">Suicide Risk Profile</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Under 25</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">High baseline risk. Self-injury or suicidal behavior occurs in up to 52% of adolescents with depression. Increased risk of antidepressant-induced suicidal thoughts/behaviors in first months of treatment.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Over 65</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Meta-analyses show a <em>reduced</em> risk of antidepressant-induced suicidal behavior compared to younger cohorts.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Perinatal & Postpartum</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Leading cause of perinatal death. Risk peaks during severe depression, postpartum psychosis, or mania. Must differentiate passive intrusive thoughts (unwanted, causing mother distress/shame) from high-risk active suicidal/psychotic thoughts.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Clinical Predictors</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Key predictors of attempts: history of previous attempts, severe depression, prominent psychotic symptoms, severity of hopelessness, and sleep disturbances (insomnia or nightmares). Additional risks: poor social support, male gender, family history of psychiatric disorders, impulsivity, substance misuse.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `,
+            table2: `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--accent-lavender);">
+                            <th style="text-align: left; padding: 0.5rem; color: var(--accent-lavender); font-weight: bold; width: 30%;">Instrument</th>
+                            <th style="text-align: left; padding: 0.5rem; color: var(--accent-lavender); font-weight: bold;">Description and Clinical Utility</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">C-SSRS</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Gold standard. Comprehensively evaluates the presence, intensity, frequency, and lethality of suicidal ideation and behavior.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">ASQ</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Brief 4-item self-report tool valid across medical settings and age groups. Includes an "acuity" question to determine if risk is acute.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Beck's SIS</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">15-item scale evaluating subjective intent and objective planning/circumstances of the patient's most recent suicide attempt.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">PHQ-9 (9th Item)</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Asks about passive thoughts of death or self-injury. High predictive utility for immediate and long-term suicide attempts.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `,
+            table3: `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--accent-lavender);">
+                            <th style="text-align: left; padding: 0.5rem; color: var(--accent-lavender); font-weight: bold; width: 30%;">Strategy</th>
+                            <th style="text-align: left; padding: 0.5rem; color: var(--accent-lavender); font-weight: bold;">Clinical Directives and Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Safety Planning</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">For all depressed patients, collaboratively build safety plans (e.g. Stanley Brown Safety Plan) and provide crisis resources (988). Seek immediate emergency consult if active plan, escalating ideation, or psychotic features occur.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Safe Prescribing</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Do not withhold treatment from suicidal patients, but strictly limit the supply of prescribed medications to reduce overdose toxicity risk. SSRIs are preferred over TCAs (Tricyclic Antidepressants) for patients at risk.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Monitoring Windows</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Heightened vigilance for sudden mood/behavioral changes during high-risk periods: month before starting an antidepressant, first 1-4 weeks after initiation, during dose changes, and month after discontinuation.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Postpartum Psychosis</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Treated as a psychiatric emergency due to high risk of maternal suicide and infanticide. A patient exhibiting signs (delusions, severe agitation, mood lability) must never be left alone with the baby.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `,
+            table4: `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--accent-lavender);">
+                            <th style="text-align: left; padding: 0.5rem; color: var(--accent-lavender); font-weight: bold; width: 30%;">Treatment</th>
+                            <th style="text-align: left; padding: 0.5rem; color: var(--accent-lavender); font-weight: bold;">Efficacy and Application for Suicidality</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Esketamine / Ketamine</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Level 1 evidence for rapidly reducing acute suicidality (within hours to days). Esketamine (Spravato) nasal spray is FDA-approved for MDD with acute suicidal ideation/behavior.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Lithium</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Level 1 evidence for unipolar and bipolar depression. Demonstrates superior reduction of suicidal behavior and ideation compared to placebo.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">ECT</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Treatment of choice for severe, life-threatening suicidality, psychotic depression, or rapid safety needs. Shorter resolution time than oral medications.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">SAINT TMS</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Accelerated fMRI-guided TMS compresses 6 weeks into 5 days. Open-label study showed 100% of participants reported complete acute resolution of suicidal thoughts at 1 month.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">NRX-101 (Pipeline)</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Combination of D-cycloserine and lurasidone. FDA Phase 2/3 trials evaluating efficacy for severe depression and acute suicidality in conjunction with TMS.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Adjunctive Anxiolytics</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Short-term (1-4 weeks) use can safely manage initial antidepressant-induced arousal, anxiety, or agitation, which can otherwise aggravate suicide risk.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `,
+            table5: `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--accent-lavender);">
+                            <th style="text-align: left; padding: 0.5rem; color: var(--accent-lavender); font-weight: bold; width: 30%;">Modality</th>
+                            <th style="text-align: left; padding: 0.5rem; color: var(--accent-lavender); font-weight: bold;">Level of Evidence & Impact on Suicidality</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">CBT-SP</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);"><strong>Level 1 Evidence.</strong> Targets maladaptive cognitive processes and impulsivity. Reduces suicide attempts by 50% in patients with recent attempts.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">DBT</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);"><strong>Level 1 Evidence.</strong> Combines problem-solving, emotional regulation, distress tolerance, and phone coaching. Highly effective for high-frequency ideation and attempts.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">PST</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);"><strong>Level 1 (attempts) / Level 2 (ideation).</strong> Equips patients to solve problems systematically and reduces impulsivity. Effective at preventing reattempts.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">IPT</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);"><strong>Level 1 (Conditional).</strong> Addresses interpersonal friction, thwarted belongingness, and perceived burdensomeness that bridge thoughts to action.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `,
+            table6: `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--accent-lavender);">
+                            <th style="text-align: left; padding: 0.5rem; color: var(--accent-lavender); font-weight: bold; width: 30%;">Medication / Class</th>
+                            <th style="text-align: left; padding: 0.5rem; color: var(--accent-lavender); font-weight: bold;">Safety Warnings & Real-World Pharmacovigilance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">SSRIs & SNRIs (General)</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Carry a black box warning for increasing suicidal thoughts and behaviors in patients 24 years and younger. Ultimately reduce suicidal thoughts in the general population.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Gepirone ER (Exxua)</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Approved in 2023. Carries standard box warning for age 24 and younger. Contraindicated and not approved for pediatric patients.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Zuranolone (Zurzuvae)</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Oral treatment for postpartum depression and MDD. Close monitoring for mood changes, CNS depression, or suicidal ideation. Post-marketing FAERS data flags high Reporting Odds Ratio (ROR = 30.65) for suicidal ideation.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `
+        };
+
+        COURSE_MODULES.splice(0, COURSE_MODULES.length,
+            {
+                id: 1,
+                title: "Module 1: Distinguishing Thoughts, Ideation, and Intent",
+                objective: "Separate intrusive thoughts, passive desire to disappear, suicidal ideation, and active intent so the next step is clearer.",
+                psychology: "Severe depression narrows perceived options, but frightening thoughts are not all the same. Public education and clinical guidance both stress that warning signs, suicidal thoughts, and imminent danger need different responses. Naming the difference can lower panic and increase the odds of choosing support early.",
+                exercise: "Review Table 1 and Table 2. Then write one or two sentences about what usually tells you the situation is still a distress spike versus a moment that needs immediate human support.",
+                placeholder: "A sign that I need closer support instead of trying to power through is..."
+            },
+            {
+                id: 2,
+                title: "Module 2: Warning Signs, Risk Stacks, and Protective Stacks",
+                objective: "Identify the warning signs, risk factors, and protective factors that matter most in your own pattern.",
+                psychology: "Suicidality is not explained by one cause. Official frameworks describe layered risk at the individual, relationship, community, and societal levels. The same is true for protection: reasons for living, connectedness, cultural identity, coping tools, practical care, and reduced access to danger all matter.",
+                exercise: "Review Table 2. Write a short note naming one risk factor that tends to rise during bad periods and one protective factor you can strengthen sooner rather than later.",
+                placeholder: "One risk factor that builds pressure for me is... One protective factor I can strengthen is..."
+            },
+            {
+                id: 3,
+                title: "Module 3: Safety Planning, Support Scripts, and Follow-Up",
+                objective: "Turn vague survival intentions into a concrete safety plan and a simple handoff script.",
+                psychology: "Evidence-based suicide prevention repeatedly returns to collaborative safety planning, practical coping steps, reachable people, and follow-up contact after acute periods. The point is not a perfect document. The point is reducing friction when judgment is impaired and making help easier to reach.",
+                exercise: "Review Table 3, then update the Safety Plan fields in the Get Safe Now section. Write one sentence you could send to a trusted person or clinician when you need help fast.",
+                placeholder: "A message I could send when I need help is..."
+            },
+            {
+                id: 4,
+                title: "Module 4: Care Pathways, Treatment Options, and Community Prevention",
+                objective: "Understand how crisis support, clinician-guided treatment, and public-health prevention fit together without collapsing them into one lane.",
+                psychology: "Some people need urgent crisis care, some need treatment adjustments, and many need stronger long-range protection through connection, follow-up, environment, and access to care. Public-facing education should be honest about boundaries: State Not Fate can support preparation and reflection, but it cannot diagnose, predict, or replace clinicians or emergency services.",
+                exercise: "Review Table 4 and Table 5. Write a brief note about which support lane feels most relevant right now: crisis resources, treatment conversation, or community and routine protection.",
+                placeholder: "The support lane I most need to strengthen right now is..."
+            }
+        );
+
+        Object.assign(COMPENDIUM_TABLES, {
+            table1: `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--accent-lavender);">
+                            <th style="text-align: left; padding: 0.5rem; color: var(--accent-lavender); font-weight: bold; width: 30%;">Signal Type</th>
+                            <th style="text-align: left; padding: 0.5rem; color: var(--accent-lavender); font-weight: bold;">What It Can Mean</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Immediate danger indicators</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Current intent, a specific plan, inability to stay safe, severe agitation, psychosis, or rapidly escalating behavior call for urgent human intervention rather than self-guided reflection.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Common warning signs</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Hopelessness, feeling trapped, talking about being a burden, sleep collapse, increased substance use, withdrawal, rage, and marked mood or behavior change are warning signs that support should move closer.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Thoughts vs action</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">A distressing thought, a passive wish not to exist, and a decision to act are different states. The distinction matters because the response changes: grounding, support, crisis care, or emergency services.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Communication cue</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">If you are asking whether it is serious enough to tell someone, that is often a sign to tell someone sooner, not later.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `,
+            table2: `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--accent-lavender);">
+                            <th style="text-align: left; padding: 0.5rem; color: var(--accent-lavender); font-weight: bold; width: 30%;">Factor Type</th>
+                            <th style="text-align: left; padding: 0.5rem; color: var(--accent-lavender); font-weight: bold;">Examples</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Major risk factors</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Prior attempt, depression or other mental illness, substance use, trauma, acute loss, isolation, chronic pain, financial or legal crisis, care dropout, and easy access to dangerous means.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Protective factors</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Reasons for living, supportive relationships, belonging, cultural identity, problem-solving skills, quality healthcare, crisis resources, and follow-up contact.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Pattern clues</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">For many people the stack builds through sleep disruption, shame, conflict, withdrawal, substance use, or abrupt collapse in routine before the crisis becomes obvious.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Clinical tools</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Clinicians may use tools such as the C-SSRS, ASQ, and PHQ-9 item 9, but public education should not treat these as self-diagnosis engines or prediction machines.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `,
+            table3: `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--accent-lavender);">
+                            <th style="text-align: left; padding: 0.5rem; color: var(--accent-lavender); font-weight: bold; width: 30%;">Strategy</th>
+                            <th style="text-align: left; padding: 0.5rem; color: var(--accent-lavender); font-weight: bold;">Practical Use</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Safety Planning</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">A collaborative plan typically includes warning signs, internal coping steps, people and places that help, trusted contacts, professional resources, and ways to reduce immediate danger.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Follow-up contact</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Support does not end after the peak of a crisis. Follow-up contact, caring messages, and transition planning after emergency or hospital care are important prevention tools.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Means safety</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Reducing immediate access to dangerous items during high-risk periods is a collaborative harm-reduction step. Public-facing education should mention this without procedural detail.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">988 and emergency escalation</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">In the U.S., people can call or text 988 for the Suicide and Crisis Lifeline. If there is immediate danger or a person cannot be kept safe, call 911 or local emergency services.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `,
+            table4: `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--accent-lavender);">
+                            <th style="text-align: left; padding: 0.5rem; color: var(--accent-lavender); font-weight: bold; width: 30%;">Care Pathway</th>
+                            <th style="text-align: left; padding: 0.5rem; color: var(--accent-lavender); font-weight: bold;">What It Covers</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Crisis evaluation</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Used when risk is acute, safety is uncertain, or symptoms such as psychosis, severe agitation, or inability to maintain safety are present.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Outpatient treatment planning</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Medication changes, psychotherapy, sleep and substance-use care, and close follow-up often belong here when danger is not immediate but the risk stack is rising.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Psychotherapies</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Evidence-supported approaches may include CBT-based suicide prevention work, DBT, problem-solving approaches, and other structured therapies matched by clinicians to the person's needs.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Clinician-guided advanced options</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Some people may discuss options such as ECT, TMS, ketamine or esketamine, lithium, or other higher-intensity interventions with a qualified clinician when clinically appropriate. Public education should not overpromise speed or outcomes.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Medication monitoring</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Medication starts, stops, and dose changes deserve monitoring, especially in younger people and in early treatment windows. Changes in agitation or suicidal thinking should be reported promptly.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `,
+            table5: `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--accent-lavender);">
+                            <th style="text-align: left; padding: 0.5rem; color: var(--accent-lavender); font-weight: bold; width: 30%;">Framework</th>
+                            <th style="text-align: left; padding: 0.5rem; color: var(--accent-lavender); font-weight: bold;">Use for State Not Fate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">CDC public health approach</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Frames suicide prevention as more than crisis response. It includes upstream protection, safer environments, connection, economic and social conditions, and support after crises.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">HHS National Strategy</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Supports a whole-of-society model spanning prevention, treatment, crisis response, surveillance, recovery, and equity.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">WHO LIVE LIFE</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Highlights limiting access to means, responsible media, social-emotional learning, and early identification as practical prevention levers.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Zero Suicide and similar systems work</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Useful for thinking about safer care transitions, training, identification, engagement, treatment, and improvement at the system level.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `,
+            table6: `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--accent-lavender);">
+                            <th style="text-align: left; padding: 0.5rem; color: var(--accent-lavender); font-weight: bold; width: 30%;">Population or Context</th>
+                            <th style="text-align: left; padding: 0.5rem; color: var(--accent-lavender); font-weight: bold;">Why It Deserves Specific Attention</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Youth and young adults</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Need developmentally appropriate support, close monitoring, and honest discussion of digital life, identity, belonging, and care transitions.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Perinatal and postpartum</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Requires explicit screening and urgent assessment when severe depression, suicidality, psychosis, or mania are present. Intrusive thoughts and active intent should not be collapsed into one category.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Veterans, LGBTQ+ people, tribal communities, rural communities, and other disproportionately affected groups</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">Population-specific context matters. Culturally grounded, community-trusted, and identity-aware prevention is stronger than one generic message for everyone.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 0.5rem; font-weight: bold; color: var(--text-primary); vertical-align: top;">Public product design</td>
+                            <td style="padding: 0.5rem; color: var(--text-secondary);">A support product should provide crisis routing, preparation tools, and educational context without claiming to assess, predict, or prevent suicide on its own.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `
+        });
+
+        const SUICIDE_ACTION_MAP = {
+            distress: {
+                title: "Distress spike but no clear plan or intent",
+                summary: "Treat the next 10 to 30 minutes as a nervous-system problem first.",
+                steps: [
+                    "Use one grounding tool or a very short physical reset.",
+                    "Move closer to other people or a less isolated place if possible.",
+                    "Open your safety plan and lower decisions to the next hour, not the rest of life."
+                ]
+            },
+            warning: {
+                title: "Warning signs are building over hours or days",
+                summary: "Assume support needs to move closer before the situation becomes acute.",
+                steps: [
+                    "Name the warning signs plainly: sleep drift, withdrawal, hopelessness, agitation, substance use, or shutting down.",
+                    "Tell one trusted person that your state is tightening and that you need more contact.",
+                    "Reduce danger, simplify the day, and consider professional follow-up instead of waiting for certainty."
+                ]
+            },
+            help: {
+                title: "I need help fast",
+                summary: "When safety feels shaky, hand the situation to human support quickly.",
+                steps: [
+                    "Call or text 988 in the U.S. for live crisis support.",
+                    "If there is immediate danger or you cannot stay safe, call 911 or local emergency services.",
+                    "Use a short script: 'I do not feel safe being alone with this right now. Stay with me while I contact help.'"
+                ]
+            },
+            supporter: {
+                title: "I am supporting someone else",
+                summary: "Stay calm, ask directly, and focus on connection and handoff.",
+                steps: [
+                    "Ask direct, plain questions about whether they are thinking about suicide or feel unsafe.",
+                    "Do not argue, shame, or try to solve their life story in the moment.",
+                    "Stay with them, involve trusted support, and use 988 or emergency services when danger is immediate."
+                ]
+            }
+        };
+
+        const SUICIDE_SUPPORTER_SCRIPTS = {
+            self: {
+                title: "Text when you need help",
+                body: "I am not doing well and I do not want to be alone with my thoughts right now. Can you stay with me by text or phone while I get grounded or contact more support?"
+            },
+            friend: {
+                title: "Text to a trusted person",
+                body: "My warning signs are getting worse and I need a little more contact than usual tonight. I do not need you to fix everything. I need you to stay connected with me while I follow my safety plan."
+            },
+            supporter: {
+                title: "Reply as a supporter",
+                body: "I am glad you told me. I am with you right now. Are you in immediate danger, or do we need to call or text 988 together? Let’s slow this down and stay connected while we decide the next safe step."
+            }
+        };
+
+        const SUICIDE_SCENARIOS = {
+            self_low: {
+                title: "I am struggling and I need the next right step",
+                summary: "Focus on reducing danger, reducing isolation, and shortening the time horizon.",
+                bullets: [
+                    "Do not ask yourself to solve your whole life while your state is narrowed.",
+                    "Use one grounding step, one human contact step, and one environmental safety step.",
+                    "If safety feels shaky, move to 988 or emergency escalation faster rather than waiting for certainty."
+                ]
+            },
+            supporting: {
+                title: "I am helping someone else",
+                summary: "Your job is connection, reality-testing, and handoff, not perfect words.",
+                bullets: [
+                    "Ask directly about suicidal thoughts and immediate safety.",
+                    "Stay calm and avoid shaming, arguing, or overpromising secrecy.",
+                    "Help the person get to trusted support, 988, or emergency care when needed."
+                ]
+            },
+            post_crisis: {
+                title: "This is after a crisis or after a frightening night",
+                summary: "The danger is not automatically over just because the peak has passed.",
+                bullets: [
+                    "Plan contact for the next day or two instead of assuming relief means full stability.",
+                    "Write down warning signs, contacts, and the next follow-up appointment or check-in.",
+                    "Use caring contacts and practical structure to prevent the shame-and-disappearance cycle."
+                ]
+            },
+            care_team: {
+                title: "I need to talk to a therapist, psychiatrist, or doctor",
+                summary: "Bring concrete observations instead of trying to summarize your whole identity.",
+                bullets: [
+                    "Name warning signs, recent safety concerns, sleep shifts, substance use, agitation, or withdrawal.",
+                    "Bring one short message about what support or follow-up you think is missing.",
+                    "Ask directly about safety planning, monitoring, and care-transition support if recent risk has risen."
+                ]
+            }
+        };
+
+        const SUICIDE_SETTINGS_GUIDE = {
+            home: {
+                title: "Home and close relationships",
+                summary: "Home is where warning signs are often first visible and where practical safety steps matter most.",
+                bullets: [
+                    "Keep contact pathways obvious: who to text, who to call, and what phrase means 'stay with me now.'",
+                    "Reduce isolation and lower access to danger during high-risk periods.",
+                    "Treat sleep collapse, disappearance, rage, and sudden hopelessness as support signals, not attitude problems."
+                ]
+            },
+            primary_care: {
+                title: "Primary care and general medical settings",
+                summary: "Many people disclose distress first in ordinary medical care, not specialty mental-health care.",
+                bullets: [
+                    "Brief screening, direct questions, and clear handoff pathways matter.",
+                    "Primary care can help with follow-up, medication monitoring, sleep, pain, and referral escalation.",
+                    "A good handoff is warm and specific, not just 'here is a number to call later.'"
+                ]
+            },
+            school_work: {
+                title: "School and work settings",
+                summary: "These settings often notice functioning changes before anyone hears the deeper story.",
+                bullets: [
+                    "Withdrawal, attendance problems, abrupt performance drops, and visible overwhelm can be important flags.",
+                    "Support should focus on connection, safety, and referral rather than discipline-first reactions.",
+                    "Privacy matters, but so does not leaving a struggling person alone with a collapsing week."
+                ]
+            },
+            community: {
+                title: "Community and public-health settings",
+                summary: "Prevention is stronger when it is trusted, local, and connected to real belonging.",
+                bullets: [
+                    "Safer media, outreach, culturally grounded support, and trusted messengers all matter.",
+                    "Community prevention is not only about crisis lines; it is also about reducing stigma and increasing reachable support.",
+                    "Equity matters because suicide risk is shaped by access, identity, history, environment, and exclusion."
+                ]
+            }
+        };
+
+        let currentSelectedModuleId = 1;
+
+        function renderSuicideActionMap(mapKey) {
+            const displayEl = document.getElementById("sp-action-map-display");
+            if (!displayEl) return;
+
+            const item = SUICIDE_ACTION_MAP[mapKey] || SUICIDE_ACTION_MAP.distress;
+            displayEl.innerHTML = `
+                <div style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5;">
+                    <div style="font-size: 0.92rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.35rem;">${item.title}</div>
+                    <div style="margin-bottom: 0.65rem;">${item.summary}</div>
+                    <ol style="margin: 0; padding-left: 1.15rem;">
+                        ${item.steps.map(step => `<li style="margin-bottom: 0.35rem;">${step}</li>`).join("")}
+                    </ol>
+                </div>
+            `;
+        }
+
+        function renderSupporterScript(scriptKey) {
+            const displayEl = document.getElementById("sp-script-display");
+            if (!displayEl) return;
+
+            const item = SUICIDE_SUPPORTER_SCRIPTS[scriptKey] || SUICIDE_SUPPORTER_SCRIPTS.self;
+            displayEl.setAttribute("data-active-script", scriptKey);
+            displayEl.innerHTML = `
+                <div style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5;">
+                    <div style="font-size: 0.92rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.4rem;">${item.title}</div>
+                    <div style="padding: 0.75rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-sm); color: var(--text-primary);">
+                        ${item.body}
+                    </div>
+                </div>
+            `;
+        }
+
+        function copyActiveSupporterScript() {
+            const displayEl = document.getElementById("sp-script-display");
+            if (!displayEl) return;
+
+            const scriptKey = displayEl.getAttribute("data-active-script") || "self";
+            const item = SUICIDE_SUPPORTER_SCRIPTS[scriptKey] || SUICIDE_SUPPORTER_SCRIPTS.self;
+
+            navigator.clipboard.writeText(item.body).then(() => {
+                showToast("Support script copied to clipboard.", "success");
+            }).catch(err => {
+                console.error("Failed to copy support script: ", err);
+                showToast("Could not copy the script right now.", "warning");
+            });
+        }
+
+        function renderSuicideScenario(scenarioKey) {
+            const displayEl = document.getElementById("sp-scenario-display");
+            if (!displayEl) return;
+
+            const item = SUICIDE_SCENARIOS[scenarioKey] || SUICIDE_SCENARIOS.self_low;
+            displayEl.innerHTML = `
+                <div style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5;">
+                    <div style="font-size: 0.92rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.35rem;">${item.title}</div>
+                    <div style="margin-bottom: 0.65rem;">${item.summary}</div>
+                    <ul style="margin: 0; padding-left: 1.15rem;">
+                        ${item.bullets.map(step => `<li style="margin-bottom: 0.35rem;">${step}</li>`).join("")}
+                    </ul>
+                </div>
+            `;
+        }
+
+        function renderSuicideSetting(settingKey) {
+            const displayEl = document.getElementById("sp-setting-display");
+            if (!displayEl) return;
+
+            const item = SUICIDE_SETTINGS_GUIDE[settingKey] || SUICIDE_SETTINGS_GUIDE.home;
+            displayEl.innerHTML = `
+                <div style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5;">
+                    <div style="font-size: 0.92rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.35rem;">${item.title}</div>
+                    <div style="margin-bottom: 0.65rem;">${item.summary}</div>
+                    <ul style="margin: 0; padding-left: 1.15rem;">
+                        ${item.bullets.map(step => `<li style="margin-bottom: 0.35rem;">${step}</li>`).join("")}
+                    </ul>
+                </div>
+            `;
+        }
+
+        function renderCompendiumSubpanel() {
+            ensurePolarisState();
+
+            if (!state.compendiumCourse) {
+                state.compendiumCourse = {
+                    completedModules: [],
+                    reflections: {}
+                };
+            }
+
+            const totalProofPoints = (state.polaris && state.polaris.proof) ? state.polaris.proof.total : 0;
+            const threshold = 10;
+
+            const lockedEl = document.getElementById("sp-compendium-locked");
+            const unlockedEl = document.getElementById("sp-compendium-unlocked");
+
+            if (totalProofPoints < threshold) {
+                if (lockedEl) lockedEl.classList.remove("hidden");
+                if (unlockedEl) unlockedEl.classList.add("hidden");
+
+                const progressText = document.getElementById("sp-lock-progress-text");
+                const progressBar = document.getElementById("sp-lock-progress-bar");
+                if (progressText) {
+                    progressText.innerText = `${totalProofPoints} / ${threshold} pts`;
+                }
+                if (progressBar) {
+                    const percentage = Math.min(100, (totalProofPoints / threshold) * 100);
+                    progressBar.style.width = `${percentage}%`;
+                }
+            } else {
+                if (lockedEl) lockedEl.classList.add("hidden");
+                if (unlockedEl) unlockedEl.classList.remove("hidden");
+
+                renderCourseModuleDetails(currentSelectedModuleId);
+                
+                const progressBadge = document.getElementById("course-progress-badge");
+                if (progressBadge) {
+                    const completedCount = state.compendiumCourse.completedModules ? state.compendiumCourse.completedModules.length : 0;
+                    progressBadge.innerText = `${completedCount} / 4 Complete`;
+                }
+
+                const tableDisplay = document.getElementById("compendium-table-display");
+                if (tableDisplay && !tableDisplay.innerHTML.trim()) {
+                    const selectEl = document.getElementById("select-compendium-section");
+                    const currentTable = selectEl ? selectEl.value : "table1";
+                    switchCompendiumTable(currentTable);
+                }
+            }
+        }
+
+        function selectCourseModule(idx) {
+            renderCourseModuleDetails(idx);
+        }
+
+        function renderCourseModuleDetails(idx) {
+            currentSelectedModuleId = idx;
+            ensurePolarisState();
+
+            for (let i = 1; i <= 4; i++) {
+                const navBtn = document.getElementById(`btn-module-${i}`);
+                if (navBtn) {
+                    if (i === idx) {
+                        navBtn.classList.add("active");
+                        navBtn.style.background = "rgba(0, 255, 200, 0.12)";
+                        navBtn.style.borderColor = "var(--accent-teal)";
+                        navBtn.style.color = "var(--accent-teal)";
+                    } else {
+                        navBtn.classList.remove("active");
+                        navBtn.style.background = "";
+                        navBtn.style.borderColor = "";
+                        navBtn.style.color = "";
+                    }
+                }
+            }
+
+            const module = COURSE_MODULES[idx - 1];
+            const bodyEl = document.getElementById("module-education-body");
+            if (!bodyEl) return;
+
+            const isCompleted = state.compendiumCourse.completedModules && state.compendiumCourse.completedModules.includes(`module${idx}`);
+            const savedReflection = (state.compendiumCourse.reflections && state.compendiumCourse.reflections[`module${idx}`]) || "";
+
+            let statusBadgeHtml = isCompleted 
+                ? `<span style="background: rgba(0, 255, 200, 0.15); color: var(--accent-teal); padding: 0.15rem 0.4rem; border-radius: var(--radius-sm); font-size: 0.7rem; font-weight: bold; margin-left: 0.5rem; display: inline-block;">COMPLETED ✓</span>`
+                : `<span style="background: rgba(240, 115, 30, 0.1); color: var(--accent-orange); padding: 0.15rem 0.4rem; border-radius: var(--radius-sm); font-size: 0.7rem; font-weight: bold; margin-left: 0.5rem; display: inline-block;">IN PROGRESS</span>`;
+
+            bodyEl.innerHTML = `
+                <div style="margin-bottom: 0.75rem; display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                    <strong style="color: var(--text-primary); font-size: 0.95rem;">${module.title}</strong>
+                    ${statusBadgeHtml}
+                </div>
+                <div style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.6rem;">
+                    <strong style="color: var(--accent-teal);">Core Objective:</strong> ${module.objective}
+                </div>
+                <div style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.6rem; border-left: 2px solid var(--accent-lavender); padding-left: 0.6rem; background: rgba(165,120,240,0.02);">
+                    <strong style="color: var(--accent-lavender);">Psychology & Perspectives:</strong> ${module.psychology}
+                </div>
+                <div style="font-size: 0.82rem; color: var(--text-primary); padding: 0.4rem; background: rgba(0,255,200,0.02); border: 1px dashed rgba(0,255,200,0.15); border-radius: var(--radius-sm);">
+                    <strong>Exercise Instructions:</strong> ${module.exercise}
+                </div>
+            `;
+
+            const inputEl = document.getElementById("module-reflection-input");
+            if (inputEl) {
+                inputEl.value = savedReflection;
+                inputEl.placeholder = module.placeholder;
+                if (isCompleted) {
+                    inputEl.disabled = true;
+                    const submitBtn = document.getElementById("btn-submit-module");
+                    if (submitBtn) {
+                        submitBtn.innerText = "Completed ✓ (+5 Proof Points Logged)";
+                        submitBtn.disabled = true;
+                        submitBtn.style.opacity = "0.6";
+                    }
+                } else {
+                    inputEl.disabled = false;
+                    const submitBtn = document.getElementById("btn-submit-module");
+                    if (submitBtn) {
+                        submitBtn.innerText = "💾 Log Module Completion (+5 pts)";
+                        submitBtn.disabled = false;
+                        submitBtn.style.opacity = "1";
+                    }
+                }
+            }
+            updateModuleCharCount();
+        }
+
+        function updateModuleCharCount() {
+            const inputEl = document.getElementById("module-reflection-input");
+            const charCountEl = document.getElementById("module-char-count");
+            if (inputEl && charCountEl) {
+                const len = inputEl.value.trim().length;
+                charCountEl.innerText = `${len} / 15 chars`;
+                if (len >= 15) {
+                    charCountEl.style.color = "var(--accent-teal)";
+                } else {
+                    charCountEl.style.color = "var(--text-muted)";
+                }
+            }
+        }
+
+        function submitCurrentModule() {
+            ensurePolarisState();
+            const idx = currentSelectedModuleId;
+            const inputEl = document.getElementById("module-reflection-input");
+            if (!inputEl) return;
+
+            const text = inputEl.value.trim();
+            if (text.length < 15) {
+                showToast("Please write a reflection of at least 15 characters to register completion.", "warning");
+                return;
+            }
+
+            const moduleKey = `module${idx}`;
+            
+            if (state.compendiumCourse.completedModules.includes(moduleKey)) {
+                return;
+            }
+
+            state.compendiumCourse.completedModules.push(moduleKey);
+            state.compendiumCourse.reflections[moduleKey] = text;
+
+            // Reward 5 proof points
+            state.polaris.proof.today += 5;
+            state.polaris.proof.total += 5;
+            state.polaris.proof.ledger.push({
+                id: 'proof_course_' + Date.now(),
+                timestamp: new Date().toISOString(),
+                action: `Completed Course Module ${idx}: ${COURSE_MODULES[idx - 1].title.split(':')[0]}`,
+                points: 5
+            });
+
+            logActionCompletion(`Suicide Compendium Course - Completed Module ${idx}`);
+
+            saveState();
+            showToast(`Module ${idx} completed! +5 Proof Points registered.`, "success");
+
+            renderCompendiumSubpanel();
+            updateDashboardMetrics();
+        }
+
+        function switchCompendiumTable(tableId) {
+            const displayEl = document.getElementById("compendium-table-display");
+            if (!displayEl) return;
+
+            const tableHtml = COMPENDIUM_TABLES[tableId] || "<p class='text-muted'>Select a section from the dropdown list to display clinical guidelines.</p>";
+            displayEl.innerHTML = tableHtml;
+        }
+
+        // Export so variables/functions are global
+        window.COURSE_MODULES = COURSE_MODULES;
+        window.COMPENDIUM_TABLES = COMPENDIUM_TABLES;
+        window.renderCompendiumSubpanel = renderCompendiumSubpanel;
+        window.selectCourseModule = selectCourseModule;
+        window.updateModuleCharCount = updateModuleCharCount;
+        window.submitCurrentModule = submitCurrentModule;
+        window.switchCompendiumTable = switchCompendiumTable;
 
         window.onload = init;

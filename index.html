@@ -20,6 +20,7 @@
             <div class="public-nav-links">
                 <a href="#learn">Learn</a>
                 <a href="#program">Start / Try the program</a>
+                <a href="/suicide-prevention">Suicide Prevention</a>
                 <a href="/evidence">Evidence / Sources</a>
                 <a href="/contact">Contact / Join</a>
                 <a href="/crisis">Crisis Help</a>
@@ -34,6 +35,7 @@
             <p class="public-summary">State Not Fate is proof-based depression support that treats depression as functional system disruption, not moral failure.</p>
             <div class="public-actions" id="program">
                 <a class="btn btn-primary" href="#screen-welcome">Try the local beta</a>
+                <a class="btn btn-secondary" href="/suicide-prevention">Suicide prevention appendix</a>
                 <a class="btn btn-secondary" href="/evidence">Review sources</a>
             </div>
         </section>
@@ -1373,9 +1375,10 @@
             <div id="tab-suicideprevention" class="tab-content hidden">
                 <!-- Sub-Navigation for Suicide Prevention -->
                 <div class="sp-subnav" style="display:flex; gap:0.5rem; margin-bottom:1.5rem; border-bottom:1px solid var(--card-border); padding-bottom:0.75rem; flex-wrap:wrap;">
-                    <button class="btn btn-secondary sp-subtab-btn active" id="btn-sp-subtab-crisis" data-subtab="crisis">Crisis Plan & Somatics</button>
-                    <button class="btn btn-secondary sp-subtab-btn" id="btn-sp-subtab-parables" data-subtab="parables">Parables of the Edge</button>
-                    <button class="btn btn-secondary sp-subtab-btn" id="btn-sp-subtab-journal" data-subtab="journal">Restraint & De-escalation Journal</button>
+                    <button class="btn btn-secondary sp-subtab-btn active" id="btn-sp-subtab-crisis" data-subtab="crisis">Get Safe Now</button>
+                    <button class="btn btn-secondary sp-subtab-btn" id="btn-sp-subtab-parables" data-subtab="parables">Warning Signs & Risk</button>
+                    <button class="btn btn-secondary sp-subtab-btn" id="btn-sp-subtab-journal" data-subtab="journal">Support Plan & Reflection</button>
+                    <button class="btn btn-secondary sp-subtab-btn" id="btn-sp-subtab-compendium" data-subtab="compendium" style="color: var(--accent-lavender);">Clinical & Community Guide 📚</button>
                 </div>
 
                 <div id="sp-panel-crisis" class="sp-subpanel">
@@ -1431,7 +1434,7 @@
                             </h3>
                             
                             <p class="text-secondary" style="font-size: 0.8rem; margin-bottom: 1.25rem;">
-                                Having a pre-loaded plan eliminates decision friction during severe states. Edit these fields to save to your local browser storage.
+                                Build this while relatively steady so it is easier to use when your thinking narrows. These notes stay in your local browser storage.
                             </p>
                             
                             <div style="display: flex; flex-direction: column; gap: 1rem;">
@@ -1538,7 +1541,7 @@
                         <div class="hotline-card glass-card" style="border-left: 2px solid var(--accent-red); background: rgba(230, 40, 60, 0.01);">
                             <h3 class="text-red" style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1.1rem;">🚨 Immediate Crisis Lines</h3>
                             <p class="text-secondary" style="font-size: 0.8rem; margin-bottom: 1rem;">
-                                If thoughts involve immediate intent or access to means, please contact one of these secure, confidential hotlines right away.
+                                If you may act soon, cannot stay safe, or are losing control of the situation, use live human support right away.
                             </p>
                             <ul class="hotline-list" style="margin-bottom: 1rem;">
                                 <li style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0.6rem 0;">
@@ -1580,7 +1583,7 @@
                                 📋 Provider Collaboration Template
                             </h3>
                             <p class="text-secondary" style="font-size: 0.8rem; line-height: 1.5; margin-bottom: 0.75rem;">
-                                If you work with a therapist, psychiatrist, or coach, you can use this template to explain how State Not Fate integrates into your care plan:
+                                If you work with a therapist, psychiatrist, or doctor, you can use this template to explain how State Not Fate fits into broader care:
                             </p>
                             <div style="background: rgba(0,0,0,0.25); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid rgba(255,255,255,0.05); font-size: 0.75rem; font-style: italic; color: var(--text-secondary); line-height: 1.45; position: relative;">
                                 "I am utilizing a structured behavioral activation and circadian timing system to manage my daily energy and function. It helps me track anchors, record restart speed, and manage task-entry friction. It is designed to complement our recovery objectives by tracking my floor wins and PHQ-9 progress."
@@ -1595,10 +1598,10 @@
                 <div id="sp-panel-parables" class="sp-subpanel hidden">
                     <div class="glass-card mb-3" style="border-left: 2px solid var(--accent-lavender); background: rgba(165, 120, 240, 0.01);">
                         <h2 style="color: var(--accent-lavender); margin-top: 0; display: flex; align-items: center; gap: 0.5rem; font-size: 1.25rem;">
-                            📖 Parables of the Edge
+                            Warning Signs, Risk, and Protective Factors
                         </h2>
                         <p class="text-secondary" style="font-size: 0.9rem; margin-bottom: 1rem;">
-                            Chronic depression can distort the brain's perspective. These parables provide grounded cognitive reframing to dismantle romanticized ideas of suicide and validate restraint.
+                            This section turns suicidal states into something more observable: warning signs, escalation cues, protective factors, and next actions. It is educational support, not diagnosis.
                         </p>
                     </div>
 
@@ -1607,16 +1610,16 @@
                         <div class="glass-card parable-card" id="parable-card-chioran" style="border-left: 2px solid var(--accent-teal); display:flex; flex-direction:column; justify-content:space-between;">
                             <div>
                                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
-                                    <h3 style="color: var(--accent-teal); font-size: 0.95rem; margin:0;">I. The Solace of Cioran</h3>
+                                    <h3 style="color: var(--accent-teal); font-size: 0.95rem; margin:0;">I. Thoughts, Ideation, and Intent</h3>
                                     <span class="badge parable-status-badge" id="parable-badge-chioran" style="background:rgba(0, 255, 200, 0.1); color:var(--accent-teal); font-size:0.65rem; border:1px solid var(--card-border);">Unread</span>
                                 </div>
                                 <p class="text-secondary" style="font-size:0.85rem; line-height:1.5; margin-bottom:1rem;">
-                                    <em>"Without the thought of suicide, I certainly would have killed myself."</em> — Emil Cioran.<br><br>
-                                    <strong>The Reframing:</strong> When suffering is severe, the mind searches for exit routes. Treating the thought of suicide not as a plan that must be executed, but as a cognitive escape hatch/release valve, can provide immediate comfort. It reduces panic by acknowledging the option exists, allowing you to breathe and choose to stay one more day.
+                                    <strong>The distinction:</strong> A frightening thought, passive wish to disappear, and active suicidal intent are not the same thing.<br><br>
+                                    <strong>Why it matters:</strong> Naming the difference reduces panic and helps you decide whether you need grounding, closer support, or urgent crisis help right now.
                                 </p>
                             </div>
                             <div>
-                                <textarea class="parable-reflection-input" id="reflect-chioran" placeholder="Write a brief reflection: How does viewing the thought as a relief valve rather than a command change things?" style="width:100%; height:60px; padding:0.4rem; background:rgba(0,0,0,0.3); border:1px solid var(--card-border); color:var(--text-primary); border-radius:var(--radius-sm); font-size:0.75rem; margin-bottom:0.5rem; resize:none;"></textarea>
+                                <textarea class="parable-reflection-input" id="reflect-chioran" placeholder="What signs tell you a hard moment is still a thought spiral versus a true emergency?" style="width:100%; height:60px; padding:0.4rem; background:rgba(0,0,0,0.3); border:1px solid var(--card-border); color:var(--text-primary); border-radius:var(--radius-sm); font-size:0.75rem; margin-bottom:0.5rem; resize:none;"></textarea>
                                 <button class="btn btn-primary btn-small w-full" id="btn-sp-reflect-chioran" style="background:var(--accent-teal); border-color:var(--accent-teal); color:#0b0713; font-weight:bold;">Log Reflection</button>
                             </div>
                         </div>
@@ -1625,15 +1628,15 @@
                         <div class="glass-card parable-card" id="parable-card-restraint" style="border-left: 2px solid var(--accent-orange); display:flex; flex-direction:column; justify-content:space-between;">
                             <div>
                                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
-                                    <h3 style="color: var(--accent-orange); font-size: 0.95rem; margin:0;">II. The Restraint Principle</h3>
+                                    <h3 style="color: var(--accent-orange); font-size: 0.95rem; margin:0;">II. Escalation Warning Signs</h3>
                                     <span class="badge parable-status-badge" id="parable-badge-restraint" style="background:rgba(255, 170, 0, 0.1); color:var(--accent-orange); font-size:0.65rem; border:1px solid var(--card-border);">Unread</span>
                                 </div>
                                 <p class="text-secondary" style="font-size:0.85rem; line-height:1.5; margin-bottom:1rem;">
-                                    <strong>The Reframing:</strong> Having dark, disturbing, or violent thoughts does not make you a bad person. In severe depression, the brain generates extreme errors. What truly defines a person is the restraint they show—choosing not to act on unhelpful fictions—and how they treat others when they have nothing left to give.
+                                    <strong>What to watch for:</strong> Rising agitation, hopelessness, sleep collapse, withdrawal, feeling trapped, substance escalation, or suddenly feeling "done" can all mean support needs to move closer.
                                 </p>
                             </div>
                             <div>
-                                <textarea class="parable-reflection-input" id="reflect-restraint" placeholder="Write a brief reflection: How does separating unbidden thoughts from your character affect your self-blame?" style="width:100%; height:60px; padding:0.4rem; background:rgba(0,0,0,0.3); border:1px solid var(--card-border); color:var(--text-primary); border-radius:var(--radius-sm); font-size:0.75rem; margin-bottom:0.5rem; resize:none;"></textarea>
+                                <textarea class="parable-reflection-input" id="reflect-restraint" placeholder="Which warning signs usually show up first for you?" style="width:100%; height:60px; padding:0.4rem; background:rgba(0,0,0,0.3); border:1px solid var(--card-border); color:var(--text-primary); border-radius:var(--radius-sm); font-size:0.75rem; margin-bottom:0.5rem; resize:none;"></textarea>
                                 <button class="btn btn-primary btn-small w-full" id="btn-sp-reflect-restraint" style="background:var(--accent-orange); border-color:var(--accent-orange); color:#0b0713; font-weight:bold;">Log Reflection</button>
                             </div>
                         </div>
@@ -1642,15 +1645,15 @@
                         <div class="glass-card parable-card" id="parable-card-gap10" style="border-left: 2px solid var(--accent-lavender); display:flex; flex-direction:column; justify-content:space-between;">
                             <div>
                                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
-                                    <h3 style="color: var(--accent-lavender); font-size: 0.95rem; margin:0;">III. The 10% Reality</h3>
+                                    <h3 style="color: var(--accent-lavender); font-size: 0.95rem; margin:0;">III. Protective Factors That Count</h3>
                                     <span class="badge parable-status-badge" id="parable-badge-gap10" style="background:rgba(255, 80, 255, 0.1); color:var(--accent-lavender); font-size:0.65rem; border:1px solid var(--card-border);">Unread</span>
                                 </div>
                                 <p class="text-secondary" style="font-size:0.85rem; line-height:1.5; margin-bottom:1rem;">
-                                    <strong>The Reframing:</strong> Realistically, only about 10% of people you interact with have the ability and capacity to understand chronic depression. Expecting empathy from everyone will lead to disappointment and isolation. Protect your relationships by managing boundaries and choosing where to share your raw state.
+                                    <strong>What helps:</strong> Reasons for living, reachable people, cultural identity, routines, reduced access to dangerous items, practical care, and follow-up contact all strengthen the protection stack.
                                 </p>
                             </div>
                             <div>
-                                <textarea class="parable-reflection-input" id="reflect-gap10" placeholder="Write a brief reflection: How can you protect your boundaries by managing expectations of others?" style="width:100%; height:60px; padding:0.4rem; background:rgba(0,0,0,0.3); border:1px solid var(--card-border); color:var(--text-primary); border-radius:var(--radius-sm); font-size:0.75rem; margin-bottom:0.5rem; resize:none;"></textarea>
+                                <textarea class="parable-reflection-input" id="reflect-gap10" placeholder="What actually lowers danger or helps you hold on for the next hour?" style="width:100%; height:60px; padding:0.4rem; background:rgba(0,0,0,0.3); border:1px solid var(--card-border); color:var(--text-primary); border-radius:var(--radius-sm); font-size:0.75rem; margin-bottom:0.5rem; resize:none;"></textarea>
                                 <button class="btn btn-primary btn-small w-full" id="btn-sp-reflect-gap10" style="background:var(--accent-lavender); border-color:var(--accent-lavender); color:#0b0713; font-weight:bold;">Log Reflection</button>
                             </div>
                         </div>
@@ -1659,15 +1662,15 @@
                         <div class="glass-card parable-card" id="parable-card-council" style="border-left: 2px solid var(--accent-red); display:flex; flex-direction:column; justify-content:space-between;">
                             <div>
                                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
-                                    <h3 style="color: var(--accent-red); font-size: 0.95rem; margin:0;">IV. The Cerebral Council</h3>
+                                    <h3 style="color: var(--accent-red); font-size: 0.95rem; margin:0;">IV. Delay, Hand Off, and Stay With People</h3>
                                     <span class="badge parable-status-badge" id="parable-badge-council" style="background:rgba(255, 50, 50, 0.1); color:var(--accent-red); font-size:0.65rem; border:1px solid var(--card-border);">Unread</span>
                                 </div>
                                 <p class="text-secondary" style="font-size:0.85rem; line-height:1.5; margin-bottom:1rem;">
-                                    <strong>The Reframing:</strong> Depression acts like a hostile takeover of your "Cerebral Council". It is like Bruce Banner being trapped while the Hulk rages and runs the body. The thoughts generated in this state are the Hulk's logic, not yours. Recognize that you are temporarily trapped in a state, not a final fate.
+                                    <strong>Core move:</strong> When the situation is becoming dangerous, the goal is not to solve life. The goal is to reduce danger, delay action, move closer to people, and hand off to human support.
                                 </p>
                             </div>
                             <div>
-                                <textarea class="parable-reflection-input" id="reflect-council" placeholder="Write a brief reflection: Can you recognize your current state as a 'hijacking' rather than your true self?" style="width:100%; height:60px; padding:0.4rem; background:rgba(0,0,0,0.3); border:1px solid var(--card-border); color:var(--text-primary); border-radius:var(--radius-sm); font-size:0.75rem; margin-bottom:0.5rem; resize:none;"></textarea>
+                                <textarea class="parable-reflection-input" id="reflect-council" placeholder="What is your fastest move when you need to hand the situation to another person?" style="width:100%; height:60px; padding:0.4rem; background:rgba(0,0,0,0.3); border:1px solid var(--card-border); color:var(--text-primary); border-radius:var(--radius-sm); font-size:0.75rem; margin-bottom:0.5rem; resize:none;"></textarea>
                                 <button class="btn btn-primary btn-small w-full" id="btn-sp-reflect-council" style="background:var(--accent-red); border-color:var(--accent-red); color:#fff; font-weight:bold;">Log Reflection</button>
                             </div>
                         </div>
@@ -1678,10 +1681,10 @@
                 <div id="sp-panel-journal" class="sp-subpanel hidden">
                     <div class="glass-card mb-3" style="border-left: 2px solid var(--accent-orange); background: rgba(240, 115, 30, 0.01);">
                         <h2 style="color: var(--accent-orange); margin-top: 0; display: flex; align-items: center; gap: 0.5rem; font-size: 1.25rem;">
-                            📝 Safety & Restraint Journal
+                            Safety Planning and Support Notes
                         </h2>
                         <p class="text-secondary" style="font-size: 0.9rem;">
-                            Record intrusive thoughts in a secure, sandboxed space. Apply the Restraint Principle: fact-check the impulse and script your balanced choice.
+                            Use this space to capture warning signs, counter-scripts, supporter handoff language, and the next safe step. Journaling is not a substitute for live help in crisis.
                         </p>
                     </div>
 
@@ -1709,24 +1712,24 @@
 
                                     <div>
                                         <label for="input-sp-journal-counter" class="safebox-field-label" style="display:block; margin-bottom:0.35rem; font-weight:bold; font-size:0.85rem;">
-                                            Balanced Counter-Script (The Restraint Statement)
+                                            Balanced Counter-Script
                                         </label>
-                                        <textarea id="input-sp-journal-counter" rows="3" placeholder="Identify the restraint: 'These thoughts do not define me. My choice is to [take one tiny action / stay on the floor].'" style="width:100%; padding:0.6rem; background:rgba(0,0,0,0.3); border:1px solid var(--card-border); color:var(--text-primary); border-radius:var(--radius-sm); font-size:0.85rem; resize:vertical;"></textarea>
+                                        <textarea id="input-sp-journal-counter" rows="3" placeholder="Example: 'This is a dangerous state, not a final truth. My next step is to stay with people and use support.'" style="width:100%; padding:0.6rem; background:rgba(0,0,0,0.3); border:1px solid var(--card-border); color:var(--text-primary); border-radius:var(--radius-sm); font-size:0.85rem; resize:vertical;"></textarea>
                                     </div>
 
                                     <div>
-                                        <label for="select-sp-journal-parable" class="safebox-field-label" style="display:block; margin-bottom:0.35rem; font-weight:bold; font-size:0.85rem;">Reflected Parable (Optional)</label>
+                                        <label for="select-sp-journal-parable" class="safebox-field-label" style="display:block; margin-bottom:0.35rem; font-weight:bold; font-size:0.85rem;">Related Education Card (Optional)</label>
                                         <select id="select-sp-journal-parable" style="width:100%; padding:0.5rem; background:rgba(0,0,0,0.5); border:1px solid var(--card-border); color:var(--text-primary); border-radius:var(--radius-sm); font-size:0.85rem;">
                                             <option value="">None / General Reflection</option>
-                                            <option value="chioran">I. The Solace of Cioran</option>
-                                            <option value="restraint">II. The Restraint Principle</option>
-                                            <option value="gap10">III. The 10% Reality</option>
-                                            <option value="council">IV. The Cerebral Council</option>
+                                            <option value="chioran">I. Thoughts, Ideation, and Intent</option>
+                                            <option value="restraint">II. Escalation Warning Signs</option>
+                                            <option value="gap10">III. Protective Factors That Count</option>
+                                            <option value="council">IV. Delay, Hand Off, and Stay With People</option>
                                         </select>
                                     </div>
 
                                     <button class="btn btn-primary" id="btn-sp-save-journal" style="width:100%; justify-content:center; background:var(--accent-teal); border-color:var(--accent-teal); color:#0b0713; font-weight:bold;">
-                                        💾 Save Restraint Entry
+                                        💾 Save Support Entry
                                     </button>
                                 </div>
                             </div>
@@ -1735,7 +1738,7 @@
                         <!-- Right Column: History Timeline -->
                         <div class="safety-plan-block">
                             <div class="glass-card" style="border-left: 2px solid var(--accent-lavender); min-height:430px; display:flex; flex-direction:column;">
-                                <h3 style="color:var(--accent-lavender); margin-top:0; margin-bottom:0.75rem; font-size:1.1rem;">Journal Timeline</h3>
+                                <h3 style="color:var(--accent-lavender); margin-top:0; margin-bottom:0.75rem; font-size:1.1rem;">Support Timeline</h3>
                                 
                                 <div style="margin-bottom:1rem;">
                                     <input type="text" id="input-sp-journal-search" placeholder="🔍 Search timeline entries..." style="width:100%; padding:0.5rem 0.75rem; background:rgba(0,0,0,0.3); border:1px solid var(--card-border); color:var(--text-primary); border-radius:var(--radius-sm); font-size:0.8rem;">
@@ -1745,6 +1748,323 @@
                                     <!-- Injected dynamically -->
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: COMPENDIUM & COURSE -->
+                <div id="sp-panel-compendium" class="sp-subpanel hidden">
+                    <!-- Locked View (Proof Point Barrier Card) -->
+                    <div id="sp-compendium-locked" class="glass-card" style="border-left: 2px solid var(--accent-orange); background: rgba(240, 115, 30, 0.02); text-align: center; padding: 2.5rem 1.5rem; margin-bottom: 1.5rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🔒</div>
+                        <h2 style="color: var(--accent-orange); margin-top: 0; margin-bottom: 0.5rem; font-size: 1.35rem;">Deeper Guide Locked Until A Basic Floor Is In Place</h2>
+                        <p class="text-secondary" style="font-size: 0.95rem; max-width: 600px; margin: 0 auto 1.5rem auto; line-height: 1.6;">
+                            Immediate safety tools stay available at all times. The deeper guide unlocks after you have logged some basic proof of routine and self-observation so the material lands in a steadier state.
+                        </p>
+                        
+                        <div style="max-width: 400px; margin: 0 auto 1.5rem auto; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); padding: 1.25rem; border-radius: var(--radius-md);">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.5rem;">
+                                <span class="text-muted">Unlocking Progress</span>
+                                <strong id="sp-lock-progress-text" class="text-orange" style="color: var(--accent-orange);">0 / 10 pts</strong>
+                            </div>
+                            <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; margin-bottom: 0.5rem;">
+                                <div id="sp-lock-progress-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--accent-orange), var(--accent-lavender)); transition: width 0.3s ease;"></div>
+                            </div>
+                            <span class="text-muted" style="font-size: 0.75rem;">Earn points by adding and completing anchors on your main Dashboard.</span>
+                        </div>
+                    </div>
+
+                    <!-- Unlocked View -->
+                    <div id="sp-compendium-unlocked" class="hidden">
+                        <!-- Header banner -->
+                        <div class="glass-card mb-3" style="border-left: 2px solid var(--accent-lavender); background: rgba(165, 120, 240, 0.01); padding: 1.25rem;">
+                            <h2 style="color: var(--accent-lavender); margin-top: 0; margin-bottom: 0.5rem; font-size: 1.25rem;">
+                                📚 Clinical and Community Guide
+                            </h2>
+                            <p class="text-secondary" style="font-size: 0.9rem; margin: 0;">
+                                A structured learning space for warning signs, safety planning, crisis systems, treatment pathways, and community prevention. This is education support, not medical advice.
+                            </p>
+                        </div>
+
+                        <!-- Course & Compendium Split Grid -->
+                        <div class="safebox-grid" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.25rem;">
+                            <!-- Left Column: The Course -->
+                            <div class="safety-plan-block">
+                                <div class="glass-card" style="border-left: 2px solid var(--accent-teal); height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
+                                    <div>
+                                        <h3 style="color: var(--accent-teal); margin-top: 0; margin-bottom: 1rem; font-size: 1.1rem; display: flex; align-items: center; justify-content: space-between;">
+                                            <span>🎓 Guided Learning Modules</span>
+                                            <span id="course-progress-badge" class="badge" style="background: rgba(0, 255, 200, 0.1); color: var(--accent-teal); font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: var(--radius-sm);">0 / 4 Complete</span>
+                                        </h3>
+                                        
+                                        <!-- Course navigation button buttons -->
+                                        <div style="display: flex; gap: 0.4rem; margin-bottom: 1.25rem; flex-wrap: wrap;">
+                                            <button class="btn btn-secondary btn-small course-module-nav active" id="btn-module-1" style="flex: 1; padding: 0.4rem; font-size: 0.75rem;">M1: Distinguish</button>
+                                            <button class="btn btn-secondary btn-small course-module-nav" id="btn-module-2" style="flex: 1; padding: 0.4rem; font-size: 0.75rem;">M2: Warning Signs</button>
+                                            <button class="btn btn-secondary btn-small course-module-nav" id="btn-module-3" style="flex: 1; padding: 0.4rem; font-size: 0.75rem;">M3: Safety Plan</button>
+                                            <button class="btn btn-secondary btn-small course-module-nav" id="btn-module-4" style="flex: 1; padding: 0.4rem; font-size: 0.75rem;">M4: Care Pathways</button>
+                                        </div>
+
+                                        <!-- Module Details Area -->
+                                        <div id="module-education-body" style="background: rgba(0,0,0,0.2); padding: 1rem; border: 1px solid var(--card-border); border-radius: var(--radius-md); min-height: 200px; font-size: 0.9rem; line-height: 1.5; color: var(--text-secondary);">
+                                            <!-- Populated dynamically by JS -->
+                                        </div>
+                                    </div>
+
+                                    <div style="margin-top: 1.25rem; border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 1rem;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                            <label id="module-exercise-label" class="safebox-field-label" style="font-weight: bold; font-size: 0.85rem; color: var(--accent-teal); margin: 0;">Exercise</label>
+                                            <span id="module-char-count" style="font-size: 0.75rem; color: var(--text-muted);">0 / 15 chars</span>
+                                        </div>
+                                        <textarea id="module-reflection-input" rows="3" placeholder="Write your reflection here..." style="width:100%; padding:0.6rem; background:rgba(0,0,0,0.35); border:1px solid var(--card-border); color:var(--text-primary); border-radius:var(--radius-sm); font-size:0.85rem; resize:vertical; margin-bottom: 0.75rem; font-family: inherit; outline: none;"></textarea>
+                                        <button class="btn btn-primary w-full" id="btn-submit-module" style="background: var(--accent-teal); border-color: var(--accent-teal); color: #0b0713; font-weight: bold; justify-content: center; width: 100%;">
+                                            💾 Log Module Completion (+5 pts)
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Column: Interactive Knowledge Compendium -->
+                            <div class="safety-plan-block">
+                                <div class="glass-card" style="border-left: 2px solid var(--accent-lavender); height: 100%; display: flex; flex-direction: column;">
+                                    <h3 style="color: var(--accent-lavender); margin-top: 0; margin-bottom: 0.5rem; font-size: 1.1rem;">
+                                        📖 Structured Reference
+                                    </h3>
+                                    <p class="text-secondary" style="font-size: 0.8rem; margin-bottom: 1rem; line-height: 1.4;">
+                                        Browse current, public-facing reference tables grounded in official guidance, research summaries, and community prevention frameworks.
+                                    </p>
+
+                                    <!-- Compendium Subtabs Selector -->
+                                    <select id="select-compendium-section" style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.5); border: 1px solid var(--card-border); color: var(--text-primary); border-radius: var(--radius-sm); font-size: 0.8rem; margin-bottom: 1rem; font-family: inherit; outline: none;">
+                                        <option value="table1">Table 1: Warning Signs and Acute Indicators</option>
+                                        <option value="table2">Table 2: Risk Factors and Protective Factors</option>
+                                        <option value="table3">Table 3: Safety Planning and Follow-Up</option>
+                                        <option value="table4">Table 4: Clinical Care Pathways</option>
+                                        <option value="table5">Table 5: Public Health and Community Prevention</option>
+                                        <option value="table6">Table 6: Equity and Special Populations</option>
+                                    </select>
+
+                                    <!-- Tables Display Area -->
+                                    <div id="compendium-table-display" style="flex: 1; overflow-y: auto; max-height: 380px; font-size: 0.8rem; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: var(--radius-sm); background: rgba(0, 0, 0, 0.15); padding: 0.5rem; line-height: 1.4;">
+                                        <!-- Populated dynamically by JS -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="suicide-education-grid mt-3">
+                            <div class="glass-card" style="border-left: 2px solid var(--accent-orange);">
+                                <h3 style="color: var(--accent-orange); margin-top: 0; margin-bottom: 0.5rem; font-size: 1.05rem;">Action Map</h3>
+                                <p class="text-secondary" style="font-size: 0.8rem; margin-bottom: 1rem; line-height: 1.45;">
+                                    Pick the situation that fits best. This is a routing aid for the next support move, not a diagnosis.
+                                </p>
+                                <div class="suicide-action-map" role="tablist" aria-label="Suicide prevention action map">
+                                    <button class="btn btn-secondary btn-small suicide-map-btn active" id="btn-sp-map-distress" data-map="distress" aria-pressed="true">Distress Spike</button>
+                                    <button class="btn btn-secondary btn-small suicide-map-btn" id="btn-sp-map-warning" data-map="warning" aria-pressed="false">Warning Signs Rising</button>
+                                    <button class="btn btn-secondary btn-small suicide-map-btn" id="btn-sp-map-help" data-map="help" aria-pressed="false">I Need Help Fast</button>
+                                    <button class="btn btn-secondary btn-small suicide-map-btn" id="btn-sp-map-supporter" data-map="supporter" aria-pressed="false">I Am Supporting Someone</button>
+                                </div>
+                                <div id="sp-action-map-display" class="suicide-info-panel" aria-live="polite">
+                                    <!-- Populated dynamically -->
+                                </div>
+                            </div>
+
+                            <div class="glass-card" style="border-left: 2px solid var(--accent-teal);">
+                                <h3 style="color: var(--accent-teal); margin-top: 0; margin-bottom: 0.5rem; font-size: 1.05rem;">Supporter Scripts</h3>
+                                <p class="text-secondary" style="font-size: 0.8rem; margin-bottom: 1rem; line-height: 1.45;">
+                                    Short scripts for reaching out, asking someone to stay with you, or responding to another person without panic or lectures.
+                                </p>
+                                <div class="suicide-script-picker" role="tablist" aria-label="Supporter script picker">
+                                    <button class="btn btn-secondary btn-small suicide-script-btn active" id="btn-sp-script-self" data-script="self" aria-pressed="true">Text For Me</button>
+                                    <button class="btn btn-secondary btn-small suicide-script-btn" id="btn-sp-script-friend" data-script="friend" aria-pressed="false">Text To A Friend</button>
+                                    <button class="btn btn-secondary btn-small suicide-script-btn" id="btn-sp-script-supporter" data-script="supporter" aria-pressed="false">Reply As Supporter</button>
+                                </div>
+                                <div id="sp-script-display" class="suicide-script-panel" aria-live="polite">
+                                    <!-- Populated dynamically -->
+                                </div>
+                                <div style="display:flex; justify-content:flex-end; margin-top:0.75rem;">
+                                    <button class="btn btn-secondary btn-small" id="btn-sp-copy-active-script">Copy Active Script</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="suicide-education-grid mt-3">
+                            <div class="glass-card" style="border-left: 2px solid var(--accent-lavender);">
+                                <h3 style="color: var(--accent-lavender); margin-top: 0; margin-bottom: 0.5rem; font-size: 1.05rem;">Scenario Navigator</h3>
+                                <p class="text-secondary" style="font-size: 0.8rem; margin-bottom: 1rem; line-height: 1.45;">
+                                    Pick the role or situation that is closest to yours. Each path highlights what matters most first.
+                                </p>
+                                <div class="suicide-scenario-picker" role="tablist" aria-label="Scenario navigator">
+                                    <button class="btn btn-secondary btn-small suicide-scenario-btn active" data-scenario="self_low" aria-pressed="true">I Am Struggling</button>
+                                    <button class="btn btn-secondary btn-small suicide-scenario-btn" data-scenario="supporting" aria-pressed="false">I Am Helping Someone</button>
+                                    <button class="btn btn-secondary btn-small suicide-scenario-btn" data-scenario="post_crisis" aria-pressed="false">After A Crisis</button>
+                                    <button class="btn btn-secondary btn-small suicide-scenario-btn" data-scenario="care_team" aria-pressed="false">Talking To Care Team</button>
+                                </div>
+                                <div id="sp-scenario-display" class="suicide-info-panel" aria-live="polite">
+                                    <!-- Populated dynamically -->
+                                </div>
+                            </div>
+
+                            <div class="glass-card" style="border-left: 2px solid var(--accent-orange);">
+                                <h3 style="color: var(--accent-orange); margin-top: 0; margin-bottom: 0.5rem; font-size: 1.05rem;">Settings Guide</h3>
+                                <p class="text-secondary" style="font-size: 0.8rem; margin-bottom: 1rem; line-height: 1.45;">
+                                    Prevention lives in real settings: home, family, primary care, school, work, and community spaces.
+                                </p>
+                                <div class="suicide-setting-picker" role="tablist" aria-label="Settings guide">
+                                    <button class="btn btn-secondary btn-small suicide-setting-btn active" data-setting="home" aria-pressed="true">Home</button>
+                                    <button class="btn btn-secondary btn-small suicide-setting-btn" data-setting="primary_care" aria-pressed="false">Primary Care</button>
+                                    <button class="btn btn-secondary btn-small suicide-setting-btn" data-setting="school_work" aria-pressed="false">School / Work</button>
+                                    <button class="btn btn-secondary btn-small suicide-setting-btn" data-setting="community" aria-pressed="false">Community</button>
+                                </div>
+                                <div id="sp-setting-display" class="suicide-info-panel" aria-live="polite">
+                                    <!-- Populated dynamically -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-card mt-3" style="border-left: 2px solid var(--accent-lavender);">
+                            <div style="display:flex; justify-content:space-between; gap:1rem; align-items:flex-start; flex-wrap:wrap; margin-bottom:0.75rem;">
+                                <div>
+                                    <h3 style="color: var(--accent-lavender); margin-top: 0; margin-bottom: 0.35rem; font-size: 1.05rem;">Source Transparency and Product Boundaries</h3>
+                                    <p class="text-secondary" style="font-size: 0.8rem; margin: 0; line-height: 1.45;">
+                                        The guide shows what kind of evidence a claim comes from and where State Not Fate stops.
+                                    </p>
+                                </div>
+                                <div class="claim-strength-row" aria-label="Claim strength legend">
+                                    <span class="claim-chip claim-chip-official">Official guidance</span>
+                                    <span class="claim-chip claim-chip-research">Research-backed</span>
+                                    <span class="claim-chip claim-chip-framework">Practice framework</span>
+                                    <span class="claim-chip claim-chip-boundary">Product boundary</span>
+                                </div>
+                            </div>
+
+                            <div class="suicide-boundary-grid">
+                                <div class="suicide-info-panel">
+                                    <h4 style="margin-top:0; margin-bottom:0.5rem; color:var(--text-primary); font-size:0.95rem;">Core source lanes used here</h4>
+                                    <ul style="margin:0; padding-left:1.1rem; color:var(--text-secondary); font-size:0.8rem; line-height:1.5;">
+                                        <li><a href="https://www.cdc.gov/suicide/data/index.html" target="_blank" rel="noopener noreferrer">CDC suicide data and risk/protective factor guidance</a></li>
+                                        <li><a href="https://www.samhsa.gov/mental-health/988" target="_blank" rel="noopener noreferrer">SAMHSA 988 Suicide & Crisis Lifeline</a></li>
+                                        <li><a href="https://www.nimh.nih.gov/health/topics/suicide-prevention" target="_blank" rel="noopener noreferrer">NIMH suicide prevention and warning-sign education</a></li>
+                                        <li><a href="https://www.healthquality.va.gov/guidelines/mh/srb/" target="_blank" rel="noopener noreferrer">VA/DoD 2024 suicide risk clinical guideline</a></li>
+                                        <li><a href="https://www.hhs.gov/programs/prevention-and-wellness/mental-health-substance-use-disorder/national-strategy-suicide-prevention/index.html" target="_blank" rel="noopener noreferrer">HHS National Strategy for Suicide Prevention</a></li>
+                                        <li><a href="https://www.who.int/initiatives/live-life-initiative-for-suicide-prevention" target="_blank" rel="noopener noreferrer">WHO LIVE LIFE initiative</a></li>
+                                    </ul>
+                                </div>
+
+                                <div class="suicide-info-panel">
+                                    <h4 style="margin-top:0; margin-bottom:0.5rem; color:var(--text-primary); font-size:0.95rem;">What State Not Fate can and cannot do</h4>
+                                    <div id="sp-boundary-display" style="font-size:0.8rem; color:var(--text-secondary); line-height:1.5;">
+                                        <strong style="color:var(--text-primary);">Can do:</strong> educate, support reflection, help prepare a safety plan, help prepare messages to trusted people, and route users toward crisis resources.<br><br>
+                                        <strong style="color:var(--text-primary);">Cannot do:</strong> diagnose, assess suicide risk with certainty, predict behavior, replace 988 or emergency care, or treat journaling as sufficient during crisis.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="appendix-education-grid mt-3">
+                            <details class="glass-card appendix-detail-card" open>
+                                <summary>Myths, realities, and public-safe framing</summary>
+                                <div class="appendix-detail-body">
+                                    <div class="claim-strength-row" style="margin-bottom:0.75rem;">
+                                        <span class="claim-chip claim-chip-official">Official guidance</span>
+                                        <span class="claim-chip claim-chip-boundary">Public language</span>
+                                    </div>
+                                    <div class="appendix-two-col">
+                                        <div class="suicide-info-panel">
+                                            <strong style="color:var(--text-primary);">Myth:</strong> Talking directly about suicide always plants the idea.<br><br>
+                                            <strong style="color:var(--text-primary);">Reality:</strong> Direct, calm questions are part of safer support and can reduce isolation when someone already feels trapped.
+                                        </div>
+                                        <div class="suicide-info-panel">
+                                            <strong style="color:var(--text-primary);">Myth:</strong> Only people with one obvious cause become suicidal.<br><br>
+                                            <strong style="color:var(--text-primary);">Reality:</strong> Risk usually grows through a stack of factors such as depression, shame, sleep collapse, isolation, acute stress, substance use, and access to danger.
+                                        </div>
+                                        <div class="suicide-info-panel">
+                                            <strong style="color:var(--text-primary);">Myth:</strong> If a person seems calmer, the danger is over.<br><br>
+                                            <strong style="color:var(--text-primary);">Reality:</strong> Calm can mean many things. The important question is whether the person is actually safer, more connected, and still willing to use support.
+                                        </div>
+                                        <div class="suicide-info-panel">
+                                            <strong style="color:var(--text-primary);">Myth:</strong> A checklist can predict exactly what someone will do.<br><br>
+                                            <strong style="color:var(--text-primary);">Reality:</strong> Checklists can support observation and help-seeking, but public-facing tools should not promise prediction or certainty.
+                                        </div>
+                                    </div>
+                                </div>
+                            </details>
+
+                            <details class="glass-card appendix-detail-card" open>
+                                <summary>Aftercare, caring contacts, and dangerous transitions</summary>
+                                <div class="appendix-detail-body">
+                                    <div class="claim-strength-row" style="margin-bottom:0.75rem;">
+                                        <span class="claim-chip claim-chip-research">Research-backed</span>
+                                        <span class="claim-chip claim-chip-framework">Practice framework</span>
+                                    </div>
+                                    <div class="suicide-info-panel" style="margin-bottom:0.85rem;">
+                                        A person is often most vulnerable not only during the peak of crisis, but during the drop-off afterward: after an emergency visit, after discharge, after a frightening night, after a breakup, after a relapse, or when shame makes them want to disappear from contact.
+                                    </div>
+                                    <ul style="margin:0; padding-left:1.1rem; color:var(--text-secondary); font-size:0.82rem; line-height:1.6;">
+                                        <li>Safer follow-up means brief, repeated, human contact instead of assuming one conversation solved the problem.</li>
+                                        <li>Caring contacts can be simple: “Checking in. You do not need to perform for me. How safe do you feel right now?”</li>
+                                        <li>Transitions deserve structure: confirm who the person can call, where they will be, and what the next professional or trusted-human touchpoint is.</li>
+                                        <li>Do not confuse embarrassment, withdrawal, or “I’m fine” language with true stabilization.</li>
+                                    </ul>
+                                </div>
+                            </details>
+
+                            <details class="glass-card appendix-detail-card" open>
+                                <summary>Population-aware and equity-aware prevention</summary>
+                                <div class="appendix-detail-body">
+                                    <div class="claim-strength-row" style="margin-bottom:0.75rem;">
+                                        <span class="claim-chip claim-chip-official">Official guidance</span>
+                                        <span class="claim-chip claim-chip-framework">Equity lens</span>
+                                    </div>
+                                    <div class="appendix-two-col">
+                                        <div class="suicide-info-panel">
+                                            <strong style="color:var(--text-primary);">Youth and young adults</strong><br>
+                                            Development, belonging, family conflict, school context, online life, and early treatment monitoring matter.
+                                        </div>
+                                        <div class="suicide-info-panel">
+                                            <strong style="color:var(--text-primary);">Perinatal and postpartum</strong><br>
+                                            Severe depression, psychosis, mania, and thoughts involving parent or infant safety require explicit screening and rapid escalation.
+                                        </div>
+                                        <div class="suicide-info-panel">
+                                            <strong style="color:var(--text-primary);">Veterans and service members</strong><br>
+                                            Transition stress, trauma, identity shifts, sleep disruption, and firearm access may shape prevention needs differently.
+                                        </div>
+                                        <div class="suicide-info-panel">
+                                            <strong style="color:var(--text-primary);">LGBTQ+, tribal, rural, disabled, and other disproportionately affected groups</strong><br>
+                                            Prevention is stronger when it is community-trusted, identity-aware, and grounded in belonging rather than generic messaging.
+                                        </div>
+                                    </div>
+                                </div>
+                            </details>
+
+                            <details class="glass-card appendix-detail-card" open>
+                                <summary>What to say, what to avoid, and what this product is for</summary>
+                                <div class="appendix-detail-body">
+                                    <div class="appendix-two-col">
+                                        <div class="suicide-info-panel">
+                                            <strong style="color:var(--text-primary);">Helpful moves</strong>
+                                            <ul style="margin:0.6rem 0 0; padding-left:1.1rem; color:var(--text-secondary); font-size:0.82rem; line-height:1.55;">
+                                                <li>Ask directly and calmly.</li>
+                                                <li>Stay present and lower the time horizon.</li>
+                                                <li>Reduce danger and move closer to support.</li>
+                                                <li>Use plain language like “suicidal thoughts,” “unsafe,” and “need support now.”</li>
+                                            </ul>
+                                        </div>
+                                        <div class="suicide-info-panel">
+                                            <strong style="color:var(--text-primary);">Avoid</strong>
+                                            <ul style="margin:0.6rem 0 0; padding-left:1.1rem; color:var(--text-secondary); font-size:0.82rem; line-height:1.55;">
+                                                <li>Graphic details, romantic framing, or false heroics.</li>
+                                                <li>Debates, guilt, shame, or “look on the bright side” speeches.</li>
+                                                <li>Acting as if one supportive app, journal entry, or checklist can replace people.</li>
+                                                <li>Turning private lived-experience reflections into universal public claims.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="suicide-info-panel" style="margin-top:0.85rem;">
+                                        <strong style="color:var(--text-primary);">State Not Fate is best used as:</strong> an educational and reflection aid, a safety-plan organizer, a supporter-script helper, and a bridge toward human care. It is not an emergency service, risk predictor, or substitute for professional treatment.
+                                    </div>
+                                </div>
+                            </details>
                         </div>
                     </div>
                 </div>

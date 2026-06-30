@@ -11,7 +11,9 @@ test('evidence/source path exists and separates claim strength @advisory', async
   }
 
   await expect(page.locator('[data-source-card]').first()).toBeVisible();
-  await expect(page.getByText(/still being developed and evaluated/i)).toBeVisible();
+  await expect(page.getByText(/layered evidence model/i)).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: 'How To Read These Sources' })).toBeVisible();
+  await expect(page.getByText(/Loose end \/ watchlist/i)).toBeVisible();
 
   const text = await page.locator('body').innerText();
   expect(text).not.toMatch(/clinically proven to (treat|cure|reverse)/i);

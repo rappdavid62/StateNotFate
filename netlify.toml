@@ -7,6 +7,11 @@
 [context.production]
   command = ""
 
+[[redirects]]
+  from = "/suicide-prevention"
+  to = "/suicide-prevention.html"
+  status = 200
+
 
 [[redirects]]
   from = "/*"
