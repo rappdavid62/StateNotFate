@@ -1,0 +1,941 @@
+﻿diff --git a/app.js b/app.js
+index acd746a..892ee94 100644
+--- a/app.js
++++ b/app.js
+@@ -454,7 +454,8 @@ const COMPANION_QUESTION_TREE = {
+             progression: document.getElementById("tab-progression"),
+             cognitivelab: document.getElementById("tab-cognitivelab"),
+             documentcenter: document.getElementById("tab-documentcenter"),
+-            explorer: document.getElementById("tab-explorer")
++            explorer: document.getElementById("tab-explorer"),
++            suicideprevention: document.getElementById("tab-suicideprevention")
+         };
+ 
+         let tempPhqAnswers = new Array(9).fill(null);
+@@ -715,6 +716,8 @@ const COMPANION_QUESTION_TREE = {
+                 renderPolarisTab();
+             } else if (tabId === "momentum") {
+                 renderMomentumTab();
++            } else if (tabId === "suicideprevention") {
++                renderSuicidePreventionTab();
+             }
+         }
+ 
+@@ -985,6 +988,7 @@ const COMPANION_QUESTION_TREE = {
+                 document.body.removeChild(a);
+                 URL.revokeObjectURL(url);
+             });
++            setupSafetyPreventionListeners();
+         }
+ 
+         function initIntakeForm() {
+@@ -1678,6 +1682,507 @@ const COMPANION_QUESTION_TREE = {
+             renderLinkedFilesList();
+         }
+ 
++        // --- Suicide Prevention Tab Logic & State handlers ---
++        let currentSensoryStep = 1;
++        const sensoryInstructions = [
++            { title: "Step 1: See", text: "Name 5 things you can SEE around you right now (e.g., a chair, a window, a cup)." },
++            { title: "Step 2: Touch", text: "Name 4 things you can TOUCH and feel physically right now (e.g., your desk, your shirt, the floor)." },
++            { title: "Step 3: Hear", text: "Name 3 things you can HEAR in your environment (e.g., traffic, humming, wind)." },
++            { title: "Step 4: Smell", text: "Name 2 things you can SMELL right now (or focus on pleasant scents)." },
++            { title: "Step 5: Taste", text: "Name 1 thing you can TASTE right now (or focus on the temperature of your mouth)." }
++        ];
++
++        let breathingPacerInterval = null;
++        let breathingPacerSeconds = 4;
++        let breathingPacerState = 0; // 0 = Inhale, 1 = Hold, 2 = Exhale, 3 = Hold
++
++        let currentAssessmentStep = 1;
++
++        function renderSuicidePreventionTab() {
++            state.reasonsLive = state.reasonsLive || "";
++            state.distractions = state.distractions || "";
++            state.safeContacts = state.safeContacts || "";
++            state.safetyAssessments = state.safetyAssessments || [];
++
++            document.getElementById("input-sp-reasons").value = state.reasonsLive;
++            document.getElementById("input-sp-distractions").value = state.distractions;
++            document.getElementById("input-sp-contacts").value = state.safeContacts;
++
++            let riskLevel = { level: 'low', score: 0, warnings: [] };
++            if (safetyDetection) {
++                const lastAssessment = state.safetyAssessments.length > 0 ? state.safetyAssessments[state.safetyAssessments.length - 1] : null;
++                riskLevel = safetyDetection.calculateRiskLevel({
++                    quickScreen: lastAssessment,
++                    patterns: safetyDetection.detectRiskPatterns ? safetyDetection.detectRiskPatterns(state) : []
++                });
++            } else {
++                let score = 0;
++                if (state.safety && state.safety.suicide === 2) {
++                    riskLevel = { level: 'acute', score: 10, warnings: ['HIGH RISK: Safety protocol active.'] };
++                } else if (state.safety && state.safety.suicide === 1) {
++                    riskLevel = { level: 'moderate', score: 5, warnings: ['MODERATE RISK: Monitor closely.'] };
++                }
++            }
++
++            const badge = document.getElementById("safety-sp-risk-badge");
++            if (badge) {
++                badge.innerText = riskLevel.level.toUpperCase();
++                badge.className = "";
++                badge.style.color = "var(--accent-orange)";
++                if (riskLevel.level === "low") {
++                    badge.style.color = "var(--accent-teal)";
++                } else if (riskLevel.level === "low-moderate" || riskLevel.level === "moderate") {
++                    badge.style.color = "var(--accent-lavender)";
++                } else if (riskLevel.level === "elevated") {
++                    badge.style.color = "var(--accent-orange)";
++                } else if (riskLevel.level === "acute") {
++                    badge.style.color = "var(--accent-red)";
++                }
++            }
++
++            const timeDisplay = document.getElementById("safety-sp-checkin-time");
++            if (timeDisplay) {
++                if (state.safetyAssessments.length > 0) {
++                    const lastAssessment = state.safetyAssessments[state.safetyAssessments.length - 1];
++                    const lastDate = new Date(lastAssessment.timestamp);
++                    const nextDate = new Date(lastDate.getTime() + (riskLevel.level === "low" ? 7 : 1) * 24 * 60 * 60 * 1000);
++                    const now = new Date();
++                    const diffTime = nextDate - now;
++                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
++                    if (diffDays <= 0) {
++                        timeDisplay.innerText = "Due Now";
++                        timeDisplay.style.color = "var(--accent-red)";
++                    } else {
++                        timeDisplay.innerText = `In ${diffDays} Day${diffDays > 1 ? 's' : ''}`;
++                        timeDisplay.style.color = "var(--text-primary)";
++                    }
++                } else {
++                    timeDisplay.innerText = "Assessment Due Now";
++                    timeDisplay.style.color = "var(--accent-orange)";
++                }
++            }
++
++            const warningsContainer = document.getElementById("safety-sp-warnings-container");
++            const warningsList = document.getElementById("safety-sp-warnings-list");
++            if (warningsContainer && warningsList) {
++                warningsList.innerHTML = "";
++                if (riskLevel.warnings && riskLevel.warnings.length > 0) {
++                    warningsContainer.classList.remove("hidden");
++                    riskLevel.warnings.forEach(w => {
++                        const li = document.createElement("li");
++                        li.innerText = w;
++                        warningsList.appendChild(li);
++                    });
++                } else {
++                    warningsContainer.classList.add("hidden");
++                }
++            }
++
++            const countrySelect = document.getElementById("select-sp-country");
++            if (countrySelect) {
++                populateRegionalResources(countrySelect.value);
++            }
++        }
++
++        function populateRegionalResources(country) {
++            const listContainer = document.getElementById("sp-regional-resources-list");
++            if (!listContainer) return;
++            listContainer.innerHTML = "";
++
++            let resources = [];
++            if (CrisisProtocol) {
++                const protocol = new CrisisProtocol({ country });
++                resources = protocol.getCrisisResources({ country }) || [];
++            }
++            
++            if (resources.length === 0 || (!resources.primary && !resources.length)) {
++                listContainer.innerHTML = `<div class="text-muted" style="font-size: 0.8rem; font-style: italic;">No specific resources found for this region. Please use international links.</div>`;
++                return;
++            }
++
++            const primaryList = resources.primary || (Array.isArray(resources) ? resources : []);
++            
++            primaryList.forEach(res => {
++                const item = document.createElement("div");
++                item.style.padding = "0.5rem 0";
++                item.style.borderBottom = "1px solid rgba(255,255,255,0.05)";
++                
++                const title = res.name || "Resource";
++                const number = res.number || res.contact || "";
++                
++                item.innerHTML = `
++                    <div style="font-size: 0.85rem; font-weight: 500; display:flex; justify-content:space-between; align-items:center;">
++                        <span>${title}</span>
++                        <strong style="color: var(--accent-orange);">${number}</strong>
++                    </div>
++                `;
++                listContainer.appendChild(item);
++            });
++        }
++
++        function startSensoryGrounding() {
++            document.getElementById("sp-grounding-default-msg").classList.add("hidden");
++            document.getElementById("sp-grounding-54321-tool").classList.remove("hidden");
++            document.getElementById("sp-grounding-breathing-tool").classList.add("hidden");
++            document.getElementById("sp-grounding-cold-tool").classList.add("hidden");
++            
++            stopBreathingPacer();
++            currentSensoryStep = 1;
++            updateSensoryUI();
++        }
++
++        function updateSensoryUI() {
++            const step = sensoryInstructions[currentSensoryStep - 1];
++            document.getElementById("sp-54321-step-title").innerText = step.title;
++            document.getElementById("sp-54321-step-instruction").innerText = step.text;
++            document.getElementById("sp-54321-progress").innerText = `Step ${currentSensoryStep} of 5`;
++            
++            document.getElementById("btn-sp-54321-prev").disabled = currentSensoryStep === 1;
++            
++            const nextBtn = document.getElementById("btn-sp-54321-next");
++            if (currentSensoryStep === 5) {
++                nextBtn.innerText = "Finish Grounding";
++            } else {
++                nextBtn.innerText = "Next Step";
++            }
++        }
++
++        function handleSensoryNext() {
++            if (currentSensoryStep < 5) {
++                currentSensoryStep++;
++                updateSensoryUI();
++            } else {
++                showToast("Sensory grounding complete. Good job centering yourself.", "success");
++                document.getElementById("sp-grounding-54321-tool").classList.add("hidden");
++                document.getElementById("sp-grounding-default-msg").classList.remove("hidden");
++            }
++        }
++
++        function handleSensoryPrev() {
++            if (currentSensoryStep > 1) {
++                currentSensoryStep--;
++                updateSensoryUI();
++            }
++        }
++
++        function startBreathingTool() {
++            document.getElementById("sp-grounding-default-msg").classList.add("hidden");
++            document.getElementById("sp-grounding-54321-tool").classList.add("hidden");
++            document.getElementById("sp-grounding-breathing-tool").classList.remove("hidden");
++            document.getElementById("sp-grounding-cold-tool").classList.add("hidden");
++            
++            stopBreathingPacer();
++            
++            const btn = document.getElementById("btn-sp-breathing-toggle");
++            btn.innerText = "Start Pacer";
++            btn.className = "btn btn-secondary btn-small";
++            
++            const circle = document.getElementById("sp-breathing-circle");
++            if (circle) circle.style.transform = "scale(1)";
++            
++            document.getElementById("sp-breathing-action-text").innerText = "Breath Pacer Ready";
++        }
++
++        function toggleBreathingPacer() {
++            const btn = document.getElementById("btn-sp-breathing-toggle");
++            if (breathingPacerInterval) {
++                stopBreathingPacer();
++                btn.innerText = "Start Pacer";
++                btn.className = "btn btn-secondary btn-small";
++            } else {
++                startBreathingPacer();
++                btn.innerText = "Stop Pacer";
++                btn.className = "btn btn-primary btn-small";
++            }
++        }
++
++        function startBreathingPacer() {
++            breathingPacerSeconds = 4;
++            breathingPacerState = 0;
++            updateBreathingUI();
++
++            breathingPacerInterval = setInterval(() => {
++                breathingPacerSeconds--;
++                if (breathingPacerSeconds <= 0) {
++                    breathingPacerState = (breathingPacerState + 1) % 4;
++                    breathingPacerSeconds = 4;
++                }
++                updateBreathingUI();
++            }, 1000);
++        }
++
++        function stopBreathingPacer() {
++            if (breathingPacerInterval) {
++                clearInterval(breathingPacerInterval);
++                breathingPacerInterval = null;
++            }
++            const circle = document.getElementById("sp-breathing-circle");
++            if (circle) circle.style.transform = "scale(1)";
++            const text = document.getElementById("sp-breathing-action-text");
++            if (text) text.innerText = "Pacer Stopped";
++        }
++
++        function updateBreathingUI() {
++            const circle = document.getElementById("sp-breathing-circle");
++            const text = document.getElementById("sp-breathing-action-text");
++            
++            if (!circle || !text) return;
++
++            if (breathingPacerState === 0) {
++                text.innerText = `Inhale... ${breathingPacerSeconds}`;
++                const progress = (4 - breathingPacerSeconds) / 4;
++                const scale = 1 + (1.2 * progress);
++                circle.style.transform = `scale(${scale})`;
++            } else if (breathingPacerState === 1) {
++                text.innerText = `Hold... ${breathingPacerSeconds}`;
++                circle.style.transform = "scale(2.2)";
++            } else if (breathingPacerState === 2) {
++                text.innerText = `Exhale... ${breathingPacerSeconds}`;
++                const progress = (4 - breathingPacerSeconds) / 4;
++                const scale = 2.2 - (1.2 * progress);
++                circle.style.transform = `scale(${scale})`;
++            } else if (breathingPacerState === 3) {
++                text.innerText = `Hold... ${breathingPacerSeconds}`;
++                circle.style.transform = "scale(1)";
++            }
++        }
++
++        function startColdWaterShock() {
++            document.getElementById("sp-grounding-default-msg").classList.add("hidden");
++            document.getElementById("sp-grounding-54321-tool").classList.add("hidden");
++            document.getElementById("sp-grounding-breathing-tool").classList.add("hidden");
++            document.getElementById("sp-grounding-cold-tool").classList.remove("hidden");
++            stopBreathingPacer();
++        }
++
++        function openSafetyAssessmentModal() {
++            currentAssessmentStep = 1;
++            document.getElementById("sa-step-1").classList.remove("hidden");
++            document.getElementById("sa-step-2").classList.add("hidden");
++            
++            document.getElementById("btn-sa-prev").classList.add("hidden");
++            document.getElementById("btn-sa-next").classList.remove("hidden");
++            document.getElementById("btn-sa-submit").classList.add("hidden");
++
++            document.getElementById("input-sa-conviction").value = 0;
++            document.getElementById("display-sa-conviction").innerText = 0;
++            
++            const firstRadioAccess = document.querySelector('input[name="sa-access"][value="0"]');
++            if (firstRadioAccess) firstRadioAccess.checked = true;
++            
++            const firstRadioTimeline = document.querySelector('input[name="sa-timeline"][value="0"]');
++            if (firstRadioTimeline) firstRadioTimeline.checked = true;
++
++            document.querySelectorAll("#sa-deterrents-container input[type='checkbox']").forEach(cb => {
++                cb.checked = cb.value === "Worry about causing pain to others" || cb.value === "Responsibilities (children, others depend on me)";
++            });
++
++            document.querySelectorAll("#sa-behaviors-container input[type='checkbox']").forEach(cb => {
++                cb.checked = false;
++            });
++
++            document.getElementById("safety-assessment-modal").classList.add("active");
++        }
++
++        function closeSafetyAssessmentModal() {
++            document.getElementById("safety-assessment-modal").classList.remove("active");
++        }
++
++        function nextAssessmentSection() {
++            if (currentAssessmentStep === 1) {
++                currentAssessmentStep = 2;
++                document.getElementById("sa-step-1").classList.add("hidden");
++                document.getElementById("sa-step-2").classList.remove("hidden");
++                
++                document.getElementById("btn-sa-prev").classList.remove("hidden");
++                document.getElementById("btn-sa-next").classList.add("hidden");
++                document.getElementById("btn-sa-submit").classList.remove("hidden");
++            }
++        }
++
++        function prevAssessmentSection() {
++            if (currentAssessmentStep === 2) {
++                currentAssessmentStep = 1;
++                document.getElementById("sa-step-1").classList.remove("hidden");
++                document.getElementById("sa-step-2").classList.add("hidden");
++                
++                document.getElementById("btn-sa-prev").classList.add("hidden");
++                document.getElementById("btn-sa-next").classList.remove("hidden");
++                document.getElementById("btn-sa-submit").classList.add("hidden");
++            }
++        }
++
++        function submitSafetyAssessment() {
++            const convictionVal = parseInt(document.getElementById("input-sa-conviction").value);
++            const accessVal = parseInt(document.querySelector('input[name="sa-access"]:checked')?.value || "0");
++            const timelineVal = parseInt(document.querySelector('input[name="sa-timeline"]:checked')?.value || "0");
++            
++            const selectedDeterrents = Array.from(document.querySelectorAll('#sa-deterrents-container input[type="checkbox"]:checked')).map(cb => cb.value);
++            const selectedBehaviors = Array.from(document.querySelectorAll('#sa-behaviors-container input[type="checkbox"]:checked')).map(cb => cb.value);
++
++            const assessment = {
++                id: "assessment-" + Date.now(),
++                timestamp: new Date().toISOString(),
++                type: "comprehensive",
++                intentAssessment: {
++                    conviction: { value: convictionVal },
++                    access: { value: accessVal },
++                    timeline: { value: timelineVal },
++                    protective: {
++                        selected: selectedDeterrents
++                    },
++                    behaviors: {
++                        selected: selectedBehaviors
++                    }
++                }
++            };
++
++            state.safetyAssessments = state.safetyAssessments || [];
++            state.safetyAssessments.push(assessment);
++
++            let riskLevel = { level: 'low', score: 0 };
++            if (safetyDetection) {
++                riskLevel = safetyDetection.calculateRiskLevel({
++                    quickScreen: assessment,
++                    patterns: safetyDetection.detectRiskPatterns ? safetyDetection.detectRiskPatterns(state) : []
++                });
++            } else {
++                let score = convictionVal;
++                if (accessVal >= 2) score += 4;
++                if (timelineVal >= 2) score += 4;
++                let level = 'low';
++                if (score >= 12) level = 'acute';
++                else if (score >= 8) level = 'elevated';
++                else if (score >= 4) level = 'moderate';
++                riskLevel = { level, score };
++            }
++
++            state.safety = state.safety || {};
++            if (riskLevel.level === "acute" || riskLevel.level === "elevated" || accessVal === 4 || timelineVal === 4) {
++                state.safety.suicide = 2;
++                triggerCrisisOverlay();
++            } else if (riskLevel.level === "moderate") {
++                state.safety.suicide = 1;
++            } else {
++                state.safety.suicide = 0;
++            }
++
++            if (polarisEnhanced && polarisEnhanced.generateAdaptiveAnchors) {
++                state.polaris = polarisEnhanced.generateAdaptiveAnchors(riskLevel, state.polaris || {});
++            }
++
++            saveState();
++            closeSafetyAssessmentModal();
++            renderSuicidePreventionTab();
++            renderDailyChecklist();
++            updateDashboardMetrics();
++            
++            showToast("Safety assessment complete. Risk level: " + riskLevel.level.toUpperCase(), "success");
++        }
++
++        function generateClinicianHandoff() {
++            const lastAssessment = state.safetyAssessments && state.safetyAssessments.length > 0 ? state.safetyAssessments[state.safetyAssessments.length - 1] : null;
++            let riskLevel = "UNKNOWN";
++            let details = "No assessment completed yet.";
++            
++            if (lastAssessment) {
++                let calculated = { level: 'low', score: 0 };
++                if (safetyDetection) {
++                    calculated = safetyDetection.calculateRiskLevel({
++                        quickScreen: lastAssessment,
++                        patterns: safetyDetection.detectRiskPatterns ? safetyDetection.detectRiskPatterns(state) : []
++                    });
++                }
++                riskLevel = calculated.level.toUpperCase();
++                
++                let accessText = "Unknown";
++                if (lastAssessment.intentAssessment) {
++                    const acc = lastAssessment.intentAssessment.access?.value;
++                    const tl = lastAssessment.intentAssessment.timeline?.value;
++                    const conv = lastAssessment.intentAssessment.conviction?.value;
++                    accessText = `Conviction: ${conv}/10, Means Access: ${acc}, Timeline: ${tl}`;
++                }
++                details = `Last screened on ${new Date(lastAssessment.timestamp).toLocaleString()}\nAssessment Details: ${accessText}`;
++            }
++
++            const report = [
++                `# STATE NOT FATE - CLINICIAN HANDOFF BRIEFING`,
++                `Generated on: ${new Date().toLocaleString()}`,
++                `System Sandbox ID: SNF-${Date.now().toString().slice(-6)}`,
++                `------------------------------------------------`,
++                `## 1. Safety Status`,
++                `- Active Risk Level: ${riskLevel}`,
++                `- Risk Details: ${details}`,
++                `- Active Crisis Override State: ${state.safety?.suicide === 2 ? "HIGH ALERT" : "NORMAL"}`,
++                ``,
++                `## 2. Personal Safety Plan`,
++                `- Reasons to Live: ${state.reasonsLive || "Not specified"}`,
++                `- Distraction Coping Actions: ${state.distractions || "Not specified"}`,
++                `- Registered Safe Contacts: ${state.safeContacts || "Not specified"}`,
++                ``,
++                `## 3. Daily Functioning Baseline (Circadian & Behavioral Activation)`,
++                `- Today's Declared Energy: ${state.todayEnergy || "Not declared"}`,
++                `- Registered MVD Anchors:`,
++                `  1. ${state.mvd?.[0] || "Not specified"}`,
++                `  2. ${state.mvd?.[1] || "Not specified"}`,
++                `  3. ${state.mvd?.[2] || "Not specified"}`,
++                ``,
++                `*Note to Healthcare Provider: State Not Fate is a client-side self-management application focused on circadian stabilization, behavioral activation, and somatic de-escalation. It uses sandboxed browser state and is strictly adjunctive.*`
++            ].join('\n');
++
++            navigator.clipboard.writeText(report).then(() => {
++                showToast("Clinician handoff report copied to clipboard!", "success");
++            }).catch(err => {
++                console.error("Clipboard copy failed:", err);
++                showToast("Failed to copy report automatically. Check logs.", "error");
++            });
++        }
++
++        function setupSafetyPreventionListeners() {
++            document.getElementById("btn-sp-save-plan").addEventListener("click", () => {
++                state.reasonsLive = document.getElementById("input-sp-reasons").value.trim();
++                state.distractions = document.getElementById("input-sp-distractions").value.trim();
++                state.safeContacts = document.getElementById("input-sp-contacts").value.trim();
++                
++                saveState();
++                renderSafeBox();
++                showToast("Safety plan updated successfully!", "success");
++            });
++
++            document.getElementById("select-sp-country").addEventListener("change", (e) => {
++                populateRegionalResources(e.target.value);
++            });
++
++            document.getElementById("btn-sp-grounding-54321").addEventListener("click", startSensoryGrounding);
++            document.getElementById("btn-sp-grounding-breathing").addEventListener("click", startBreathingTool);
++            document.getElementById("btn-sp-grounding-cold").addEventListener("click", startColdWaterShock);
++
++            document.getElementById("btn-sp-54321-prev").addEventListener("click", handleSensoryPrev);
++            document.getElementById("btn-sp-54321-next").addEventListener("click", handleSensoryNext);
++            document.getElementById("btn-sp-breathing-toggle").addEventListener("click", toggleBreathingPacer);
++
++            document.getElementById("btn-sp-copy-template").addEventListener("click", () => {
++                const text = "I am utilizing a structured behavioral activation and circadian timing system to manage my daily energy and function. It helps me track anchors, record restart speed, and manage task-entry friction. It is designed to complement our recovery objectives by tracking my floor wins and PHQ-9 progress.";
++                navigator.clipboard.writeText(text).then(() => {
++                    showToast("Provider collaboration template copied to clipboard!", "success");
++                });
++            });
++
++            document.getElementById("btn-sp-trigger-assessment").addEventListener("click", openSafetyAssessmentModal);
++            document.getElementById("btn-close-safety-assessment-modal").addEventListener("click", closeSafetyAssessmentModal);
++            document.getElementById("btn-sa-cancel").addEventListener("click", closeSafetyAssessmentModal);
++            
++            document.getElementById("btn-sa-prev").addEventListener("click", prevAssessmentSection);
++            document.getElementById("btn-sa-next").addEventListener("click", nextAssessmentSection);
++            document.getElementById("btn-sa-submit").addEventListener("click", submitSafetyAssessment);
++
++            document.getElementById("input-sa-conviction").addEventListener("input", (e) => {
++                document.getElementById("display-sa-conviction").innerText = e.target.value;
++            });
++
++            document.getElementById("btn-sp-export-handoff").addEventListener("click", generateClinicianHandoff);
++        }
++
+         function renderMediaConsole() {
+             const container = document.getElementById("media-playlist-container");
+             container.innerHTML = "";
+diff --git a/index.html b/index.html
+index 90d9784..3e9c072 100644
+--- a/index.html
++++ b/index.html
+@@ -522,6 +522,7 @@
+                 <button class="tab-btn" data-tab="cognitivelab">Worksheets & Journal ≡ƒô¥</button>
+                 <button class="tab-btn" data-tab="documentcenter">Document Center ≡ƒôü</button>
+                 <button class="tab-btn" data-tab="explorer">Explorer</button>
++                <button class="tab-btn" data-tab="suicideprevention" style="color: var(--accent-orange);">Suicide Prevention ≡ƒÄù∩╕Å</button>
+                 <button class="tab-btn" id="btn-tab-lock" style="color: var(--accent-orange);">Lock App ≡ƒöÆ</button>
+                 <button class="tab-btn" data-tab="reset-intake" id="btn-tab-reset" style="margin-left: auto; color: var(--text-muted);">Reset Intake</button>
+             </div>
+@@ -1367,6 +1368,221 @@
+                 </div>
+             </div>
+ 
++            <!-- TAB: SUICIDE & SUICIDE PREVENTION -->
++            <!-- TAB: SUICIDE & SUICIDE PREVENTION -->
++            <div id="tab-suicideprevention" class="tab-content hidden">
++                <!-- Safety Status & Risk Profile Dashboard -->
++                <div class="glass-card mb-3" style="border-left: 2px solid var(--accent-orange); background: rgba(240, 115, 30, 0.01);">
++                    <h2 style="color: var(--accent-orange); margin-top: 0; display: flex; align-items: center; gap: 0.5rem; font-size: 1.25rem;">
++                        ≡ƒÄù∩╕Å Safety Status & Risk Profile
++                    </h2>
++                    <p class="text-secondary" style="font-size: 0.9rem; margin-bottom: 1rem;">
++                        Your active risk level is calculated dynamically based on your check-in ratings and behavioral patterns.
++                    </p>
++                    
++                    <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap;">
++                        <!-- Active Risk Badge -->
++                        <div style="background: rgba(240, 115, 30, 0.08); border: 1px solid rgba(240, 115, 30, 0.25); padding: 0.75rem 1.25rem; border-radius: var(--radius-md); min-width: 180px; text-align: center;">
++                            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Risk Level</div>
++                            <div id="safety-sp-risk-badge" style="font-size: 1.35rem; font-weight: bold; color: var(--accent-orange); font-family: var(--font-futuristic); margin-top: 0.25rem;">LOW</div>
++                        </div>
++                        
++                        <!-- Next Check-in -->
++                        <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); padding: 0.75rem 1.25rem; border-radius: var(--radius-md); min-width: 200px; text-align: center;">
++                            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Next Safety Screening</div>
++                            <div id="safety-sp-checkin-time" style="font-size: 1rem; font-weight: bold; color: var(--text-primary); margin-top: 0.4rem;">In 7 Days</div>
++                        </div>
++                    </div>
++
++                    <!-- Active Warning Signs / Patterns -->
++                    <div id="safety-sp-warnings-container" class="hidden" style="margin-top: 1rem; padding: 0.75rem; background: rgba(230, 40, 60, 0.05); border: 1px solid rgba(230, 40, 60, 0.15); border-radius: var(--radius-md);">
++                        <div style="font-weight: bold; color: var(--accent-red); font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.25rem;">
++                            <span>ΓÜá∩╕Å</span> Active Deterioration Warnings:
++                        </div>
++                        <ul id="safety-sp-warnings-list" style="margin: 0; padding-left: 1.2rem; font-size: 0.8rem; color: var(--text-primary); line-height: 1.4;">
++                        </ul>
++                    </div>
++                    
++                    <div style="margin-top: 1.25rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
++                        <button class="btn btn-primary" id="btn-sp-trigger-assessment" style="background: var(--accent-orange); border-color: var(--accent-orange); color: #0b0713;">
++                            ≡ƒôï Complete Safety Assessment
++                        </button>
++                        <button class="btn btn-secondary" id="btn-sp-export-handoff">
++                            ≡ƒôñ Export Clinician Handoff
++                        </button>
++                    </div>
++                </div>
++
++                <!-- Main Grid: Left is Personal Safety Plan / Grounding, Right is Crisis Directory & Info -->
++                <div class="safebox-grid">
++                    <!-- Left Column: Personal Safety Plan Editor -->
++                    <div class="safety-plan-block">
++                        <div class="glass-card" style="border-left: 2px solid var(--accent-teal);">
++                            <h3 style="color: var(--accent-teal); margin-top: 0; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem;">
++                                ≡ƒ¢á∩╕Å Collaborative Safety Plan
++                            </h3>
++                            
++                            <p class="text-secondary" style="font-size: 0.8rem; margin-bottom: 1.25rem;">
++                                Having a pre-loaded plan eliminates decision friction during severe states. Edit these fields to save to your local browser storage.
++                            </p>
++                            
++                            <div style="display: flex; flex-direction: column; gap: 1rem;">
++                                <div>
++                                    <label for="input-sp-reasons" class="safebox-field-label" style="display: block; margin-bottom: 0.35rem; color: var(--text-primary); font-size: 0.85rem; font-weight: bold;">
++                                        My Reasons to Live
++                                    </label>
++                                    <textarea id="input-sp-reasons" rows="3" placeholder="What keeps you here? (Family, projects, goals, values, tomorrow's possibility...)" style="width:100%; padding:0.6rem; background: rgba(0,0,0,0.3); border:1px solid var(--card-border); color:var(--text-primary); border-radius:var(--radius-sm); font-family:var(--font-sans); font-size:0.85rem; resize:vertical;"></textarea>
++                                </div>
++
++                                <div>
++                                    <label for="input-sp-distractions" class="safebox-field-label" style="display: block; margin-bottom: 0.35rem; color: var(--text-primary); font-size: 0.85rem; font-weight: bold;">
++                                        Safe Coping Actions & Distractions
++                                    </label>
++                                    <textarea id="input-sp-distractions" rows="3" placeholder="What can you do to distract yourself? (Walking, cold water splash, listening to audio, breathing...)" style="width:100%; padding:0.6rem; background: rgba(0,0,0,0.3); border:1px solid var(--card-border); color:var(--text-primary); border-radius:var(--radius-sm); font-family:var(--font-sans); font-size:0.85rem; resize:vertical;"></textarea>
++                                </div>
++
++                                <div>
++                                    <label for="input-sp-contacts" class="safebox-field-label" style="display: block; margin-bottom: 0.35rem; color: var(--text-primary); font-size: 0.85rem; font-weight: bold;">
++                                        Safe Contacts
++                                    </label>
++                                    <textarea id="input-sp-contacts" rows="2" placeholder="Who can you call? (e.g. David (555-0192), Support line...)" style="width:100%; padding:0.6rem; background: rgba(0,0,0,0.3); border:1px solid var(--card-border); color:var(--text-primary); border-radius:var(--radius-sm); font-family:var(--font-sans); font-size:0.85rem; resize:vertical;"></textarea>
++                                </div>
++
++                                <div>
++                                    <button class="btn btn-primary" id="btn-sp-save-plan" style="width: 100%; justify-content: center; background: var(--accent-teal); border-color: var(--accent-teal); color: #0b0713;">
++                                        ≡ƒÆ╛ Save Safety Plan Updates
++                                    </button>
++                                </div>
++                            </div>
++                        </div>
++
++                        <!-- Grounding Helper Tools Card -->
++                        <div class="glass-card mt-3" style="border-left: 2px solid var(--accent-lavender);">
++                            <h3 style="color: var(--accent-lavender); margin-top: 0; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem;">
++                                ≡ƒºÿ Interactive De-escalation & Grounding
++                            </h3>
++                            <p class="text-secondary" style="font-size: 0.8rem; margin-bottom: 1rem;">
++                                Use these interactive somatic helpers to reduce acute central nervous system distress and ground your focus.
++                            </p>
++
++                            <!-- Grounding Menu Buttons -->
++                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
++                                <button class="btn btn-secondary btn-small" id="btn-sp-grounding-54321">5-4-3-2-1 Sensory</button>
++                                <button class="btn btn-secondary btn-small" id="btn-sp-grounding-breathing">Box Breathing</button>
++                                <button class="btn btn-secondary btn-small" id="btn-sp-grounding-cold">Cold Water Shock</button>
++                            </div>
++
++                            <!-- Grounding Display Area -->
++                            <div id="sp-grounding-display" style="padding: 1rem; background: rgba(0, 0, 0, 0.25); border: 1px dashed rgba(255, 255, 255, 0.08); border-radius: var(--radius-md);">
++                                <div id="sp-grounding-default-msg" class="text-muted" style="font-size: 0.85rem; text-align: center; font-style: italic;">
++                                    Select a grounding technique above to begin.
++                                </div>
++                                
++                                <!-- 5-4-3-2-1 Tool -->
++                                <div id="sp-grounding-54321-tool" class="hidden">
++                                    <h4 style="color: var(--accent-lavender); margin-top:0; font-size: 0.95rem; margin-bottom: 0.5rem;">5-4-3-2-1 Sensory Grounding</h4>
++                                    <p class="text-secondary" style="font-size: 0.8rem; margin-bottom: 0.75rem;">Acknowledge your surroundings to interrupt recursive negative cognitive cycles.</p>
++                                    
++                                    <div id="sp-54321-step-container" style="min-height: 80px; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: var(--radius-sm); padding: 0.75rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); text-align: center;">
++                                        <div id="sp-54321-step-title" style="font-weight: bold; color: var(--accent-lavender); font-size: 1rem;">Step 1</div>
++                                        <div id="sp-54321-step-instruction" style="font-size: 0.9rem; margin-top: 0.25rem;">Name 5 things you can SEE around you right now.</div>
++                                    </div>
++                                    
++                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem;">
++                                        <button class="btn btn-secondary btn-small" id="btn-sp-54321-prev" disabled>Previous</button>
++                                        <span id="sp-54321-progress" style="font-size: 0.8rem; color: var(--text-muted);">Step 1 of 5</span>
++                                        <button class="btn btn-primary btn-small" id="btn-sp-54321-next" style="background: var(--accent-lavender); border-color: var(--accent-lavender); color: #0b0713;">Next Step</button>
++                                    </div>
++                                </div>
++
++                                <!-- Box Breathing Tool -->
++                                <div id="sp-grounding-breathing-tool" class="hidden" style="text-align: center;">
++                                    <h4 style="color: var(--accent-lavender); margin-top:0; font-size: 0.95rem; margin-bottom: 0.5rem;">Somatic Box Breathing Pacer</h4>
++                                    <p class="text-secondary" style="font-size: 0.8rem; margin-bottom: 0.75rem;">Synchronize your breathing with the pacer to calm your nervous system.</p>
++                                    
++                                    <div style="height: 120px; display: flex; align-items: center; justify-content: center; position: relative; margin: 1rem 0;">
++                                        <div id="sp-breathing-circle" style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-teal), var(--accent-lavender)); position: absolute; transition: transform 4s ease-in-out; box-shadow: 0 0 15px rgba(165, 120, 240, 0.3);"></div>
++                                        <div id="sp-breathing-action-text" style="font-weight: bold; color: var(--text-primary); font-size: 1.1rem; z-index: 2; text-shadow: 0 1px 4px rgba(0,0,0,0.8);">Breath Pacer</div>
++                                    </div>
++                                    
++                                    <div style="display: flex; justify-content: center; gap: 0.5rem; margin-top: 0.5rem;">
++                                        <button class="btn btn-secondary btn-small" id="btn-sp-breathing-toggle">Start Pacer</button>
++                                    </div>
++                                </div>
++
++                                <!-- Cold Water Shock Tool -->
++                                <div id="sp-grounding-cold-tool" class="hidden">
++                                    <h4 style="color: var(--accent-lavender); margin-top:0; font-size: 0.95rem; margin-bottom: 0.5rem;">Cold Water Shock Therapy (TIPP)</h4>
++                                    <p class="text-secondary" style="font-size: 0.8rem; margin-bottom: 0.75rem;">Cold water activates the mammalian dive reflex, rapidly down-regulating heart rate and physiological distress.</p>
++                                    <ol style="margin: 0; padding-left: 1.2rem; font-size: 0.85rem; color: var(--text-primary); line-height: 1.5;">
++                                        <li>Fill a bowl with cold water (add ice if available).</li>
++                                        <li>Hold your breath and submerge your face for 15-30 seconds.</li>
++                                        <li>Alternatively, hold an ice pack or frozen bag against your eyes and cheeks for 30 seconds.</li>
++                                        <li>Focus completely on the physical temperature change.</li>
++                                    </ol>
++                                </div>
++                            </div>
++                        </div>
++                    </div>
++
++                    <!-- Right Column: Support Resources Directory -->
++                    <div class="safety-plan-block">
++                        <div class="hotline-card glass-card" style="border-left: 2px solid var(--accent-red); background: rgba(230, 40, 60, 0.01);">
++                            <h3 class="text-red" style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1.1rem;">≡ƒÜ¿ Immediate Crisis Lines</h3>
++                            <p class="text-secondary" style="font-size: 0.8rem; margin-bottom: 1rem;">
++                                If thoughts involve immediate intent or access to means, please contact one of these secure, confidential hotlines right away.
++                            </p>
++                            <ul class="hotline-list" style="margin-bottom: 1rem;">
++                                <li style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0.6rem 0;">
++                                    <span style="font-size: 0.85rem;">≡ƒô₧ Suicide & Crisis Lifeline</span>
++                                    <strong class="hotline-number" style="color: var(--accent-red); font-size: 0.9rem;">988 (Call/Text)</strong>
++                                </li>
++                                <li style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0.6rem 0;">
++                                    <span style="font-size: 0.85rem;">≡ƒÆ¼ Crisis Text Line</span>
++                                    <strong class="hotline-number" style="color: var(--accent-red); font-size: 0.9rem;">Text HOME to 741741</strong>
++                                </li>
++                                <li style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0.6rem 0;">
++                                    <span style="font-size: 0.85rem;">≡ƒÜô Local Emergency Services</span>
++                                    <strong class="hotline-number" style="color: var(--accent-red); font-size: 0.9rem;">911 (or local equivalent)</strong>
++                                </li>
++                            </ul>
++
++                            <!-- Regional Directory Selection -->
++                            <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.75rem;">
++                                <label for="select-sp-country" class="text-muted" style="display: block; font-size: 0.75rem; margin-bottom: 0.25rem;">
++                                    View resources for country:
++                                </label>
++                                <select id="select-sp-country" style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.5); border: 1px solid var(--card-border); color: var(--text-primary); border-radius: var(--radius-sm); font-size: 0.8rem;">
++                                    <option value="us">United States (US)</option>
++                                    <option value="ca">Canada (CA)</option>
++                                    <option value="uk">United Kingdom (UK)</option>
++                                    <option value="au">Australia (AU)</option>
++                                    <option value="int">International / Other</option>
++                                </select>
++
++                                <div id="sp-regional-resources-list" style="margin-top: 0.75rem;">
++                                    <!-- Populate dynamically based on country selection -->
++                                </div>
++                            </div>
++                        </div>
++
++                        <!-- Outreach Template Card -->
++                        <div class="glass-card mt-3">
++                            <h3 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1rem; color: var(--text-primary);">
++                                ≡ƒôï Provider Collaboration Template
++                            </h3>
++                            <p class="text-secondary" style="font-size: 0.8rem; line-height: 1.5; margin-bottom: 0.75rem;">
++                                If you work with a therapist, psychiatrist, or coach, you can use this template to explain how State Not Fate integrates into your care plan:
++                            </p>
++                            <div style="background: rgba(0,0,0,0.25); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid rgba(255,255,255,0.05); font-size: 0.75rem; font-style: italic; color: var(--text-secondary); line-height: 1.45; position: relative;">
++                                "I am utilizing a structured behavioral activation and circadian timing system to manage my daily energy and function. It helps me track anchors, record restart speed, and manage task-entry friction. It is designed to complement our recovery objectives by tracking my floor wins and PHQ-9 progress."
++                                <button class="btn btn-secondary btn-small" id="btn-sp-copy-template" style="position: absolute; bottom: 0.4rem; right: 0.4rem; padding: 0.25rem 0.5rem; font-size: 0.65rem; background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1);">Copy</button>
++                            </div>
++                        </div>
++                    </div>
++                </div>
++            </div>
++
+             <!-- TAB 6: COGNITIVE LAB (WORKSHEETS & JOURNAL) -->
+             <div id="tab-cognitivelab" class="tab-content hidden">
+                 <div class="glass-card">
+@@ -1750,6 +1966,167 @@
+             </div>
+         </div>
+ 
++        <!-- ========================================== -->
++        <!-- FULL SAFETY ASSESSMENT MODAL               -->
++        <!-- ========================================== -->
++        <div id="safety-assessment-modal" class="modal-overlay">
++            <div class="modal-content safety-modal" style="max-width: 550px; max-height: 85vh; overflow-y: auto;">
++                <button class="modal-close-btn" id="btn-close-safety-assessment-modal">├ù</button>
++                <div class="modal-title" style="color: var(--accent-orange); display: flex; align-items: center; gap: 0.5rem; font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem;">
++                    <span>≡ƒôï</span> Safety Assessment
++                </div>
++                <div class="modal-desc" style="margin-bottom: 1rem; font-size: 0.85rem; color: var(--text-secondary);">
++                    This questionnaire helps evaluate your current risk level and establish protective anchors. It takes about 2-3 minutes.
++                </div>
++                
++                <div id="safety-assessment-form-content">
++                    <!-- Step 1: Tier 2 (Intent & Timeline) -->
++                    <div id="sa-step-1" class="sa-step">
++                        <h4 style="color: var(--accent-orange); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.4rem; margin-bottom: 0.75rem; font-size: 0.95rem; font-weight: 500;">Section 1: Intent & Timeline</h4>
++                        
++                        <!-- Question 1: Conviction -->
++                        <div class="mb-3">
++                            <label class="safebox-field-label" style="display:block; margin-bottom: 0.4rem; font-weight: bold; font-size: 0.85rem;">
++                                How certain do you feel that acting on thoughts of suicide is the right decision?
++                            </label>
++                            <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-bottom:0.25rem;">
++                                <span>0 - Not at all certain</span>
++                                <span>10 - Completely certain</span>
++                            </div>
++                            <input type="range" id="input-sa-conviction" min="0" max="10" value="0" style="width:100%; accent-color: var(--accent-orange);">
++                            <div style="text-align:center; font-weight:bold; color:var(--accent-orange); font-size:1.1rem; margin-top:0.25rem;" id="display-sa-conviction">0</div>
++                        </div>
++
++                        <!-- Question 2: Access to Means -->
++                        <div class="mb-3" style="margin-top: 1rem;">
++                            <label class="safebox-field-label" style="display:block; margin-bottom: 0.4rem; font-weight: bold; font-size: 0.85rem;">
++                                Do you have ready access to means that could be lethal?
++                            </label>
++                            <div style="display:flex; flex-direction:column; gap:0.4rem;">
++                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
++                                    <input type="radio" name="sa-access" value="0" checked>
++                                    <span style="font-size:0.85rem;">No access or unclear methods</span>
++                                </label>
++                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
++                                    <input type="radio" name="sa-access" value="1">
++                                    <span style="font-size:0.85rem;">Theoretical knowledge only</span>
++                                </label>
++                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
++                                    <input type="radio" name="sa-access" value="2">
++                                    <span style="font-size:0.85rem;">Some access, but requires effort to obtain</span>
++                                </label>
++                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
++                                    <input type="radio" name="sa-access" value="3">
++                                    <span style="font-size:0.85rem;">Ready access with minimal planning</span>
++                                </label>
++                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
++                                    <input type="radio" name="sa-access" value="4">
++                                    <span style="font-size:0.85rem; color:var(--accent-red); font-weight:bold;">Immediate lethal access</span>
++                                </label>
++                            </div>
++                        </div>
++
++                        <!-- Question 3: Timeline -->
++                        <div class="mb-3" style="margin-top: 1rem;">
++                            <label class="safebox-field-label" style="display:block; margin-bottom: 0.4rem; font-weight: bold; font-size: 0.85rem;">
++                                When do you imagine this might happen?
++                            </label>
++                            <div style="display:flex; flex-direction:column; gap:0.4rem;">
++                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
++                                    <input type="radio" name="sa-timeline" value="0" checked>
++                                    <span style="font-size:0.85rem;">I do not imagine it happening</span>
++                                </label>
++                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
++                                    <input type="radio" name="sa-timeline" value="1">
++                                    <span style="font-size:0.85rem;">Vague future (years away or if things get worse)</span>
++                                </label>
++                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
++                                    <input type="radio" name="sa-timeline" value="2">
++                                    <span style="font-size:0.85rem;">Possible in coming months</span>
++                                </label>
++                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
++                                    <input type="radio" name="sa-timeline" value="3">
++                                    <span style="font-size:0.85rem;">Specific timeframe (days/weeks)</span>
++                                </label>
++                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
++                                    <input type="radio" name="sa-timeline" value="4">
++                                    <span style="font-size:0.85rem; color:var(--accent-red); font-weight:bold;">Imminent (today/tonight)</span>
++                                </label>
++                            </div>
++                        </div>
++                    </div>
++
++                    <!-- Step 2: Tier 3 (Behavior & Deterrents) -->
++                    <div id="sa-step-2" class="sa-step hidden">
++                        <h4 style="color: var(--accent-orange); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.4rem; margin-bottom: 0.75rem; font-size: 0.95rem; font-weight: 500;">Section 2: Behaviors & Deterrents</h4>
++                        
++                        <!-- Question 4: Protective Deterrents -->
++                        <div class="mb-3">
++                            <label class="safebox-field-label" style="display:block; margin-bottom: 0.4rem; font-weight: bold; font-size: 0.85rem;">
++                                What is keeping you from acting on these thoughts? (Select all that apply)
++                            </label>
++                            <div style="display:grid; grid-template-columns: 1fr; gap: 0.4rem;" id="sa-deterrents-container">
++                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.85rem;">
++                                    <input type="checkbox" value="Worry about causing pain to others" checked>
++                                    <span>Worry about causing pain to others</span>
++                                </label>
++                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.85rem;">
++                                    <input type="checkbox" value="Uncertainty about whether I really want to die">
++                                    <span>Uncertainty about whether I really want to die</span>
++                                </label>
++                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.85rem;">
++                                    <input type="checkbox" value="Hope that things might improve">
++                                    <span>Hope that things might improve</span>
++                                </label>
++                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.85rem;">
++                                    <input type="checkbox" value="Responsibilities (children, others depend on me)" checked>
++                                    <span>Responsibilities (children, others depend on me)</span>
++                                </label>
++                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.85rem;">
++                                    <input type="checkbox" value="Religious/spiritual beliefs">
++                                    <span>Religious/spiritual beliefs</span>
++                                </label>
++                            </div>
++                        </div>
++
++                        <!-- Question 5: Recent Behavioral Changes -->
++                        <div class="mb-3" style="margin-top: 1rem;">
++                            <label class="safebox-field-label" style="display:block; margin-bottom: 0.4rem; font-weight: bold; font-size: 0.85rem;">
++                                Have you experienced any of the following recently? (Select all that apply)
++                            </label>
++                            <div style="display:grid; grid-template-columns: 1fr; gap: 0.4rem;" id="sa-behaviors-container">
++                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.85rem;">
++                                    <input type="checkbox" value="Withdrawing from social contact completely">
++                                    <span>Withdrawing from social contact completely</span>
++                                </label>
++                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.85rem;">
++                                    <input type="checkbox" value="Giving away items, writing final letters/notes">
++                                    <span>Giving away items, writing final letters/notes</span>
++                                </label>
++                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.85rem;">
++                                    <input type="checkbox" value="Sudden reckless behaviors or self-harm spikes">
++                                    <span>Sudden reckless behaviors or self-harm spikes</span>
++                                </label>
++                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.85rem;">
++                                    <input type="checkbox" value="Severe insomnia or sleeping constantly">
++                                    <span>Severe insomnia or sleeping constantly (over 12h)</span>
++                                </label>
++                            </div>
++                        </div>
++                    </div>
++                </div>
++
++                <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center; margin-top:1.5rem;">
++                    <button class="btn btn-secondary" id="btn-sa-cancel">Cancel</button>
++                    <div>
++                        <button class="btn btn-secondary hidden" id="btn-sa-prev" style="margin-right: 0.5rem;">Back</button>
++                        <button class="btn btn-primary" id="btn-sa-next" style="background: var(--accent-orange); border-color: var(--accent-orange); color: #0b0713;">Next Section</button>
++                        <button class="btn btn-primary hidden" id="btn-sa-submit" style="background: var(--accent-orange); border-color: var(--accent-orange); color: #0b0713;">Γ£ô Submit Assessment</button>
++                    </div>
++                </div>
++            </div>
++        </div>
++
+         <!-- ========================================== -->
+         <!-- BREATH MANTRA PACING GUIDE (MODAL)         -->
+         <!-- ========================================== -->

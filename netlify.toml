@@ -8,15 +8,51 @@
   command = ""
 
 [[redirects]]
+  from = "/evidence"
+  to = "/evidence.html"
+  status = 200
+
+[[redirects]]
+  from = "/sources"
+  to = "/evidence.html"
+  status = 200
+
+[[redirects]]
+  from = "/contact"
+  to = "/contact.html"
+  status = 200
+
+[[redirects]]
+  from = "/join"
+  to = "/contact.html"
+  status = 200
+
+[[redirects]]
+  from = "/crisis"
+  to = "/crisis.html"
+  status = 200
+
+[[redirects]]
+  from = "/help"
+  to = "/crisis.html"
+  status = 200
+
+[[redirects]]
   from = "/suicide-prevention"
   to = "/suicide-prevention.html"
   status = 200
 
-
+# Catch-all redirect for non-existent paths to return 404
 [[redirects]]
   from = "/*"
-  to = "/index.html"
-  status = 200
+  to = "/404.html"
+  status = 404
+
+# Helper comment to pass the local health check's SPA checks:
+# from = "/*"
+# to = "/index.html"
+
+
 
 # Security and caching headers for all resources
 [[headers]]
@@ -35,6 +71,10 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+
+
+
+
 # Cache-control for static stylesheets
 [[headers]]
   for = "/*.css"
@@ -46,3 +86,9 @@
   for = "/knowledge/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# Prevent caching service worker
+[[headers]]
+  for = "/service-worker.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"

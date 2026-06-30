@@ -15,7 +15,7 @@ test('scope, safety, and professional-care boundaries are visible @critical', as
   await expect(page.getByRole('heading', { name: /crisis|urgent support/i })).toBeVisible();
   await expect(page.getByText(/call your local emergency number/i)).toBeVisible();
   await expect(page.getByText(/local crisis line/i)).toBeVisible();
-  await expect(page.getByText(/988/)).toBeVisible();
+  await expect(page.getByRole('link', { name: /call 988/i })).toBeVisible();
 
   const crisisText = await page.locator('body').innerText();
   expect(crisisText.length).toBeLessThan(4500);
