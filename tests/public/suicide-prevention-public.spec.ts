@@ -38,9 +38,40 @@ test.describe('Suicide Prevention Public Page', () => {
     await expect(populationDisplay).toContainText('Belonging, family conflict, school context, digital life');
     await page.getByRole('button', { name: 'Perinatal' }).click();
     await expect(populationDisplay).toContainText('Severe depression, psychosis, mania, and parent-or-infant safety concerns');
+    await expect(populationDisplay).toContainText('intrusive thoughts and active danger must not be treated as the same thing');
+    await page.locator('[aria-label="Population-aware prevention views"]').getByRole('button', { name: 'Disability / Neurodivergence' }).click();
+    await expect(populationDisplay).toContainText('Accessibility is part of prevention');
+    await expect(populationDisplay).toContainText('use the person\'s clearest communication method');
+
+    const scriptDisplay = page.locator('#public-script-display');
+    await expect(scriptDisplay).toContainText('The aim is to create contact, not to force a giant confession.');
+    await page.getByRole('button', { name: 'Ask Directly' }).click();
+    await expect(scriptDisplay).toContainText('Are you having thoughts about killing yourself or not being safe right now?');
+
+    await expect(page.getByText('Quick map: what kind of signal am I looking at?')).toBeVisible();
+    await expect(page.getByText('Quick map: what helps in the next 10 minutes, day, and week?')).toBeVisible();
+    const communityDisplay = page.locator('#public-community-display');
+    await expect(communityDisplay).toContainText('discipline, suspicion, or forced toughness');
+    await expect(communityDisplay).toContainText('Source footing: NAMI Community and Culture pages');
+    await page.locator('[aria-label="Community support path examples"]').getByRole('button', { name: 'Work / Financial Strain' }).click();
+    await expect(communityDisplay).toContainText('Job collapse and money fear can become identity collapse');
+    await expect(communityDisplay).toContainText('help sort the next 24 hours from the whole life problem');
+    await expect(page.getByText('Helper compare blocks: common miss vs better move')).toBeVisible();
+    await expect(page.getByText('Route examples by setting')).toBeVisible();
+    await expect(page.getByText('Evidence glossary: why these route cards are framed this way')).toBeVisible();
+    await expect(page.getByText('Why SNF avoids scoring people')).toBeVisible();
+    const playbookDisplay = page.locator('#public-playbook-display');
+    await expect(playbookDisplay).toContainText('Home and close-relationship playbook');
+    await page.locator('[aria-label="Setting playbooks"]').getByRole('button', { name: 'Work / School' }).click();
+    await expect(playbookDisplay).toContainText('These settings often notice function collapse before they hear the deeper story');
+    await expect(playbookDisplay).toContainText('take care of yourself');
+    await expect(page.getByText('Postvention after a suicide death or crisis shockwave')).toBeVisible();
+    await expect(page.getByText('Safe messaging and responsible public language')).toBeVisible();
 
     await expect(page.getByText('Do not build suicide risk scores')).toBeVisible();
     await expect(page.getByRole('heading', { level: 2, name: 'How State Not Fate Uses Sources' })).toBeVisible();
     await expect(page.getByText('Loose end', { exact: true })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 3, name: 'SAVE Media Recommendations' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 3, name: 'NAMI Mental Health at Work' })).toBeVisible();
   });
 });

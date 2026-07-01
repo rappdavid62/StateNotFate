@@ -88,7 +88,7 @@ test.describe('Suicide Compendium & Course Gated Content', () => {
     
     // Verify first module title is present in the education body
     const moduleBody = page.locator('#module-education-body');
-    await expect(moduleBody).toContainText('Module 1: Distinguishing Thoughts, Ideation, and Intent');
+    await expect(moduleBody).toContainText('Module 1: Differentiating Ideation & Intent');
     
     // Verify the character count starts at 0
     await expect(page.locator('#module-char-count')).toContainText('0 / 15 chars');

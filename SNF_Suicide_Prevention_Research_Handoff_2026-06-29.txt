@@ -78,25 +78,55 @@ Type: national postvention guidance
 Disposition: opened a new line of inquiry
 Effect on project: expands the appendix beyond prevention-before-crisis into grief, contagion risk, and response after loss.
 
-13. Indian Health Service Suicide Prevention
+13. After a Suicide: A Toolkit for Schools
+URL: https://sprc.org/resources/after-suicide-toolkit-schools
+Type: guide / toolkit
+Disposition: wrote a chapter
+Effect on project: supports school and community postvention, memorialization boundaries, and contagion-aware response.
+
+14. SAVE Media Recommendations
+URL: https://www.save.org/media/media-recommendations/
+Type: nonprofit safe messaging guidance
+Disposition: wrote a chapter
+Effect on project: strengthens public-language, media, and responsible-communication sections.
+
+15. Indian Health Service Suicide Prevention
 URL: https://www.ihs.gov/suicideprevention/
 Type: official population-specific resource
 Disposition: opened a new equity chapter
 Effect on project: strengthens the AI/AN and culturally grounded prevention lane.
 
-14. Stanley et al. Safety Planning Intervention With Follow-up
+16. Trevor Project 2024 National Survey on LGBTQ+ Youth Mental Health
+URL: https://www.thetrevorproject.org/survey-2024/
+Type: survey / nonprofit research
+Disposition: consolidation source
+Effect on project: supports the LGBTQ+ section with current access-barrier and supportive-environment context.
+
+17. NAMI Community and Culture Pages
+URL: https://www.nami.org/community-and-culture/hispanic-latinx/
+Type: established nonprofit support resource
+Disposition: routing and framing support
+Effect on project: strengthens culturally legible routing for newer community sections without overclaiming clinical evidence.
+
+18. NAMI Mental Health at Work
+URL: https://stigmafree.nami.org/mental-health-at-work/
+Type: established nonprofit workplace resource
+Disposition: routing and framing support
+Effect on project: supports the work, unemployment, and financial-strain lane with practical function and stigma-aware context.
+
+19. Stanley et al. Safety Planning Intervention With Follow-up
 URL: https://pubmed.ncbi.nlm.nih.gov/29998307/
 Type: peer-reviewed research
 Disposition: research anchor
 Effect on project: supports aftercare, follow-up, and continuity messaging.
 
-15. Motto / Caring Letters model and Luxton et al. Caring Letters implementation
+20. Motto / Caring Letters model and Luxton et al. Caring Letters implementation
 URLs: https://pubmed.ncbi.nlm.nih.gov/11775719/ | https://pubmed.ncbi.nlm.nih.gov/24582736/
 Type: peer-reviewed research / implementation
 Disposition: wrote a chapter
 Effect on project: supports connection-based follow-up and low-burden contact as prevention infrastructure.
 
-16. Recent 2024-2026 clinical summaries, press releases, and AI-generated source lists
+21. Recent 2024-2026 clinical summaries, press releases, and AI-generated source lists
 Type: secondary or unverified synthesis
 Disposition: loose end / watchlist
 Effect on project: may point to updates on C-SSRS, ASQ, perinatal screening, ketamine/esketamine, SAINT, or prescribing safety, but should not become public claims until checked against primary documents.
@@ -267,12 +297,18 @@ What the tabs should do:
 - LGBTQ+
 - AI/AN and tribal/community grounded sources
 - Older adult / rural / disability
+- Black communities and racism-shaped stress
+- Latino / immigrant / refugee communities
+- Work / unemployment / financial-strain pathways
 
 7. Missing content still worth building
-- Supporter script library with low-pressure, medium-pressure, and emergency language.
-- Postvention section for loss survivors and community response.
-- Safer messaging section for how to talk and write about suicide.
 - Measurement section for appendix engagement and help-seeking without risk scoring.
+Current status: supporter script library, postvention section, and safer messaging section are now present in the public appendix; future work should deepen them rather than treating them as missing.
+- Visual quick maps and text-first infographic-style aids are now present in the public appendix; future work should deepen them with more settings-specific and population-specific variants.
+- Community support paths and helper compare blocks are now present in the public appendix; future work should deepen them with more source-backed routing examples and population-specific nuances.
+- An evidence glossary for route cards is now present in the public appendix so the page explains why direct questions, short route cards, context-aware framing, and no-risk-score rules are used.
+- Setting playbooks are now present in the public appendix so home, work/school, community/faith, and health/benefits settings each have a first move, common mistake, escalation cue, route cards, and source footing.
+- Population-aware prevention tabs now carry route cards and source footing, so they function more like mini-modules than short summaries.
 
 8. Product boundaries to keep visible
 - This is research and education support, not crisis counseling or medical advice.

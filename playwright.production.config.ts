@@ -11,7 +11,7 @@ export default defineConfig({
     timeout: 5000
   },
   use: {
-    baseURL: 'https://statenotfate.netlify.app',
+    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? 'https://statenotfate.netlify.app',
     trace: 'on-first-retry'
   },
   projects: [

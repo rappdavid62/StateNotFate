@@ -1,0 +1,69 @@
+# Build/dev tooling
+node_modules/
+dist/
+coverage/
+test-results/
+playwright-report/
+.npm-cache/
+.npm-cache-netlify-2/
+.tmp.driveupload/
+.tmp.drivedownload/
+.tmp(1).drivedownload/
+.netlify/
+.git/
+src/
+
+# Test and config files
+tests/
+scripts/
+*.spec.ts
+*.config.ts
+playwright.*.ts
+tsconfig.json
+package.json
+package-lock.json
+.node-version
+.gitignore
+.netlifyignore
+check-errors.js
+
+# OneDrive sync conflict duplicates
+*-DESKTOP-*
+*-Laptop-*
+
+# Documentation and dev artifacts
+*.md
+*.log
+*.txt
+*.zip
+GIT_CONTEXT.txt
+IMPLEMENTATION_SUMMARY.md
+AGENTS.md
+README.md
+SUICIDE_DETECTION_README.md
+SNF_Suicide_Prevention_Research_Handoff_2026-06-29.txt
+
+# Data files that are not served
+expanded_pubmed_evidence.json
+pubmed_evidence.json
+
+# Dev packages
+polaris-full-package/
+polaris-full-package.zip
+polaris-complete (1).js
+state-not-fate-presentation-polish.zip
+State_Not_Fate_v2.0_Full_Backup_2026-06-01.zip
+
+# Temp/system files
+.DS_Store
+Thumbs.db
+*.env
+.env
+openai-api-key.txt
+.tmp-static-server.log
+debug.log
+app_diff.log
+app_diff_utf8.log
+git_diff_local.txt
+git_diff_local_utf8.txt
+git_diff_snf.txt
