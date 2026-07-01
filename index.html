@@ -23,6 +23,7 @@
                 <a href="#program">Start / Try the program</a>
                 <a href="/suicide-prevention">Suicide Prevention</a>
                 <a href="/evidence">Evidence / Sources</a>
+                <a href="/essays">Essays</a>
                 <a href="/contact">Contact / Join</a>
                 <a href="/crisis">Crisis Help</a>
             </div>
@@ -1199,6 +1200,21 @@
                                 </p>
                             </div>
 
+                            <div class="glass-card mt-2" style="border-left: 2px solid var(--accent-orange); background: rgba(240, 115, 30, 0.01);">
+                                <h3 style="color: var(--accent-orange);">💬 Quick Crisis Scripts</h3>
+                                <p class="text-secondary mt-1" style="font-size:0.8rem; line-height: 1.4;">
+                                    When energy is zero or you are in panic, copy a script with a single click to reach out to a contact.
+                                </p>
+                                <div style="display:flex; flex-direction:column; gap:0.5rem; margin-top:0.75rem;">
+                                    <button class="btn btn-secondary btn-small" onclick="navigator.clipboard.writeText('I am not doing well and I do not want to be alone with my thoughts right now. Can you stay with me by text or phone while I get grounded or contact more support?'); showToast('Crisis check-in text copied.', 'success');" style="text-align:left; font-size:0.75rem; padding:0.5rem 0.75rem; justify-content:flex-start; display:flex; align-items:center; gap:0.4rem;">
+                                        <span>📋</span> <span>Copy: "I do not want to be alone right now..."</span>
+                                    </button>
+                                    <button class="btn btn-secondary btn-small" onclick="navigator.clipboard.writeText('My warning signs are getting worse and I need a little more contact than usual tonight. I do not need you to fix everything. I need you to stay connected with me while I follow my safety plan.'); showToast('Safety tracking text copied.', 'success');" style="text-align:left; font-size:0.75rem; padding:0.5rem 0.75rem; justify-content:flex-start; display:flex; align-items:center; gap:0.4rem;">
+                                        <span>📋</span> <span>Copy: "My warning signs are getting worse..."</span>
+                                    </button>
+                                </div>
+                            </div>
+
                         </div>
 
                     </div>
@@ -1380,6 +1396,8 @@
                     <button class="btn btn-secondary sp-subtab-btn" id="btn-sp-subtab-parables" data-subtab="parables">Warning Signs & Risk</button>
                     <button class="btn btn-secondary sp-subtab-btn" id="btn-sp-subtab-journal" data-subtab="journal">Support Plan & Reflection</button>
                     <button class="btn btn-secondary sp-subtab-btn" id="btn-sp-subtab-compendium" data-subtab="compendium" style="color: var(--accent-lavender);">Clinical & Community Guide 📚</button>
+                    <button class="btn btn-secondary sp-subtab-btn" id="btn-sp-subtab-evidence" data-subtab="evidence" style="color: var(--accent-teal);">Evidence & Sources 🔬</button>
+                    <button class="btn btn-secondary sp-subtab-btn" id="btn-sp-subtab-systems" data-subtab="systems" style="color: var(--accent-orange);">Systems & Hope Repair ⚙️</button>
                 </div>
 
                 <div id="sp-panel-crisis" class="sp-subpanel">
@@ -1593,6 +1611,170 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Emergency Appendix Block -->
+                <div class="glass-card mt-3" style="border-left: 2px solid var(--accent-orange); background: rgba(240, 115, 30, 0.01); margin-top: 1.5rem; padding: 1.25rem;">
+                    <h3 style="color: var(--accent-orange); margin-top: 0; margin-bottom: 0.5rem; font-size: 1.15rem; display: flex; align-items: center; gap: 0.5rem;">
+                        🚨 Emergency Appendix: Living With Suicidal Thoughts (No Pressure)
+                    </h3>
+                    <p class="text-secondary" style="font-size: 0.85rem; margin-bottom: 1rem; line-height: 1.45;">
+                        This is not a speech, not a moral argument, and not a demand to be okay. It is a set of tools for getting through the state you are in.
+                    </p>
+
+                    <!-- Appendix Nav Tabs -->
+                    <div style="display: flex; gap: 0.4rem; margin-bottom: 1rem; flex-wrap: wrap; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
+                        <button class="btn btn-secondary btn-small sp-emergency-tab active" id="btn-emer-tab-frame" data-tab="frame" style="font-size: 0.72rem; padding: 0.3rem 0.5rem;">1. Stabilize & Rate</button>
+                        <button class="btn btn-secondary btn-small sp-emergency-tab" id="btn-emer-tab-load" data-tab="load" style="font-size: 0.72rem; padding: 0.3rem 0.5rem;">2. Lower the Load</button>
+                        <button class="btn btn-secondary btn-small sp-emergency-tab" id="btn-emer-tab-ladder" data-tab="ladder" style="font-size: 0.72rem; padding: 0.3rem 0.5rem;">3. Contact Ladder</button>
+                        <button class="btn btn-secondary btn-small sp-emergency-tab" id="btn-emer-tab-supporter" data-tab="supporter" style="font-size: 0.72rem; padding: 0.3rem 0.5rem;">4. Supporter Cues</button>
+                    </div>
+
+                    <!-- Appendix Tab Content Containers -->
+                    <!-- Tab 1: Stabilize the Frame & Rate (Distortion Calculator) -->
+                    <div id="sp-emer-panel-frame" class="sp-emer-tabpanel">
+                        <div class="safebox-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+                            <div>
+                                <h4 style="color: var(--text-primary); margin-top:0; font-size:0.9rem; margin-bottom:0.4rem;">Stabilize the Frame</h4>
+                                <ul style="margin: 0; padding-left: 1.1rem; font-size: 0.8rem; line-height: 1.45; color: var(--text-secondary);">
+                                    <li><strong>Stay in the present:</strong> Handle the next hour before trying to handle your whole life.</li>
+                                    <li><strong>Put limits on thinking:</strong> Rumination feels like problem-solving, but mostly deepens the state.</li>
+                                    <li><strong>Do not solve life while flooded:</strong> Put feelings on paper first.</li>
+                                </ul>
+                            </div>
+                            <div style="border-left: 1px solid rgba(255,255,255,0.05); padding-left: 1.25rem;">
+                                <h4 style="color: var(--accent-orange); margin-top:0; font-size:0.9rem; margin-bottom:0.4rem;">Cognitive Distortion Calculator</h4>
+                                <p class="text-secondary" style="font-size: 0.75rem; margin-bottom: 0.75rem; line-height: 1.35;">
+                                    Depression distorts scale. Enter a feeling and compare the surge intensity with the issue's big-picture severity.
+                                </p>
+                                <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+                                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                        <input type="text" id="input-emer-feeling" placeholder="Feeling (e.g. Shame, Panic)" style="flex: 1; padding: 0.4rem; background: rgba(0,0,0,0.3); border: 1px solid var(--card-border); color: var(--text-primary); border-radius: var(--radius-sm); font-size: 0.78rem;">
+                                    </div>
+                                    <div>
+                                        <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:var(--text-muted); margin-bottom:0.15rem;">
+                                            <span>Emotional Intensity:</span>
+                                            <span id="label-emer-intensity">5/10</span>
+                                        </div>
+                                        <input type="range" id="input-emer-intensity" min="0" max="10" value="5" style="width: 100%;">
+                                    </div>
+                                    <div>
+                                        <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:var(--text-muted); margin-bottom:0.15rem;">
+                                            <span>Big-Picture Issue Severity:</span>
+                                            <span id="label-emer-severity">5/10</span>
+                                        </div>
+                                        <input type="range" id="input-emer-severity" min="0" max="10" value="5" style="width: 100%;">
+                                    </div>
+                                    <button class="btn btn-secondary btn-small" id="btn-emer-calculate" style="background: rgba(240, 115, 30, 0.15); border-color: rgba(240, 115, 30, 0.25); color: var(--accent-orange); font-weight: bold; width: 100%; justify-content: center;">
+                                        ⚖️ Compare Scale
+                                    </button>
+                                    <div id="emer-comparison-result" class="hidden text-secondary" style="font-size: 0.75rem; line-height: 1.4; padding: 0.5rem; background: rgba(255,255,255,0.02); border-radius: var(--radius-sm); border: 1px solid rgba(255,255,255,0.05); margin-top: 0.25rem;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Lower the Load (Mechanical Relief Checklist) -->
+                    <div id="sp-emer-panel-load" class="sp-emer-tabpanel hidden">
+                        <h4 style="color: var(--text-primary); margin-top: 0; font-size: 0.9rem; margin-bottom: 0.5rem;">Lower the Load (Mechanical Relief Checklist)</h4>
+                        <p class="text-secondary" style="font-size: 0.8rem; margin-bottom: 1rem; line-height: 1.4;">
+                            Do not try to solve your life or find immediate hope when flooded. Focus strictly on these small, physical interventions. That is mechanical relief.
+                        </p>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem;">
+                            <label style="display: flex; align-items: flex-start; gap: 0.5rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 0.6rem; border-radius: var(--radius-sm); cursor: pointer; user-select: none;">
+                                <input type="checkbox" class="emer-relief-check" style="margin-top: 0.15rem;">
+                                <span style="font-size: 0.78rem; color: var(--text-secondary);">💧 Drink a glass of water</span>
+                            </label>
+                            <label style="display: flex; align-items: flex-start; gap: 0.5rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 0.6rem; border-radius: var(--radius-sm); cursor: pointer; user-select: none;">
+                                <input type="checkbox" class="emer-relief-check" style="margin-top: 0.15rem;">
+                                <span style="font-size: 0.78rem; color: var(--text-secondary);">🥩 Eat something with protein</span>
+                            </label>
+                            <label style="display: flex; align-items: flex-start; gap: 0.5rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 0.6rem; border-radius: var(--radius-sm); cursor: pointer; user-select: none;">
+                                <input type="checkbox" class="emer-relief-check" style="margin-top: 0.15rem;">
+                                <span style="font-size: 0.78rem; color: var(--text-secondary);">🚿 Wash face or take a shower</span>
+                            </label>
+                            <label style="display: flex; align-items: flex-start; gap: 0.5rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 0.6rem; border-radius: var(--radius-sm); cursor: pointer; user-select: none;">
+                                <input type="checkbox" class="emer-relief-check" style="margin-top: 0.15rem;">
+                                <span style="font-size: 0.78rem; color: var(--text-secondary);">☀️ Step outside / get light in eyes</span>
+                            </label>
+                            <label style="display: flex; align-items: flex-start; gap: 0.5rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 0.6rem; border-radius: var(--radius-sm); cursor: pointer; user-select: none;">
+                                <input type="checkbox" class="emer-relief-check" style="margin-top: 0.15rem;">
+                                <span style="font-size: 0.78rem; color: var(--text-secondary);">🧹 Clean or reset one small surface</span>
+                            </label>
+                        </div>
+                        <div style="margin-top: 1rem; display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted);">
+                            <span>Relief Checklist Completion:</span>
+                            <strong id="emer-relief-progress-label" style="color: var(--accent-orange);">0 / 5 checked</strong>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Crisis Contact Ladder -->
+                    <div id="sp-emer-panel-ladder" class="sp-emer-tabpanel hidden">
+                        <h4 style="color: var(--text-primary); margin-top: 0; font-size: 0.9rem; margin-bottom: 0.5rem;">Crisis Contact Ladder</h4>
+                        <p class="text-secondary" style="font-size: 0.8rem; margin-bottom: 0.75rem; line-height: 1.4;">
+                            Fill this out before a bad night. Names and safe places are synced from your **Support Map**.
+                        </p>
+                        
+                        <table style="width: 100%; border-collapse: collapse; font-size: 0.78rem; text-align: left; line-height: 1.45;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid rgba(240, 115, 30, 0.25); color: var(--accent-orange); font-weight: bold;">
+                                    <th style="padding: 0.4rem; width: 10%;">Level</th>
+                                    <th style="padding: 0.4rem; width: 35%;">Who / Where</th>
+                                    <th style="padding: 0.4rem;">What to say or do</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding: 0.4rem; font-weight: bold; color: var(--text-primary);">1</td>
+                                    <td style="padding: 0.4rem;" id="emer-ladder-anchor">Anchor Person: [Not set]</td>
+                                    <td style="padding: 0.4rem; color: var(--text-secondary);">"I need you with me or on the phone right now."</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding: 0.4rem; font-weight: bold; color: var(--text-primary);">2</td>
+                                    <td style="padding: 0.4rem;" id="emer-ladder-buffer">Backup Contact: [Not set]</td>
+                                    <td style="padding: 0.4rem; color: var(--text-secondary);">"I'm escalating and I need another contact."</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding: 0.4rem; font-weight: bold; color: var(--text-primary);">3</td>
+                                    <td style="padding: 0.4rem;" id="emer-ladder-env">Safe Place: [Not set]</td>
+                                    <td style="padding: 0.4rem; color: var(--text-secondary);">Friend's house, family home, lobby, library, or anywhere not isolated.</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding: 0.4rem; font-weight: bold; color: var(--text-primary);">4</td>
+                                    <td style="padding: 0.4rem;">Crisis Line (988)</td>
+                                    <td style="padding: 0.4rem; color: var(--text-secondary); display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;">
+                                        <span>Call or text 988 (toll-free, confidential)</span>
+                                        <a href="tel:988" class="btn btn-secondary btn-small" style="padding: 0.1rem 0.4rem; font-size: 0.65rem; color: var(--accent-red); border-color: rgba(255,50,50,0.25);">Call 988</a>
+                                    </td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding: 0.4rem; font-weight: bold; color: var(--text-primary);">5</td>
+                                    <td style="padding: 0.4rem; font-weight: bold; color: var(--accent-red);">Emergency Services / ER</td>
+                                    <td style="padding: 0.4rem; color: var(--text-secondary); display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;">
+                                        <span>Use if close to acting or in immediate danger.</span>
+                                        <a href="tel:911" class="btn btn-primary btn-small" style="padding: 0.1rem 0.4rem; font-size: 0.65rem; background: var(--accent-red); border-color: var(--accent-red); color: white;">Call 911</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Tab 4: Supporter Cues -->
+                    <div id="sp-emer-panel-supporter" class="sp-emer-tabpanel hidden">
+                        <h4 style="color: var(--text-primary); margin-top: 0; font-size: 0.9rem; margin-bottom: 0.5rem;">Supporter Quick Cues</h4>
+                        <p class="text-secondary" style="font-size: 0.8rem; margin-bottom: 0.75rem; line-height: 1.4;">
+                            If a friend, family member, or partner is looking over your shoulder to support you, these are the instructions they should follow:
+                        </p>
+                        <ul style="margin: 0; padding-left: 1.2rem; font-size: 0.8rem; line-height: 1.5; color: var(--text-secondary);">
+                            <li><strong>Do not debate worth:</strong> Do not argue philosophy with a flooded person.</li>
+                            <li><strong>Reduce isolation first:</strong> Presence and sitting nearby beats finding perfect words.</li>
+                            <li><strong>Lower stimulation:</strong> Keep the room quiet, calm, and low-conflict.</li>
+                            <li><strong>Stay concrete:</strong> Assist them with water, simple food, sitting down, or stepping outside.</li>
+                            <li><strong>Escalate early:</strong> If they cannot stay safe, call 911 or drive them to emergency care.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
                 </div> <!-- End of #sp-panel-crisis -->
 
                 <!-- TAB: PARABLES OF THE EDGE -->
@@ -1675,6 +1857,59 @@
                                 <button class="btn btn-primary btn-small w-full" id="btn-sp-reflect-council" style="background:var(--accent-red); border-color:var(--accent-red); color:#fff; font-weight:bold;">Log Reflection</button>
                             </div>
                         </div>
+
+                        <!-- Parable 5 (Means Safety & Harm Reduction) -->
+                        <div class="glass-card parable-card" id="parable-card-means" style="border-left: 2px solid var(--accent-orange); display:flex; flex-direction:column; justify-content:space-between;">
+                            <div>
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                                    <h3 style="color: var(--accent-orange); font-size: 0.95rem; margin:0;">V. Means Safety & Harm Reduction</h3>
+                                    <span class="badge parable-status-badge" id="parable-badge-means" style="background:rgba(255, 170, 0, 0.1); color:var(--accent-orange); font-size:0.65rem; border:1px solid var(--card-border);">Unread</span>
+                                </div>
+                                <p class="text-secondary" style="font-size:0.85rem; line-height:1.5; margin-bottom:1rem;">
+                                    <strong>The principle:</strong> Reducing access to lethal items during a narrowing state is one of the most effective ways to survive a crisis. Keep dangerous items locked, away, or handed to a trusted friend. Harm reduction works because thoughts of suicide are often time-limited.
+                                </p>
+                            </div>
+                            <div>
+                                <textarea class="parable-reflection-input" id="reflect-means" placeholder="How can you make your immediate physical environment safer?" style="width:100%; height:60px; padding:0.4rem; background:rgba(0,0,0,0.3); border:1px solid var(--card-border); color:var(--text-primary); border-radius:var(--radius-sm); font-size:0.75rem; margin-bottom:0.5rem; resize:none;"></textarea>
+                                <button class="btn btn-primary btn-small w-full" id="btn-sp-reflect-means" style="background:var(--accent-orange); border-color:var(--accent-orange); color:#0b0713; font-weight:bold;">Log Reflection</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Population-Specific Considerations -->
+                    <div class="glass-card mt-3" style="border-left: 2px solid var(--accent-lavender); background: rgba(165,120,240,0.01); padding: 1.25rem;">
+                        <h3 style="color: var(--accent-lavender); margin-top: 0; margin-bottom: 0.75rem; font-size: 1.05rem; display: flex; align-items: center; gap: 0.4rem;">
+                            👥 Population-Specific Considerations
+                        </h3>
+                        <p class="text-secondary" style="font-size: 0.85rem; margin-bottom: 1rem; line-height: 1.5;">
+                            Suicidal states express themselves differently across communities. These population-aware lanes help ground your support strategy in the correct context:
+                        </p>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem; font-size: 0.8rem; line-height: 1.45;">
+                            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 0.75rem; border-radius: var(--radius-sm);">
+                                <strong style="color: var(--accent-teal);">🤰 Perinatal & Postpartum</strong><br>
+                                <span class="text-secondary">Depression, psychosis, or severe anxiety during/after pregnancy requires immediate family screening, professional care, and maternal support systems.</span>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 0.75rem; border-radius: var(--radius-sm);">
+                                <strong style="color: var(--accent-teal);">🎓 Youth & School</strong><br>
+                                <span class="text-secondary">Focus on peer contagion risk, sudden academic/social withdrawal, school-based counseling access, and digital presence safety.</span>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 0.75rem; border-radius: var(--radius-sm);">
+                                <strong style="color: var(--accent-orange);">🎖️ Veterans & Servicemembers</strong><br>
+                                <span class="text-secondary">Emphasize transition crisis windows, peer mentorship networks, specialized VA resources, and secure firearm storage.</span>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 0.75rem; border-radius: var(--radius-sm);">
+                                <strong style="color: var(--accent-lavender);">🌈 LGBTQ+ Contexts</strong><br>
+                                <span class="text-secondary">Mitigate risks driven by social rejection, identity erasure, lack of gender-affirming support, and family estrangement.</span>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 0.75rem; border-radius: var(--radius-sm);">
+                                <strong style="color: var(--accent-teal);">🪶 Tribal & Indigenous (AI/AN)</strong><br>
+                                <span class="text-secondary">Incorporate culturally grounded healing, community narrative restoration, intergenerational trauma acknowledgement, and local tribal resources.</span>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 0.75rem; border-radius: var(--radius-sm);">
+                                <strong style="color: var(--text-primary);">🚜 Older Adults & Rural Communities</strong><br>
+                                <span class="text-secondary">Address physical decline, social isolation, access barriers, occupational distress, and reluctance to seek help.</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -1751,6 +1986,66 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Support Map & Script Library Section -->
+                    <div class="glass-card mt-3" style="border-left: 2px solid var(--accent-teal); margin-top: 1.5rem;">
+                        <h3 style="color: var(--accent-teal); margin-top: 0; margin-bottom: 1rem; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <span>🗺️ Interactive Support Map & Script Library</span>
+                        </h3>
+                        
+                        <div class="safebox-grid" style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.25rem;">
+                            <!-- Left: Support Map Editor -->
+                            <div>
+                                <h4 style="color: var(--text-primary); margin-top: 0; font-size: 0.95rem; margin-bottom: 0.5rem;">My Active Support Map</h4>
+                                <p class="text-secondary" style="font-size: 0.8rem; margin-bottom: 1rem; line-height: 1.4;">
+                                    Identify the specific nodes in your support network. Keep this practical.
+                                </p>
+                                
+                                <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+                                    <div>
+                                        <label for="input-sp-anchor-person" class="safebox-field-label" style="display: block; margin-bottom: 0.25rem; font-size: 0.8rem; font-weight: bold;">
+                                            Anchor Person (Closest trusted supporter)
+                                        </label>
+                                        <input type="text" id="input-sp-anchor-person" placeholder="e.g. David (555-0192) - calls me morning/night" style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.3); border: 1px solid var(--card-border); color: var(--text-primary); border-radius: var(--radius-sm); font-size: 0.8rem; font-family: inherit;">
+                                    </div>
+                                    <div>
+                                        <label for="input-sp-buffer-contact" class="safebox-field-label" style="display: block; margin-bottom: 0.25rem; font-size: 0.8rem; font-weight: bold;">
+                                            Buffer Contact (Fallback if Anchor is unreachable)
+                                        </label>
+                                        <input type="text" id="input-sp-buffer-contact" placeholder="e.g. Crisis Line (988) or sibling" style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.3); border: 1px solid var(--card-border); color: var(--text-primary); border-radius: var(--radius-sm); font-size: 0.8rem; font-family: inherit;">
+                                    </div>
+                                    <div>
+                                        <label for="input-sp-safe-environment" class="safebox-field-label" style="display: block; margin-bottom: 0.25rem; font-size: 0.8rem; font-weight: bold;">
+                                            Recurring Safe Environment (Where to sit when flooded)
+                                        </label>
+                                        <input type="text" id="input-sp-safe-environment" placeholder="e.g. Local library (Quiet Zone) or coffee shop" style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.3); border: 1px solid var(--card-border); color: var(--text-primary); border-radius: var(--radius-sm); font-size: 0.8rem; font-family: inherit;">
+                                    </div>
+                                    <button class="btn btn-primary btn-small" id="btn-sp-save-support-map" style="background: var(--accent-teal); border-color: var(--accent-teal); color: #0b0713; font-weight: bold; width: 100%; justify-content: center; margin-top: 0.25rem;">
+                                        💾 Save Support Map
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Right: Crisis & Supporter Script Library -->
+                            <div style="border-left: 1px solid rgba(255, 255, 255, 0.05); padding-left: 1.25rem;">
+                                <h4 style="color: var(--text-primary); margin-top: 0; font-size: 0.95rem; margin-bottom: 0.5rem;">Supporter Script Library</h4>
+                                <p class="text-secondary" style="font-size: 0.8rem; margin-bottom: 1rem; line-height: 1.4;">
+                                    People freeze when worried or in distress. Use these pre-framed texts or talk scripts to bypass friction.
+                                </p>
+                                
+                                <!-- Script Tabs -->
+                                <div style="display: flex; gap: 0.35rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
+                                    <button class="btn btn-secondary btn-small script-category-btn active" id="btn-script-cat-help" style="padding: 0.3rem 0.5rem; font-size: 0.7rem;">Asking For Help</button>
+                                    <button class="btn btn-secondary btn-small script-category-btn" id="btn-script-cat-helper" style="padding: 0.3rem 0.5rem; font-size: 0.7rem;">Helping Someone</button>
+                                    <button class="btn btn-secondary btn-small script-category-btn" id="btn-script-cat-visit" style="padding: 0.3rem 0.5rem; font-size: 0.7rem;">Preparing for Visit</button>
+                                </div>
+                                
+                                <div id="script-display-area" style="background: rgba(0,0,0,0.25); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--card-border); min-height: 180px; font-size: 0.8rem; line-height: 1.5; color: var(--text-secondary); max-height: 240px; overflow-y: auto;">
+                                    <!-- Populated dynamically by JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- TAB: COMPENDIUM & COURSE -->
@@ -1795,15 +2090,21 @@
                                     <div>
                                         <h3 style="color: var(--accent-teal); margin-top: 0; margin-bottom: 1rem; font-size: 1.1rem; display: flex; align-items: center; justify-content: space-between;">
                                             <span>🎓 Guided Learning Modules</span>
-                                            <span id="course-progress-badge" class="badge" style="background: rgba(0, 255, 200, 0.1); color: var(--accent-teal); font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: var(--radius-sm);">0 / 4 Complete</span>
+                                            <span id="course-progress-badge" class="badge" style="background: rgba(0, 255, 200, 0.1); color: var(--accent-teal); font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: var(--radius-sm);">0 / 10 Complete</span>
                                         </h3>
                                         
                                         <!-- Course navigation button buttons -->
                                         <div style="display: flex; gap: 0.4rem; margin-bottom: 1.25rem; flex-wrap: wrap;">
-                                            <button class="btn btn-secondary btn-small course-module-nav active" id="btn-module-1" style="flex: 1; padding: 0.4rem; font-size: 0.75rem;">M1: Distinguish</button>
-                                            <button class="btn btn-secondary btn-small course-module-nav" id="btn-module-2" style="flex: 1; padding: 0.4rem; font-size: 0.75rem;">M2: Warning Signs</button>
-                                            <button class="btn btn-secondary btn-small course-module-nav" id="btn-module-3" style="flex: 1; padding: 0.4rem; font-size: 0.75rem;">M3: Safety Plan</button>
-                                            <button class="btn btn-secondary btn-small course-module-nav" id="btn-module-4" style="flex: 1; padding: 0.4rem; font-size: 0.75rem;">M4: Care Pathways</button>
+                                            <button class="btn btn-secondary btn-small course-module-nav active" id="btn-module-1" style="flex: 1; padding: 0.4rem; font-size: 0.75rem;">M1: Systems</button>
+                                            <button class="btn btn-secondary btn-small course-module-nav" id="btn-module-2" style="flex: 1; padding: 0.4rem; font-size: 0.75rem;">M2: Startup</button>
+                                            <button class="btn btn-secondary btn-small course-module-nav" id="btn-module-3" style="flex: 1; padding: 0.4rem; font-size: 0.75rem;">M3: Warning</button>
+                                            <button class="btn btn-secondary btn-small course-module-nav" id="btn-module-4" style="flex: 1; padding: 0.4rem; font-size: 0.75rem;">M4: Protect</button>
+                                            <button class="btn btn-secondary btn-small course-module-nav" id="btn-module-5" style="flex: 1; padding: 0.4rem; font-size: 0.75rem;">M5: Dialogue</button>
+                                            <button class="btn btn-secondary btn-small course-module-nav" id="btn-module-6" style="flex: 1; padding: 0.4rem; font-size: 0.75rem;">M6: Safety</button>
+                                            <button class="btn btn-secondary btn-small course-module-nav" id="btn-module-7" style="flex: 1; padding: 0.4rem; font-size: 0.75rem;">M7: Aftercare</button>
+                                            <button class="btn btn-secondary btn-small course-module-nav" id="btn-module-8" style="flex: 1; padding: 0.4rem; font-size: 0.75rem;">M8: Postvention</button>
+                                            <button class="btn btn-secondary btn-small course-module-nav" id="btn-module-9" style="flex: 1; padding: 0.4rem; font-size: 0.75rem;">M9: Culture</button>
+                                            <button class="btn btn-secondary btn-small course-module-nav" id="btn-module-10" style="flex: 1; padding: 0.4rem; font-size: 0.75rem;">M10: Boundary</button>
                                         </div>
 
                                         <!-- Module Details Area -->
@@ -2066,6 +2367,225 @@
                                     </div>
                                 </div>
                             </details>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: EVIDENCE & SOURCES -->
+                <div id="sp-panel-evidence" class="sp-subpanel hidden">
+                    <div class="glass-card mb-3" style="border-left: 2px solid var(--accent-teal); background: rgba(0, 255, 200, 0.01); padding: 1.25rem;">
+                        <h2 style="color: var(--accent-teal); margin-top: 0; margin-bottom: 0.5rem; font-size: 1.25rem;">
+                            🔬 Verified Evidence Base & Ranked Ideas
+                        </h2>
+                        <p class="text-secondary" style="font-size: 0.9rem; margin: 0; line-height: 1.5;">
+                            Review the primary clinical trials, public-health frameworks, and systemic strategies shaping the State Not Fate recovery engine. We separate verified research from speculative watchlists.
+                        </p>
+                    </div>
+
+                    <!-- Main Grid: Left is Sources Directory, Right is Ranked Core Ideas -->
+                    <div class="safebox-grid" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.25rem;">
+                        
+                        <!-- Left Column: Source-Disposition Directory -->
+                        <div class="safety-plan-block">
+                            <div class="glass-card" style="border-left: 2px solid var(--accent-teal); height: 100%; display: flex; flex-direction: column;">
+                                <h3 style="color: var(--accent-teal); margin-top: 0; margin-bottom: 0.75rem; font-size: 1.1rem; display: flex; align-items: center; justify-content: space-between;">
+                                    <span>📚 Source-Disposition Map</span>
+                                    <span id="evidence-source-count" class="badge" style="background: rgba(0, 255, 200, 0.1); color: var(--accent-teal); font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: var(--radius-sm);">18 Sources</span>
+                                </h3>
+                                
+                                <!-- Source Category Filters -->
+                                <div style="display: flex; gap: 0.35rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                                    <button class="btn btn-secondary btn-small source-filter-btn active" id="btn-source-filter-all" style="padding: 0.3rem 0.5rem; font-size: 0.7rem;">All</button>
+                                    <button class="btn btn-secondary btn-small source-filter-btn" id="btn-source-filter-anchor" style="padding: 0.3rem 0.5rem; font-size: 0.7rem;">Official Anchor</button>
+                                    <button class="btn btn-secondary btn-small source-filter-btn" id="btn-source-filter-chapter" style="padding: 0.3rem 0.5rem; font-size: 0.7rem;">Wrote a Chapter</button>
+                                    <button class="btn btn-secondary btn-small source-filter-btn" id="btn-source-filter-research" style="padding: 0.3rem 0.5rem; font-size: 0.7rem;">Research Anchor</button>
+                                    <button class="btn btn-secondary btn-small source-filter-btn" id="btn-source-filter-watchlist" style="padding: 0.3rem 0.5rem; font-size: 0.7rem;">Watchlist / Loose Ends</button>
+                                </div>
+                                
+                                <!-- Sources List Container -->
+                                <div id="evidence-sources-list" style="flex: 1; overflow-y: auto; max-height: 480px; display: flex; flex-direction: column; gap: 0.75rem; padding-right: 0.25rem;">
+                                    <!-- Injected dynamically by JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Ranked Core Ideas Stack -->
+                        <div class="safety-plan-block">
+                            <div class="glass-card" style="border-left: 2px solid var(--accent-lavender); height: 100%; display: flex; flex-direction: column;">
+                                <h3 style="color: var(--accent-lavender); margin-top: 0; margin-bottom: 0.5rem; font-size: 1.1rem;">
+                                    🎯 Ranked Idea Stack (Top 20)
+                                </h3>
+                                <p class="text-secondary" style="font-size: 0.8rem; margin-bottom: 1rem; line-height: 1.4;">
+                                    The architectural principles of State Not Fate ranked by their importance to safety and product design boundaries.
+                                </p>
+                                
+                                <!-- Ideas List Container -->
+                                <div id="evidence-ideas-list" style="flex: 1; overflow-y: auto; max-height: 480px; display: flex; flex-direction: column; gap: 0.75rem; padding-right: 0.25rem;">
+                                    <!-- Injected dynamically by JS -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <!-- TAB: SYSTEMS & HOPE REPAIR -->
+                <div id="sp-panel-systems" class="sp-subpanel hidden">
+                    <div class="glass-card mb-3" style="border-left: 2px solid var(--accent-orange); background: rgba(240, 115, 30, 0.01); padding: 1.25rem;">
+                        <h2 style="color: var(--accent-orange); margin-top: 0; margin-bottom: 0.5rem; font-size: 1.25rem;">
+                            ⚙️ Systems Theory & Hope Repair (Wisebase)
+                        </h2>
+                        <p class="text-secondary" style="font-size: 0.9rem; margin: 0; line-height: 1.5;">
+                            Depression is a mechanical system failure, not a moral defect. We treat recovery as a process of reducing environmental friction, restoring circadian anchors, and repairing hope (the brain's payoff prediction).
+                        </p>
+                    </div>
+
+                    <!-- Main Grid: Left is Mechanical Feedback Loop & Hope Simulator, Right is Energy-based SOPs & Triage -->
+                    <div class="safebox-grid" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.25rem;">
+                        <!-- Left Column -->
+                        <div class="safety-plan-block" style="display: flex; flex-direction: column; gap: 1.25rem;">
+                            <!-- Feedback Loop Card -->
+                            <div class="glass-card" style="border-left: 2px solid var(--accent-lavender);">
+                                <h3 style="color: var(--accent-lavender); margin-top: 0; margin-bottom: 0.75rem; font-size: 1.05rem;">
+                                    🔄 The Depressive Feedback Loop
+                                </h3>
+                                <p class="text-secondary" style="font-size: 0.8rem; margin-bottom: 1rem; line-height: 1.45;">
+                                    When energy crashes, the perceived cost of action rises. Avoidance kicks in, narrowing life range, which signals the brain that tomorrow is closed. This causes a possibility collapse and intrusive suicidal thoughts.
+                                </p>
+                                
+                                <!-- Visual SVG Feedback Loop Diagram -->
+                                <div style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.05); padding: 1rem; border-radius: var(--radius-md); display: flex; justify-content: center; align-items: center;">
+                                    <svg viewBox="0 0 420 120" style="width: 100%; max-width: 400px; height: auto;">
+                                        <!-- Nodes -->
+                                        <rect x="10" y="40" width="80" height="36" rx="4" fill="rgba(230, 40, 60, 0.15)" stroke="var(--accent-red)" stroke-width="1"/>
+                                        <text x="50" y="62" fill="white" font-size="8" text-anchor="middle" font-weight="bold">Energy Crash</text>
+
+                                        <rect x="110" y="10" width="80" height="36" rx="4" fill="rgba(240, 115, 30, 0.15)" stroke="var(--accent-orange)" stroke-width="1"/>
+                                        <text x="150" y="32" fill="white" font-size="8" text-anchor="middle" font-weight="bold">Avoidance Loop</text>
+
+                                        <rect x="230" y="10" width="85" height="36" rx="4" fill="rgba(165, 120, 240, 0.15)" stroke="var(--accent-lavender)" stroke-width="1"/>
+                                        <text x="272" y="32" fill="white" font-size="8" text-anchor="middle" font-weight="bold">Possibility Collapse</text>
+
+                                        <rect x="330" y="40" width="80" height="36" rx="4" fill="rgba(0, 255, 200, 0.15)" stroke="var(--accent-teal)" stroke-width="1"/>
+                                        <text x="370" y="62" fill="white" font-size="8" text-anchor="middle" font-weight="bold">Intrusive Thoughts</text>
+
+                                        <rect x="170" y="74" width="80" height="36" rx="4" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                                        <text x="210" y="96" fill="white" font-size="8" text-anchor="middle" font-weight="bold">Anchor Interruption</text>
+
+                                        <!-- Arrows -->
+                                        <path d="M 90 58 L 110 28" stroke="var(--text-muted)" stroke-width="1" fill="none" marker-end="url(#arrow)"/>
+                                        <path d="M 190 28 L 230 28" stroke="var(--text-muted)" stroke-width="1" fill="none" marker-end="url(#arrow)"/>
+                                        <path d="M 315 28 L 330 58" stroke="var(--text-muted)" stroke-width="1" fill="none" marker-end="url(#arrow)"/>
+                                        <path d="M 330 58 L 250 92" stroke="var(--accent-teal)" stroke-width="1" fill="none" marker-end="url(#arrow)"/>
+                                        <path d="M 170 92 L 90 58" stroke="var(--accent-teal)" stroke-width="1" fill="none" marker-end="url(#arrow)"/>
+
+                                        <defs>
+                                            <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                                <path d="M 0 2 L 10 5 L 0 8 z" fill="var(--text-muted)"/>
+                                            </marker>
+                                        </defs>
+                                    </svg>
+                                </div>
+                                <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-top: 0.5rem; text-align: center;">
+                                    💡 <em>State Not Fate interrupts collapse by injecting daily anchors to break the loop.</em>
+                                </span>
+                            </div>
+
+                            <!-- Hope Simulator Card -->
+                            <div class="glass-card" style="border-left: 2px solid var(--accent-teal);">
+                                <h3 style="color: var(--accent-teal); margin-top: 0; margin-bottom: 0.5rem; font-size: 1.05rem;">
+                                    ⚡ Hope Repair Simulator
+                                </h3>
+                                <p class="text-secondary" style="font-size: 0.8rem; margin-bottom: 0.75rem; line-height: 1.45;">
+                                    When hope is zero, effort feels pointless. We repair the brain's prediction algorithm by registering small, repeated, undeniable actions. Check your anchors to simulate hope repair:
+                                </p>
+                                
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem; background: rgba(0,0,0,0.15); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid rgba(255,255,255,0.05); margin-bottom: 0.75rem;">
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; user-select: none;">
+                                        <input type="checkbox" class="hope-sim-check" data-val="25" style="accent-color: var(--accent-teal);">
+                                        <span style="font-size: 0.78rem; color: var(--text-secondary);">⏰ Wake regular: defended sleep boundary (+25%)</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; user-select: none;">
+                                        <input type="checkbox" class="hope-sim-check" data-val="25" style="accent-color: var(--accent-teal);">
+                                        <span style="font-size: 0.78rem; color: var(--text-secondary);">☀️ Morning light: photons in eyes (+25%)</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; user-select: none;">
+                                        <input type="checkbox" class="hope-sim-check" data-val="25" style="accent-color: var(--accent-teal);">
+                                        <span style="font-size: 0.78rem; color: var(--text-secondary);">🏃 Minimum movement: stood outside / walked (+25%)</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; user-select: none;">
+                                        <input type="checkbox" class="hope-sim-check" data-val="25" style="accent-color: var(--accent-teal);">
+                                        <span style="font-size: 0.78rem; color: var(--text-secondary);">🧹 Surface clean: 10 minutes env reset (+25%)</span>
+                                    </label>
+                                </div>
+
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; font-size: 0.75rem;">
+                                    <span class="text-muted">Effort Payoff Credibility:</span>
+                                    <strong id="label-hope-sim-percent" style="color: var(--accent-teal);">0% (Pointless)</strong>
+                                </div>
+                                <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; margin-bottom: 0.5rem;">
+                                    <div id="bar-hope-sim-progress" style="width: 0%; height: 100%; background: var(--accent-teal); transition: width 0.3s ease;"></div>
+                                </div>
+                                <p id="text-hope-sim-feedback" class="text-muted" style="font-size: 0.72rem; margin: 0; line-height: 1.35; font-style: italic;">
+                                    No anchors checked. Prediction states that effort will fail.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Right Column -->
+                        <div class="safety-plan-block" style="display: flex; flex-direction: column; gap: 1.25rem;">
+                            <!-- Crisis Daily-State SOPs -->
+                            <div class="glass-card" style="border-left: 2px solid var(--accent-orange);">
+                                <h3 style="color: var(--accent-orange); margin-top: 0; margin-bottom: 0.5rem; font-size: 1.05rem;">
+                                    📋 Crisis Daily-State SOPs
+                                </h3>
+                                <p class="text-secondary" style="font-size: 0.8rem; margin-bottom: 1rem; line-height: 1.45;">
+                                    Scale your expectation to your actual battery levels. Select your state to view the tailored non-negotiable sequence:
+                                </p>
+
+                                <div style="display: flex; gap: 0.35rem; margin-bottom: 1rem;">
+                                    <button class="btn btn-secondary btn-small btn-state-sop active" id="btn-state-sop-low" data-state="low" style="flex: 1; font-size: 0.7rem; padding: 0.3rem;">Low/Survival</button>
+                                    <button class="btn btn-secondary btn-small btn-state-sop" id="btn-state-sop-medium" data-state="medium" style="flex: 1; font-size: 0.7rem; padding: 0.3rem;">Medium/Stabilize</button>
+                                    <button class="btn btn-secondary btn-small btn-state-sop" id="btn-state-sop-strong" data-state="strong" style="flex: 1; font-size: 0.7rem; padding: 0.3rem;">Strong/Expand</button>
+                                </div>
+
+                                <!-- SOP Details Display -->
+                                <div id="state-sop-details-box" style="background: rgba(0,0,0,0.2); padding: 0.75rem; border: 1px solid var(--card-border); border-radius: var(--radius-sm); font-size: 0.8rem; line-height: 1.45; color: var(--text-secondary); min-height: 140px;">
+                                    <!-- Populated dynamically by JS -->
+                                </div>
+                            </div>
+
+                            <!-- Clinical Exclusion Triage Card -->
+                            <div class="glass-card" style="border-left: 2px solid var(--accent-red); background: rgba(230, 40, 60, 0.015);">
+                                <h3 style="color: var(--accent-red); margin-top: 0; margin-bottom: 0.5rem; font-size: 1.05rem; display: flex; align-items: center; gap: 0.4rem;">
+                                    <span>⚠️</span> Clinical Triage & Exclusion Gating
+                                </h3>
+                                <p class="text-secondary" style="font-size: 0.78rem; margin-bottom: 0.75rem; line-height: 1.4;">
+                                    Self-management is not enough when certain complexity triggers occur. Review the triage red flags:
+                                </p>
+                                
+                                <div style="display: flex; flex-direction: column; gap: 0.4rem; background: rgba(0,0,0,0.2); padding: 0.65rem; border-radius: var(--radius-sm); border: 1px solid rgba(230,40,60,0.15); font-size: 0.75rem; margin-bottom: 0.75rem;">
+                                    <label style="display: flex; align-items: flex-start; gap: 0.4rem; cursor: pointer; user-select: none;">
+                                        <input type="checkbox" class="triage-exclusion-check" style="margin-top: 0.15rem;">
+                                        <span>⚡ <strong>Bipolar Mania:</strong> Severe sleep loss without fatigue, grandiosity, rapid speech.</span>
+                                    </label>
+                                    <label style="display: flex; align-items: flex-start; gap: 0.4rem; cursor: pointer; user-select: none;">
+                                        <input type="checkbox" class="triage-exclusion-check" style="margin-top: 0.15rem;">
+                                        <span>👁️ <strong>Psychosis Cues:</strong> Auditory/visual cues, collapse of reality-testing.</span>
+                                    </label>
+                                    <label style="display: flex; align-items: flex-start; gap: 0.4rem; cursor: pointer; user-select: none;">
+                                        <input type="checkbox" class="triage-exclusion-check" style="margin-top: 0.15rem;">
+                                        <span>📉 <strong>Severe Self-Neglect:</strong> Complete underfeeding or dehydration, hygiene collapse.</span>
+                                    </label>
+                                    <label style="display: flex; align-items: flex-start; gap: 0.4rem; cursor: pointer; user-select: none;">
+                                        <input type="checkbox" class="triage-exclusion-check" style="margin-top: 0.15rem;">
+                                        <span>💊 <strong>Substance Destabilization:</strong> Impulsive high-risk combinations.</span>
+                                    </label>
+                                </div>
+                                <div id="triage-escalation-alert" class="hidden text-secondary" style="font-size: 0.75rem; line-height: 1.4; padding: 0.5rem; background: rgba(230, 40, 60, 0.1); border-radius: var(--radius-sm); border: 1px solid rgba(230,40,60,0.25); color: var(--accent-red);">
+                                    <strong>🚨 CRITICAL BOUNDARY EXCEEDED:</strong> Self-management is unsafe. Immediately route to a clinical doctor, go to an Emergency Room, or contact the Suicide & Crisis Lifeline at <strong>988</strong>.
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

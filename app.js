@@ -487,15 +487,65 @@ const COMPANION_QUESTION_TREE = {
                 state.isLocked = true;
                 showScreen("lock");
                 resetPinDots();
-            } else if (state.isOnboarded) {
+                return;
+            }
+            if (state.isOnboarded) {
                 showScreen("dashboard");
                 ensurePolarisState();
-                if (state.polaris && state.polaris.enabled) {
-                    showTab("polaris");
-                    renderPolarisTab();
-                } else {
-                    renderDashboard();
+
+                const path = hash.replace(/^#\/?/, "");
+                const parts = path.split("/");
+                const tabId = parts[0];
+                const subtabId = parts[1];
+
+                const validTabs = ["dashboard", "polaris", "momentum", "safebox", "mediaconsole", "progression", "cognitivelab", "documentcenter", "explorer", "suicideprevention"];
+                let targetTab = tabId;
+                if (!validTabs.includes(targetTab)) {
+                    targetTab = (state.polaris && state.polaris.enabled) ? "polaris" : "dashboard";
                 }
+
+                const success = showTab(targetTab);
+                if (!success) {
+                    const currentTab = getActiveTabId() || ((state.polaris && state.polaris.enabled) ? "polaris" : "dashboard");
+                    window.location.hash = `#/${currentTab}`;
+                    return;
+                }
+
+                if (targetTab === "safebox") {
+                    renderSafeBox();
+                    if (isHighRiskActive()) {
+                        triggerCrisisOverlay();
+                    }
+                }
+
+                if (targetTab === "suicideprevention") {
+                    const validSubtabs = ["crisis", "parables", "journal", "compendium", "evidence", "systems"];
+                    let targetSubtab = subtabId;
+                    if (!validSubtabs.includes(targetSubtab)) {
+                        targetSubtab = "crisis";
+                    }
+
+                    validSubtabs.forEach(t => {
+                        const btn = document.getElementById(`btn-sp-subtab-${t}`);
+                        const panel = document.getElementById(`sp-panel-${t}`);
+                        if (t === targetSubtab) {
+                            if (btn) btn.classList.add("active");
+                            if (panel) panel.classList.remove("hidden");
+                        } else {
+                            if (btn) btn.classList.remove("active");
+                            if (panel) panel.classList.add("hidden");
+                        }
+                    });
+
+                    if (targetSubtab === "compendium") {
+                        renderCompendiumSubpanel();
+                    } else if (targetSubtab === "evidence") {
+                        renderEvidenceSubpanel();
+                    } else if (targetSubtab === "systems") {
+                        renderSystemsSubpanel();
+                    }
+                }
+
                 // Gap acknowledgment for returning users
                 const h = state.history;
                 if (h.length > 0) {
@@ -508,10 +558,13 @@ const COMPANION_QUESTION_TREE = {
                         }
                     }
                 }
-            } else if (hash === "#screen-welcome" || hash === "#program") {
-                showScreen("welcome");
             } else {
-                toggleAppView(false);
+                const path = hash.replace(/^#\/?/, "");
+                if (path === "screen-welcome" || path === "program" || hash === "#screen-welcome" || hash === "#program") {
+                    showScreen("welcome");
+                } else {
+                    toggleAppView(false);
+                }
             }
         }
 
@@ -698,12 +751,17 @@ const COMPANION_QUESTION_TREE = {
             }
         }
 
+        function getActiveTabId() {
+            const activeBtn = document.querySelector(".tab-btn.active");
+            return activeBtn ? activeBtn.getAttribute("data-tab") : "";
+        }
+
         function showTab(tabId) {
             ensurePolarisState();
             const hiddenTabs = ["progression", "documentcenter", "explorer"];
             if (state.polaris.futureNarrowingActive && hiddenTabs.includes(tabId)) {
                 showToast("Future Narrowing Active. Horizon restricted to Polaris/Dashboard.", "warning");
-                return;
+                return false;
             }
             Object.keys(tabs).forEach(key => {
                 if (key === tabId) {
@@ -739,6 +797,7 @@ const COMPANION_QUESTION_TREE = {
             } else if (tabId === "suicideprevention") {
                 renderSuicidePreventionTab();
             }
+            return true;
         }
 
         function setupEventListeners() {
@@ -809,6 +868,7 @@ const COMPANION_QUESTION_TREE = {
                                 triggerCrisisOverlay();
                             }
                         }
+                        window.location.hash = `#/${tabId}`;
                     }
                 });
             });
@@ -939,8 +999,7 @@ const COMPANION_QUESTION_TREE = {
             });
             document.getElementById("btn-crisis-go-safebox").addEventListener("click", () => {
                 document.getElementById("crisis-modal").classList.remove("active");
-                showTab("safebox");
-                renderSafeBox();
+                window.location.hash = "#/safebox";
             });
 
             document.getElementById("btn-trigger-breathe").addEventListener("click", triggerBreathingModal);
@@ -1124,15 +1183,7 @@ const COMPANION_QUESTION_TREE = {
             if (tempPinInput === state.securityPin) {
                 state.isLocked = false;
                 decryptStateData(state.securityPin);
-                showScreen("dashboard");
-                // Returning users with Polaris enabled land on Polaris tab after unlock
-                ensurePolarisState();
-                if (state.polaris && state.polaris.enabled) {
-                    showTab("polaris");
-                    renderPolarisTab();
-                } else {
-                    renderDashboard();
-                }
+                handleRouting();
             } else {
                 const keypadCard = document.querySelector("#screen-lock .glass-card");
                 keypadCard.style.animation = "none";
@@ -1242,8 +1293,7 @@ const COMPANION_QUESTION_TREE = {
             
             saveState();
             showScreen("dashboard");
-            showTab("dashboard");
-            renderDashboard();
+            window.location.hash = "#/dashboard";
             
             if (isHighRiskActive()) {
                 triggerCrisisOverlay();
@@ -2286,6 +2336,14 @@ const COMPANION_QUESTION_TREE = {
             document.getElementById("input-sp-distractions").value = state.distractions || "";
             document.getElementById("input-sp-contacts").value = state.safeContacts || "";
 
+            // Fill Support Map inputs
+            const anchorInput = document.getElementById("input-sp-anchor-person");
+            const bufferInput = document.getElementById("input-sp-buffer-contact");
+            const envInput = document.getElementById("input-sp-safe-environment");
+            if (anchorInput && state.supportMap) anchorInput.value = state.supportMap.anchorPerson || "";
+            if (bufferInput && state.supportMap) bufferInput.value = state.supportMap.bufferContact || "";
+            if (envInput && state.supportMap) envInput.value = state.supportMap.safeEnvironment || "";
+
             // Calculate active risk level
             let riskLevel = { level: 'low', score: 0 };
             if (safetyDetection) {
@@ -2380,7 +2438,7 @@ const COMPANION_QUESTION_TREE = {
             }
 
             // Populate parable cards completion status
-            const parables = ["chioran", "restraint", "gap10", "council"];
+            const parables = ["chioran", "restraint", "gap10", "council", "means"];
             parables.forEach(pid => {
                 const card = document.getElementById(`parable-card-${pid}`);
                 const badge = document.getElementById(`parable-badge-${pid}`);
@@ -2412,6 +2470,21 @@ const COMPANION_QUESTION_TREE = {
             if (compendiumBtn && compendiumBtn.classList.contains("active")) {
                 renderCompendiumSubpanel();
             }
+
+            // Render Evidence if active
+            const evidenceBtn = document.getElementById("btn-sp-subtab-evidence");
+            if (evidenceBtn && evidenceBtn.classList.contains("active")) {
+                renderEvidenceSubpanel();
+            }
+
+            // Render Systems if active
+            const systemsBtn = document.getElementById("btn-sp-subtab-systems");
+            if (systemsBtn && systemsBtn.classList.contains("active")) {
+                renderSystemsSubpanel();
+            }
+
+            // Render Emergency Contact Ladder
+            renderEmergencyContactLadder();
         }
 
         function generateClinicianHandoff() {
@@ -2475,7 +2548,7 @@ const COMPANION_QUESTION_TREE = {
 
         function setupSafetyPreventionListeners() {
             // Sub-nav tab toggles
-            const subtabs = ["crisis", "parables", "journal", "compendium"];
+            const subtabs = ["crisis", "parables", "journal", "compendium", "evidence", "systems"];
             subtabs.forEach(tab => {
                 const btn = document.getElementById(`btn-sp-subtab-${tab}`);
                 if (btn) {
@@ -2493,7 +2566,12 @@ const COMPANION_QUESTION_TREE = {
                         });
                         if (tab === "compendium") {
                             renderCompendiumSubpanel();
+                        } else if (tab === "evidence") {
+                            renderEvidenceSubpanel();
+                        } else if (tab === "systems") {
+                            renderSystemsSubpanel();
                         }
+                        window.location.hash = `#/suicideprevention/${tab}`;
                     });
                 }
             });
@@ -2882,7 +2960,7 @@ const COMPANION_QUESTION_TREE = {
             }
 
             // Log reflections for parables
-            const parablesList = ["chioran", "restraint", "gap10", "council"];
+            const parablesList = ["chioran", "restraint", "gap10", "council", "means"];
             parablesList.forEach(pid => {
                 const btn = document.getElementById(`btn-sp-reflect-${pid}`);
                 if (btn) {
@@ -3005,7 +3083,7 @@ const COMPANION_QUESTION_TREE = {
             }
 
             // Compendium module nav button listeners
-            for (let i = 1; i <= 4; i++) {
+            for (let i = 1; i <= 10; i++) {
                 const modBtn = document.getElementById(`btn-module-${i}`);
                 if (modBtn) {
                     modBtn.addEventListener("click", () => {
@@ -3013,6 +3091,131 @@ const COMPANION_QUESTION_TREE = {
                     });
                 }
             }
+
+            // Save Support Map listener
+            const saveSupportMapBtn = document.getElementById("btn-sp-save-support-map");
+            if (saveSupportMapBtn) {
+                saveSupportMapBtn.addEventListener("click", () => {
+                    const anchorVal = document.getElementById("input-sp-anchor-person").value.trim();
+                    const bufferVal = document.getElementById("input-sp-buffer-contact").value.trim();
+                    const envVal = document.getElementById("input-sp-safe-environment").value.trim();
+                    
+                    state.supportMap = {
+                        anchorPerson: anchorVal,
+                        bufferContact: bufferVal,
+                        safeEnvironment: envVal
+                    };
+                    
+                    saveState();
+                    renderEmergencyContactLadder();
+                    showToast("Active Support Map saved successfully.", "success");
+                });
+            }
+
+            // Supporter Script Category tabs
+            const scriptCats = ["help", "helper", "visit"];
+            scriptCats.forEach(cat => {
+                const btn = document.getElementById(`btn-script-cat-${cat}`);
+                if (btn) {
+                    btn.addEventListener("click", () => {
+                        scriptCats.forEach(c => {
+                            const b = document.getElementById(`btn-script-cat-${c}`);
+                            if (b) {
+                                if (c === cat) b.classList.add("active");
+                                else b.classList.remove("active");
+                            }
+                        });
+                        switchScriptCategory(cat);
+                    });
+                }
+            });
+
+            // Evidence source filter tabs
+            const sourceFilters = ["all", "anchor", "chapter", "research", "watchlist"];
+            sourceFilters.forEach(filt => {
+                const btn = document.getElementById(`btn-source-filter-${filt}`);
+                if (btn) {
+                    btn.addEventListener("click", () => {
+                        sourceFilters.forEach(f => {
+                            const b = document.getElementById(`btn-source-filter-${f}`);
+                            if (b) {
+                                if (f === filt) b.classList.add("active");
+                                else b.classList.remove("active");
+                            }
+                        });
+                        renderEvidenceSources(filt);
+                    });
+                }
+            });
+
+            // Initial load of script display
+            switchScriptCategory("help");
+
+            // ==========================================
+            // EMERGENCY APPENDIX EVENT BINDINGS
+            // ==========================================
+            const emerTabs = ["frame", "load", "ladder", "supporter"];
+            emerTabs.forEach(t => {
+                const btn = document.getElementById(`btn-emer-tab-${t}`);
+                if (btn) {
+                    btn.addEventListener("click", () => {
+                        switchEmergencyTab(t);
+                    });
+                }
+            });
+
+            const intensityInput = document.getElementById("input-emer-intensity");
+            const intensityLabel = document.getElementById("label-emer-intensity");
+            if (intensityInput && intensityLabel) {
+                intensityInput.addEventListener("input", (e) => {
+                    intensityLabel.innerText = `${e.target.value}/10`;
+                });
+            }
+            
+            const severityInput = document.getElementById("input-emer-severity");
+            const severityLabel = document.getElementById("label-emer-severity");
+            if (severityInput && severityLabel) {
+                severityInput.addEventListener("input", (e) => {
+                    severityLabel.innerText = `${e.target.value}/10`;
+                });
+            }
+
+            const calcBtn = document.getElementById("btn-emer-calculate");
+            if (calcBtn) {
+                calcBtn.addEventListener("click", calculateDistortion);
+            }
+
+            const reliefChecks = document.querySelectorAll(".emer-relief-check");
+            reliefChecks.forEach(check => {
+                check.addEventListener("change", updateEmergencyReliefProgress);
+            });
+
+            renderEmergencyContactLadder();
+
+            // ==========================================
+            // SYSTEMS & HOPE REPAIR EVENT BINDINGS
+            // ==========================================
+            const sopStates = ["low", "medium", "strong"];
+            sopStates.forEach(s => {
+                const btn = document.getElementById(`btn-state-sop-${s}`);
+                if (btn) {
+                    btn.addEventListener("click", () => {
+                        switchStateSop(s);
+                    });
+                }
+            });
+
+            const hopeChecks = document.querySelectorAll(".hope-sim-check");
+            hopeChecks.forEach(check => {
+                check.addEventListener("change", updateHopeSimProgress);
+            });
+
+            const triageChecks = document.querySelectorAll(".triage-exclusion-check");
+            triageChecks.forEach(check => {
+                check.addEventListener("change", updateTriageExclusionWarning);
+            });
+
+            renderSystemsSubpanel();
 
             renderSuicideActionMap("distress");
             renderSupporterScript("self");
@@ -3881,6 +4084,7 @@ const COMPANION_QUESTION_TREE = {
 
         function focusChecklist() {
             showTab("dashboard");
+            window.location.hash = "#/dashboard";
             const el = document.getElementById("daily-checklist-items");
             if (el) {
                 el.scrollIntoView({ behavior: 'smooth' });
@@ -3978,8 +4182,7 @@ const COMPANION_QUESTION_TREE = {
             
             // We want to immediately show the Polaris tab with this anchor listed
             showScreen("dashboard");
-            showTab("polaris");
-            renderPolarisTab();
+            window.location.hash = "#/polaris";
             
             showToast("Tiny anchor activated. You only need to do this one thing.", "info", 6000);
         }
@@ -3995,8 +4198,7 @@ const COMPANION_QUESTION_TREE = {
                 state.lastVisitDate = getTodayString();
                 saveState();
                 showScreen('dashboard');
-                showTab('dashboard');
-                renderDashboard();
+                window.location.hash = "#/dashboard";
             } else {
                 showScreen('intake');
                 initIntakeForm();
@@ -4033,8 +4235,7 @@ const COMPANION_QUESTION_TREE = {
                 state.lastVisitDate = getTodayString();
                 saveState();
                 showScreen('dashboard');
-                showTab('dashboard');
-                renderDashboard();
+                window.location.hash = "#/dashboard";
             }
         }
 
@@ -4044,8 +4245,7 @@ const COMPANION_QUESTION_TREE = {
             if (state.isOnboarded) {
                 saveState();
                 showScreen('dashboard');
-                showTab('safebox');
-                renderSafeBox();
+                window.location.hash = "#/safebox";
             } else {
                 // Minimal onboard to enable dashboard access
                 state.isOnboarded = true;
@@ -4053,8 +4253,7 @@ const COMPANION_QUESTION_TREE = {
                 state.currentLayer = 0;
                 saveState();
                 showScreen('dashboard');
-                showTab('safebox');
-                renderSafeBox();
+                window.location.hash = "#/safebox";
             }
             // Also trigger crisis overlay if high risk
             if (isHighRiskActive()) {
@@ -4109,8 +4308,7 @@ const COMPANION_QUESTION_TREE = {
             saveState();
 
             showScreen('dashboard');
-            showTab('dashboard');
-            renderDashboard();
+            window.location.hash = "#/dashboard";
 
             // Show a brief contextual message
             showToast(action.message, selectedState === 'body' ? 'warning' : 'info', 5000);
@@ -4165,6 +4363,14 @@ const COMPANION_QUESTION_TREE = {
                 state.compendiumCourse = {
                     completedModules: [],
                     reflections: {}
+                };
+            }
+
+            if (!state.supportMap) {
+                state.supportMap = {
+                    anchorPerson: "",
+                    bufferContact: "",
+                    safeEnvironment: ""
                 };
             }
 
@@ -5174,7 +5380,7 @@ const COMPANION_QUESTION_TREE = {
             showToast("⚡ Polaris 2.0 Activated! Core assets and ledger records successfully migrated.", "success", 5000);
             renderDashboard();
             // Switch to momentum tab to show it off!
-            showTab("momentum");
+            window.location.hash = "#/momentum";
         }
 
         function generateNarrativeProof() {
@@ -5781,7 +5987,7 @@ Your response should be under 100 words. Stick to objective mechanics, pattern d
                 var activeTab = activeTabBtn ? activeTabBtn.getAttribute('data-tab') : '';
                 var hiddenTabs = ["progression", "documentcenter", "explorer"];
                 if (hiddenTabs.includes(activeTab)) {
-                    showTab('polaris');
+                    window.location.hash = "#/polaris";
                 }
                 showToast("Future Narrowing Active. Horizon compressed to today.", "info");
             } else {
@@ -6409,35 +6615,83 @@ Your response should be under 100 words. Stick to objective mechanics, pattern d
         const COURSE_MODULES = [
             {
                 id: 1,
-                title: "Module 1: Differentiating Ideation & Intent",
-                objective: "Differentiate passive, intrusive thoughts from active suicidal intent using C-SSRS and ASQ metrics, and build a collaborative safety plan.",
-                psychology: "Under severe depression, the brain's prefrontal cortex shuts down, causing 'possibility collapse.' Suicide risk screening tools (C-SSRS, ASQ) help clinicians and individuals map current thoughts to prevent panic. Intrusive thoughts are unwanted fictions generated by a hijacked state; active intent is structured planning. Recognizing this difference helps you pause and choose safety.",
-                exercise: "Read the C-SSRS/ASQ criteria in Table 2. Under the 'Crisis Plan & Somatics' subtab, complete or review your Collaborative Safety Plan (reasons to live, safe contacts, and coping tools). Reflect on how separating intrusive passive thoughts of death from active planning changes your panic levels.",
-                placeholder: "Differentiating passive thoughts from active planning makes me realize..."
+                title: "Module 1: Suicidal Thinking as Systems Failure",
+                objective: "Understand suicidal thoughts as a systems failure rather than a moral choice or individual failure.",
+                psychology: "Suicide is not a single act of will or a simple outcome. It is the product of risk stacks, state narrowing, social conditions, and failures in supportive human networks. Framing suicide as a systems problem lets us design environmental buffers and accessible help pathways rather than asking a suffering person to perform heroic cognitive recovery alone.",
+                exercise: "Reflect on how shifting from a moral choice frame to a systems failure frame changes how you view suicidal thoughts, and note any stigmas you want to reject.",
+                placeholder: "Shifting the frame to a systems failure perspective makes me realize..."
             },
             {
                 id: 2,
-                title: "Module 2: Cioran's Solace (The Thought as a Relief Valve)",
-                objective: "Explore Emil Cioran's quote: 'Without the thought of suicide, I certainly would have killed myself.'",
-                psychology: "Severe mental pain makes the mind feel trapped. The concept of suicide often serves as a mental escape hatch—a release valve that lets you believe you are not permanently trapped. This thought reduces pressure. The error occurs when the brain interprets this relief valve as a command to act. By separating the thought (relief valve) from action (command), you can breathe, let the thought exist, and choose to stay one more day.",
-                exercise: "Examine Cioran's quote. Write a reflection on how treating the thought of suicide as a passive relief valve to lower psychological pressure—rather than an active command—affects your ability to tolerate distress.",
-                placeholder: "Viewing the thought as a relief valve rather than an action command..."
+                title: "Module 2: Depression, Narrowing & Startup Failure",
+                objective: "Recognize how depression compromises startup energy, reward prediction, and decision range.",
+                psychology: "Depression is not just sadness; it is a systems failure that damages startup, corrupts reward prediction, and shrinks options. When startup is damaged, normal advice (like 'just reach out') becomes structurally impossible. We build recovery around small, believable, low-friction floor wins to slowly restore the brain's action-to-outcome prediction loop.",
+                exercise: "Identify a task that feels too heavy right now. Write down a minimum viable version of that task with a zero startup cost (e.g. drinking one glass of water or standing outside for 10 seconds).",
+                placeholder: "The minimum viable action I will take with near-zero startup cost is..."
             },
             {
                 id: 3,
-                title: "Module 3: The Cerebral Council & Restraint Principle",
-                objective: "Understand state-dependent cognitive hijacking and apply the Restraint Principle.",
-                psychology: "Severe depressive states act like a hostile takeover of your mind (e.g. Bruce Banner trapped while the Hulk runs the body). The thoughts generated in this state are 'errors of state'—they are the Hulk's dark fictions, not your true self. The Restraint Principle dictates that your character and worth are defined by the restraint you show in not acting on these fictions, even when you have nothing left to give.",
-                exercise: "Identify an automatic negative 'Hulk thought' your brain has generated (e.g. 'I am a failure'). Script a 'Restraint Statement' (e.g. 'These thoughts are biological errors of my current state. They do not define me. My choice is to stay on the floor and protect myself today.')",
-                placeholder: "The automatic thought is... My Restraint Statement is..."
+                title: "Module 3: Warning Signs vs. Chronic Risk Stacks",
+                objective: "Distinguish acute warning signs requiring immediate intervention from background risk factors.",
+                psychology: "Warning signs (such as giving away possessions, talking about being a burden, or seeking means) indicate immediate danger. Risk factors (such as depression history, isolation, or chronic pain) build a background risk stack. Separating the two keeps us from panic while ensuring we act decisively when acute signs appear.",
+                exercise: "Look at the NIMH warning signs list in the compendium tables. Note the difference between a background risk factor you carry and an acute warning sign that means you need to call 988.",
+                placeholder: "For me, a background risk factor is __, but an acute warning sign that means call 988 is..."
             },
             {
                 id: 4,
-                title: "Module 4: Advanced Clinical Interventions (2026 Guide)",
-                objective: "Explore modern clinical options for Treatment-Resistant Depression (TRD) and acute suicidality.",
-                psychology: "By 2026, psychiatry has shifted away from slow trial-and-error antidepressant cycles during crises. Advanced protocols like fMRI-guided SAINT TMS (5 days), Esketamine (Spravato) nasal sprays, and sub-anesthetic IV Ketamine can resolve acute suicidality in hours to days. Safe prescribing (limiting outpatient medication supply) is a critical standard. You can work with your clinician to navigate these options.",
-                exercise: "Review the modern rapid-acting therapies in the compendium tables. Draft a one-sentence message/bullet you would share with a trusted doctor to discuss these modern neuromodulation or rapid-acting options (e.g. SAINT TMS, Esketamine) for your treatment plan.",
-                placeholder: "I want to discuss rapid-acting interventions like SAINT TMS or Spravato because..."
+                title: "Module 4: Protective Factors & Connectedness",
+                objective: "Map the individual, relationship, and community buffers that protect against collapse.",
+                psychology: "Connectedness is a load-bearing protective factor. Feeling accepted and supported reduces suicidality. The Trevor Project's survey data shows that community acceptance and basic respect (such as pronoun respect and affirming spaces) reduce suicide attempts among vulnerable youth to less than one-third of the baseline rate.",
+                exercise: "List three connections or 'reasons for living' (family, pets, creative projects, or community groups) that act as protective anchors in your life.",
+                placeholder: "My three protective anchors and reasons for living are..."
+            },
+            {
+                id: 5,
+                title: "Module 5: How to Ask Directly and Listen Safely",
+                objective: "Learn the rules of safe dialogue: ask directly about suicide and listen without judgment.",
+                psychology: "Asking directly 'Are you thinking about suicide?' does not implant the idea; it provides a safe valve. When someone discloses distress, your role is validation and safety mapping, not solving their entire life. Do not argue or lecture—focus entirely on reducing danger for the next hour and routing to professional care.",
+                exercise: "Practice writing out a direct question you would use to ask someone you are worried about if they are thinking of suicide, focusing on clear, non-evasive language.",
+                placeholder: "If I am worried about someone, I will ask them directly: ..."
+            },
+            {
+                id: 6,
+                title: "Module 6: Collaborative Safety Planning & Means Safety",
+                objective: "Create a written safety plan and understand the critical role of lethal means safety.",
+                psychology: "In a crisis, cognitive narrowing makes safety planning from memory impossible. A written safety plan lists warning signs, coping tools, contacts, and emergency routing. Temporarily removing access to lethal means (firearms, stockpiled medications) is the single most effective way to prevent self-harm during an acute window.",
+                exercise: "Go to the Support Plan subtab and complete or update your local Safety Plan. Write a reflection on why restricting access to means makes sense as a collaborative safety step.",
+                placeholder: "Updating my safety plan and restricting access to means helps because..."
+            },
+            {
+                id: 7,
+                title: "Module 7: Aftercare, Transition & Caring Contacts",
+                objective: "Evaluate the role of caring contacts and the vulnerability of care transition windows.",
+                psychology: "The period immediately following hospital discharge, ED visits, or care drop-out is a high-risk window. Motto's research proved that brief, non-demanding caring check-ins reduce suicide mortality. Modern RCTs show these contacts keep people engaged with support networks. Continuity is prevention.",
+                exercise: "Draft a brief, non-demanding message you can send to someone who is struggling, requiring absolutely no response from them.",
+                placeholder: "My non-demanding check-in script: ..."
+            },
+            {
+                id: 8,
+                title: "Module 8: Community Postvention & Contagion Mitigation",
+                objective: "Learn postvention principles to stabilize communities and support survivors after a loss.",
+                psychology: "Suicide loss survivors are themselves at elevated risk. Postvention is the planned, organized response to support those grieving and stabilize the environment. It requires safe communication: avoiding sensationalism, omitting graphic details of the method, and focusing on healing and help-seeking resources.",
+                exercise: "Review the Action Alliance postvention guidelines. Write down how you would share news of a crisis in your workplace or school without romanticizing or providing graphic detail.",
+                placeholder: "To communicate responsibly after a loss, I will ensure that..."
+            },
+            {
+                id: 9,
+                title: "Module 9: Culturally Grounded Prevention & Equity",
+                objective: "Recognize how systemic stress impacts mental health and learn to value community-specific buffers.",
+                psychology: "Suicide risk is shaped by systemic discrimination, historical trauma, and social exclusion. Generic clinical frameworks can fail if they ignore these stressors. Tribal prevention (IHS) and community-specific networks succeed by drawing on cultural identity, storytelling, peer networks, and community acceptance.",
+                exercise: "Identify a community-specific or culturally grounded protective factor that feels meaningful to you, and how it can be integrated into your local support stack.",
+                placeholder: "A culturally grounded protective factor that supports my stability is..."
+            },
+            {
+                id: 10,
+                title: "Module 10: Product Boundaries & Safe Agent Interaction",
+                objective: "Align your daily recovery tools with public health safety boundaries and understand system limits.",
+                psychology: "State Not Fate is a peer support and routine-tracking scaffold, not a clinic. It cannot diagnose or predict behavior. Understanding these boundaries keeps users safe from false expectations. If a crisis occurs, the system must immediately hand off to human support structures (like 988).",
+                exercise: "Review the Product Boundaries declaration. Write a reflection on why it is critical for an AI or digital tool to know its limits and avoid pretending to have clinical authority.",
+                placeholder: "Acknowledging that State Not Fate is an adjunctive tool rather than a clinic is important because..."
             }
         ];
 
@@ -6619,35 +6873,51 @@ Your response should be under 100 words. Stick to objective mechanics, pattern d
         COURSE_MODULES.splice(0, COURSE_MODULES.length,
             {
                 id: 1,
-                title: "Module 1: Distinguishing Thoughts, Ideation, and Intent",
-                objective: "Separate intrusive thoughts, passive desire to disappear, suicidal ideation, and active intent so the next step is clearer.",
-                psychology: "Severe depression narrows perceived options, but frightening thoughts are not all the same. Public education and clinical guidance both stress that warning signs, suicidal thoughts, and imminent danger need different responses. Naming the difference can lower panic and increase the odds of choosing support early.",
-                exercise: "Review Table 1 and Table 2. Then write one or two sentences about what usually tells you the situation is still a distress spike versus a moment that needs immediate human support.",
-                placeholder: "A sign that I need closer support instead of trying to power through is..."
+                title: "Module 1: Differentiating Ideation & Intent",
+                objective: "Differentiate passive, intrusive thoughts from active suicidal intent using gold-standard clinical metrics, and build a collaborative safety plan.",
+                psychology: "Under severe depression, the brain's prefrontal cortex shuts down, causing 'possibility collapse.' Suicide risk screening tools (C-SSRS, ASQ) help clinicians and individuals map current thoughts to prevent panic. Intrusive thoughts are unwanted fictions generated by a hijacked state; active intent is structured planning. Recognizing this difference helps you pause and choose safety.",
+                exercise: "Read the C-SSRS/ASQ criteria in the clinical tables. Under the 'Support Plan' subtab, complete or review your Collaborative Safety Plan (reasons to live, safe contacts, and coping tools). Reflect on how separating intrusive passive thoughts of death from active planning changes your panic levels.",
+                placeholder: "Differentiating passive thoughts from active planning makes me realize..."
             },
             {
                 id: 2,
-                title: "Module 2: Warning Signs, Risk Stacks, and Protective Stacks",
-                objective: "Identify the warning signs, risk factors, and protective factors that matter most in your own pattern.",
-                psychology: "Suicidality is not explained by one cause. Official frameworks describe layered risk at the individual, relationship, community, and societal levels. The same is true for protection: reasons for living, connectedness, cultural identity, coping tools, practical care, and reduced access to danger all matter.",
-                exercise: "Review Table 2. Write a short note naming one risk factor that tends to rise during bad periods and one protective factor you can strengthen sooner rather than later.",
-                placeholder: "One risk factor that builds pressure for me is... One protective factor I can strengthen is..."
+                title: "Module 2: Stabilizing the Frame & Reality-Testing",
+                objective: "Absorb the Emergency Appendix rules to stabilize the frame, limit rumination, and separate feeling intensity from issue severity.",
+                psychology: "When flooded, the mind loops in circles and distorts scale, making one problem feel like all of reality. The emergency protocol demands: 1) Stay in the present first—handle the next hour before your whole life. 2) Put limits on backward/forward thinking—rumination deepens the state. 3) Separate feelings from reality-testing: rate your feeling intensity (e.g. shame 9/10) separately from the issue severity (e.g. 3/10 big picture), and reassess after 15 minutes.",
+                exercise: "Review a recent distress spike. Rate your emotional intensity (0-10) and then rate the actual severity of the triggering issue in the big picture (0-10). Write down a script to remind yourself to limit backward/forward thinking when flooded.",
+                placeholder: "My emotional intensity was __/10, but the big picture severity is __/10. To stop ruminating I will..."
             },
             {
                 id: 3,
-                title: "Module 3: Safety Planning, Support Scripts, and Follow-Up",
-                objective: "Turn vague survival intentions into a concrete safety plan and a simple handoff script.",
-                psychology: "Evidence-based suicide prevention repeatedly returns to collaborative safety planning, practical coping steps, reachable people, and follow-up contact after acute periods. The point is not a perfect document. The point is reducing friction when judgment is impaired and making help easier to reach.",
-                exercise: "Review Table 3, then update the Safety Plan fields in the Get Safe Now section. Write one sentence you could send to a trusted person or clinician when you need help fast.",
-                placeholder: "A message I could send when I need help is..."
+                title: "Module 3: Cioran's Solace (The Thought as a Relief Valve)",
+                objective: "Explore Emil Cioran's quote: 'Without the thought of suicide, I certainly would have killed myself.'",
+                psychology: "Severe mental pain makes the mind feel trapped. The concept of suicide often serves as a mental escape hatch—a release valve that lets you believe you are not permanently trapped. This thought reduces pressure. The error occurs when the brain interprets this relief valve as a command to act. By separating the thought (relief valve) from action (command), you can breathe, let the thought exist, and choose to stay one more day.",
+                exercise: "Examine Cioran's quote. Write a reflection on how treating the thought of suicide as a passive relief valve to lower psychological pressure—rather than an active command—affects your ability to tolerate distress.",
+                placeholder: "Viewing the thought as a relief valve rather than an action command..."
             },
             {
                 id: 4,
-                title: "Module 4: Care Pathways, Treatment Options, and Community Prevention",
-                objective: "Understand how crisis support, clinician-guided treatment, and public-health prevention fit together without collapsing them into one lane.",
-                psychology: "Some people need urgent crisis care, some need treatment adjustments, and many need stronger long-range protection through connection, follow-up, environment, and access to care. Public-facing education should be honest about boundaries: State Not Fate can support preparation and reflection, but it cannot diagnose, predict, or replace clinicians or emergency services.",
-                exercise: "Review Table 4 and Table 5. Write a brief note about which support lane feels most relevant right now: crisis resources, treatment conversation, or community and routine protection.",
-                placeholder: "The support lane I most need to strengthen right now is..."
+                title: "Module 4: The Cerebral Council & Mechanical Relief",
+                objective: "Understand state-dependent cognitive hijacking and apply the Restraint Principle alongside low-friction mechanical relief.",
+                psychology: "Severe depressive states act like a hostile takeover of your mind (e.g. Bruce Banner trapped while the Hulk runs the body). The thoughts generated in this state are 'errors of state'—they are the Hulk's dark fictions, not your true self. The Restraint Principle dictates that your character and worth are defined by the restraint you show in not acting on these fictions. When risk rises, lower the load immediately using mechanical relief: drink water, eat protein, step outside, wash your face, or clean one small area.",
+                exercise: "Identify an automatic negative 'Hulk thought' your brain has generated. Draft your Restraint Statement (e.g. 'These thoughts are biological errors of my current state. They do not define me.') and list 2 concrete mechanical relief actions you will take next time you feel a crash.",
+                placeholder: "My Restraint Statement: ... My 2 mechanical relief actions: ..."
+            },
+            {
+                id: 5,
+                title: "Module 5: Advanced Clinical Interventions (2026 Guide)",
+                objective: "Explore modern clinical options for Treatment-Resistant Depression (TRD) and acute suicidality.",
+                psychology: "By 2026, psychiatry has shifted away from slow trial-and-error antidepressant cycles during crises. Advanced protocols like fMRI-guided SAINT TMS (5 days), Esketamine (Spravato) nasal sprays, and sub-anesthetic IV Ketamine can resolve acute suicidality in hours to days. Safe prescribing (limiting outpatient medication supply) is a critical standard. You can work with your clinician to navigate these options.",
+                exercise: "Review the modern rapid-acting therapies in the compendium tables. Draft a one-sentence message/bullet you would share with a trusted doctor to discuss these modern neuromodulation or rapid-acting options (e.g. SAINT TMS, Esketamine) for your treatment plan.",
+                placeholder: "I want to discuss rapid-acting interventions like SAINT TMS or Spravato because..."
+            },
+            {
+                id: 6,
+                title: "Module 6: The 5-Year Roadmap & Relapse Prevention",
+                objective: "Absorb the 5-Year Depression Project sequence and maintenance tightening protocols to prevent long-term relapse.",
+                psychology: "Recovery is a cumulative sequence, not a one-week sprint: Year 1 (Stabilize/De-chaos), Year 2 (Capacity Building), Year 3 (Reintegration), Year 4 (Expansion), Year 5 (Consolidation). Maintenance is the adult form of the plan. Relapse is a process problem before a mood catastrophe: sleep drift for 3-5 days, skipped meals, and decreased movement precede a crash. The tightening protocol is: 1) Restore wake time and light. 2) Rebuild meal timing. 3) Reinstall minimum movement. 4) Reduce load.",
+                exercise: "Identify which year of the recovery hierarchy you are currently in. List your three primary non-negotiable anchors and your earliest behavioral warning sign of drift (e.g., sleep drift, irregular meals).",
+                placeholder: "I am in Year __. My three non-negotiables: ... My earliest warning sign of drift: ..."
             }
         );
 
@@ -7077,7 +7347,7 @@ Your response should be under 100 words. Stick to objective mechanics, pattern d
                 const progressBadge = document.getElementById("course-progress-badge");
                 if (progressBadge) {
                     const completedCount = state.compendiumCourse.completedModules ? state.compendiumCourse.completedModules.length : 0;
-                    progressBadge.innerText = `${completedCount} / 4 Complete`;
+                    progressBadge.innerText = `${completedCount} / 10 Complete`;
                 }
 
                 const tableDisplay = document.getElementById("compendium-table-display");
@@ -7097,7 +7367,7 @@ Your response should be under 100 words. Stick to objective mechanics, pattern d
             currentSelectedModuleId = idx;
             ensurePolarisState();
 
-            for (let i = 1; i <= 4; i++) {
+            for (let i = 1; i <= 10; i++) {
                 const navBtn = document.getElementById(`btn-module-${i}`);
                 if (navBtn) {
                     if (i === idx) {
@@ -7228,6 +7498,724 @@ Your response should be under 100 words. Stick to objective mechanics, pattern d
             displayEl.innerHTML = tableHtml;
         }
 
+        // ==========================================
+        // EVIDENCE BASE & SUPPORTER SCRIPT LIBRARY
+        // ==========================================
+
+        const EVIDENCE_SOURCES = [
+            {
+                id: "cdc_data",
+                title: "CDC Suicide Data and Statistics",
+                url: "https://www.cdc.gov/suicide/data/index.html",
+                type: "official",
+                disposition: "anchor",
+                dispositionText: "Official Data. Anchors the appendix as a public-health document rather than a purely personal or motivational one."
+            },
+            {
+                id: "cdc_factors",
+                title: "CDC Risk and Protective Factors for Suicide",
+                url: "https://www.cdc.gov/suicide/risk-factors/index.html",
+                type: "official",
+                disposition: "chapter",
+                dispositionText: "Official Public-Health Guidance. Wrote a chapter. Supports the risk stack / protection stack language and keeps warning signs separate from long-range risk context."
+            },
+            {
+                id: "cdc_wisqars",
+                title: "CDC WISQARS (Web-based Injury Statistics Query and Reporting System)",
+                url: "https://www.cdc.gov/injury/wisqars/index.html",
+                type: "official",
+                disposition: "anchor",
+                dispositionText: "Official Data. Establishes suicide as a leading cause of death to ground the severity of State Not Fate's mission."
+            },
+            {
+                id: "cdc_tech",
+                title: "CDC Preventing Suicide: A Technical Package of Policy, Programs, and Practices",
+                url: "https://www.cdc.gov/suicide/resources/index.html",
+                type: "official",
+                disposition: "research",
+                dispositionText: "Official Framework. Informs the system-level focus on protective environments and coping/problem-solving skills."
+            },
+            {
+                id: "nimh_research",
+                title: "NIMH Suicide Prevention Research",
+                url: "https://www.nimh.nih.gov/health/topics/suicide-prevention",
+                type: "research",
+                disposition: "research",
+                dispositionText: "Research Base. Underpins our grounding techniques and supports the necessity of collaborative, clinician-guided treatment plans."
+            },
+            {
+                id: "va_dod",
+                title: "VA/DoD Clinical Practice Guideline for the Assessment and Management of Patients at Risk for Suicide",
+                url: "https://www.healthquality.va.gov/guidelines/MH/sui/",
+                type: "clinical",
+                disposition: "chapter",
+                dispositionText: "Clinical Practice Guidelines. Wrote a chapter. Directly informs the risk assessment protocols, safety plan structure, and follow-up loops."
+            },
+            {
+                id: "who_preventing",
+                title: "WHO Preventing Suicide: A Global Imperative",
+                url: "https://www.who.int/publications/i/item/9789241564779",
+                type: "official",
+                disposition: "research",
+                dispositionText: "Official Framework / Global Strategy. Reinforces the need for community support, restriction of lethal means, and destigmatization."
+            },
+            {
+                id: "samhsa_guidelines",
+                title: "SAMHSA National Guidelines for Behavioral Health Crisis Care",
+                url: "https://www.samhsa.gov/find-help/988",
+                type: "official",
+                disposition: "anchor",
+                dispositionText: "System Standards. Confirms the role of 988 and crisis response networks to route acute users to live human support."
+            },
+            {
+                id: "zero_suicide",
+                title: "Zero Suicide Framework",
+                url: "https://zerosuicide.edc.org/",
+                type: "clinical",
+                disposition: "research",
+                dispositionText: "System Framework. Guides the core design ethic: safety is a systemic property of the environment, not just an individual effort."
+            },
+            {
+                id: "stanley_brown",
+                title: "Stanley-Brown Safety Planning Intervention",
+                url: "https://www.suicidepreventionlifeline.org/wp-content/uploads/2016/08/Stanley-Brown-Safety-Plan-Description.pdf",
+                type: "clinical",
+                disposition: "chapter",
+                dispositionText: "Clinical Intervention. Wrote a chapter. The foundation for our interactive safety plan (reasons to live, contacts, environments, warning signs)."
+            },
+            {
+                id: "cams_framework",
+                title: "Collaborative Assessment and Management of Suicidality (CAMS)",
+                url: "https://cams-care.com/",
+                type: "clinical",
+                disposition: "research",
+                dispositionText: "Clinical Intervention. Underpins our emphasis on collaborative, non-coercive, and suicide-focused clinical interventions."
+            },
+            {
+                id: "crisis_data",
+                title: "Crisis Text Line & 988 Suicide & Crisis Lifeline Data Reports",
+                url: "https://www.crisistextline.org/trends",
+                type: "official",
+                disposition: "anchor",
+                dispositionText: "Service Outcomes. Highlights the critical transition window when users seek help via digital platforms."
+            },
+            {
+                id: "trevor_survey",
+                title: "The Trevor Project National Survey on LGBTQ Youth Mental Health",
+                url: "https://www.thetrevorproject.org/survey-2025/",
+                type: "watchlist",
+                disposition: "watchlist",
+                dispositionText: "Watchlist / Specific Lane. Reminds us that marginalized groups require tailored safety routing, pronoun respect, and community acceptance."
+            },
+            {
+                id: "mmhla_maternal",
+                title: "Maternal Mental Health Leadership Alliance (MMHLA) Fact Sheets",
+                url: "https://www.mmhla.org/",
+                type: "watchlist",
+                disposition: "watchlist",
+                dispositionText: "Watchlist / Specific Lane. Guides perinatal screening contexts to protect mothers during high-vulnerability windows."
+            },
+            {
+                id: "afsp_grants",
+                title: "American Foundation for Suicide Prevention (AFSP) Research Grants",
+                url: "https://afsp.org/research-funding/",
+                type: "research",
+                disposition: "watchlist",
+                dispositionText: "Research Base. Provides early-stage data on biological mechanisms and digital intervention outcomes."
+            },
+            {
+                id: "iasp_global",
+                title: "International Association for Suicide Prevention (IASP) Resources",
+                url: "https://www.iasp.info/resources/",
+                type: "official",
+                disposition: "watchlist",
+                dispositionText: "Global Strategy. Connects local efforts to international crisis networks and policy recommendations."
+            },
+            {
+                id: "motto_rct",
+                title: "Motto & Bostrom (2001) Randomized Controlled Trial of Postcrisis Suicide Prevention",
+                url: "https://pubmed.ncbi.nlm.nih.gov/11376235/",
+                type: "research",
+                disposition: "research",
+                dispositionText: "Research Anchor (PMID 11376235). Proved that periodic, brief, non-demanding caring contacts reduce suicide mortality in high-risk individuals."
+            },
+            {
+                id: "luxton_rct",
+                title: "Luxton et al. (2020) & VA (2024) Caring Contacts Evaluations",
+                url: "https://pubmed.ncbi.nlm.nih.gov/",
+                type: "research",
+                disposition: "research",
+                dispositionText: "Research Anchor. Modern randomized trials showing that caring contacts increase engagement with treatment systems and follow-up support."
+            }
+        ];
+
+        const RANKED_IDEAS = [
+            {
+                rank: 1,
+                title: "Immediate Crisis Routing",
+                importance: 100,
+                influence: 100,
+                riskAlert: false,
+                description: "Primary safety lane. Ensures active 988/911 buttons are highly visible and permanently accessible in crisis views."
+            },
+            {
+                rank: 2,
+                title: "Product Boundaries Statement",
+                importance: 95,
+                influence: 90,
+                riskAlert: false,
+                description: "Explicitly states that State Not Fate is strictly adjunctive and cannot predict acute risk or replace professional diagnosis."
+            },
+            {
+                rank: 3,
+                title: "Evidence-Disposition Mapping",
+                importance: 90,
+                influence: 85,
+                riskAlert: false,
+                description: "Distinguishes official guidelines and trials from early-stage watchlists to prevent unverified medical assertions."
+            },
+            {
+                rank: 4,
+                title: "Interactive Support Map",
+                importance: 95,
+                influence: 95,
+                riskAlert: false,
+                description: "Captures active network contacts (Anchor, Buffer, and Safe Environments) to bypass panic search loops."
+            },
+            {
+                rank: 5,
+                title: "Supporter Script Library",
+                importance: 85,
+                influence: 80,
+                riskAlert: false,
+                description: "Provides pre-framed text message templates for asking for help, helping others, or preparing for clinical visits."
+            },
+            {
+                rank: 6,
+                title: "CDC Warning Signs Alignment",
+                importance: 90,
+                influence: 90,
+                riskAlert: false,
+                description: "Explicitly structures warning signs (agitation, hopelessness, withdrawal, sleep, and shame) according to public-health models."
+            },
+            {
+                rank: 7,
+                title: "Means Safety Directive",
+                importance: 95,
+                influence: 95,
+                riskAlert: false,
+                description: "Advocates securing the immediate physical environment (locking/handing off dangerous items) without providing procedural details."
+            },
+            {
+                rank: 8,
+                title: "Population-Aware Contexts",
+                importance: 80,
+                influence: 75,
+                riskAlert: false,
+                description: "Tailors safety resources and warnings across maternal, youth, veteran, LGBTQ+, tribal, and rural lanes."
+            },
+            {
+                rank: 9,
+                title: "Proof Point Barrier Gate",
+                importance: 85,
+                influence: 90,
+                riskAlert: false,
+                description: "Gates high-intensity philosophical modules behind a 10 proof-point floor to protect users in acute distress."
+            },
+            {
+                rank: 10,
+                title: "Evolving Course Modules",
+                importance: 80,
+                influence: 85,
+                riskAlert: false,
+                description: "Provides a structured educational pathway (Cioran, SAINT, Cerebral Council) with mandatory reflective journaling."
+            },
+            {
+                rank: 11,
+                title: "Somatic Grounding Intervention",
+                importance: 85,
+                influence: 90,
+                riskAlert: false,
+                description: "Uses box breathing, cold exposure, and sensory checklists to override high-distress physiological activation."
+            },
+            {
+                rank: 12,
+                title: "Collaborative Clinician Handoff",
+                importance: 75,
+                influence: 80,
+                riskAlert: false,
+                description: "Enables exporting safety plans and distress timelines to Markdown to facilitate therapeutic collaboration."
+            },
+            {
+                rank: 13,
+                title: "Local State Sandboxing",
+                importance: 90,
+                influence: 80,
+                riskAlert: false,
+                description: "Persists safety plan entries, journal logs, and module status locally within the browser sandbox to guarantee privacy."
+            },
+            {
+                rank: 14,
+                title: "Service Worker Offline Support",
+                importance: 85,
+                influence: 75,
+                riskAlert: false,
+                description: "Ensures the PWA remains accessible, loading safety contacts and local plans during sudden cell/network drops."
+            },
+            {
+                rank: 15,
+                title: "Contrast and Accessibility",
+                importance: 80,
+                influence: 70,
+                riskAlert: false,
+                description: "Adheres to WCAG AA color contrast standards to ensure reading legibility under stress or low light."
+            },
+            {
+                rank: 16,
+                title: "Separating Signs from Long-term Risk",
+                importance: 75,
+                influence: 75,
+                riskAlert: false,
+                description: "Clearly separates acute warning signs from background risk factors to prevent unnecessary warning fatigue."
+            },
+            {
+                rank: 17,
+                title: "Reflective Writing Limits",
+                importance: 70,
+                influence: 70,
+                riskAlert: false,
+                description: "Enforces a minimum character length on journal reflections to prompt deliberate, slowed cognitive processing."
+            },
+            {
+                rank: 18,
+                title: "Interactive Grounding Loop",
+                importance: 80,
+                influence: 85,
+                riskAlert: false,
+                description: "Integrates visual step-by-step guidance for physical de-escalation rather than displaying plain static text."
+            },
+            {
+                rank: 19,
+                title: "Danger-Triggered Routing",
+                importance: 85,
+                influence: 90,
+                riskAlert: false,
+                description: "Automatically routes the user to active somatic grounding modules when a journal log records distress >= 8/10."
+            },
+            {
+                rank: 20,
+                title: "Zero Speculative Pseudoscience",
+                importance: 90,
+                influence: 95,
+                riskAlert: true,
+                description: "Strictly bans speculative, unproven diagnostic or therapeutic algorithms from entering safety-critical areas."
+            }
+        ];
+
+        const SUPPORTER_SCRIPTS = {
+            help: `
+                <div style="display:flex; flex-direction:column; gap:0.75rem;">
+                    <div>
+                        <strong style="color:var(--accent-teal); font-size: 0.8rem;">Text Script 1 (Direct Request):</strong>
+                        <p class="text-secondary" style="font-size:0.78rem; margin:0.25rem 0; padding:0.5rem; background:rgba(255,255,255,0.03); border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.05); user-select:all; line-height: 1.45;">"I am feeling unsafe right now and need support. Can you call me or come sit with me? If you can't reach me, please help me contact 988."</p>
+                    </div>
+                    <div>
+                        <strong style="color:var(--accent-teal); font-size: 0.8rem;">Text Script 2 (Non-crisis support request):</strong>
+                        <p class="text-secondary" style="font-size:0.78rem; margin:0.25rem 0; padding:0.5rem; background:rgba(255,255,255,0.03); border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.05); user-select:all; line-height: 1.45;">"I'm having a really hard time keeping my head above water. I don't need you to fix it, I just need to know you are there. Can we talk?"</p>
+                    </div>
+                </div>
+            `,
+            helper: `
+                <div style="display:flex; flex-direction:column; gap:0.75rem;">
+                    <div>
+                        <strong style="color:var(--accent-orange); font-size: 0.8rem;">Text Script 1 (Reaching out):</strong>
+                        <p class="text-secondary" style="font-size:0.78rem; margin:0.25rem 0; padding:0.5rem; background:rgba(255,255,255,0.03); border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.05); user-select:all; line-height: 1.45;">"I noticed you've been really quiet lately and want to check in. I'm here for you, no matter what you're feeling. We don't have to solve anything, we can just sit."</p>
+                    </div>
+                    <div>
+                        <strong style="color:var(--accent-orange); font-size: 0.8rem;">Text Script 2 (Safety focused offer):</strong>
+                        <p class="text-secondary" style="font-size:0.78rem; margin:0.25rem 0; padding:0.5rem; background:rgba(255,255,255,0.03); border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.05); user-select:all; line-height: 1.45;">"You don't have to carry this alone. I'm here. If you need me to call a doctor, or help you lock things up to keep your space safe, just tell me how."</p>
+                    </div>
+                </div>
+            `,
+            visit: `
+                <div style="display:flex; flex-direction:column; gap:0.75rem;">
+                    <div>
+                        <strong style="color:var(--accent-lavender); font-size: 0.8rem;">Speaking Script 1 (To clinician/therapist):</strong>
+                        <p class="text-secondary" style="font-size:0.78rem; margin:0.25rem 0; padding:0.5rem; background:rgba(255,255,255,0.03); border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.05); user-select:all; line-height: 1.45;">"I've written down my safety plan and my distress logs. Here is what has been happening. I want to adjust my treatment plan to focus on these specific triggers."</p>
+                    </div>
+                    <div>
+                        <strong style="color:var(--accent-lavender); font-size: 0.8rem;">Speaking Script 2 (Reporting high risk to clinician):</strong>
+                        <p class="text-secondary" style="font-size:0.78rem; margin:0.25rem 0; padding:0.5rem; background:rgba(255,255,255,0.03); border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.05); user-select:all; line-height: 1.45;">"I am having active thoughts of wanting to die. I have a safety plan in place, but I need medical guidance to stabilize my mood and look at target therapies."</p>
+                    </div>
+                </div>
+            `
+        };
+
+        function switchScriptCategory(category) {
+            const displayEl = document.getElementById("script-display-area");
+            if (!displayEl) return;
+            displayEl.innerHTML = SUPPORTER_SCRIPTS[category] || "<p class='text-muted'>Select a category to load scripts.</p>";
+        }
+
+        function renderEvidenceSubpanel() {
+            // Get active category filter btn class
+            let activeFilter = "all";
+            const filters = ["all", "anchor", "chapter", "research", "watchlist"];
+            for (let f of filters) {
+                const btn = document.getElementById(`btn-source-filter-${f}`);
+                if (btn && btn.classList.contains("active")) {
+                    activeFilter = f;
+                    break;
+                }
+            }
+            renderEvidenceSources(activeFilter);
+            renderRankedIdeas();
+        }
+
+        function renderEvidenceSources(filter) {
+            const listEl = document.getElementById("evidence-sources-list");
+            const countEl = document.getElementById("evidence-source-count");
+            if (!listEl) return;
+
+            listEl.innerHTML = "";
+            let filtered = EVIDENCE_SOURCES;
+            if (filter !== "all") {
+                filtered = EVIDENCE_SOURCES.filter(s => s.disposition === filter);
+            }
+
+            if (countEl) {
+                countEl.innerText = `${filtered.length} Source${filtered.length === 1 ? "" : "s"}`;
+            }
+
+            if (filtered.length === 0) {
+                listEl.innerHTML = `<p class="text-muted" style="font-size:0.8rem; text-align:center; padding:2rem 0;">No sources found matching this category.</p>`;
+                return;
+            }
+
+            filtered.forEach(s => {
+                const card = document.createElement("div");
+                card.style.background = "rgba(255,255,255,0.02)";
+                card.style.border = "1px solid rgba(255,255,255,0.05)";
+                card.style.padding = "0.75rem";
+                card.style.borderRadius = "var(--radius-sm)";
+                card.style.display = "flex";
+                card.style.flexDirection = "column";
+                card.style.gap = "0.35rem";
+
+                let typeColor = "var(--accent-teal)";
+                if (s.type === "clinical") typeColor = "var(--accent-lavender)";
+                if (s.type === "watchlist") typeColor = "var(--accent-orange)";
+
+                let dispColor = "rgba(255,255,255,0.1)";
+                if (s.disposition === "anchor") dispColor = "rgba(0, 255, 200, 0.15)";
+                if (s.disposition === "chapter") dispColor = "rgba(255, 170, 0, 0.15)";
+
+                card.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:0.5rem;">
+                        <a href="${s.url}" target="_blank" style="color:var(--text-primary); font-weight:bold; font-size:0.82rem; text-decoration:none; display:flex; align-items:center; gap:0.25rem;">
+                            <span>${s.title}</span> 🔗
+                        </a>
+                    </div>
+                    <div style="display:flex; gap:0.35rem; margin: 0.1rem 0;">
+                        <span class="badge" style="background:rgba(255,255,255,0.05); color:${typeColor}; border:1px solid rgba(255,255,255,0.05); font-size:0.6rem; padding:0.1rem 0.3rem;">${s.type.toUpperCase()}</span>
+                        <span class="badge" style="background:${dispColor}; color:var(--text-primary); font-size:0.6rem; padding:0.1rem 0.3rem;">${s.disposition.toUpperCase()}</span>
+                    </div>
+                    <p class="text-secondary" style="font-size:0.75rem; line-height:1.4; margin:0;">
+                        ${s.dispositionText}
+                    </p>
+                `;
+                listEl.appendChild(card);
+            });
+        }
+
+        function renderRankedIdeas() {
+            const listEl = document.getElementById("evidence-ideas-list");
+            if (!listEl) return;
+
+            listEl.innerHTML = "";
+
+            RANKED_IDEAS.forEach(idea => {
+                const card = document.createElement("div");
+                card.style.background = "rgba(255,255,255,0.02)";
+                card.style.border = "1px solid rgba(255,255,255,0.05)";
+                card.style.padding = "0.75rem";
+                card.style.borderRadius = "var(--radius-sm)";
+                card.style.display = "flex";
+                card.style.flexDirection = "column";
+                card.style.gap = "0.35rem";
+
+                let headerHtml = `
+                    <div style="display:flex; align-items:center; justify-content:space-between; gap:0.5rem;">
+                        <strong style="color:var(--text-primary); font-size:0.82rem;">
+                            <span style="color:var(--accent-lavender); margin-right:0.25rem;">#${idea.rank}</span> ${idea.title}
+                        </strong>
+                `;
+
+                if (idea.riskAlert) {
+                    headerHtml += `
+                        <span class="badge" style="background:rgba(255,50,50,0.15); color:var(--accent-red); font-size:0.6rem; padding:0.1rem 0.4rem; border:1px solid rgba(255,50,50,0.2); font-weight:bold;">
+                            ⚠️ RISK ALERT
+                        </span>
+                    `;
+                }
+
+                headerHtml += `</div>`;
+
+                card.innerHTML = `
+                    ${headerHtml}
+                    <p class="text-secondary" style="font-size:0.75rem; line-height:1.4; margin:0;">
+                        ${idea.description}
+                    </p>
+                    <div style="display:flex; flex-direction:column; gap:0.25rem; margin-top:0.4rem;">
+                        <div style="display:flex; justify-content:space-between; font-size:0.65rem; color:var(--text-muted);">
+                            <span>Importance: ${idea.importance}%</span>
+                            <span>Influence: ${idea.influence}%</span>
+                        </div>
+                        <div style="display:flex; gap:0.5rem;">
+                            <!-- Importance Bar -->
+                            <div style="flex:1; height:4px; background:rgba(255,255,255,0.05); border-radius:2px; overflow:hidden;">
+                                <div style="width:${idea.importance}%; height:100%; background:var(--accent-teal); border-radius:2px;"></div>
+                            </div>
+                            <!-- Influence Bar -->
+                            <div style="flex:1; height:4px; background:rgba(255,255,255,0.05); border-radius:2px; overflow:hidden;">
+                                <div style="width:${idea.influence}%; height:100%; background:var(--accent-lavender); border-radius:2px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                listEl.appendChild(card);
+            });
+        }
+
+        // ==========================================
+        // EMERGENCY APPENDIX INTERACTIVE HELPERS
+        // ==========================================
+
+        function switchEmergencyTab(tabId) {
+            const tabs = ["frame", "load", "ladder", "supporter"];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`btn-emer-tab-${t}`);
+                const panel = document.getElementById(`sp-emer-panel-${t}`);
+                if (t === tabId) {
+                    if (btn) btn.classList.add("active");
+                    if (panel) panel.classList.remove("hidden");
+                } else {
+                    if (btn) btn.classList.remove("active");
+                    if (panel) panel.classList.add("hidden");
+                }
+            });
+
+            // If switching to ladder, pre-populate names from supportMap
+            if (tabId === "ladder") {
+                renderEmergencyContactLadder();
+            }
+        }
+
+        function renderEmergencyContactLadder() {
+            const anchorEl = document.getElementById("emer-ladder-anchor");
+            const bufferEl = document.getElementById("emer-ladder-buffer");
+            const envEl = document.getElementById("emer-ladder-env");
+            
+            ensurePolarisState();
+            
+            if (anchorEl) {
+                anchorEl.innerHTML = `<strong>Anchor Person:</strong> ${state.supportMap.anchorPerson || '<span style="color:var(--accent-orange); font-style:italic;">[Not set. Add in Support Plan subtab]</span>'}`;
+            }
+            if (bufferEl) {
+                bufferEl.innerHTML = `<strong>Backup Contact:</strong> ${state.supportMap.bufferContact || '<span style="color:var(--accent-orange); font-style:italic;">[Not set]</span>'}`;
+            }
+            if (envEl) {
+                envEl.innerHTML = `<strong>Safe Place:</strong> ${state.supportMap.safeEnvironment || '<span style="color:var(--accent-orange); font-style:italic;">[Not set]</span>'}`;
+            }
+        }
+
+        function updateEmergencyReliefProgress() {
+            const checks = document.querySelectorAll(".emer-relief-check");
+            let checkedCount = 0;
+            checks.forEach(c => {
+                if (c.checked) checkedCount++;
+            });
+            const progressLabel = document.getElementById("emer-relief-progress-label");
+            if (progressLabel) {
+                progressLabel.innerText = `${checkedCount} / 5 checked`;
+                if (checkedCount === 5) {
+                    progressLabel.style.color = "var(--accent-teal)";
+                    progressLabel.innerText = `5 / 5 checked ✓ (Mechanical Load Reduced)`;
+                } else {
+                    progressLabel.style.color = "var(--accent-orange)";
+                }
+            }
+        }
+
+        function calculateDistortion() {
+            const feeling = document.getElementById("input-emer-feeling").value.trim() || "Feeling";
+            const intensity = parseInt(document.getElementById("input-emer-intensity").value, 10);
+            const severity = parseInt(document.getElementById("input-emer-severity").value, 10);
+            
+            const resultEl = document.getElementById("emer-comparison-result");
+            if (!resultEl) return;
+            
+            resultEl.classList.remove("hidden");
+            
+            const discrepancy = intensity - severity;
+            
+            let html = `<strong>Distortion analysis for "${feeling}":</strong><br>`;
+            if (discrepancy > 3) {
+                html += `<span style="color:var(--accent-orange); font-weight:bold;">⚠️ Scale distortion detected.</span> Your internal emotion is rated at <strong>${intensity}/10</strong>, but the big-picture severity of this issue is <strong>${severity}/10</strong>.<br>`;
+                html += `Depression distorts scale. It narrows your vision until one issue feels like all of reality. Focus on lowering your immediate physical load—do not attempt to solve this issue while flooded.`;
+            } else if (discrepancy < 0) {
+                html += `Your emotional intensity (<strong>${intensity}/10</strong>) is lower than the big-picture severity of the issue (<strong>${severity}/10</strong>). This represents a calm, logical assessment. You are in control. Stay in the present and handle one piece at a time.`;
+            } else {
+                html += `Your emotional intensity (<strong>${intensity}/10</strong>) matches the big-picture severity of the issue (<strong>${severity}/10</strong>). You are assessing this situation clearly. Your safety plan remains active. Use your contacts and grounding tools to stabilize.`;
+            }
+            
+            resultEl.innerHTML = html;
+        }
+
+        // ==========================================
+        // SYSTEMS & HOPE REPAIR WIDGET HELPERS
+        // ==========================================
+        let currentSelectedSop = "low";
+
+        function renderSystemsSubpanel() {
+            switchStateSop(currentSelectedSop);
+            updateHopeSimProgress();
+            updateTriageExclusionWarning();
+        }
+
+        function switchStateSop(sopState) {
+            currentSelectedSop = sopState;
+            const states = ["low", "medium", "strong"];
+            states.forEach(s => {
+                const btn = document.getElementById(`btn-state-sop-${s}`);
+                if (btn) {
+                    if (s === sopState) {
+                        btn.classList.add("active");
+                        btn.style.background = "rgba(240, 115, 30, 0.12)";
+                        btn.style.borderColor = "var(--accent-orange)";
+                        btn.style.color = "var(--accent-orange)";
+                    } else {
+                        btn.classList.remove("active");
+                        btn.style.background = "";
+                        btn.style.borderColor = "";
+                        btn.style.color = "";
+                    }
+                }
+            });
+
+            const detailsBox = document.getElementById("state-sop-details-box");
+            if (!detailsBox) return;
+
+            let html = "";
+            if (sopState === "low") {
+                html = `
+                    <div style="display:flex; flex-direction:column; gap:0.5rem;">
+                        <span style="color:var(--accent-orange); font-weight:bold; font-size:0.85rem;">Survival SOP (Goal: Prevent further collapse)</span>
+                        <p class="text-secondary" style="font-size:0.75rem; margin:0; line-height:1.45;">
+                            When your battery is low, do not attempt expansion. Stick strictly to keeping the floor from dropping out:
+                        </p>
+                        <ul style="margin:0; padding-left:1.1rem; font-size:0.75rem; line-height:1.45; color:var(--text-secondary);">
+                            <li><strong>Wake regularity:</strong> Defend your sleep boundary (wake up at your alarm time).</li>
+                            <li><strong>Hydration & Meds:</strong> Stay biological: drink water and take prescribed medications.</li>
+                            <li><strong>Morning Light:</strong> 5 minutes exposure to reset your clock.</li>
+                            <li><strong>Collapse Rescue Sequence:</strong> Do less, but do not disappear. Contact your anchor person. Secure your environment (means safety lockdown).</li>
+                        </ul>
+                    </div>
+                `;
+            } else if (sopState === "medium") {
+                html = `
+                    <div style="display:flex; flex-direction:column; gap:0.5rem;">
+                        <span style="color:var(--accent-orange); font-weight:bold; font-size:0.85rem;">Stabilization SOP (Goal: Protect continuity)</span>
+                        <p class="text-secondary" style="font-size:0.75rem; margin:0; line-height:1.45;">
+                            With moderate energy, protect the basics and introduce a single high-impact task block:
+                        </p>
+                        <ul style="margin:0; padding-left:1.1rem; font-size:0.75rem; line-height:1.45; color:var(--text-secondary);">
+                            <li><strong>Level 1 Survival:</strong> Defend wake time, light, hydration, and meds first.</li>
+                            <li><strong>Movement:</strong> 15-20 minutes of mild activation (e.g., outdoor walking).</li>
+                            <li><strong>One Task Block:</strong> Focus on one single high-friction task (max 45 mins).</li>
+                            <li><strong>Surface Reset:</strong> 10 minutes environment de-cluttering to prevent room decay.</li>
+                            <li><strong>Non-passive contact:</strong> Send a brief text to your anchor or buffer contact.</li>
+                        </ul>
+                    </div>
+                `;
+            } else if (sopState === "strong") {
+                html = `
+                    <div style="display:flex; flex-direction:column; gap:0.5rem;">
+                        <span style="color:var(--accent-orange); font-weight:bold; font-size:0.85rem;">Expansion SOP (Goal: Build future stability)</span>
+                        <p class="text-secondary" style="font-size:0.75rem; margin:0; line-height:1.45;">
+                            When energy is strong, expand life range but avoid 'productivity binging' that triggers crashes:
+                        </p>
+                        <ul style="margin:0; padding-left:1.1rem; font-size:0.75rem; line-height:1.45; color:var(--text-secondary);">
+                            <li><strong>Systems Reinforcement:</strong> Run core anchors plus 30 minutes physical exercise.</li>
+                            <li><strong>Task Blocks:</strong> 2-3 focused productivity blocks (take breaks between them).</li>
+                            <li><strong>Richer connection:</strong> Shared meal, phone call, or detailed conversation.</li>
+                            <li><strong>Chosen leisure:</strong> Active leisure (hobbies, reading) rather than passive scrolling.</li>
+                            <li><strong>Warning:</strong> Do not burn all your capacity in one day. Protect tomorrow's energy baseline.</li>
+                        </ul>
+                    </div>
+                `;
+            }
+            detailsBox.innerHTML = html;
+        }
+
+        function updateHopeSimProgress() {
+            const checks = document.querySelectorAll(".hope-sim-check");
+            let totalVal = 0;
+            checks.forEach(c => {
+                if (c.checked) {
+                    totalVal += parseInt(c.getAttribute("data-val") || "25", 10);
+                }
+            });
+
+            const percentLabel = document.getElementById("label-hope-sim-percent");
+            const progressBar = document.getElementById("bar-hope-sim-progress");
+            const feedbackText = document.getElementById("text-hope-sim-feedback");
+
+            if (percentLabel) {
+                let status = "Pointless";
+                if (totalVal === 25) status = "Slight Wins";
+                else if (totalVal === 50) status = "Rhythm Locking";
+                else if (totalVal === 75) status = "Active Momentum";
+                else if (totalVal === 100) status = "Credibility Restored";
+                percentLabel.innerText = `${totalVal}% (${status})`;
+            }
+
+            if (progressBar) {
+                progressBar.style.width = `${totalVal}%`;
+            }
+
+            if (feedbackText) {
+                let txt = "No anchors checked. Prediction states that effort will fail.";
+                if (totalVal === 25) {
+                    txt = "25% credibility win. Small outcome registered. Keep the same wake time tomorrow.";
+                } else if (totalVal === 50) {
+                    txt = "50% credibility win. Circadian rhythm starting to lock. Brain begins predicting payoff.";
+                } else if (totalVal === 75) {
+                    txt = "75% credibility win. Active momentum building. Energy cost of action is dropping.";
+                } else if (totalVal === 100) {
+                    txt = "100% credibility win. System failure loop interrupted. Self-trust and expectation of reward restored.";
+                }
+                feedbackText.innerText = txt;
+            }
+        }
+
+        function updateTriageExclusionWarning() {
+            const checks = document.querySelectorAll(".triage-exclusion-check");
+            let checkedCount = 0;
+            checks.forEach(c => {
+                if (c.checked) checkedCount++;
+            });
+
+            const alertEl = document.getElementById("triage-escalation-alert");
+            if (alertEl) {
+                if (checkedCount > 0) {
+                    alertEl.classList.remove("hidden");
+                } else {
+                    alertEl.classList.add("hidden");
+                }
+            }
+        }
+
         // Export so variables/functions are global
         window.COURSE_MODULES = COURSE_MODULES;
         window.COMPENDIUM_TABLES = COMPENDIUM_TABLES;
@@ -7236,5 +8224,20 @@ Your response should be under 100 words. Stick to objective mechanics, pattern d
         window.updateModuleCharCount = updateModuleCharCount;
         window.submitCurrentModule = submitCurrentModule;
         window.switchCompendiumTable = switchCompendiumTable;
+        window.EVIDENCE_SOURCES = EVIDENCE_SOURCES;
+        window.RANKED_IDEAS = RANKED_IDEAS;
+        window.SUPPORTER_SCRIPTS = SUPPORTER_SCRIPTS;
+        window.switchScriptCategory = switchScriptCategory;
+        window.renderEvidenceSubpanel = renderEvidenceSubpanel;
+        window.renderEvidenceSources = renderEvidenceSources;
+        window.renderRankedIdeas = renderRankedIdeas;
+        window.switchEmergencyTab = switchEmergencyTab;
+        window.renderEmergencyContactLadder = renderEmergencyContactLadder;
+        window.updateEmergencyReliefProgress = updateEmergencyReliefProgress;
+        window.calculateDistortion = calculateDistortion;
+        window.renderSystemsSubpanel = renderSystemsSubpanel;
+        window.switchStateSop = switchStateSop;
+        window.updateHopeSimProgress = updateHopeSimProgress;
+        window.updateTriageExclusionWarning = updateTriageExclusionWarning;
 
         window.onload = init;
