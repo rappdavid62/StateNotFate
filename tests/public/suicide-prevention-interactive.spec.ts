@@ -137,8 +137,8 @@ test.describe('Suicide Prevention Interactive Features', () => {
     
     // Set slider values in DOM
     await page.evaluate(() => {
-      const intensity = document.getElementById('input-emer-intensity');
-      const severity = document.getElementById('input-emer-severity');
+      const intensity = document.getElementById('input-emer-intensity') as HTMLInputElement;
+      const severity = document.getElementById('input-emer-severity') as HTMLInputElement;
       if (intensity) {
         intensity.value = '9';
         intensity.dispatchEvent(new Event('input'));
