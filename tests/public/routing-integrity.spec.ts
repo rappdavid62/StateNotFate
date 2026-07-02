@@ -34,7 +34,7 @@ test.describe('Routing Integrity & Deep Linking', () => {
     await page.goto('/');
   });
 
-  test('Should route directly to a subtab on page load via URL hash', async ({ page }) => {
+  test('Should route directly to a subtab on page load via URL hash @critical', async ({ page }) => {
     await page.goto('/#/suicideprevention/systems');
     await page.reload();
     
@@ -44,14 +44,14 @@ test.describe('Routing Integrity & Deep Linking', () => {
     await expect(systemsPanel).toContainText('Systems Theory & Hope Repair');
   });
 
-  test('Should update hash when tab button is clicked', async ({ page }) => {
+  test('Should update hash when tab button is clicked @critical', async ({ page }) => {
     // Verify URL hash updated
     await page.click('button[data-tab="cognitivelab"]');
     await expect(page).toHaveURL(/#\/cognitivelab/);
     await expect(page.locator('#tab-cognitivelab')).toBeVisible();
   });
 
-  test('Should handle back/forward navigation using browser history', async ({ page }) => {
+  test('Should handle back/forward navigation using browser history @advisory', async ({ page }) => {
     // Click Worksheets & Journal
     await page.click('button[data-tab="cognitivelab"]');
     await expect(page).toHaveURL(/#\/cognitivelab/);
@@ -71,7 +71,7 @@ test.describe('Routing Integrity & Deep Linking', () => {
     await expect(page.locator('#tab-suicideprevention')).toBeVisible();
   });
 
-  test('Should rollback hash if navigation is blocked by future narrowing', async ({ page }) => {
+  test('Should rollback hash if navigation is blocked by future narrowing @advisory', async ({ page }) => {
     // Enable Future Narrowing (we do this by checking the toggle or updating state)
     await page.click('button[data-tab="polaris"]');
     

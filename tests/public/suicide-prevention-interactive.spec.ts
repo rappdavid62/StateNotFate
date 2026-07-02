@@ -36,7 +36,7 @@ test.describe('Suicide Prevention Interactive Features', () => {
     await page.click('button[data-tab="suicideprevention"]');
   });
 
-  test('Should pre-populate, edit, and save the active support map', async ({ page }) => {
+  test('Should pre-populate, edit, and save the active support map @critical', async ({ page }) => {
     await page.click('#btn-sp-subtab-journal');
 
     const anchorInput = page.locator('#input-sp-anchor-person');
@@ -60,7 +60,7 @@ test.describe('Suicide Prevention Interactive Features', () => {
     await expect(anchorInput).toHaveValue('Charlie (555-0300)');
   });
 
-  test('Should toggle supporter script library tabs', async ({ page }) => {
+  test('Should toggle supporter script library tabs @advisory', async ({ page }) => {
     await page.click('#btn-sp-subtab-journal');
 
     const displayArea = page.locator('#script-display-area');
@@ -80,7 +80,7 @@ test.describe('Suicide Prevention Interactive Features', () => {
     await expect(displayArea).toContainText('I want to adjust my treatment plan');
   });
 
-  test('Should render the 5th warning signs card (Means Safety) and log a reflection', async ({ page }) => {
+  test('Should render the 5th warning signs card (Means Safety) and log a reflection @critical', async ({ page }) => {
     await page.click('#btn-sp-subtab-parables');
 
     const card = page.locator('#parable-card-means');
@@ -96,7 +96,7 @@ test.describe('Suicide Prevention Interactive Features', () => {
     await expect(page.locator('#parable-badge-means')).toHaveText('Completed ✓');
   });
 
-  test('Should render evidence base list and filter sources correctly', async ({ page }) => {
+  test('Should render evidence base list and filter sources correctly @critical', async ({ page }) => {
     await page.click('#btn-sp-subtab-evidence');
 
     const sourcesList = page.locator('#evidence-sources-list');
@@ -131,7 +131,7 @@ test.describe('Suicide Prevention Interactive Features', () => {
     await expect(page.locator('#evidence-source-count')).toHaveText('4 Sources');
   });
 
-  test('Should test the No-Pressure Emergency Appendix (distortion calculation, mechanical load checklists, and contact ladder)', async ({ page }) => {
+  test('Should test the No-Pressure Emergency Appendix (distortion calculation, mechanical load checklists, and contact ladder) @critical', async ({ page }) => {
     // 1. Distortion calculation test
     await page.fill('#input-emer-feeling', 'Helplessness');
     

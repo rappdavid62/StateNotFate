@@ -36,7 +36,7 @@ test.describe('Systems & Hope Repair Wisebase Integration', () => {
     await page.click('button[data-tab="suicideprevention"]');
   });
 
-  test('Should navigate to Systems subtab and verify feedback loop diagram', async ({ page }) => {
+  test('Should navigate to Systems subtab and verify feedback loop diagram @critical', async ({ page }) => {
     await page.click('#btn-sp-subtab-systems');
     
     // Verify Systems subpanel is visible
@@ -49,7 +49,7 @@ test.describe('Systems & Hope Repair Wisebase Integration', () => {
     await expect(page.locator('#sp-panel-systems svg')).toBeVisible();
   });
 
-  test('Should interact with Hope Repair Simulator and verify payoff credibility updates', async ({ page }) => {
+  test('Should interact with Hope Repair Simulator and verify payoff credibility updates @critical', async ({ page }) => {
     await page.click('#btn-sp-subtab-systems');
 
     const progressLabel = page.locator('#label-hope-sim-percent');
@@ -73,7 +73,7 @@ test.describe('Systems & Hope Repair Wisebase Integration', () => {
     await expect(feedbackText).toHaveText('100% credibility win. System failure loop interrupted. Self-trust and expectation of reward restored.');
   });
 
-  test('Should toggle Energy-Based Crisis SOPs and verify content changes', async ({ page }) => {
+  test('Should toggle Energy-Based Crisis SOPs and verify content changes @advisory', async ({ page }) => {
     await page.click('#btn-sp-subtab-systems');
 
     const detailsBox = page.locator('#state-sop-details-box');
@@ -93,7 +93,7 @@ test.describe('Systems & Hope Repair Wisebase Integration', () => {
     await expect(detailsBox).toContainText('Warning: Do not burn all your capacity');
   });
 
-  test('Should toggle clinical triage exclusion checks and verify warnings', async ({ page }) => {
+  test('Should toggle clinical triage exclusion checks and verify warnings @critical', async ({ page }) => {
     await page.click('#btn-sp-subtab-systems');
 
     const alertEl = page.locator('#triage-escalation-alert');
