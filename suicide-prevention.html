@@ -67,6 +67,18 @@
             </article>
         </section>
 
+        <section id="start-here" class="source-card">
+            <h2>Choose the kind of help or explanation you need</h2>
+            <p class="text-secondary" style="font-size:0.92rem; line-height:1.6;">This appendix is easier to use when you start from the role or situation that fits best. These paths are for education and support routing, not diagnosis or crisis counseling.</p>
+            <div class="suicide-action-map" role="tablist" aria-label="Role-based entry paths">
+                <button class="btn btn-secondary btn-small snf-role-btn active" data-role-path="danger_now" aria-pressed="true">I Am In Danger Now</button>
+                <button class="btn btn-secondary btn-small snf-role-btn" data-role-path="worried_self" aria-pressed="false">I Am Worried About Myself</button>
+                <button class="btn btn-secondary btn-small snf-role-btn" data-role-path="helping_someone" aria-pressed="false">I Am Helping Someone</button>
+                <button class="btn btn-secondary btn-small snf-role-btn" data-role-path="understand_prevention" aria-pressed="false">I Want To Understand Prevention</button>
+                <button class="btn btn-secondary btn-small snf-role-btn" data-role-path="need_sources" aria-pressed="false">I Need Sources</button>
+            </div>
+            <div id="public-role-path-display" class="suicide-info-panel" aria-live="polite"></div>
+        </section>
         <section id="how-prevention-works" class="source-card">
             <h2>How Prevention Works</h2>
             <p class="text-secondary" style="font-size:0.92rem; line-height:1.6;">Suicide prevention is not only a crisis-line topic. Official frameworks treat it as a layered problem shaped by public health, healthcare systems, community trust, and everyday support.</p>
@@ -242,6 +254,29 @@
             <div id="public-script-display" class="suicide-info-panel" aria-live="polite"></div>
         </section>
 
+        <section id="measurement" class="appendix-education-grid" aria-label="Measurement and ethical boundaries">
+            <details class="glass-card appendix-detail-card" open>
+                <summary>What State Not Fate should measure, and what it should not</summary>
+                <div class="appendix-detail-body">
+                    <p class="text-secondary" style="font-size:0.9rem; line-height:1.6;">A public educational appendix can measure whether people are finding useful information and reaching real support. It should not pretend to measure true suicide risk or produce clinical certainty.</p>
+                    <div class="appendix-two-col">
+                        <div class="suicide-info-panel">
+                            <span class="claim-chip claim-chip-framework">Ethical measurement framing</span><br><br>
+                            <strong style="color:var(--text-primary);">Useful educational signals</strong><br>
+                            Visits to warning-sign, care-transition, and supporter-script sections; outbound clicks to official resources; repeat use of support-preparation sections; and qualitative feedback about whether the appendix helped users understand or ask for support.
+                            <p style="margin-top:0.75rem; margin-bottom:0; color:var(--text-secondary); font-size:0.86rem; line-height:1.55;">Source footing: these measures support education, help-seeking, and public-health usefulness without pretending to perform clinical assessment.</p>
+                        </div>
+                        <div class="suicide-info-panel">
+                            <span class="claim-chip claim-chip-watchlist">Boundary protection</span><br><br>
+                            <strong style="color:var(--text-primary);">What this project should not claim</strong><br>
+                            A suicide-risk score, a prediction of imminent self-harm or suicide, a recovery probability, a pseudo-clinical danger classification, or any claim that journaling or reflection alone is sufficient in acute danger.
+                            <p style="margin-top:0.75rem; margin-bottom:0; color:var(--text-secondary); font-size:0.86rem; line-height:1.55;">Source footing: these avoided moves preserve the distinction between educational support, crisis routing, and actual clinical or emergency care.</p>
+                        </div>
+                    </div>
+                    <p class="text-secondary" style="margin-top:1rem; font-size:0.9rem; line-height:1.65;">State Not Fate can improve understanding, preparation, and support routing. The more the product tries to imitate a clinical assessor, the less trustworthy and safe it becomes.</p>
+                </div>
+            </details>
+        </section>
         <section class="appendix-education-grid" aria-label="Postvention and safe messaging">
             <details class="glass-card appendix-detail-card" open>
                 <summary>Postvention after a suicide death or crisis shockwave</summary>
@@ -459,6 +494,32 @@
                         <div class="suicide-info-panel">
                             <strong style="color:var(--text-primary);">Why source footing is shown inside the module</strong><br>
                             The appendix should show whether a point comes from official guidance, implementation support, research, or project synthesis so the user can read it honestly.
+                        </div>
+                    </div>
+                </div>
+            </details>
+        </section>
+
+        <section class="appendix-education-grid" aria-label="Source key overlay">
+            <details class="glass-card appendix-detail-card" open>
+                <summary>Source key: how to read the module footing</summary>
+                <div class="appendix-detail-body">
+                    <div class="appendix-two-col">
+                        <div class="suicide-info-panel">
+                            <strong style="color:var(--text-primary);">Official guidance</strong><br>
+                            Used when a point is anchored in major public-health, crisis-system, or clinical guidance.
+                        </div>
+                        <div class="suicide-info-panel">
+                            <strong style="color:var(--text-primary);">Framework / implementation</strong><br>
+                            Used when the module leans on an established toolkit, prevention framework, or implementation model.
+                        </div>
+                        <div class="suicide-info-panel">
+                            <strong style="color:var(--text-primary);">Research / survey context</strong><br>
+                            Used when a lane is helped by peer-reviewed evidence or a strong survey/context source, but not reduced to a single study.
+                        </div>
+                        <div class="suicide-info-panel">
+                            <strong style="color:var(--text-primary);">Project synthesis</strong><br>
+                            Used when State Not Fate is translating multiple sources into a practical teaching pattern rather than quoting one source directly.
                         </div>
                     </div>
                 </div>
@@ -705,164 +766,338 @@
     </main>
 
     <script>
-        const architectureViews = {
+                const architectureViews = {
             public_health: {
+                evidenceLabel: "Official guidance + framework logic",
                 title: "Public health and policy layer",
                 summary: "Prevention is stronger when the environment gets safer before a single person reaches a crisis point.",
                 bullets: [
                     "Official frameworks emphasize safer environments, better data, safer communication, and better access to care.",
                     "This layer includes surveillance, upstream prevention, safer media, means safety, and attention to social determinants.",
                     "State Not Fate can explain this layer, but it cannot replace institutions, care systems, or community infrastructure."
-                ]
+                ],
+                routeCards: [
+                    "Route card: upstream prevention means safer environments before crisis peaks, not only better crisis response afterward.",
+                    "Route card: data, safer messaging, and means safety belong in prevention work, not only treatment settings."
+                ],
+                sourceNote: "Source footing: this layer is grounded mainly in CDC, HHS, WHO, and other public-health strategy sources."
             },
             clinical: {
+                evidenceLabel: "Official guidance + clinical workflow",
                 title: "Clinical care layer",
                 summary: "Healthcare settings matter because they can identify danger, build safety plans, treat depression, and prevent people from disappearing between visits.",
                 bullets: [
                     "Clinical systems may use screening, collaborative safety planning, follow-up contact, and higher-intensity treatment when appropriate.",
                     "Care transitions matter because danger often clusters around discharge, shame after crises, and treatment drop-out.",
                     "State Not Fate should help users prepare for care, not pretend to be the care team."
-                ]
+                ],
+                routeCards: [
+                    "Route card: screening, collaborative planning, and follow-up matter more than one-time advice.",
+                    "Route card: care transitions are part of prevention, not only administrative handoff."
+                ],
+                sourceNote: "Source footing: this layer leans on official and major clinical-guideline logic, including care-transition and safety-planning framing."
             },
             community: {
+                evidenceLabel: "Framework / implementation support",
                 title: "Community trust and belonging layer",
                 summary: "A lot of prevention lives in whether support is trusted, local, culturally legible, and reachable before a situation becomes acute.",
                 bullets: [
                     "Community prevention includes schools, workplaces, faith spaces, peer spaces, local leaders, and family systems.",
                     "Belonging and trusted messengers can reduce the gap between needing help and accepting help.",
                     "State Not Fate can offer scripts and education that make human connection easier."
-                ]
+                ],
+                routeCards: [
+                    "Route card: trusted messengers plus escalation pathways are stronger than either one alone.",
+                    "Route card: belonging without a route to live help is incomplete support."
+                ],
+                sourceNote: "Source footing: this layer uses prevention-framework and implementation logic more than single-study claims."
             },
             daily_life: {
+                evidenceLabel: "Project synthesis + protective-routine framing",
                 title: "Daily life and protective routine layer",
                 summary: "People often first notice danger in everyday functioning: sleep drift, vanishing, overload, shame, collapse in food or hygiene, and abrupt isolation.",
                 bullets: [
                     "Protective routines include connection, reasons for living, simple anchors, support scripts, and knowing how to escalate.",
                     "Daily-life prevention is not the same as self-sufficiency; it is about noticing earlier and asking for help sooner.",
                     "State Not Fate is best used here: support, preparation, and educational routing."
-                ]
+                ],
+                routeCards: [
+                    "Route card: when daily functioning narrows, treat it as earlier prevention information, not laziness.",
+                    "Route card: protective routines should point toward human support, not replace it."
+                ],
+                sourceNote: "Source footing: this layer is mainly project synthesis informed by risk/protective-factor and help-seeking logic."
             }
         };
 
-        const scenarios = {
+                const scenarios = {
             self_low: {
+                evidenceLabel: "Crisis-routing logic + project synthesis",
                 title: "I am struggling and I need the next right step",
                 summary: "Focus on reducing danger, reducing isolation, and shortening the time horizon.",
                 bullets: [
                     "Do not ask yourself to solve your whole life while your state is narrowed.",
                     "Use one grounding step, one human contact step, and one environmental safety step.",
                     "If safety feels shaky, move to 988 or emergency escalation faster rather than waiting for certainty."
-                ]
+                ],
+                routeCards: [
+                    "Route card: one grounding step, one live human, one safety move.",
+                    "Route card: if safety is shaky, do not wait for philosophical clarity before escalating."
+                ],
+                sourceNote: "Source footing: this scenario combines crisis-routing logic with State Not Fate's low-friction support framing."
             },
             supporting: {
+                evidenceLabel: "Official guidance + supporter framing",
                 title: "I am helping someone else",
                 summary: "Your job is connection, reality-testing, and handoff, not perfect words.",
                 bullets: [
                     "Ask directly about suicidal thoughts and immediate safety.",
                     "Stay calm and avoid shaming, arguing, or overpromising secrecy.",
                     "Help the person get to trusted support, 988, or emergency care when needed."
-                ]
+                ],
+                routeCards: [
+                    "Route card: ask directly, stay calm, reduce isolation, help route onward.",
+                    "Route card: connection first, certainty second."
+                ],
+                sourceNote: "Source footing: this scenario is anchored in supporter-facing guidance and collaborative safety-routing logic."
             },
             post_crisis: {
+                evidenceLabel: "Aftercare + continuity framing",
                 title: "This is after a crisis or after a frightening night",
                 summary: "The danger is not automatically over just because the peak has passed.",
                 bullets: [
                     "Plan contact for the next day or two instead of assuming relief means full stability.",
                     "Write down warning signs, contacts, and the next follow-up appointment or check-in.",
                     "Use caring contacts and practical structure to prevent the shame-and-disappearance cycle."
-                ]
+                ],
+                routeCards: [
+                    "Route card: the crisis peak ending is not the same thing as the risk ending.",
+                    "Route card: follow-up and shame prevention are part of safety."
+                ],
+                sourceNote: "Source footing: this scenario uses aftercare, follow-up, and continuity evidence rather than one-time crisis framing."
             },
             care_team: {
+                evidenceLabel: "Clinical-preparation framing",
                 title: "I need to talk to a therapist, psychiatrist, or doctor",
                 summary: "Bring concrete observations instead of trying to summarize your whole identity.",
                 bullets: [
                     "Name warning signs, recent safety concerns, sleep shifts, substance use, agitation, or withdrawal.",
                     "Bring one short message about what support or follow-up you think is missing.",
                     "Ask directly about safety planning, monitoring, and care-transition support if recent risk has risen."
-                ]
+                ],
+                routeCards: [
+                    "Route card: bring concrete observations, not your whole autobiography.",
+                    "Route card: ask directly about planning, follow-up, and what the system is missing."
+                ],
+                sourceNote: "Source footing: this scenario is project synthesis built to prepare people for clearer clinical conversations."
             }
         };
 
-        const settingsGuide = {
+                const settingsGuide = {
             home: {
+                evidenceLabel: "Safety-planning + home support framing",
                 title: "Home and close relationships",
                 summary: "Home is where warning signs are often first visible and where practical safety steps matter most.",
                 bullets: [
                     "Keep contact pathways obvious: who to text, who to call, and what phrase means 'stay with me now.'",
                     "Reduce isolation and lower access to danger during high-risk periods.",
                     "Treat sleep collapse, disappearance, rage, and sudden hopelessness as support signals, not attitude problems."
-                ]
+                ],
+                routeCards: [
+                    "Route card: one shared phrase, one contact ladder, one safer place to be.",
+                    "Route card: home support should reduce isolation and reduce friction."
+                ],
+                sourceNote: "Source footing: this setting is grounded in safety-planning, home-support, and practical continuity logic."
             },
             primary_care: {
+                evidenceLabel: "Official guidance + non-specialist care",
                 title: "Primary care and general medical settings",
                 summary: "Many people disclose distress first in ordinary medical care, not specialty mental-health care.",
                 bullets: [
                     "Brief screening, direct questions, and clear handoff pathways matter.",
                     "Primary care can help with follow-up, medication monitoring, sleep, pain, and referral escalation.",
                     "A good handoff is warm and specific, not just 'here is a number to call later.'"
-                ]
+                ],
+                routeCards: [
+                    "Route card: direct questions, practical handoff, and monitoring matter.",
+                    "Route card: a referral without continuity is not the same thing as support."
+                ],
+                sourceNote: "Source footing: this setting leans on official guidance and non-specialist care integration logic."
             },
             school_work: {
+                evidenceLabel: "Framework / implementation support",
                 title: "School and work settings",
                 summary: "These settings often notice functioning changes before anyone hears the deeper story.",
                 bullets: [
                     "Withdrawal, attendance problems, abrupt performance drops, and visible overwhelm can be important flags.",
                     "Support should focus on connection, safety, and referral rather than discipline-first reactions.",
                     "Privacy matters, but so does not leaving a struggling person alone with a collapsing week."
-                ]
+                ],
+                routeCards: [
+                    "Route card: one trusted person, one pause or accommodation, one follow-up.",
+                    "Route card: discipline-first responses can intensify danger."
+                ],
+                sourceNote: "Source footing: this setting uses implementation and response-path logic rather than only clinical language."
             },
             community: {
+                evidenceLabel: "Framework / implementation support",
                 title: "Community and public-health settings",
                 summary: "Prevention is stronger when it is trusted, local, and connected to real belonging.",
                 bullets: [
                     "Safer media, outreach, culturally grounded support, and trusted messengers all matter.",
                     "Community prevention is not only about crisis lines; it is also about reducing stigma and increasing reachable support.",
                     "Equity matters because suicide risk is shaped by access, identity, history, environment, and exclusion."
-                ]
+                ],
+                routeCards: [
+                    "Route card: trusted local belonging plus escalation capacity is the target.",
+                    "Route card: stigma reduction and route clarity are both prevention work."
+                ],
+                sourceNote: "Source footing: this setting uses public-health and implementation-framework logic more than narrow crisis-only framing."
             }
         };
 
-        const transitionGuide = {
+                const transitionGuide = {
             same_day: {
+                evidenceLabel: "Aftercare + continuity framing",
                 title: "Same day after crisis disclosure, ED visit, or discharge",
                 summary: "The first move is not inspiration. It is continuity.",
                 bullets: [
                     "Confirm who knows, where the person is going, and what the next human contact point is.",
                     "Make sure crisis resources, transportation, and a short support plan are visible before the person is alone.",
                     "Write down one concrete next step so the burden is not left entirely to memory."
-                ]
+                ],
+                routeCards: [
+                    "Route card: do not let the person leave with only memory carrying the next step.",
+                    "Route card: confirm who knows, where they are going, and what the next human contact is."
+                ],
+                sourceNote: "Source footing: this transition stage uses aftercare, discharge-risk, and continuity logic."
             },
             first_72: {
+                evidenceLabel: "Aftercare + caring-contact logic",
                 title: "First 72 hours",
                 summary: "This window is often fragile because people can feel ashamed, exhausted, relieved, or ready to disappear.",
                 bullets: [
                     "Use brief outreach, not silence: a check-in message, one support call, one planned follow-up.",
                     "Reduce decision load: meals, rides, medication reminders, appointments, and one trusted person aware of the situation.",
                     "Do not mistake temporary calm for full safety."
-                ]
+                ],
+                routeCards: [
+                    "Route card: brief repeated outreach beats silence.",
+                    "Route card: reduce decision load before asking for sustained self-management."
+                ],
+                sourceNote: "Source footing: this transition stage uses aftercare, caring-contact, and early follow-up logic."
             },
             week_one: {
+                evidenceLabel: "Care-transition + drop-out prevention",
                 title: "Week one",
                 summary: "The aim is to stop drift and drop-out before they become the next emergency.",
                 bullets: [
                     "Confirm follow-up appointments or care handoffs actually happened.",
                     "Review warning signs, stressors, and what tends to happen when shame starts building.",
                     "Keep contact steady enough that the person does not need to perform wellness to deserve it."
-                ]
+                ],
+                routeCards: [
+                    "Route card: confirm the follow-up actually happened.",
+                    "Route card: watch for shame-driven disappearance."
+                ],
+                sourceNote: "Source footing: this transition stage follows care-transition and drop-out prevention logic."
             },
             weeks_two_four: {
+                evidenceLabel: "Aftercare maintenance",
                 title: "Weeks two to four",
                 summary: "Aftercare becomes maintenance: connection, monitoring, and restoration of ordinary supports.",
                 bullets: [
                     "Rebuild small routines, practical supports, and belonging rather than shifting immediately to high expectations.",
                     "Review what made the crisis worse and what made support easier to reach.",
                     "Use repeated contact and a realistic plan for the next destabilizing moment."
-                ]
+                ],
+                routeCards: [
+                    "Route card: rebuild routine, belonging, and realistic supports.",
+                    "Route card: prepare for the next destabilizing moment before it arrives."
+                ],
+                sourceNote: "Source footing: this transition stage covers aftercare maintenance rather than one-time crisis response."
             }
         };
 
+        const rolePaths = {
+            danger_now: {
+                evidenceLabel: "Official crisis-routing anchor",
+                title: "I am in danger now",
+                summary: "If safety feels shaky right now, reduce danger for the next hour and contact live human help quickly.",
+                bullets: [
+                    "Call or text 988 in the U.S. or contact local emergency help if immediate danger is present.",
+                    "Do not try to solve your whole life while your state is narrowed.",
+                    "Focus on the next safe human contact, the next safer environment, and the next live support move."
+                ],
+                routeCards: [
+                    "Route card: call or text 988 in the U.S. or use emergency help if immediate danger is present.",
+                    "Route card: do not wait for philosophical clarity before moving toward live support."
+                ],
+                sourceNote: "Source footing: this path is anchored in crisis-routing and emergency-support guidance, not project speculation."
+            },
+            worried_self: {
+                evidenceLabel: "Official guidance + project synthesis",
+                title: "I am worried about myself",
+                summary: "If your thoughts, behavior, or daily functioning are narrowing, start with warning signs, protection steps, and the next support move.",
+                bullets: [
+                    "Use this path when you need interpretation, not a fake score.",
+                    "Look at warning signs, protection stack, and one immediate support action.",
+                    "If your safety feels uncertain, move upward into live support faster rather than waiting for certainty."
+                ],
+                routeCards: [
+                    "Route card: warning signs, protective factors, and one immediate support action.",
+                    "Route card: if safety feels uncertain, escalate toward live support sooner."
+                ],
+                sourceNote: "Source footing: this path combines official warning-sign education with State Not Fate's low-friction support framing."
+            },
+            helping_someone: {
+                evidenceLabel: "Official guidance + supporter framing",
+                title: "I am helping someone",
+                summary: "If you are worried about another person, use direct questions, calm connection, and concrete handoff steps instead of perfect wording.",
+                bullets: [
+                    "Ask directly about suicidal thoughts and immediate safety.",
+                    "Reduce isolation, stay calm, and help route toward live support.",
+                    "Supporter action is about connection and handoff, not perfect persuasion."
+                ],
+                routeCards: [
+                    "Route card: ask directly, reduce isolation, and help route toward live support.",
+                    "Route card: connection first, certainty second."
+                ],
+                sourceNote: "Source footing: this path is grounded in supporter-facing suicide-prevention guidance and practical handoff logic."
+            },
+            understand_prevention: {
+                evidenceLabel: "Public-health framing",
+                title: "I want to understand prevention",
+                summary: "If you are here to learn, start with how prevention works across public health, care systems, community trust, and daily life.",
+                bullets: [
+                    "Prevention is bigger than crisis response alone.",
+                    "The strongest understanding comes from seeing how systems, support, and safety fit together.",
+                    "This path is for education about layers, settings, and infrastructure."
+                ],
+                routeCards: [
+                    "Route card: prevention is bigger than crisis response alone.",
+                    "Route card: understand the system before shrinking the problem into one setting."
+                ],
+                sourceNote: "Source footing: this path leans on official strategy, system-design frameworks, and project education synthesis."
+            },
+            need_sources: {
+                evidenceLabel: "Source-transparency anchor",
+                title: "I need sources",
+                summary: "If you want to check the evidence, use the source architecture to see what is official, what is research-grounded, and what stays on the watchlist.",
+                bullets: [
+                    "Not every claim belongs to the same source tier.",
+                    "Official anchors, implementation tools, research anchors, and watchlist items should stay clearly separated.",
+                    "Source honesty is part of the educational design, not a side note."
+                ],
+                routeCards: [
+                    "Route card: not every claim belongs to the same source tier.",
+                    "Route card: source honesty is part of the teaching structure."
+                ],
+                sourceNote: "Source footing: this path is built to distinguish official anchors, implementation tools, research anchors, project synthesis, and watchlist material."
+            }
+        };
         const populationGuide = {
             youth: {
+                evidenceLabel: "Research / survey context",
                 title: "Youth and young adults",
                 summary: "Belonging, family conflict, school context, digital life, bullying, and early treatment monitoring all matter here.",
                 bullets: [
@@ -877,6 +1112,7 @@
                 sourceNote: "Source footing: youth framing here is supported by official warning-sign guidance and youth-focused survey/context resources such as the Trevor Project."
             },
             perinatal: {
+                evidenceLabel: "Official guidance + project synthesis",
                 title: "Perinatal and postpartum",
                 summary: "Severe depression, psychosis, mania, and parent-or-infant safety concerns require explicit screening and rapid escalation.",
                 bullets: [
@@ -891,6 +1127,7 @@
                 sourceNote: "Source footing: this lane follows the appendix's high-risk perinatal framing and the rule that intrusive thoughts and active danger must not be treated as the same thing."
             },
             veterans: {
+                evidenceLabel: "Official guidance + crisis-system routing",
                 title: "Veterans and service members",
                 summary: "Transition stress, trauma, identity shifts, sleep disruption, pain, and firearm access may shape support needs differently.",
                 bullets: [
@@ -905,6 +1142,7 @@
                 sourceNote: "Source footing: this lane is grounded in veteran-specific crisis pathways and the appendix's clinical/public-health framing for transition and follow-up."
             },
             lgbtq: {
+                evidenceLabel: "Research / survey context",
                 title: "LGBTQ+ people",
                 summary: "Risk is often shaped by rejection, discrimination, fear, isolation, and hostile environments rather than identity itself.",
                 bullets: [
@@ -919,6 +1157,7 @@
                 sourceNote: "Source footing: this lane is supported by identity-safe prevention framing and LGBTQ+ youth survey/context resources already included in the source base."
             },
             tribal: {
+                evidenceLabel: "Official guidance + culturally grounded framing",
                 title: "Tribal, AIAN, and culturally grounded prevention",
                 summary: "Prevention is stronger when it respects history, community, culture, and local knowledge instead of dropping in as generic outside advice.",
                 bullets: [
@@ -933,6 +1172,7 @@
                 sourceNote: "Source footing: this lane leans on Indian Health Service and culturally grounded prevention framing rather than generic one-size-fits-all advice."
             },
             older_rural: {
+                evidenceLabel: "Public-health access framing",
                 title: "Older adults and rural communities",
                 summary: "Isolation, grief, chronic pain, transportation barriers, firearm access, and healthcare distance can all intensify risk.",
                 bullets: [
@@ -947,6 +1187,7 @@
                 sourceNote: "Source footing: this lane follows the appendix's practical-access framing and the public-health emphasis on isolation, pain, and local barriers."
             },
             black: {
+                evidenceLabel: "Community routing + project synthesis",
                 title: "Black communities and racism-shaped stress",
                 summary: "Prevention work should account for racism, grief exposure, mistrust created by systems harm, and the difference between needing help and trusting help.",
                 bullets: [
@@ -961,6 +1202,7 @@
                 sourceNote: "Source footing: this lane uses community-and-culture routing support and the appendix's anti-shame, anti-surveillance framing."
             },
             latino_immigrant: {
+                evidenceLabel: "Community routing + project synthesis",
                 title: "Latino, immigrant, and refugee communities",
                 summary: "Language access, immigration stress, family role pressure, trauma, isolation, and fear of systems can all shape whether help feels reachable.",
                 bullets: [
@@ -975,6 +1217,7 @@
                 sourceNote: "Source footing: this lane uses culturally aware routing support and the appendix's privacy, language-access, and family-context framing."
             },
             disability: {
+                evidenceLabel: "Accessibility + project synthesis",
                 title: "Disability, chronic illness, and neurodivergence",
                 summary: "Risk can rise through pain, exhaustion, communication mismatch, sensory overload, loss of autonomy, and repeated misunderstanding by helpers.",
                 bullets: [
@@ -989,6 +1232,7 @@
                 sourceNote: "Source footing: this lane depends on the appendix's accessibility rules and low-burden support framing rather than one narrow clinical model."
             },
             workplace: {
+                evidenceLabel: "Workplace routing + project synthesis",
                 title: "Workplace strain, unemployment, and financial crisis",
                 summary: "Job loss, debt, identity collapse, humiliation, housing instability, and benefit problems can sharply intensify suicidal states.",
                 bullets: [
@@ -1006,6 +1250,7 @@
 
         const communityPaths = {
             black: {
+                evidenceLabel: "Community routing support",
                 title: "Black communities: support path",
                 summary: "A lot of harm happens when distress is interpreted through discipline, suspicion, or forced toughness instead of support.",
                 bullets: [
@@ -1020,6 +1265,7 @@
                 sourceNote: "Source footing: NAMI Community and Culture pages help here with routing, support-language, and community-legible connection paths."
             },
             latino_immigrant: {
+                evidenceLabel: "Community routing support",
                 title: "Latino / immigrant communities: support path",
                 summary: "People may be carrying fear, family role strain, language barriers, and privacy concerns all at once.",
                 bullets: [
@@ -1034,6 +1280,7 @@
                 sourceNote: "Source footing: NAMI Hispanic/Latinx community resources support the routing and culturally aware framing used here."
             },
             disability: {
+                evidenceLabel: "Accessibility-informed support",
                 title: "Disability / neurodivergence: support path",
                 summary: "A big part of prevention here is reducing overload and misunderstanding, not demanding more performance from an already overwhelmed person.",
                 bullets: [
@@ -1048,6 +1295,7 @@
                 sourceNote: "Source footing: NAMI disability-related community resources and the appendix accessibility rules support this lane's low-burden, concrete communication approach."
             },
             workplace: {
+                evidenceLabel: "Workplace function framing",
                 title: "Work / financial strain: support path",
                 summary: "Job collapse and money fear can become identity collapse very quickly, especially when shame and isolation are already present.",
                 bullets: [
@@ -1104,6 +1352,7 @@
 
         const settingPlaybooks = {
             home: {
+                evidenceLabel: "Official guidance + safety-planning logic",
                 title: "Home and close-relationship playbook",
                 summary: "Home is often where the first meaningful shift is visible and where support can get more specific fast.",
                 bullets: [
@@ -1118,6 +1367,7 @@
                 sourceNote: "Source footing: this playbook follows the appendix's official crisis-routing rule, safety-planning logic, and caring-contact / continuity framing."
             },
             work_school: {
+                evidenceLabel: "Framework / implementation support",
                 title: "Work / school playbook",
                 summary: "These settings often notice function collapse before they hear the deeper story, so the response needs to be humane and practical.",
                 bullets: [
@@ -1132,6 +1382,7 @@
                 sourceNote: "Source footing: this playbook builds on school/work warning-sign framing, community support logic, and NAMI Mental Health at Work as a routing support source."
             },
             community: {
+                evidenceLabel: "Framework / implementation support",
                 title: "Community / faith / peer-space playbook",
                 summary: "Trusted messengers can reduce isolation quickly, but they need a clear boundary between supportive presence and pretending to be the whole crisis system.",
                 bullets: [
@@ -1146,6 +1397,7 @@
                 sourceNote: "Source footing: this playbook follows the appendix's community-trust framing, Action Alliance / postvention logic, and no-false-certainty rule."
             },
             health: {
+                evidenceLabel: "Official guidance + access-system framing",
                 title: "Health / benefits / access-system playbook",
                 summary: "Sometimes the support gap is not only emotional. It is transportation, paperwork, insurance, translation, or getting through the next appointment.",
                 bullets: [
@@ -1164,6 +1416,7 @@
         function renderInfoPanel(targetId, item) {
             document.getElementById(targetId).innerHTML = `
                 <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.55;">
+                    ${item.evidenceLabel ? `<div style="margin-bottom: 0.45rem;"><span class="claim-chip claim-chip-framework">${item.evidenceLabel}</span></div>` : ""}
                     <div style="font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.35rem;">${item.title}</div>
                     <div style="margin-bottom: 0.65rem;">${item.summary}</div>
                     <ul style="margin: 0; padding-left: 1.15rem;">
@@ -1213,6 +1466,9 @@
             renderInfoPanel("public-transition-display", transitionGuide[key] || transitionGuide.same_day);
         }
 
+        function renderRolePath(key) {
+            renderInfoPanel("public-role-path-display", rolePaths[key] || rolePaths.danger_now);
+        }
         function renderPopulation(key) {
             renderInfoPanel("public-population-display", populationGuide[key] || populationGuide.youth);
         }
@@ -1233,6 +1489,7 @@
         wireButtonGroup(".suicide-scenario-btn", "data-scenario", renderScenario);
         wireButtonGroup(".suicide-setting-btn", "data-setting", renderSetting);
         wireButtonGroup(".snf-transition-btn", "data-transition", renderTransition);
+        wireButtonGroup(".snf-role-btn", "data-role-path", renderRolePath);
         wireButtonGroup(".snf-population-btn", "data-population", renderPopulation);
         wireButtonGroup(".snf-script-btn", "data-script", renderScript);
         wireButtonGroup(".snf-community-btn", "data-community", renderCommunityPath);
@@ -1242,6 +1499,7 @@
         renderScenario("self_low");
         renderSetting("home");
         renderTransition("same_day");
+        renderRolePath("danger_now");
         renderPopulation("youth");
         renderScript("opening");
         renderCommunityPath("black");
