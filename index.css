@@ -2874,3 +2874,385 @@ body.future-narrowing-active #polaris-growth-layer {
     box-shadow: 0 0 5px rgba(0,0,0,0.5);
     cursor: pointer;
 }
+
+/* ==========================================================================
+   POLARIS SYSTEM UI ENHANCEMENTS
+   ========================================================================== */
+
+/* Layout & Containers */
+.polaris-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+
+.polaris-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.polaris-title {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.polaris-day-counter {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.1rem 0.5rem;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+}
+
+/* Glass & Glow Modules */
+.polaris-module-card {
+    background: linear-gradient(145deg, rgba(20, 20, 26, 0.8), rgba(10, 10, 15, 0.95));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.polaris-module-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6);
+}
+
+/* Specific Accents for Modules */
+.polaris-module-teal {
+    border-left: 3px solid var(--accent-teal);
+    background: linear-gradient(145deg, rgba(0, 255, 200, 0.03), rgba(10, 10, 15, 0.95));
+}
+.polaris-module-teal:hover {
+    border-color: rgba(0, 255, 200, 0.3);
+    border-left-color: var(--accent-teal);
+}
+
+.polaris-module-lavender {
+    border-left: 3px solid var(--accent-lavender);
+    background: linear-gradient(145deg, rgba(255, 80, 255, 0.03), rgba(10, 10, 15, 0.95));
+}
+.polaris-module-lavender:hover {
+    border-color: rgba(255, 80, 255, 0.3);
+    border-left-color: var(--accent-lavender);
+}
+
+.polaris-module-orange {
+    border-left: 3px solid var(--accent-orange);
+    background: linear-gradient(145deg, rgba(255, 170, 0, 0.03), rgba(10, 10, 15, 0.95));
+}
+.polaris-module-orange:hover {
+    border-color: rgba(255, 170, 0, 0.3);
+    border-left-color: var(--accent-orange);
+}
+
+/* Animations */
+@keyframes pulseGlowTeal {
+    0% { box-shadow: 0 0 5px rgba(0, 255, 200, 0.1); }
+    50% { box-shadow: 0 0 15px rgba(0, 255, 200, 0.3); }
+    100% { box-shadow: 0 0 5px rgba(0, 255, 200, 0.1); }
+}
+
+@keyframes progressSweep {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.polaris-pulse-active {
+    animation: pulseGlowTeal 3s infinite;
+}
+
+/* Progress / Hope Bar */
+.polaris-progress-track {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+}
+
+.polaris-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent-teal-dim), var(--accent-teal), #66ffdb);
+    background-size: 200% 100%;
+    border-radius: 3px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: progressSweep 3s linear infinite;
+}
+
+.polaris-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.polaris-progress-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent-teal);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.polaris-progress-percent {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+/* Interactive Elements */
+.polaris-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    font-family: inherit;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.polaris-input:focus {
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(0, 0, 0, 0.5);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.4), 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+.polaris-input-lavender:focus {
+    border-color: var(--accent-lavender);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.4), 0 0 10px rgba(255, 80, 255, 0.2);
+}
+
+.polaris-input-teal:focus {
+    border-color: var(--accent-teal);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.4), 0 0 10px rgba(0, 255, 200, 0.2);
+}
+
+/* Engine Grid */
+.polaris-engine-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.polaris-tool-card {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.polaris-tool-card:hover {
+    background: rgba(255, 255, 255, 0.03);
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.polaris-tool-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.polaris-tool-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.polaris-tool-desc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+    flex-grow: 1;
+}
+
+.polaris-btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.polaris-btn-teal {
+    background: transparent;
+    color: var(--accent-teal);
+    border: 1px solid rgba(0, 255, 200, 0.3);
+}
+.polaris-btn-teal:hover {
+    background: rgba(0, 255, 200, 0.1);
+    border-color: var(--accent-teal);
+}
+
+.polaris-btn-lavender {
+    background: transparent;
+    color: var(--accent-lavender);
+    border: 1px solid rgba(255, 80, 255, 0.3);
+}
+.polaris-btn-lavender:hover {
+    background: rgba(255, 80, 255, 0.1);
+    border-color: var(--accent-lavender);
+}
+
+.polaris-btn-orange {
+    background: transparent;
+    color: var(--accent-orange);
+    border: 1px solid rgba(255, 170, 0, 0.3);
+}
+.polaris-btn-orange:hover {
+    background: rgba(255, 170, 0, 0.1);
+    border-color: var(--accent-orange);
+}
+
+.polaris-btn-red {
+    background: transparent;
+    color: var(--accent-red);
+    border: 1px solid rgba(255, 50, 50, 0.3);
+}
+.polaris-btn-red:hover {
+    background: rgba(255, 50, 50, 0.1);
+    border-color: var(--accent-red);
+}
+
+.polaris-btn-solid-teal {
+    background: var(--accent-teal);
+    color: #0b0f13;
+    border: 1px solid var(--accent-teal);
+}
+.polaris-btn-solid-teal:hover {
+    background: #66ffdb;
+    box-shadow: 0 0 15px rgba(0, 255, 200, 0.4);
+}
+
+/* Companion Log Layout */
+.polaris-companion-message {
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+}
+
+.polaris-companion-avatar {
+    font-size: 3rem;
+    line-height: 1;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.polaris-companion-avatar:hover {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.polaris-companion-text {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+/* Section Titles */
+.polaris-section-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.polaris-section-title-lavender { color: var(--accent-lavender); }
+.polaris-section-title-teal { color: var(--accent-teal); }
+.polaris-section-title-orange { color: var(--accent-orange); }
+
+.polaris-dot-lavender {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--accent-lavender);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--accent-lavender-glow);
+}
+
+/* Anchor List Styling */
+.polaris-anchor-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-sm);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+.polaris-anchor-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.1);
+    transform: translateX(2px);
+}
+.polaris-anchor-item.checked {
+    opacity: 0.6;
+    background: rgba(255, 255, 255, 0.01);
+}
+.polaris-anchor-checkbox {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 0.8rem;
+    color: transparent;
+    transition: all 0.2s;
+}
+.polaris-anchor-item:hover .polaris-anchor-checkbox {
+    border-color: rgba(255, 255, 255, 0.4);
+}
+.polaris-anchor-item.checked .polaris-anchor-checkbox {
+    background: var(--accent-teal);
+    border-color: var(--accent-teal);
+    color: #0b0f13;
+    box-shadow: 0 0 10px rgba(20, 200, 175, 0.4);
+}
+.polaris-anchor-text {
+    flex: 1;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    transition: all 0.2s;
+}
+.polaris-anchor-item.checked .polaris-anchor-text {
+    text-decoration: line-through;
+    color: var(--text-secondary);
+}

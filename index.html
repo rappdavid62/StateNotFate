@@ -766,11 +766,11 @@
             </div>
 <!-- TAB: POLARIS -->
 <div id="tab-polaris" class="tab-content hidden">
-    <div class="glass-card" style="max-width: 660px; margin: 0 auto; padding: 1.5rem;">
+    <div class="glass-card polaris-container">
         <!-- Header: Polaris + Day N + Toggle -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <div class="polaris-header-row">
             <div>
-                <h2 style="margin: 0; display: flex; align-items: center; gap: 0.5rem;">🜁 Polaris <span id="polaris-day-counter" class="text-muted" style="font-size: 0.8rem; font-weight: 400;"></span></h2>
+                <h2 class="polaris-title">🜁 Polaris <span id="polaris-day-counter" class="polaris-day-counter"></span></h2>
             </div>
             <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.85rem; color: var(--text-secondary);">
                 <span id="polaris-toggle-label">Enabled</span>
@@ -783,46 +783,48 @@
         <!-- Polaris Content -->
         <div id="polaris-content">
             <!-- Hope Level (compact bar) -->
-            <div id="polaris-hope-section" style="margin-bottom: 1rem;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
-                    <span id="polaris-hope-title" style="font-size: 0.8rem; font-weight: 600; color: var(--accent-teal);">Level 1: Action is Possible</span>
-                    <span id="polaris-hope-percent" class="text-muted" style="font-size: 0.75rem;">0%</span>
+            <div id="polaris-hope-section" style="margin-bottom: 1.5rem;">
+                <div class="polaris-progress-header">
+                    <span id="polaris-hope-title" class="polaris-progress-title">Level 1: Action is Possible</span>
+                    <span id="polaris-hope-percent" class="polaris-progress-percent">0%</span>
                 </div>
-                <div style="height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden;">
-                    <div id="polaris-hope-fill" style="height: 100%; width: 0%; background: var(--accent-teal); border-radius: 2px; transition: width 0.5s;"></div>
+                <div class="polaris-progress-track">
+                    <div id="polaris-hope-fill" class="polaris-progress-fill"></div>
                 </div>
             </div>
 
             <!-- Day Message with Companion -->
-            <div id="polaris-day-message" class="glass-card" style="background: rgba(20, 200, 175, 0.04); border-color: rgba(20, 200, 175, 0.15); padding: 1rem; margin-bottom: 1rem; display: flex; gap: 1rem; align-items: flex-start;">
-                <div id="polaris-companion-avatar" style="font-size: 2.5rem; line-height: 1; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); display: none;"></div>
-                <div style="flex: 1;">
-                    <div class="text-teal" style="font-size: 0.75rem; text-transform: uppercase; font-weight: 600; margin-bottom: 0.25rem;">Today</div>
-                    <div id="polaris-message-text" style="font-size: 0.95rem; line-height: 1.5; color: var(--text-primary);">Loading...</div>
-                    <div class="text-muted" style="font-size: 0.75rem; margin-top: 0.5rem;">Energy: <span id="polaris-energy-badge" class="badge badge-medium" style="font-size: 0.65rem; padding: 0.1rem 0.4rem;">MEDIUM</span></div>
+            <div id="polaris-day-message" class="polaris-module-card polaris-module-teal">
+                <div class="polaris-companion-message">
+                    <div id="polaris-companion-avatar" class="polaris-companion-avatar" style="display: none;"></div>
+                    <div style="flex: 1;">
+                        <div class="polaris-section-title polaris-section-title-teal" style="font-size: 0.75rem; margin-bottom: 0.25rem;">Today</div>
+                        <div id="polaris-message-text" class="polaris-companion-text">Loading...</div>
+                        <div class="text-muted" style="font-size: 0.75rem; margin-top: 0.5rem;">Energy: <span id="polaris-energy-badge" class="badge badge-medium" style="font-size: 0.65rem; padding: 0.1rem 0.4rem;">MEDIUM</span></div>
+                    </div>
                 </div>
             </div>
 
             <!-- Evolving Questionnaire Card (Hidden by default) -->
-            <div id="polaris-companion-question" class="glass-card hidden" style="background: rgba(165, 120, 240, 0.05); border-color: rgba(165, 120, 240, 0.2); padding: 1rem; margin-bottom: 1rem; text-align: center;">
-                <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 600; color: var(--accent-lavender); margin-bottom: 0.5rem;">Companion Question</div>
-                <div id="companion-question-text" style="font-size: 1rem; margin-bottom: 1rem; color: var(--text-primary);">Loading...</div>
+            <div id="polaris-companion-question" class="polaris-module-card polaris-module-lavender hidden" style="text-align: center;">
+                <div class="polaris-section-title polaris-section-title-lavender" style="font-size: 0.75rem; justify-content: center;">Companion Question</div>
+                <div id="companion-question-text" class="polaris-companion-text" style="margin-bottom: 1rem;">Loading...</div>
                 
                 <!-- Dynamic Response Controls Container -->
                 <div id="companion-question-controls" style="margin-bottom: 1rem;"></div>
                 
-                <button class="btn btn-secondary" onclick="skipCompanionQuestion()" style="font-size: 0.8rem; padding: 0.3rem 0.75rem; color: var(--text-muted);">Skip for now</button>
+                <button class="polaris-btn" onclick="skipCompanionQuestion()" style="color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); background: transparent;">Skip for now</button>
             </div>
 
             <!-- Answer Another Question Button -->
             <div id="polaris-answer-another-container" class="hidden" style="text-align: center; margin-bottom: 1.5rem;">
-                <button class="btn btn-secondary" onclick="answerAnotherCompanionQuestion()" style="font-size: 0.8rem; padding: 0.3rem 0.75rem; color: var(--accent-lavender); border-color: rgba(165, 120, 240, 0.4);">Ask Another Question</button>
+                <button class="polaris-btn polaris-btn-lavender" onclick="answerAnotherCompanionQuestion()" style="width: auto;">Ask Another Question</button>
             </div>
 
             <!-- Polaris Insights -->
             <div id="polaris-insights-container" class="hidden" style="margin-bottom: 1.5rem;">
-                <h4 class="text-lavender" style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
-                    <span style="display:inline-block; width:8px; height:8px; background:var(--accent-lavender); border-radius:50%;"></span>
+                <h4 class="polaris-section-title polaris-section-title-lavender">
+                    <span class="polaris-dot-lavender"></span>
                     Companion Program Insights
                 </h4>
                 <div id="polaris-insights-list" style="display: flex; flex-direction: column; gap: 0.5rem;">
@@ -831,9 +833,9 @@
             </div>
 
             <!-- Evolving Intake History & Reflections Log -->
-            <div id="polaris-intake-history-container" class="glass-card hidden" style="background: rgba(165, 120, 240, 0.03); border-color: rgba(165, 120, 240, 0.15); padding: 1rem; margin-bottom: 1.5rem;">
-                <h4 class="text-lavender" style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.4rem;">
-                    <span style="display:inline-block; width:8px; height:8px; background:var(--accent-lavender); border-radius:50%;"></span>
+            <div id="polaris-intake-history-container" class="polaris-module-card polaris-module-lavender hidden">
+                <h4 class="polaris-section-title polaris-section-title-lavender">
+                    <span class="polaris-dot-lavender"></span>
                     Intake History & Reflections
                 </h4>
                 <div id="polaris-intake-history-list" style="display: flex; flex-direction: column; gap: 0.6rem; max-height: 250px; overflow-y: auto; padding-right: 0.25rem;">
@@ -851,12 +853,12 @@
             <div id="polaris-tomorrow-recall" class="hidden" style="padding: 0.6rem 0.75rem; margin-bottom: 0.75rem; border-radius: var(--radius-sm); background: rgba(20,200,175,0.04); border: 1px solid rgba(20,200,175,0.12); font-size: 0.85rem; color: var(--text-secondary); display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;"></div>
 
             <!-- Anchors Section -->
-            <div style="margin-bottom: 1rem;">
-                <h3 style="font-size: 0.95rem; font-weight: 600; color: var(--accent-lavender); margin-bottom: 0.5rem;">Your Anchors</h3>
+            <div style="margin-bottom: 1.5rem;">
+                <h3 class="polaris-section-title polaris-section-title-lavender">Your Anchors</h3>
                 <!-- Add anchor input -->
                 <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;">
-                    <input type="text" id="input-new-anchor" placeholder="Add an anchor..." style="flex: 1; padding: 0.55rem 0.75rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 0.85rem; font-family: inherit; outline: none; transition: border-color 0.2s;" onkeydown="if(event.key==='Enter') addUserAnchor()" onfocus="this.style.borderColor='rgba(20,200,175,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
-                    <button class="btn btn-primary" onclick="addUserAnchor()" style="padding: 0.55rem 0.75rem; font-size: 1.1rem; line-height: 1; background: var(--accent-teal); border-color: var(--accent-teal); color: #0b0f13; min-width: 38px; font-weight: 700;">+</button>
+                    <input type="text" id="input-new-anchor" class="polaris-input polaris-input-teal" placeholder="Add an anchor..." onkeydown="if(event.key==='Enter') addUserAnchor()">
+                    <button class="polaris-btn polaris-btn-solid-teal" onclick="addUserAnchor()" style="font-size: 1.25rem; line-height: 1; width: auto; padding: 0 1.25rem;">+</button>
                 </div>
                 <!-- Anchor list (rendered by JS) -->
                 <div id="polaris-anchors-list" style="display: flex; flex-direction: column; gap: 0.4rem;"></div>
@@ -865,13 +867,13 @@
             </div>
 
             <!-- Proof Points -->
-            <div class="glass-card" style="background: rgba(165, 120, 240, 0.04); border-color: rgba(165, 120, 240, 0.15); padding: 1rem; margin-bottom: 1rem;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                    <h3 style="font-size: 0.95rem; font-weight: 600; color: var(--accent-lavender); margin: 0;">Proof Points</h3>
+            <div class="polaris-module-card polaris-module-lavender">
+                <div class="polaris-tool-header">
+                    <h3 class="polaris-section-title polaris-section-title-lavender" style="margin: 0;">Proof Points</h3>
                     <span id="polaris-proof-total" class="badge badge-medium" style="font-size: 0.75rem; padding: 0.2rem 0.5rem;">0 pts</span>
                 </div>
-                <p class="text-muted" style="font-size: 0.8rem; margin: 0;">Completed anchors are logged.</p>
-                <div id="polaris-proof-today" class="text-teal" style="font-size: 0.85rem; margin-top: 0.5rem; font-weight: 500;">Today: 0 points earned</div>
+                <p class="polaris-tool-desc" style="margin: 0;">Completed anchors are logged.</p>
+                <div id="polaris-proof-today" class="text-teal" style="font-size: 0.85rem; margin-top: 0.5rem; font-weight: 600;">Today: 0 points earned</div>
             </div>
 
             <!-- Personal Bests -->
@@ -884,51 +886,57 @@
             </div>
 
             <!-- Tomorrow Hook (shown when all anchors done) -->
-            <div id="polaris-tomorrow-hook" class="hidden" style="padding: 1rem; margin-bottom: 1rem; border-radius: var(--radius-sm); background: rgba(20,200,175,0.04); border: 1px solid rgba(20,200,175,0.12);">
-                <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0 0 0.5rem 0;">All anchors done. What will you start with tomorrow?</p>
+            <div id="polaris-tomorrow-hook" class="polaris-module-card polaris-module-teal hidden">
+                <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 0 0 0.75rem 0; font-weight: 600;">All anchors done. What will you start with tomorrow?</p>
                 <div style="display: flex; gap: 0.5rem;">
-                    <input type="text" id="input-tomorrow-anchor" placeholder="First thing tomorrow..." style="flex: 1; padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 0.85rem; font-family: inherit; outline: none;" onkeydown="if(event.key==='Enter') saveTomorrowAnchor()">
-                    <button class="btn btn-secondary" onclick="saveTomorrowAnchor()" style="padding: 0.5rem 0.75rem; font-size: 0.8rem; color: var(--accent-teal); border-color: rgba(20,200,175,0.3);">Set</button>
+                    <input type="text" id="input-tomorrow-anchor" class="polaris-input polaris-input-teal" placeholder="First thing tomorrow..." onkeydown="if(event.key==='Enter') saveTomorrowAnchor()">
+                    <button class="polaris-btn polaris-btn-teal" onclick="saveTomorrowAnchor()" style="width: auto;">Set</button>
                 </div>
             </div>
 
             <!-- Recovery Engine Module (6 Core Pillars) -->
-            <div id="polaris-recovery-engine" class="glass-card" style="background: rgba(20, 200, 175, 0.02); border-color: rgba(20, 200, 175, 0.12); padding: 1.25rem; margin-bottom: 1rem;">
-                <h3 style="font-size: 1rem; font-weight: 600; color: var(--accent-teal); margin: 0 0 0.25rem 0; display: flex; align-items: center; gap: 0.5rem;">
+            <div id="polaris-recovery-engine" class="polaris-module-card polaris-module-teal">
+                <h3 class="polaris-section-title polaris-section-title-teal">
                     🎛️ Recovery Engine Controllers
                 </h3>
                 <p class="text-muted" style="font-size: 0.8rem; margin-bottom: 1rem; font-weight: 300;">Actionable tools to bypass cognitive deconditioning, limit rumination, and log proof.</p>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+                <div class="polaris-engine-grid">
                     <!-- Future Narrowing Card -->
-                    <div class="glass-card recovery-tool-card" id="card-future-narrowing" style="padding: 0.75rem; background: rgba(0, 0, 0, 0.2); border-color: rgba(255,255,255,0.05); transition: all 0.2s;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
-                            <span style="font-size: 0.85rem; font-weight: 600; color: var(--accent-teal);">Future Narrowing</span>
+                    <div class="polaris-tool-card" id="card-future-narrowing">
+                        <div class="polaris-tool-header">
+                            <span class="polaris-tool-title" style="color: var(--accent-teal);">Future Narrowing</span>
                             <span class="badge" id="badge-narrowing-status" style="font-size: 0.6rem; background: rgba(255,255,255,0.05); color: var(--text-secondary); padding: 0.1rem 0.3rem;">Normal</span>
                         </div>
-                        <p style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.5rem; line-height: 1.3;">Compress time horizon. Hide long-term goals & projections.</p>
-                        <button class="btn btn-secondary w-full" id="btn-toggle-future-narrowing" onclick="toggleFutureNarrowing()" style="font-size: 0.7rem; padding: 0.3rem 0.5rem; justify-content: center; width: 100%; border-color: rgba(20,200,175,0.25); color: var(--accent-teal);">Narrow Horizon</button>
+                        <p class="polaris-tool-desc">Compress time horizon. Hide long-term goals & projections.</p>
+                        <button class="polaris-btn polaris-btn-teal" id="btn-toggle-future-narrowing" onclick="toggleFutureNarrowing()">Narrow Horizon</button>
                     </div>
 
                     <!-- Possibility Collapse Card -->
-                    <div class="glass-card recovery-tool-card" style="padding: 0.75rem; background: rgba(0, 0, 0, 0.2); border-color: rgba(255,255,255,0.05);">
-                        <span style="font-size: 0.85rem; font-weight: 600; color: var(--accent-lavender); display: block; margin-bottom: 0.25rem;">Possibility Collapse</span>
-                        <p style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.5rem; line-height: 1.3;">Bypass choice paralysis. View a simple 3-lane starter menu.</p>
-                        <button class="btn btn-secondary w-full" onclick="openPossibilityCollapseModal()" style="font-size: 0.7rem; padding: 0.3rem 0.5rem; justify-content: center; width: 100%; color: var(--accent-lavender); border-color: rgba(165,120,240,0.25);">Decompress Paths</button>
+                    <div class="polaris-tool-card">
+                        <div class="polaris-tool-header">
+                            <span class="polaris-tool-title" style="color: var(--accent-lavender);">Possibility Collapse</span>
+                        </div>
+                        <p class="polaris-tool-desc">Bypass choice paralysis. View a simple 3-lane starter menu.</p>
+                        <button class="polaris-btn polaris-btn-lavender" onclick="openPossibilityCollapseModal()">Decompress Paths</button>
                     </div>
 
                     <!-- Startup Drag Card -->
-                    <div class="glass-card recovery-tool-card" style="padding: 0.75rem; background: rgba(0, 0, 0, 0.2); border-color: rgba(255,255,255,0.05);">
-                        <span style="font-size: 0.85rem; font-weight: 600; color: var(--accent-orange); display: block; margin-bottom: 0.25rem;">Startup Drag</span>
-                        <p style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.5rem; line-height: 1.3;">Commit to only the first 10 seconds of a difficult action.</p>
-                        <button class="btn btn-secondary w-full" onclick="openStartupDragModal()" style="font-size: 0.7rem; padding: 0.3rem 0.5rem; justify-content: center; width: 100%; color: var(--accent-orange); border-color: rgba(240,115,30,0.25);">Launch 10s Timer</button>
+                    <div class="polaris-tool-card">
+                        <div class="polaris-tool-header">
+                            <span class="polaris-tool-title" style="color: var(--accent-orange);">Startup Drag</span>
+                        </div>
+                        <p class="polaris-tool-desc">Commit to only the first 10 seconds of a difficult action.</p>
+                        <button class="polaris-btn polaris-btn-orange" onclick="openStartupDragModal()">Launch 10s Timer</button>
                     </div>
 
                     <!-- Rumination Stop-Loss Card -->
-                    <div class="glass-card recovery-tool-card" style="padding: 0.75rem; background: rgba(0, 0, 0, 0.2); border-color: rgba(255,255,255,0.05);">
-                        <span style="font-size: 0.85rem; font-weight: 600; color: var(--accent-red); display: block; margin-bottom: 0.25rem;">Rumination Stop-Loss</span>
-                        <p style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.5rem; line-height: 1.3;">Interrupt loop thinking. Trigger a brief physical ground sequence.</p>
-                        <button class="btn btn-secondary w-full" onclick="openRuminationStopLossModal()" style="font-size: 0.7rem; padding: 0.3rem 0.5rem; justify-content: center; width: 100%; color: var(--accent-red); border-color: rgba(230,40,60,0.25);">Activate Stop-Loss</button>
+                    <div class="polaris-tool-card">
+                        <div class="polaris-tool-header">
+                            <span class="polaris-tool-title" style="color: var(--accent-red);">Rumination Stop-Loss</span>
+                        </div>
+                        <p class="polaris-tool-desc">Interrupt loop thinking. Trigger a brief physical ground sequence.</p>
+                        <button class="polaris-btn polaris-btn-red" onclick="openRuminationStopLossModal()">Activate Stop-Loss</button>
                     </div>
                 </div>
 
@@ -939,12 +947,12 @@
             </div>
 
             <!-- Restart / Floor Win -->
-            <div id="polaris-restart-section" class="glass-card" style="background: rgba(240, 115, 30, 0.04); border-color: rgba(240, 115, 30, 0.15); padding: 1rem; margin-bottom: 1rem;">
-                <h3 style="font-size: 0.95rem; font-weight: 600; color: var(--accent-orange); margin: 0 0 0.5rem 0;">Restart / Floor Win</h3>
-                <p class="text-muted" style="font-size: 0.8rem; margin-bottom: 0.75rem;">Missed days count. Coming back counts more.</p>
-                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                    <button class="btn btn-secondary" onclick="polarisFloorWin()" style="padding: 0.5rem 1rem; font-size: 0.8rem; color: var(--accent-orange); border-color: rgba(240, 115, 30, 0.3);">🔥 Log Floor Win</button>
-                    <button class="btn btn-secondary" onclick="polarisRestart()" style="padding: 0.5rem 1rem; font-size: 0.8rem; color: var(--accent-teal); border-color: rgba(20, 200, 175, 0.3);">↻ Restart Day</button>
+            <div id="polaris-restart-section" class="polaris-module-card polaris-module-orange">
+                <h3 class="polaris-section-title polaris-section-title-orange">Restart / Floor Win</h3>
+                <p class="text-muted" style="font-size: 0.8rem; margin-bottom: 1rem;">Missed days count. Coming back counts more.</p>
+                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                    <button class="polaris-btn polaris-btn-orange" onclick="polarisFloorWin()" style="width: auto; padding: 0.5rem 1.25rem;">🔥 Log Floor Win</button>
+                    <button class="polaris-btn polaris-btn-teal" onclick="polarisRestart()" style="width: auto; padding: 0.5rem 1.25rem;">↻ Restart Day</button>
                 </div>
                 <div id="polaris-resilience-info" class="text-muted" style="font-size: 0.75rem; margin-top: 0.5rem;"></div>
             </div>

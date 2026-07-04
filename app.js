@@ -4674,19 +4674,19 @@ const COMPANION_QUESTION_TREE = {
                         
                         if (isTextQuestion) {
                             qControls.innerHTML = `
-                                <textarea id="companion-question-text-input" rows="3" placeholder="Type your reflection here..." style="width: 100%; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--card-border); border-radius: var(--radius-sm); color: var(--text-primary); padding: 0.75rem; font-family: var(--font-sans); font-size: 0.9rem; margin-bottom: 0.75rem; resize: vertical;" autofocus></textarea>
-                                <button class="btn btn-primary w-full" id="btn-submit-companion-text" style="justify-content: center; background: var(--accent-lavender); border-color: var(--accent-lavender); color: #0b0713; font-weight: 600;">Save Reflection</button>
+                                <textarea id="companion-question-text-input" rows="3" placeholder="Type your reflection here..." class="polaris-input polaris-input-lavender" style="resize: vertical; margin-bottom: 0.75rem;" autofocus></textarea>
+                                <button class="polaris-btn polaris-btn-lavender" id="btn-submit-companion-text" style="background: rgba(165,120,240,0.1); border: 1px solid var(--accent-lavender); font-weight: 600;">Save Reflection</button>
                             `;
                             // Attach click listener directly
                             document.getElementById('btn-submit-companion-text').addEventListener('click', submitCompanionTextAnswer);
                         } else {
                             qControls.innerHTML = `
                                 <div style="display: flex; gap: 0.5rem; flex-direction: column; margin-bottom: 0.75rem;">
-                                    <button class="btn btn-secondary w-full" onclick="answerCompanionQuestion(0)" style="padding: 0.6rem; font-size: 0.85rem; justify-content: center;">Not at all</button>
-                                    <button class="btn btn-secondary w-full" onclick="answerCompanionQuestion(1)" style="padding: 0.6rem; font-size: 0.85rem; justify-content: center;">Rare / Mild</button>
-                                    <button class="btn btn-secondary w-full" onclick="answerCompanionQuestion(2)" style="padding: 0.6rem; font-size: 0.85rem; justify-content: center;">Sometimes</button>
-                                    <button class="btn btn-secondary w-full" onclick="answerCompanionQuestion(3)" style="padding: 0.6rem; font-size: 0.85rem; justify-content: center;">Often</button>
-                                    <button class="btn btn-secondary w-full" onclick="answerCompanionQuestion(4)" style="padding: 0.6rem; font-size: 0.85rem; justify-content: center;">Almost Always</button>
+                                    <button class="polaris-btn polaris-btn-lavender" onclick="answerCompanionQuestion(0)" style="padding: 0.6rem;">Not at all</button>
+                                    <button class="polaris-btn polaris-btn-lavender" onclick="answerCompanionQuestion(1)" style="padding: 0.6rem;">Rare / Mild</button>
+                                    <button class="polaris-btn polaris-btn-lavender" onclick="answerCompanionQuestion(2)" style="padding: 0.6rem;">Sometimes</button>
+                                    <button class="polaris-btn polaris-btn-lavender" onclick="answerCompanionQuestion(3)" style="padding: 0.6rem;">Often</button>
+                                    <button class="polaris-btn polaris-btn-lavender" onclick="answerCompanionQuestion(4)" style="padding: 0.6rem;">Almost Always</button>
                                 </div>
                             `;
                         }
@@ -4834,9 +4834,9 @@ const COMPANION_QUESTION_TREE = {
 
             container.classList.remove('hidden');
             list.innerHTML = insights.map(i => `
-                <div class="glass-card" style="padding: 0.75rem; background: rgba(0,0,0,0.2); border-left: 3px solid var(--accent-lavender); border-radius: var(--radius-sm);">
-                    <div style="font-size: 0.75rem; font-weight: 600; color: var(--accent-lavender); margin-bottom: 0.25rem;">${i.title}</div>
-                    <div style="font-size: 0.85rem; color: var(--text-primary); line-height: 1.4;">${i.text}</div>
+                <div class="polaris-tool-card" style="border-left: 3px solid var(--accent-lavender); padding: 0.75rem; margin-bottom: 0.5rem;">
+                    <div class="polaris-tool-title polaris-section-title-lavender" style="margin-bottom: 0.25rem;">${i.title}</div>
+                    <div class="polaris-tool-desc" style="margin-bottom: 0;">${i.text}</div>
                 </div>
             `).join('');
         }
@@ -4893,10 +4893,10 @@ const COMPANION_QUESTION_TREE = {
                     const parentQ = COMPANION_QUESTION_TREE[parentQId];
                     const parentText = parentQ ? parentQ.text : 'Previous Question';
                     return `
-                        <div style="padding: 0.6rem; background: rgba(165, 120, 240, 0.05); border-left: 2px solid var(--accent-lavender); border-radius: var(--radius-sm); font-size: 0.85rem; text-align: left;">
+                        <div class="polaris-tool-card" style="border-left: 2px solid var(--accent-lavender); padding: 0.6rem; margin-bottom: 0.5rem; background: rgba(165, 120, 240, 0.05);">
                             <div class="text-muted" style="font-size: 0.75rem; margin-bottom: 0.2rem;">Reflection on: ${escapeHtml(parentText)}</div>
                             <div class="text-lavender" style="font-size: 0.8rem; font-style: italic; margin-bottom: 0.3rem;">"${escapeHtml(currentQ.text)}"</div>
-                            <div style="color: var(--text-primary); white-space: pre-wrap; line-height: 1.4;">${escapeHtml(ans.toString())}</div>
+                            <div style="color: var(--text-primary); white-space: pre-wrap; line-height: 1.4; font-size: 0.85rem;">${escapeHtml(ans.toString())}</div>
                             <div class="text-muted" style="font-size: 0.7rem; text-align: right; margin-top: 0.25rem;">${item.date}</div>
                         </div>
                     `;
@@ -4904,9 +4904,9 @@ const COMPANION_QUESTION_TREE = {
                     const label = scoreLabels[ans] || ans;
                     const qNum = qId.replace('q', '');
                     return `
-                        <div style="padding: 0.6rem; background: rgba(0,0,0,0.15); border-left: 2px solid rgba(255,255,255,0.15); border-radius: var(--radius-sm); font-size: 0.85rem; text-align: left;">
+                        <div class="polaris-tool-card" style="border-left: 2px solid rgba(255,255,255,0.15); padding: 0.6rem; margin-bottom: 0.5rem;">
                             <div class="text-muted" style="font-size: 0.75rem; margin-bottom: 0.2rem;">Question ${qNum}: ${escapeHtml(currentQ.text)}</div>
-                            <div style="color: var(--text-primary); font-weight: 500;">Answer: ${escapeHtml(label.toString())}</div>
+                            <div style="color: var(--text-primary); font-weight: 500; font-size: 0.85rem;">Answer: ${escapeHtml(label.toString())}</div>
                             <div class="text-muted" style="font-size: 0.7rem; text-align: right; margin-top: 0.25rem;">${item.date}</div>
                         </div>
                     `;
@@ -5057,17 +5057,18 @@ const COMPANION_QUESTION_TREE = {
             anchors.forEach(function(anchor) {
                 const isChecked = state.polaris.anchors.today[anchor.id] && state.polaris.anchors.today[anchor.id].completed;
                 const item = document.createElement('div');
-                item.style.cssText = 'display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 0.75rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-sm); transition: all 0.2s;' + (isChecked ? ' opacity: 0.6;' : '');
+                item.className = 'polaris-anchor-item' + (isChecked ? ' checked' : '');
 
                 // Checkbox
                 const checkbox = document.createElement('div');
-                checkbox.style.cssText = 'width: 18px; height: 18px; border-radius: 4px; border: 2px solid ' + (isChecked ? 'var(--accent-teal)' : 'rgba(255,255,255,0.2)') + '; background: ' + (isChecked ? 'var(--accent-teal)' : 'transparent') + '; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 0.7rem; color: #0b0f13; cursor: pointer;';
+                checkbox.className = 'polaris-anchor-checkbox';
                 checkbox.textContent = isChecked ? '\u2713' : '';
-                checkbox.addEventListener('click', function() { togglePolarisAnchor(anchor.id, anchor.text); });
+                // Add click on the entire item instead of just the checkbox for a better click target
+                item.addEventListener('click', function() { togglePolarisAnchor(anchor.id, anchor.text); });
 
                 // Text
                 const text = document.createElement('span');
-                text.style.cssText = 'flex: 1; font-size: 0.85rem; color: var(--text-primary);' + (isChecked ? ' text-decoration: line-through;' : '');
+                text.className = 'polaris-anchor-text';
                 text.textContent = anchor.text;
 
                 item.appendChild(checkbox);
