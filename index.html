@@ -772,12 +772,15 @@
             <div>
                 <h2 class="polaris-title">🜁 Polaris <span id="polaris-day-counter" class="polaris-day-counter"></span></h2>
             </div>
-            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.85rem; color: var(--text-secondary);">
-                <span id="polaris-toggle-label">Enabled</span>
-                <div id="polaris-toggle" onclick="togglePolaris()" style="width: 44px; height: 24px; border-radius: 12px; background: var(--accent-teal); position: relative; cursor: pointer; transition: background 0.3s;">
-                    <div id="polaris-toggle-knob" style="width: 20px; height: 20px; border-radius: 50%; background: #fff; position: absolute; top: 2px; left: 22px; transition: left 0.3s; box-shadow: 0 1px 3px rgba(0,0,0,0.3);"></div>
-                </div>
-            </label>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <button class="btn btn-secondary" onclick="openPolarisSettingsModal()" style="padding: 0.25rem 0.5rem; font-size: 1rem; background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%;" title="Settings & Archive">⚙️</button>
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.85rem; color: var(--text-secondary);">
+                    <span id="polaris-toggle-label">Enabled</span>
+                    <div id="polaris-toggle" onclick="togglePolaris()" style="width: 44px; height: 24px; border-radius: 12px; background: var(--accent-teal); position: relative; cursor: pointer; transition: background 0.3s;">
+                        <div id="polaris-toggle-knob" style="width: 20px; height: 20px; border-radius: 50%; background: #fff; position: absolute; top: 2px; left: 22px; transition: left 0.3s; box-shadow: 0 1px 3px rgba(0,0,0,0.3);"></div>
+                    </div>
+                </label>
+            </div>
         </div>
 
         <!-- Polaris Content -->
@@ -2976,6 +2979,41 @@
                     <button class="btn btn-primary" id="btn-submit-phq" style="background: var(--accent-lavender); border-color:var(--accent-lavender); color:#0b0713;">
                         ✓ Submit Results
                     </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- POLARIS SETTINGS & ARCHIVE MODAL           -->
+        <!-- ========================================== -->
+        <div id="polaris-settings-modal" class="modal-overlay">
+            <div class="modal-content" style="border-color: var(--accent-lavender); max-width: 500px;">
+                <button class="modal-close-btn" onclick="closePolarisSettingsModal()">×</button>
+                <div class="modal-title" style="color: var(--accent-lavender);">
+                    ⚙️ Polaris Archive & Settings
+                </div>
+                <div class="modal-desc">
+                    Manage your OpenAI API key and handle chat history longitude to keep your companion fresh and performant.
+                </div>
+
+                <div class="glass-card mb-2" style="background: rgba(255,255,255,0.02); padding: 1rem;">
+                    <h4 style="color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.9rem;">OpenAI API Key</h4>
+                    <input type="password" id="input-openai-api-key" class="polaris-input" placeholder="sk-..." style="margin-bottom: 0.75rem;">
+                    <button class="polaris-btn polaris-btn-teal" onclick="savePolarisApiKeyUI()" style="width: 100%;">Save API Key</button>
+                    <p id="api-key-status" class="text-muted mt-1" style="font-size: 0.75rem; text-align: center;">No key active. Set one above.</p>
+                </div>
+
+                <div class="glass-card" style="background: rgba(20, 200, 175, 0.04); border-color: rgba(20, 200, 175, 0.1); padding: 1rem;">
+                    <h4 style="color: var(--accent-teal); margin-bottom: 0.5rem; font-size: 0.9rem;">Memory & Archive</h4>
+                    <p class="text-muted" style="font-size: 0.8rem; margin-bottom: 1rem;">Archive the active chat to refresh Polaris's context window. You can export all archived memory to JSON.</p>
+                    <div style="display: flex; gap: 0.5rem; flex-direction: column;">
+                        <button class="polaris-btn" onclick="archivePolarisSession()" style="background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1);">Archive Active Session</button>
+                        <button class="polaris-btn polaris-btn-solid-teal" onclick="exportPolarisMemory()">Download Memory (JSON)</button>
+                    </div>
+                </div>
+
+                <div class="modal-footer" style="margin-top: 1.5rem;">
+                    <button class="btn btn-secondary" onclick="closePolarisSettingsModal()" style="width: 100%;">Close</button>
                 </div>
             </div>
         </div>

@@ -5886,7 +5886,7 @@ const COMPANION_QUESTION_TREE = {
                 time: getFormattedTime()
             });
 
-            if (state.polaris.chatHistory.length > 15) {
+            if (state.polaris.chatHistory.length > 50) {
                 state.polaris.chatHistory.shift();
             }
 
@@ -5979,7 +5979,7 @@ Your response should be under 100 words. Stick to objective mechanics, pattern d
                 { role: "system", content: systemPrompt }
             ];
 
-            const historySlice = chatHistory.slice(-6);
+            const historySlice = chatHistory.slice(-20);
             historySlice.forEach(msg => {
                 if (msg.content !== userText) {
                     apiMessages.push({ role: msg.role === 'user' ? 'user' : 'assistant', content: msg.content });
@@ -8253,6 +8253,94 @@ Your response should be under 100 words. Stick to objective mechanics, pattern d
             }
         }
 
+        // ==========================================
+        // POLARIS SETTINGS & ARCHIVE LOGIC
+        // ==========================================
+
+        function openPolarisSettingsModal() {
+            ensurePolarisState();
+            const modal = document.getElementById("polaris-settings-modal");
+            const input = document.getElementById("input-openai-api-key");
+            const status = document.getElementById("api-key-status");
+            
+            if (input && state.polaris.openaiApiKey) {
+                input.value = state.polaris.openaiApiKey;
+            }
+            if (status) {
+                status.innerText = state.polaris.openaiApiKey ? "Key active and loaded." : "No key active. Set one above.";
+            }
+            if (modal) modal.classList.add("active");
+        }
+
+        function closePolarisSettingsModal() {
+            const modal = document.getElementById("polaris-settings-modal");
+            if (modal) modal.classList.remove("active");
+        }
+
+        function savePolarisApiKeyUI() {
+            const input = document.getElementById("input-openai-api-key");
+            const status = document.getElementById("api-key-status");
+            if (input && input.value.trim().startsWith("sk-")) {
+                ensurePolarisState();
+                state.polaris.openaiApiKey = input.value.trim();
+                saveState();
+                if (status) status.innerText = "Key active and loaded.";
+                showToast("OpenAI API Key saved securely to local storage.", "success");
+            } else {
+                showToast("Invalid key format. Must start with 'sk-'.", "error");
+            }
+        }
+
+        function archivePolarisSession() {
+            ensurePolarisState();
+            if (!state.polaris.chatArchive) state.polaris.chatArchive = [];
+            
+            const currentHistory = state.polaris.chatHistory || [];
+            if (currentHistory.length === 0) {
+                showToast("No active session to archive.", "info");
+                return;
+            }
+
+            // Archive it with a timestamp block
+            state.polaris.chatArchive.push({
+                archivedAt: new Date().toISOString(),
+                messages: [...currentHistory]
+            });
+            
+            // Clear current memory to refresh context
+            state.polaris.chatHistory = [];
+            saveState();
+            renderPolarisChat();
+            
+            showToast("Session archived. Polaris context window refreshed.", "success");
+        }
+
+        function exportPolarisMemory() {
+            ensurePolarisState();
+            const exportData = {
+                exportedAt: new Date().toISOString(),
+                profile: state.polaris.profile || {},
+                anchors: state.polaris.anchors || {},
+                proof: state.polaris.proof || {},
+                activeHistory: state.polaris.chatHistory || [],
+                archivedSessions: state.polaris.chatArchive || []
+            };
+
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `polaris-memory-archive-${getTodayString()}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showToast("Polaris memory exported successfully.", "success");
+        }
+
         // Export so variables/functions are global
         window.COURSE_MODULES = COURSE_MODULES;
         window.COMPENDIUM_TABLES = COMPENDIUM_TABLES;
@@ -8276,5 +8364,10 @@ Your response should be under 100 words. Stick to objective mechanics, pattern d
         window.switchStateSop = switchStateSop;
         window.updateHopeSimProgress = updateHopeSimProgress;
         window.updateTriageExclusionWarning = updateTriageExclusionWarning;
+        window.openPolarisSettingsModal = openPolarisSettingsModal;
+        window.closePolarisSettingsModal = closePolarisSettingsModal;
+        window.savePolarisApiKeyUI = savePolarisApiKeyUI;
+        window.archivePolarisSession = archivePolarisSession;
+        window.exportPolarisMemory = exportPolarisMemory;
 
         window.onload = init;
