@@ -870,13 +870,22 @@
             </div>
 
             <!-- Proof Points -->
-            <div class="polaris-module-card polaris-module-lavender">
+            <div id="polaris-proof-container" class="polaris-module-card polaris-module-lavender" style="position: relative;">
                 <div class="polaris-tool-header">
                     <h3 class="polaris-section-title polaris-section-title-lavender" style="margin: 0;">Proof Points</h3>
-                    <span id="polaris-proof-total" class="badge badge-medium" style="font-size: 0.75rem; padding: 0.2rem 0.5rem;">0 pts</span>
+                    <span id="polaris-proof-total" class="badge badge-medium" style="font-size: 0.95rem; padding: 0.2rem 0.5rem; transition: transform 0.2s;">0 pts</span>
                 </div>
                 <p class="polaris-tool-desc" style="margin: 0;">Completed anchors are logged.</p>
                 <div id="polaris-proof-today" class="text-teal" style="font-size: 0.85rem; margin-top: 0.5rem; font-weight: 600;">Today: 0 points earned</div>
+                
+                <div style="margin-top: 0.75rem;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.2rem;">
+                        <span id="polaris-proof-milestone-text">Level 1 • 50 pts to Level 2</span>
+                    </div>
+                    <div style="height: 4px; width: 100%; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden;">
+                        <div id="polaris-proof-milestone-bar" style="height: 100%; width: 0%; background: var(--accent-lavender); transition: width 0.3s ease;"></div>
+                    </div>
+                </div>
             </div>
 
             <!-- Personal Bests -->

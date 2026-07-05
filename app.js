@@ -4322,7 +4322,7 @@ const COMPANION_QUESTION_TREE = {
             if (!state.polaris) {
                 state.polaris = {
                     enabled: true,
-                    proof: { total: 0, today: 0, ledger: [] },
+                    proof: { total: 0, today: 0, streak: 0, lastProofDate: "", ledger: [] },
                     resilience: { current: 0, longest: 0, missedDays: 0, lastCompletedDate: '' },
                     day: { currentState: 'medium', lastCheckInDate: '', difficulty: 'easy', pacing: 'slow', floorWinsMode: false },
                     anchors: { today: {} },
