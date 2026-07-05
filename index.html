@@ -961,16 +961,52 @@
             <div id="polaris-companion-settings" class="glass-card" style="background: rgba(165, 120, 240, 0.04); border-color: rgba(165, 120, 240, 0.15); padding: 1rem; margin-bottom: 1rem;">
                 <h3 style="font-size: 0.95rem; font-weight: 600; color: var(--accent-lavender); margin: 0 0 0.5rem 0;">Companion Presence</h3>
                 <p class="text-muted" style="font-size: 0.8rem; margin-bottom: 0.75rem;">Select a calm, slightly mythic presence to accompany you.</p>
-                <div id="companion-selector-list" style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
-                    <button class="btn btn-secondary" onclick="setPolarisCompanion('')" style="padding: 0.5rem; font-size: 1.2rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" title="None">🚫</button>
-                    <button class="btn btn-secondary" onclick="setPolarisCompanion('🦇')" style="padding: 0.5rem; font-size: 1.2rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" title="Bat">🦇</button>
-                    <button class="btn btn-secondary" onclick="setPolarisCompanion('🕷️')" style="padding: 0.5rem; font-size: 1.2rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" title="Spider">🕷️</button>
-                    <button class="btn btn-secondary" onclick="setPolarisCompanion('💀')" style="padding: 0.5rem; font-size: 1.2rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" title="Skeleton">💀</button>
-                    <button class="btn btn-secondary" onclick="setPolarisCompanion('👻')" style="padding: 0.5rem; font-size: 1.2rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" title="Ghost">👻</button>
-                    <button class="btn btn-secondary" onclick="setPolarisCompanion('🧟')" style="padding: 0.5rem; font-size: 1.2rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" title="Zombie">🧟</button>
-                    <button class="btn btn-secondary" onclick="setPolarisCompanion('🧛')" style="padding: 0.5rem; font-size: 1.2rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" title="Vampire">🧛</button>
-                    <button class="btn btn-secondary" onclick="setPolarisCompanion('🐦‍⬛')" style="padding: 0.5rem; font-size: 1.2rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" title="Raven">🐦‍⬛</button>
-                    <button class="btn btn-secondary" onclick="setPolarisCompanion('🦊')" style="padding: 0.5rem; font-size: 1.2rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-color: rgba(255, 0, 127, 0.45);" title="Cyber Kitsune">🦊</button>
+                <div id="companion-selector-list" style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem;">
+                    <!-- Control Option -->
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <span style="font-size: 0.75rem; color: var(--text-secondary); width: 85px; font-weight: 500;">Control:</span>
+                        <button class="btn btn-secondary" onclick="setPolarisCompanion('')" style="padding: 0.5rem; font-size: 1.1rem; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;" title="None">🚫</button>
+                    </div>
+                    <!-- Goth Genre -->
+                    <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                        <span style="font-size: 0.75rem; color: var(--text-secondary); width: 85px; font-weight: 500;">Goth/Dark:</span>
+                        <button class="btn btn-secondary" onclick="setPolarisCompanion('🦇')" style="padding: 0.5rem; font-size: 1.1rem; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;" title="Bat">🦇</button>
+                        <button class="btn btn-secondary" onclick="setPolarisCompanion('🕷️')" style="padding: 0.5rem; font-size: 1.1rem; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;" title="Spider">🕷️</button>
+                        <button class="btn btn-secondary" onclick="setPolarisCompanion('💀')" style="padding: 0.5rem; font-size: 1.1rem; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;" title="Skeleton">💀</button>
+                        <button class="btn btn-secondary" onclick="setPolarisCompanion('👻')" style="padding: 0.5rem; font-size: 1.1rem; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;" title="Ghost">👻</button>
+                        <button class="btn btn-secondary" onclick="setPolarisCompanion('🧟')" style="padding: 0.5rem; font-size: 1.1rem; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;" title="Zombie">🧟</button>
+                        <button class="btn btn-secondary" onclick="setPolarisCompanion('🧛')" style="padding: 0.5rem; font-size: 1.1rem; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;" title="Vampire">🧛</button>
+                        <button class="btn btn-secondary" onclick="setPolarisCompanion('🐦‍⬛')" style="padding: 0.5rem; font-size: 1.1rem; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;" title="Raven">🐦‍⬛</button>
+                    </div>
+                    <!-- Sci-Fi Genre -->
+                    <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                        <span style="font-size: 0.75rem; color: var(--text-secondary); width: 85px; font-weight: 500;">Sci-Fi/Cyber:</span>
+                        <button class="btn btn-secondary" onclick="setPolarisCompanion('🦊')" style="padding: 0.5rem; font-size: 1.1rem; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-color: rgba(255, 0, 127, 0.45);" title="Cyber Kitsune">🦊</button>
+                        <button class="btn btn-secondary" onclick="setPolarisCompanion('🤖')" style="padding: 0.5rem; font-size: 1.1rem; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;" title="Quantum Mech">🤖</button>
+                        <button class="btn btn-secondary" onclick="setPolarisCompanion('🛸')" style="padding: 0.5rem; font-size: 1.1rem; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;" title="Cosmic Probe">🛸</button>
+                        <button class="btn btn-secondary" onclick="setPolarisCompanion('👾')" style="padding: 0.5rem; font-size: 1.1rem; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;" title="Space Invader">👾</button>
+                    </div>
+                    <!-- Nature Genre -->
+                    <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                        <span style="font-size: 0.75rem; color: var(--text-secondary); width: 85px; font-weight: 500;">Nature/Wild:</span>
+                        <button class="btn btn-secondary" onclick="setPolarisCompanion('🦉')" style="padding: 0.5rem; font-size: 1.1rem; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;" title="Midnight Owl">🦉</button>
+                        <button class="btn btn-secondary" onclick="setPolarisCompanion('🌲')" style="padding: 0.5rem; font-size: 1.1rem; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;" title="Forest Wanderer">🌲</button>
+                        <button class="btn btn-secondary" onclick="setPolarisCompanion('🐺')" style="padding: 0.5rem; font-size: 1.1rem; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;" title="Timber Wolf">🐺</button>
+                    </div>
+                    <!-- Fantasy Genre -->
+                    <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                        <span style="font-size: 0.75rem; color: var(--text-secondary); width: 85px; font-weight: 500;">Fantasy/RPG:</span>
+                        <button class="btn btn-secondary" onclick="setPolarisCompanion('🐉')" style="padding: 0.5rem; font-size: 1.1rem; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;" title="Ancient Wyrm">🐉</button>
+                        <button class="btn btn-secondary" onclick="setPolarisCompanion('🧙‍♂️')" style="padding: 0.5rem; font-size: 1.1rem; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;" title="Rune Sage">🧙‍♂️</button>
+                        <button class="btn btn-secondary" onclick="setPolarisCompanion('🦄')" style="padding: 0.5rem; font-size: 1.1rem; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;" title="Dream Weaver">🦄</button>
+                    </div>
+                    <!-- Cozy Genre -->
+                    <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                        <span style="font-size: 0.75rem; color: var(--text-secondary); width: 85px; font-weight: 500;">Cozy/Warm:</span>
+                        <button class="btn btn-secondary" onclick="setPolarisCompanion('🐈')" style="padding: 0.5rem; font-size: 1.1rem; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;" title="Hearth Cat">🐈</button>
+                        <button class="btn btn-secondary" onclick="setPolarisCompanion('🧸')" style="padding: 0.5rem; font-size: 1.1rem; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;" title="Sleepy Bear">🧸</button>
+                        <button class="btn btn-secondary" onclick="setPolarisCompanion('☕')" style="padding: 0.5rem; font-size: 1.1rem; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;" title="Warm Brew">☕</button>
+                    </div>
                 </div>
                 
                 <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.75rem; margin-top: 0.5rem; display: flex; justify-content: space-between; align-items: center;">

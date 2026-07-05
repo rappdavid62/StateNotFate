@@ -3256,3 +3256,174 @@ body.future-narrowing-active #polaris-growth-layer {
     text-decoration: line-through;
     color: var(--text-secondary);
 }
+
+/* ======================================================== */
+/* POLARIS MULTI-GENRE COMPANION THEMES */
+/* ======================================================== */
+
+/* 1. SCI-FI/CYBER GENRE (🤖, 🛸, 👾) */
+#polaris-content[data-companion-theme="🤖"] .glass-card,
+#polaris-content[data-companion-theme="🛸"] .glass-card,
+#polaris-content[data-companion-theme="👾"] .glass-card {
+    border-left-color: #00f0ff !important;
+    border-color: rgba(0, 240, 255, 0.25) !important;
+    background: linear-gradient(135deg, rgba(0, 240, 255, 0.08) 0%, rgba(0, 0, 0, 0.85) 100%) !important;
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.1), inset 0 0 10px rgba(0, 240, 255, 0.05) !important;
+}
+#polaris-content[data-companion-theme="🤖"] .text-teal,
+#polaris-content[data-companion-theme="🛸"] .text-teal,
+#polaris-content[data-companion-theme="👾"] .text-teal {
+    color: #00f0ff !important;
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.6) !important;
+}
+#polaris-content[data-companion-theme="🤖"] #polaris-hope-fill,
+#polaris-content[data-companion-theme="🛸"] #polaris-hope-fill,
+#polaris-content[data-companion-theme="👾"] #polaris-hope-fill {
+    background: #00f0ff !important;
+}
+#polaris-content[data-companion-theme="🤖"] .polaris-chat-container,
+#polaris-content[data-companion-theme="🛸"] .polaris-chat-container,
+#polaris-content[data-companion-theme="👾"] .polaris-chat-container {
+    border-color: rgba(0, 240, 255, 0.4) !important;
+}
+#polaris-content[data-companion-theme="🤖"] .polaris-chat-header,
+#polaris-content[data-companion-theme="🛸"] .polaris-chat-header,
+#polaris-content[data-companion-theme="👾"] .polaris-chat-header {
+    color: #00f0ff !important;
+}
+#polaris-content[data-companion-theme="🤖"] #polaris-companion-avatar,
+#polaris-content[data-companion-theme="🛸"] #polaris-companion-avatar,
+#polaris-content[data-companion-theme="👾"] #polaris-companion-avatar {
+    animation: mech-jitter 1.5s infinite alternate;
+}
+
+/* 2. NATURE GENRE (🦉, 🌲, 🐺) */
+#polaris-content[data-companion-theme="🦉"] .glass-card,
+#polaris-content[data-companion-theme="🌲"] .glass-card,
+#polaris-content[data-companion-theme="🐺"] .glass-card {
+    border-left-color: #a1ff0a !important;
+    border-color: rgba(161, 255, 10, 0.2) !important;
+    background: linear-gradient(135deg, rgba(161, 255, 10, 0.05) 0%, rgba(0, 0, 0, 0.85) 100%) !important;
+    box-shadow: 0 0 15px rgba(161, 255, 10, 0.08), inset 0 0 10px rgba(161, 255, 10, 0.03) !important;
+}
+#polaris-content[data-companion-theme="🦉"] .text-teal,
+#polaris-content[data-companion-theme="🌲"] .text-teal,
+#polaris-content[data-companion-theme="🐺"] .text-teal {
+    color: #a1ff0a !important;
+    text-shadow: 0 0 8px rgba(161, 255, 10, 0.5) !important;
+}
+#polaris-content[data-companion-theme="🦉"] #polaris-hope-fill,
+#polaris-content[data-companion-theme="🌲"] #polaris-hope-fill,
+#polaris-content[data-companion-theme="🐺"] #polaris-hope-fill {
+    background: #a1ff0a !important;
+}
+#polaris-content[data-companion-theme="🦉"] .polaris-chat-container,
+#polaris-content[data-companion-theme="🌲"] .polaris-chat-container,
+#polaris-content[data-companion-theme="🐺"] .polaris-chat-container {
+    border-color: rgba(161, 255, 10, 0.3) !important;
+}
+#polaris-content[data-companion-theme="🦉"] .polaris-chat-header,
+#polaris-content[data-companion-theme="🌲"] .polaris-chat-header,
+#polaris-content[data-companion-theme="🐺"] .polaris-chat-header {
+    color: #a1ff0a !important;
+}
+#polaris-content[data-companion-theme="🦉"] #polaris-companion-avatar,
+#polaris-content[data-companion-theme="🌲"] #polaris-companion-avatar,
+#polaris-content[data-companion-theme="🐺"] #polaris-companion-avatar {
+    animation: nature-breath 4s ease-in-out infinite;
+}
+
+/* 3. FANTASY GENRE (🐉, 🧙‍♂️, 🦄) */
+#polaris-content[data-companion-theme="🐉"] .glass-card,
+#polaris-content[data-companion-theme="🧙‍♂️"] .glass-card,
+#polaris-content[data-companion-theme="🦄"] .glass-card {
+    border-left-color: #bd15cc !important;
+    border-color: rgba(189, 21, 204, 0.25) !important;
+    background: linear-gradient(135deg, rgba(189, 21, 204, 0.08) 0%, rgba(0, 0, 0, 0.85) 100%) !important;
+    box-shadow: 0 0 15px rgba(189, 21, 204, 0.1), inset 0 0 10px rgba(189, 21, 204, 0.05) !important;
+}
+#polaris-content[data-companion-theme="🐉"] .text-teal,
+#polaris-content[data-companion-theme="🧙‍♂️"] .text-teal,
+#polaris-content[data-companion-theme="🦄"] .text-teal {
+    color: #bd15cc !important;
+    text-shadow: 0 0 10px rgba(189, 21, 204, 0.6) !important;
+}
+#polaris-content[data-companion-theme="🐉"] #polaris-hope-fill,
+#polaris-content[data-companion-theme="🧙‍♂️"] #polaris-hope-fill,
+#polaris-content[data-companion-theme="🦄"] #polaris-hope-fill {
+    background: #bd15cc !important;
+}
+#polaris-content[data-companion-theme="🐉"] .polaris-chat-container,
+#polaris-content[data-companion-theme="🧙‍♂️"] .polaris-chat-container,
+#polaris-content[data-companion-theme="🦄"] .polaris-chat-container {
+    border-color: rgba(189, 21, 204, 0.4) !important;
+}
+#polaris-content[data-companion-theme="🐉"] .polaris-chat-header,
+#polaris-content[data-companion-theme="🧙‍♂️"] .polaris-chat-header,
+#polaris-content[data-companion-theme="🦄"] .polaris-chat-header {
+    color: #bd15cc !important;
+}
+#polaris-content[data-companion-theme="🐉"] #polaris-companion-avatar,
+#polaris-content[data-companion-theme="🧙‍♂️"] #polaris-companion-avatar,
+#polaris-content[data-companion-theme="🦄"] #polaris-companion-avatar {
+    animation: fantasy-float 3.5s ease-in-out infinite;
+}
+
+/* 4. COZY GENRE (🐈, 🧸, ☕) */
+#polaris-content[data-companion-theme="🐈"] .glass-card,
+#polaris-content[data-companion-theme="🧸"] .glass-card,
+#polaris-content[data-companion-theme="☕"] .glass-card {
+    border-left-color: #ff7043 !important;
+    border-color: rgba(255, 112, 67, 0.2) !important;
+    background: linear-gradient(135deg, rgba(255, 112, 67, 0.08) 0%, rgba(0, 0, 0, 0.85) 100%) !important;
+    box-shadow: 0 0 15px rgba(255, 112, 67, 0.1), inset 0 0 10px rgba(255, 112, 67, 0.05) !important;
+}
+#polaris-content[data-companion-theme="🐈"] .text-teal,
+#polaris-content[data-companion-theme="🧸"] .text-teal,
+#polaris-content[data-companion-theme="☕"] .text-teal {
+    color: #ff7043 !important;
+    text-shadow: 0 0 8px rgba(255, 112, 67, 0.5) !important;
+}
+#polaris-content[data-companion-theme="🐈"] #polaris-hope-fill,
+#polaris-content[data-companion-theme="🧸"] #polaris-hope-fill,
+#polaris-content[data-companion-theme="☕"] #polaris-hope-fill {
+    background: #ff7043 !important;
+}
+#polaris-content[data-companion-theme="🐈"] .polaris-chat-container,
+#polaris-content[data-companion-theme="🧸"] .polaris-chat-container,
+#polaris-content[data-companion-theme="☕"] .polaris-chat-container {
+    border-color: rgba(255, 112, 67, 0.3) !important;
+}
+#polaris-content[data-companion-theme="🐈"] .polaris-chat-header,
+#polaris-content[data-companion-theme="🧸"] .polaris-chat-header,
+#polaris-content[data-companion-theme="☕"] .polaris-chat-header {
+    color: #ff7043 !important;
+}
+#polaris-content[data-companion-theme="🐈"] #polaris-companion-avatar,
+#polaris-content[data-companion-theme="🧸"] #polaris-companion-avatar,
+#polaris-content[data-companion-theme="☕"] #polaris-companion-avatar {
+    animation: cozy-pulse 3s ease-in-out infinite;
+}
+
+/* Animations for Companion Skins */
+@keyframes mech-jitter {
+    0% { transform: translateY(0) rotate(0deg); filter: drop-shadow(0 0 3px rgba(0, 240, 255, 0.5)); }
+    50% { transform: translateY(-1px) rotate(0.5deg); filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.8)); }
+    100% { transform: translateY(0) rotate(-0.5deg); filter: drop-shadow(0 0 3px rgba(0, 240, 255, 0.5)); }
+}
+
+@keyframes nature-breath {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(161, 255, 10, 0.4)); }
+    50% { transform: scale(1.05); filter: drop-shadow(0 0 8px rgba(161, 255, 10, 0.7)); }
+}
+
+@keyframes fantasy-float {
+    0%, 100% { transform: translateY(0) rotate(0); filter: drop-shadow(0 0 5px rgba(189, 21, 204, 0.4)); }
+    50% { transform: translateY(-4px) rotate(1deg); filter: drop-shadow(0 0 9px rgba(189, 21, 204, 0.8)); }
+}
+
+@keyframes cozy-pulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 3px rgba(255, 112, 67, 0.4)); }
+    50% { transform: scale(1.03); filter: drop-shadow(0 0 7px rgba(255, 112, 67, 0.7)); }
+}
+

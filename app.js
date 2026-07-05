@@ -4642,6 +4642,27 @@ const COMPANION_QUESTION_TREE = {
                 delete contentEl.dataset.companionTheme;
             }
 
+            // Highlight active companion selector button
+            const activeSkin = state.polaris.profile.companionSkin || '';
+            const selectorContainer = document.getElementById('companion-selector-list');
+            if (selectorContainer) {
+                const buttons = selectorContainer.querySelectorAll('button');
+                buttons.forEach(btn => {
+                    const onclickAttr = btn.getAttribute('onclick') || '';
+                    const match = onclickAttr.match(/setPolarisCompanion\('(.*)'\)/);
+                    const btnSkin = match ? match[1] : '';
+                    if (btnSkin === activeSkin) {
+                        btn.style.borderColor = 'var(--accent-teal)';
+                        btn.style.boxShadow = '0 0 8px var(--accent-teal-glow)';
+                        btn.style.background = 'rgba(20, 200, 175, 0.2)';
+                    } else {
+                        btn.style.borderColor = 'rgba(255,255,255,0.1)';
+                        btn.style.boxShadow = 'none';
+                        btn.style.background = 'rgba(255,255,255,0.05)';
+                    }
+                });
+            }
+
             // Evolving Questionnaire logic
             const qToggleKnob = document.getElementById('companion-questions-knob');
             const qToggle = document.getElementById('companion-questions-toggle');
@@ -5910,9 +5931,24 @@ const COMPANION_QUESTION_TREE = {
         }
 
         async function callPolarisLLM(userText, apiKey) {
+            const skin = state.polaris.profile.companionSkin || 'None';
+            let personaGuideline = "";
+            
+            if (['🦇', '💀', '👻', '🧛', '🕷️', '🧟', '🐦‍⬛'].includes(skin)) {
+                personaGuideline = "\n- COMPANION PERSONA: Adopt a dry, slightly gothic, dark humor, blunt but supportive tone. Embrace the dark mode and shadow aesthetic. Treat energy depletion with dark pragmatism.";
+            } else if (['🦊', '🤖', '🛸', '👾'].includes(skin)) {
+                personaGuideline = "\n- COMPANION PERSONA: Adopt a highly precise, technical, diagnostic terminal console tone. Refer to functions, states, and telemetry. You are a diagnostic supervisor checking the user's biological hardware.";
+            } else if (['🦉', '🌲', '🐺'].includes(skin)) {
+                personaGuideline = "\n- COMPANION PERSONA: Adopt a calm, grounded, organic wilderness guide tone. Refer to natural cycles, clean biological rhythms, daylight signals, and organic baselines.";
+            } else if (['🐉', '🧙‍♂️', '🦄'].includes(skin)) {
+                personaGuideline = "\n- COMPANION PERSONA: Adopt a sage-like, epic quest, mythic advisor tone. Frame the recovery process as an epic journey of incremental actions (runes/spells) to bypass dark magic (avoidance).";
+            } else if (['🐈', '🧸', '☕'].includes(skin)) {
+                personaGuideline = "\n- COMPANION PERSONA: Adopt a warm, comforting, hearth-like, low-friction gentle tone. Emphasize resting without self-punishment, cozy baseline safety, and slow soft transitions.";
+            }
+
             const systemPrompt = `You are Polaris, a systems AI companion inside the "State Not Fate" depression recovery operating system. 
 The user is interacting with you via a secure terminal. You are a calm, intelligent operating system, NOT a therapist, friend, or motivational coach.
-Write in a blunt, precise, objective tone. Avoid positive fluff, sentimentality, or moralizing. Frame depression as a temporary systems failure and energy deconditioning, not a permanent identity.
+Write in a blunt, precise, objective tone. Avoid positive fluff, sentimentality, or moralizing. Frame depression as a temporary systems failure and energy deconditioning, not a permanent identity.${personaGuideline}
 
 CORE VOICE & COPY RULES:
 - Use phrases like: "You're here.", "No catch-up.", "Pick the current state.", "We'll keep this small.", "Nothing reset.", "Start with the floor.", "Make it smaller.", "State, not fate.", "Action happened.", "Proof logged."
