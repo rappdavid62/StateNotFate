@@ -42,3 +42,10 @@ Windows note: if bare `npm` hits PowerShell execution-policy friction, use `npm.
 
 ## Suggested Next Customization
 If we want stronger automation, add a skill for Playwright-based public site validation or a custom agent prompt targeting static PWA maintenance.
+
+### Android Development & Tooling
+- **Android CLI Path:** The Android CLI is located at `C:\Users\rappd\AppData\AndroidCLI\android.exe`. Use the absolute path if PowerShell environment variables are not refreshed.
+- **Silent Background Installation:** When installing tools or SDKs via `winget` or other package managers in a background command, ALWAYS use the `--silent` or `/S` flags to prevent execution hangs from silent UAC or interactive prompts.
+- **Obsidian Sync:** When documenting system structures, environment configurations, or troubleshooting runbooks, save them directly in the Obsidian Vault (`C:\Users\rappd\OneDrive\Desktop\ObsidianVault\STATENOTFATE/`) to ensure the user has stable and accessible offline reference manuals.
+- **Local Persistence:** Default to offline-first local persistence (like Room Database or Preferences DataStore on Android, and localStorage on Web) to honor the privacy and "sanctuary" philosophy of State Not Fate.
+
