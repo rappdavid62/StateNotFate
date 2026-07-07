@@ -752,7 +752,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function getActiveTabId() {
-            const activeBtn = document.querySelector(".tab-btn.active");
+            const activeBtn = document.querySelector(".nav-item.active");
             return activeBtn ? activeBtn.getAttribute("data-tab") : "";
         }
 
@@ -771,7 +771,7 @@ const COMPANION_QUESTION_TREE = {
                 }
             });
             
-            document.querySelectorAll(".tab-btn").forEach(btn => {
+            document.querySelectorAll(".nav-item").forEach(btn => {
                 if (btn.getAttribute("data-tab") === tabId) {
                     btn.classList.add("active");
                 } else {
@@ -808,6 +808,35 @@ const COMPANION_QUESTION_TREE = {
 
             document.getElementById("btn-back-welcome").addEventListener("click", () => {
                 showScreen("welcome");
+            });
+
+            
+            // Wizard Next/Prev Logic
+            document.querySelectorAll(".btn-wizard-next").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const currentSection = e.target.closest(".accordion-section");
+                    const nextSection = currentSection.nextElementSibling;
+                    if (nextSection && nextSection.classList.contains("accordion-section")) {
+                        currentSection.classList.remove("active");
+                        nextSection.classList.add("active");
+                        
+                        // Handle final step completion if needed
+                        if(nextSection.getAttribute('data-section') === 'crisis') {
+                            // Example hook: do something when reaching the last step
+                        }
+                    }
+                });
+            });
+
+            document.querySelectorAll(".btn-wizard-prev").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const currentSection = e.target.closest(".accordion-section");
+                    const prevSection = currentSection.previousElementSibling;
+                    if (prevSection && prevSection.classList.contains("accordion-section")) {
+                        currentSection.classList.remove("active");
+                        prevSection.classList.add("active");
+                    }
+                });
             });
 
             document.querySelectorAll(".accordion-header").forEach(header => {
@@ -848,9 +877,9 @@ const COMPANION_QUESTION_TREE = {
 
             document.getElementById("btn-submit-intake").addEventListener("click", submitIntake);
 
-            document.querySelectorAll(".tab-btn").forEach(btn => {
+            document.querySelectorAll(".nav-item").forEach(btn => {
                 btn.addEventListener("click", (e) => {
-                    const tabBtn = e.target.closest(".tab-btn");
+                    const tabBtn = e.target.closest(".nav-item");
                     if (!tabBtn) return;
                     const tabId = tabBtn.getAttribute("data-tab");
                     const buttonId = tabBtn.id;
@@ -6020,7 +6049,7 @@ Your response should be under 100 words. Stick to objective mechanics, pattern d
             state.polaris.futureNarrowingActive = !state.polaris.futureNarrowingActive;
             
             if (state.polaris.futureNarrowingActive) {
-                var activeTabBtn = document.querySelector('.tab-btn.active');
+                var activeTabBtn = document.querySelector('.nav-item.active');
                 var activeTab = activeTabBtn ? activeTabBtn.getAttribute('data-tab') : '';
                 var hiddenTabs = ["progression", "documentcenter", "explorer"];
                 if (hiddenTabs.includes(activeTab)) {

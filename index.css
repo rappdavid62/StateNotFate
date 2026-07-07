@@ -2,31 +2,30 @@
 
         :root {
             /* Color Palette */
-            --bg-primary: #07070a;
-            --bg-secondary: #0f0f14;
-            --card-bg: rgba(12, 12, 16, 0.85);
-            --card-border: rgba(0, 255, 200, 0.15);
-            --card-border-focus: rgba(0, 255, 200, 0.8);
+            --bg-primary: #07090f;
+            --bg-secondary: #0a0c14;
+            --card-bg: rgba(15, 18, 25, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --card-border-focus: rgba(20, 200, 175, 0.5);
             
-            --text-primary: #f0f0f5;
-            --text-secondary: #a0a0b0;
-            --text-muted: #8b8b9c;
+            --text-primary: #f0f2f5;
+            --text-secondary: #9ba1b0;
+            --text-muted: #6b7280;
             
-            /* Accents & Glows (Neon Cyberpunk/HUD) */
-            --accent-teal: hsl(180, 100%, 50%);
-            --accent-teal-dim: hsl(180, 100%, 20%);
-            --accent-teal-glow: rgba(0, 255, 255, 0.25);
+            --accent-teal: hsl(172, 85%, 45%);
+            --accent-teal-dim: hsl(172, 85%, 20%);
+            --accent-teal-glow: rgba(20, 200, 175, 0.15);
             
-            --accent-orange: hsl(40, 100%, 55%);
-            --accent-orange-dim: hsl(40, 100%, 20%);
-            --accent-orange-glow: rgba(255, 170, 0, 0.25);
+            --accent-orange: hsl(35, 90%, 55%);
+            --accent-orange-dim: hsl(35, 90%, 20%);
+            --accent-orange-glow: rgba(245, 160, 45, 0.15);
             
-            --accent-lavender: hsl(300, 100%, 65%);
-            --accent-lavender-dim: hsl(300, 100%, 25%);
-            --accent-lavender-glow: rgba(255, 80, 255, 0.25);
+            --accent-lavender: hsl(265, 85%, 70%);
+            --accent-lavender-dim: hsl(265, 85%, 25%);
+            --accent-lavender-glow: rgba(175, 130, 245, 0.15);
             
-            --accent-red: hsl(0, 100%, 60%);
-            --accent-red-glow: rgba(255, 50, 50, 0.25);
+            --accent-red: hsl(350, 85%, 60%);
+            --accent-red-glow: rgba(240, 60, 80, 0.15);
 
             /* Fonts & Radii */
             --font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -72,13 +71,107 @@
         }
 
         /* Container & Layout */
-        .app-container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 2rem 1.5rem;
+        .app-layout {
+            display: flex;
             min-height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .sidebar-nav {
+            width: 260px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--card-border);
+            padding: 2rem 1.5rem;
             display: flex;
             flex-direction: column;
+            gap: 0.5rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+        .sidebar-brand {
+            font-family: var(--font-futuristic);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            letter-spacing: 0.1em;
+            text-shadow: 0 0 10px var(--accent-teal-glow);
+        }
+        
+        .sidebar-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .sidebar-group-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            padding-left: 0.75rem;
+        }
+        
+        .nav-item {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.75rem;
+            border-radius: var(--radius-md);
+            font-family: var(--font-sans);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: left;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            width: 100%;
+        }
+        
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-primary);
+        }
+        
+        .nav-item.active {
+            background: var(--accent-teal-glow);
+            color: var(--accent-teal);
+            border-left: 3px solid var(--accent-teal);
+        }
+        
+        .app-container {
+            flex: 1;
+            padding: 2rem 3rem;
+            display: flex;
+            flex-direction: column;
+            max-width: 1000px;
+        }
+        
+        /* Mobile Bottom Nav */
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--card-border);
+            padding: 0.75rem;
+            z-index: 100;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar-nav { display: none; }
+            .bottom-nav { display: flex; justify-content: space-around; }
+            .app-container { padding: 1.5rem 1rem; padding-bottom: 5rem; }
+            .bottom-nav .nav-item { flex-direction: column; gap: 0.25rem; font-size: 0.7rem; padding: 0.5rem; border: none; align-items: center; justify-content: center; }
+            .bottom-nav .nav-item.active { border-left: none; border-bottom: 2px solid var(--accent-teal); border-radius: 0; }
         }
 
         /* Glassmorphic Utilities -> HUD Cards */
@@ -459,14 +552,7 @@
         }
 
         /* Tab Navigation */
-        .app-tabs {
-            display: flex;
-            gap: 0.25rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid var(--card-border);
-            padding-bottom: 0.75rem;
-            flex-wrap: wrap;
-        }
+        .app-tabs { display: none; }
 
         .tab-btn {
             background: transparent;
@@ -3455,3 +3541,78 @@ body.future-narrowing-active #polaris-growth-layer {
  } 
   
  
+        /* Wizard Intake */
+        .intake-screen {
+            max-width: 800px;
+            margin: 2rem auto;
+            position: relative;
+        }
+
+        .accordion-container {
+            position: relative;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow-main);
+        }
+
+        .accordion-section {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .accordion-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .accordion-header {
+            display: none !important; /* Hide old accordion headers, we use wizard steps */
+        }
+
+        .accordion-content {
+            padding: 0;
+            display: block !important;
+        }
+
+        .wizard-step-title {
+            font-size: 1.25rem;
+            color: var(--accent-teal);
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 0.5rem;
+        }
+
+        .wizard-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* Saved Locally Tooltip */
+        .saved-locally-tooltip {
+            position: relative;
+        }
+        .saved-locally-tooltip:hover::after {
+            content: attr(title);
+            position: absolute;
+            bottom: 100%;
+            right: 0;
+            background: var(--bg-primary);
+            border: 1px solid var(--accent-teal);
+            color: var(--text-primary);
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--radius-sm);
+            white-space: nowrap;
+            font-size: 0.75rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            margin-bottom: 0.5rem;
+            z-index: 100;
+        }
