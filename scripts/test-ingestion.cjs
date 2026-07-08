@@ -141,7 +141,11 @@ function runTest() {
         console.log("[Test] Cleaning up temp files...");
         cleanupTestFiles();
         if (fs.existsSync(tempScriptPath)) {
-            fs.unlinkSync(tempScriptPath);
+            try {
+                fs.unlinkSync(tempScriptPath);
+            } catch (e) {
+                console.warn(`[Warning] Failed to delete temp script file ${tempScriptPath}: ${e.message}`);
+            }
         }
     }
 }

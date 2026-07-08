@@ -6,8 +6,10 @@ test('Onboarding assessment dropdowns save correctly @advisory', async ({ page }
   // Begin assessment
   await page.click('#btn-start-intake');
 
-  // Expand Section 4 (Day Rhythm & Capacity) to make its select dropdowns visible
-  await page.click('button:has-text("4. Day Rhythm & Capacity")');
+  // Advance through the wizard steps to Section 4 (Safety -> Burden -> Mantra -> Structure)
+  await page.click('.accordion-section[data-section="safety"] .btn-wizard-next');
+  await page.click('.accordion-section[data-section="burden"] .btn-wizard-next');
+  await page.click('.accordion-section[data-section="mantra"] .btn-wizard-next');
 
   // Select new dropdown values
   await page.selectOption('#select-future-narrowing', 'weak');
@@ -15,6 +17,10 @@ test('Onboarding assessment dropdowns save correctly @advisory', async ({ page }
   await page.selectOption('#select-rumination', 'losehours');
   await page.selectOption('#select-social-isolation', 'worse');
   await page.selectOption('#select-external-anchor', 'plant');
+
+  // Advance from Section 4 to Section 6 (Structure -> MVD -> Crisis)
+  await page.click('.accordion-section[data-section="structure"] .btn-wizard-next');
+  await page.click('.accordion-section[data-section="mvd"] .btn-wizard-next');
 
   // Submit intake
   await page.click('#btn-submit-intake');

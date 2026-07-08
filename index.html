@@ -220,6 +220,7 @@
                         <span class="icon">▼</span>
                     </button>
                     <div class="accordion-content">
+                        <div class="wizard-step-title">1. Safety & Security PIN</div>
                         <div class="form-group mb-3" style="background: rgba(165, 120, 240, 0.03); border: 1px solid rgba(165, 120, 240, 0.15); border-radius: var(--radius-sm); padding: 1rem;">
                             <label>Set a 4-digit Security PIN to lock your private files and safety plans:</label>
                             <input type="text" id="input-set-pin" maxlength="4" placeholder="e.g. 1234" style="letter-spacing:0.5em; text-align:center; max-width:160px; font-weight:600; font-size: 1.15rem; display:block; margin: 0 auto 0.5rem auto;">
@@ -254,6 +255,11 @@
                                 <button class="safety-option-btn" data-val="2">Yes, extreme high energy/mania</button>
                             </div>
                         </div>
+
+                        <div class="wizard-controls">
+                            <button class="btn btn-secondary" id="btn-back-welcome">Back</button>
+                            <button class="btn btn-primary btn-wizard-next">Next Section ➔</button>
+                        </div>
                     </div>
                 </div>
 
@@ -264,6 +270,7 @@
                         <span class="icon">▼</span>
                     </button>
                     <div class="accordion-content">
+                        <div class="wizard-step-title">2. Function Burden (0-4 Severity Grid)</div>
                         <p class="text-muted mb-2">Rate how hard depression is hitting each area right now under real daily conditions.</p>
                         <p class="text-muted" style="font-size:0.8rem; margin-top:-0.5rem;">0 = Not a problem | 1 = Mild | 2 = Moderate | 3 = Serious | 4 = Severe / Disabling</p>
                         
@@ -347,6 +354,11 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="wizard-controls">
+                            <button class="btn btn-secondary btn-wizard-prev">Back</button>
+                            <button class="btn btn-primary btn-wizard-next">Next Section ➔</button>
+                        </div>
                     </div>
                 </div>
 
@@ -357,6 +369,7 @@
                         <span class="icon">▼</span>
                     </button>
                     <div class="accordion-content">
+                        <div class="wizard-step-title">3. Custom Counter-Script Mantra</div>
                         <p class="text-muted mb-2">Depression repeats negative programming. We combat it with a custom identity statement that represents the exact opposite of what your depression tries to make you believe.</p>
                         
                         <div class="form-group">
@@ -369,6 +382,11 @@
                             <textarea id="input-custom-mantra" rows="3" placeholder="e.g. I am a happy, healthy, handsome, confident, charismatic man, and people like me."></textarea>
                             <div class="description">This statement is your core load-bearing anchor. We will display it prominently as your daily identity shield.</div>
                         </div>
+
+                        <div class="wizard-controls">
+                            <button class="btn btn-secondary btn-wizard-prev">Back</button>
+                            <button class="btn btn-primary btn-wizard-next">Next Section ➔</button>
+                        </div>
                     </div>
                 </div>
 
@@ -379,6 +397,7 @@
                         <span class="icon">▼</span>
                     </button>
                     <div class="accordion-content">
+                        <div class="wizard-step-title">4. Day Rhythm & Capacity</div>
                         <div class="form-group">
                             <label for="select-worst-time">What part of the day is usually your lowest point?</label>
                             <select id="select-worst-time">
@@ -448,6 +467,11 @@
                                 <option value="duty">Scheduled obligation or recurring chore</option>
                             </select>
                         </div>
+
+                        <div class="wizard-controls">
+                            <button class="btn btn-secondary btn-wizard-prev">Back</button>
+                            <button class="btn btn-primary btn-wizard-next">Next Section ➔</button>
+                        </div>
                     </div>
                 </div>
 
@@ -458,6 +482,7 @@
                         <span class="icon">▼</span>
                     </button>
                     <div class="accordion-content">
+                        <div class="wizard-step-title">5. Your Minimum Viable Day (MVD) Floor</div>
                         <p class="text-muted mb-2">When energy collapses, we abandon the big goals and focus entirely on protecting the absolute biological floor. Define your MVD actions below:</p>
                         
                         <div class="form-group">
@@ -472,6 +497,11 @@
                             <label>MVD Task 3 (Environmental / Body Anchor)</label>
                             <input type="text" id="input-mvd-3" value="Stand outside for 2 minutes in daylight, keep tomorrow's clothes pre-positioned.">
                         </div>
+
+                        <div class="wizard-controls">
+                            <button class="btn btn-secondary btn-wizard-prev">Back</button>
+                            <button class="btn btn-primary btn-wizard-next">Next Section ➔</button>
+                        </div>
                     </div>
                 </div>
 
@@ -482,6 +512,7 @@
                         <span class="icon">▼</span>
                     </button>
                     <div class="accordion-content">
+                        <div class="wizard-step-title">6. Crisis Safety Plan & Contacts</div>
                         <p class="text-muted mb-2">If you experience active suicidal thoughts or severe functioning collapse, this safety plan will be available side-by-side with your writings in the Crisis Safe Box.</p>
                         
                         <div class="form-group">
@@ -498,15 +529,14 @@
                             <label>List 2 safe, low-friction activities that take your mind off extreme pain:</label>
                             <input type="text" id="input-distraction-activities" placeholder="e.g. Playing a specific video game, watching nature documentaries.">
                         </div>
+
+                        <div class="wizard-controls">
+                            <button class="btn btn-secondary btn-wizard-prev">Back</button>
+                            <button class="btn btn-primary" id="btn-submit-intake">Compile Main Frame <span class="icon">➔</span></button>
+                        </div>
                     </div>
                 </div>
 
-            </div>
-
-            <!-- Intake Footer Actions -->
-            <div class="flex-between mt-3">
-                <button class="btn btn-secondary" id="btn-back-welcome">Back</button>
-                <button class="btn btn-primary" id="btn-submit-intake">Compile Main Frame <span class="icon">➔</span></button>
             </div>
         </div>
 
