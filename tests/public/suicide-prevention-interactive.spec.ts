@@ -116,7 +116,7 @@ test.describe('Suicide Prevention Interactive Features', () => {
     await expect(ideasList).toContainText('⚠️ RISK ALERT');
 
     // Check source counter shows 18 initially
-    await expect(page.locator('#evidence-source-count')).toHaveText('18 Sources');
+    await expect(page.locator('#evidence-source-count')).toHaveText('22 Sources');
 
     // Filter by Official Anchor
     await page.click('#btn-source-filter-anchor');

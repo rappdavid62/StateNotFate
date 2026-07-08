@@ -7712,6 +7712,38 @@ Your response should be under 100 words. Stick to objective mechanics, pattern d
                 type: "research",
                 disposition: "research",
                 dispositionText: "Research Anchor. Modern randomized trials showing that caring contacts increase engagement with treatment systems and follow-up support."
+            },
+            {
+                id: "stanley_brown_2018",
+                title: "Stanley & Brown (2018) Comparison of Safety Planning Intervention vs Usual Care",
+                url: "https://pubmed.ncbi.nlm.nih.gov/29800977/",
+                type: "clinical",
+                disposition: "research",
+                dispositionText: "Landmark Trial (PMID 29800977). Proved that collaborative Safety Planning Intervention (SPI) combined with follow-up contact reduces suicidal behavior by 45% and doubles treatment engagement."
+            },
+            {
+                id: "bryan_rudd_2017",
+                title: "Bryan & Rudd (2017) Crisis Response Planning vs Safety Contracts",
+                url: "https://pubmed.ncbi.nlm.nih.gov/28142085/",
+                type: "clinical",
+                disposition: "research",
+                dispositionText: "Randomized Trial (PMID 28142085). Demonstrated that collaborative, handwritten Crisis Response Planning (CRP) reduced suicide attempts by 76% compared to safety contracts in soldiers."
+            },
+            {
+                id: "bryan_mood_2017",
+                title: "Bryan et al. (2017) Crisis Response Planning on Mood and Triage",
+                url: "https://pubmed.ncbi.nlm.nih.gov/28967323/",
+                type: "research",
+                disposition: "research",
+                dispositionText: "Clinical Evaluation (PMID 28967323). Showed that integrating 'reasons for living' into collaborative crisis plans reduces immediate negative mood state and psychiatric admission rates."
+            },
+            {
+                id: "bryan_veterans_2024",
+                title: "Bryan et al. (2024) Crisis Response Planning with Cognitive Processing Therapy",
+                url: "https://pubmed.ncbi.nlm.nih.gov/38154445/",
+                type: "research",
+                disposition: "research",
+                dispositionText: "Pragmatic Trial (PMID 38154445). Proved that Crisis Response Planning (CRP) alongside CPT for PTSD leads to faster, more robust reductions in suicidal ideation in veterans."
             }
         ];
 
