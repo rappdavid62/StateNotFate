@@ -92,7 +92,10 @@
             externalAnchor: "none",
             ruminationLogs: [],
             safetyJournal: [],
-            parablesCompleted: {}
+            parablesCompleted: {},
+            lastCrisisEvent: null,
+            caringContactStage: 0,
+            safeboxLogs: []
         };
 
         let state = { ...DEFAULT_STATE };
@@ -477,6 +480,10 @@ const COMPANION_QUESTION_TREE = {
                     .catch(err => console.error('[PWA] Service Worker registration failed:', err));
             }
             
+            setTimeout(() => {
+                checkCaringContactModal();
+            }, 1000);
+
             handleRouting();
             window.addEventListener("hashchange", handleRouting);
         }
@@ -624,6 +631,9 @@ const COMPANION_QUESTION_TREE = {
                     if (state.ruminationLogs === undefined) state.ruminationLogs = [];
                     if (state.safetyJournal === undefined) state.safetyJournal = [];
                     if (state.parablesCompleted === undefined) state.parablesCompleted = {};
+                    if (state.lastCrisisEvent === undefined) state.lastCrisisEvent = null;
+                    if (state.caringContactStage === undefined) state.caringContactStage = 0;
+                    if (state.safeboxLogs === undefined) state.safeboxLogs = [];
                     // Migrate polaris.anchors.today from array (v2/v3) to object (v4, ID-based)
                     if (state.polaris && state.polaris.anchors && Array.isArray(state.polaris.anchors.today)) {
                         state.polaris.anchors.today = {};
@@ -801,6 +811,69 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function setupEventListeners() {
+            // Crisis Safe Box distress rating events
+            const btnUnlock = document.getElementById("btn-unlock-safebox");
+            if (btnUnlock) {
+                btnUnlock.addEventListener("click", () => {
+                    const ratingSelect = document.getElementById("safebox-pre-distress");
+                    const rating = ratingSelect ? parseInt(ratingSelect.value) : 5;
+                    if (!state.safeboxLogs) state.safeboxLogs = [];
+                    state.safeboxLogs.push({ timestamp: Date.now(), type: 'pre', rating: rating });
+                    saveState();
+
+                    const overlay = document.getElementById("safebox-distress-overlay");
+                    const content = document.getElementById("safebox-content");
+                    if (overlay) overlay.style.display = "none";
+                    if (content) content.style.display = "block";
+                });
+            }
+
+            const btnClose = document.getElementById("btn-close-safebox");
+            if (btnClose) {
+                btnClose.addEventListener("click", () => {
+                    const content = document.getElementById("safebox-content");
+                    const postOverlay = document.getElementById("safebox-post-distress-overlay");
+                    if (content) content.style.display = "none";
+                    if (postOverlay) postOverlay.style.display = "block";
+                });
+            }
+
+            const btnFinalize = document.getElementById("btn-finalize-safebox");
+            if (btnFinalize) {
+                btnFinalize.addEventListener("click", () => {
+                    const ratingSelect = document.getElementById("safebox-post-distress");
+                    const rating = ratingSelect ? parseInt(ratingSelect.value) : 5;
+                    if (!state.safeboxLogs) state.safeboxLogs = [];
+                    state.safeboxLogs.push({ timestamp: Date.now(), type: 'post', rating: rating });
+                    saveState();
+
+                    const feedbackMsg = document.getElementById("distress-feedback-msg");
+                    const btnReturn = document.getElementById("btn-return-dashboard");
+                    if (feedbackMsg) feedbackMsg.style.display = "block";
+                    if (btnReturn) btnReturn.style.display = "block";
+                });
+            }
+
+            const btnReturnDash = document.getElementById("btn-return-dashboard");
+            if (btnReturnDash) {
+                btnReturnDash.addEventListener("click", () => {
+                    window.location.hash = '#/dashboard';
+                });
+            }
+
+            // Caring Contact modal acknowledgement
+            const btnAcknowledgeCC = document.getElementById("btn-acknowledge-caring-contact");
+            if (btnAcknowledgeCC) {
+                btnAcknowledgeCC.addEventListener("click", () => {
+                    state.caringContactStage = 1;
+                    saveState();
+                    const modal = document.getElementById("caring-contact-modal");
+                    if (modal) {
+                        modal.classList.remove("active");
+                    }
+                });
+            }
+
             document.getElementById("btn-start-intake").addEventListener("click", () => {
                 showScreen("intake");
                 initIntakeForm();
@@ -1720,10 +1793,37 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function renderSafeBox() {
+            // Reset distress overlays and content visibility
+            const overlay = document.getElementById("safebox-distress-overlay");
+            const content = document.getElementById("safebox-content");
+            const postOverlay = document.getElementById("safebox-post-distress-overlay");
+            const feedbackMsg = document.getElementById("distress-feedback-msg");
+            const btnReturn = document.getElementById("btn-return-dashboard");
+
+            if (overlay) overlay.style.display = "block";
+            if (content) content.style.display = "none";
+            if (postOverlay) postOverlay.style.display = "none";
+            if (feedbackMsg) feedbackMsg.style.display = "none";
+            if (btnReturn) btnReturn.style.display = "none";
+
             document.getElementById("display-reasons-live").innerHTML = state.reasonsLive || "No reasons added yet. Fill out safety details in Intake.";
             document.getElementById("display-distraction-activities").innerHTML = state.distractions || "No distraction activities listed yet.";
             document.getElementById("display-safe-contacts").innerHTML = state.safeContacts || "No safe contacts listed yet.";
             renderLinkedFilesList();
+        }
+
+        function checkCaringContactModal() {
+            ensurePolarisState();
+            if (state.lastCrisisEvent && state.caringContactStage === 0) {
+                const elapsed = Date.now() - state.lastCrisisEvent;
+                const twentyFourHours = 24 * 60 * 60 * 1000;
+                if (elapsed >= twentyFourHours) {
+                    const modal = document.getElementById("caring-contact-modal");
+                    if (modal) {
+                        modal.classList.add("active");
+                    }
+                }
+            }
         }
 
         function renderLinkedFilesList() {
@@ -6679,6 +6779,8 @@ Your response should be under 100 words. Stick to objective mechanics, pattern d
         // ==========================================================
 
         const COURSE_MODULES = [
+
+
             {
                 id: 1,
                 title: "Module 1: Suicidal Thinking as Systems Failure",
@@ -6758,7 +6860,24 @@ Your response should be under 100 words. Stick to objective mechanics, pattern d
                 psychology: "State Not Fate is a peer support and routine-tracking scaffold, not a clinic. It cannot diagnose or predict behavior. Understanding these boundaries keeps users safe from false expectations. If a crisis occurs, the system must immediately hand off to human support structures (like 988).",
                 exercise: "Review the Product Boundaries declaration. Write a reflection on why it is critical for an AI or digital tool to know its limits and avoid pretending to have clinical authority.",
                 placeholder: "Acknowledging that State Not Fate is an adjunctive tool rather than a clinic is important because..."
+            },
+            {
+                id: 11,
+                title: "Module 11: Childhood Trauma & The Chronic Risk Stack",
+                objective: "Identify how early adversity builds a chronic vulnerability stack.",
+                psychology: "Early trauma (like childhood surgeries or extreme religious alienation) acts as a chronic risk stack, significantly lowering baseline capacity to handle stress. When triggered, the system defaults to isolation or numbing behaviors (like forced alcohol schedules) as maladaptive buffers against perceived existential failure.",
+                exercise: "List one chronic risk factor from your past that still drains your capacity today, and one new physical anchor you can implement to offset it.",
+                placeholder: "Reflect on your chronic risk stack here..."
+            },
+            {
+                id: 12,
+                title: "Module 12: Dancing in the Rain - Acceptance & Capacity",
+                objective: "Shift from trying to stop the depression to managing capacity within it.",
+                psychology: "Depression often creates a thick 'stink cloud' of nihilism and perceived inferiority, especially when compounded by uncontrollable physical losses. Survival requires pivoting from 'stopping the rain' to 'dancing in it'—accepting the unchangeable and finding micro-anchors to rebuild a sense of purpose.",
+                exercise: "Identify one aspect of your current situation that is completely outside your control. How can you show up with a small win (like a smile or caring for a pet) despite it?",
+                placeholder: "Reflect on acceptance and micro-anchors here..."
             }
+
         ];
 
         const COMPENDIUM_TABLES = {
@@ -6988,6 +7107,7 @@ Your response should be under 100 words. Stick to objective mechanics, pattern d
         );
 
         Object.assign(COMPENDIUM_TABLES, {
+
             table1: `
                 <table style="width: 100%; border-collapse: collapse;">
                     <thead>
@@ -7159,7 +7279,11 @@ Your response should be under 100 words. Stick to objective mechanics, pattern d
                         </tr>
                     </tbody>
                 </table>
-            `
+            `,
+            chris_3_narrowing_options: `
+<div class='table-responsive'><table class='w-full'><thead><tr><th>Systems Phase</th><th>Vulnerability</th><th>System SOP Interventions</th></tr></thead><tbody><tr><td>Startup Drag</td><td>The depression loop artificially narrows perceived positive outcomes, removing all 'good' possibilities.</td><td><strong>Stop-Loss Technique:</strong> Set a 15-20 min timer on rumination. When the timer hits, forcefully pivot attention to put the spiral in a box.<br><br><strong>Circadian Rhythm:</strong> Lock down a 24-hour routine. Use daylight to sync cortisol and melatonin.</td></tr></tbody></table></div>
+            `,
+
         });
 
         const SUICIDE_ACTION_MAP = {

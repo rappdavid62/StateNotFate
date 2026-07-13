@@ -1282,101 +1282,167 @@
 
             <!-- TAB 2: CRISIS SAFE BOX VIEW -->
             <div id="tab-safebox" class="tab-content hidden">
-                <div class="glass-card">
-                    <div class="safebox-header">
-                        <h2>CRISIS SAFE BOX Dashboard</h2>
-                        <span class="badge" style="background: var(--accent-red); color:#fff;">Highly Confidential / Local Storage Only</span>
+                <!-- Pre-distress overlay -->
+                <div id="safebox-distress-overlay" class="glass-card text-center" style="max-width: 500px; margin: 2rem auto; padding: 2rem;">
+                    <h3 style="color: var(--accent-red); margin-bottom: 1rem; font-size: 1.35rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                        <span>🔒</span> Unlock Crisis Safe Box
+                    </h3>
+                    <p class="text-secondary" style="font-size: 0.9rem; line-height: 1.5; margin-bottom: 1.5rem;">
+                        Before unlocking your confidential Crisis Safe Box, please log your current distress level. This helps track changes in your state over time.
+                    </p>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="safebox-pre-distress" class="safebox-field-label" style="display: block; margin-bottom: 0.5rem; font-weight: bold; font-size: 0.85rem;">Current Distress Level (1-10)</label>
+                        <select id="safebox-pre-distress" style="width: 100%; padding: 0.75rem; border-radius: 6px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.15); color: var(--text-primary);">
+                            <option value="1">1 - Very peaceful / no distress</option>
+                            <option value="2">2</option>
+                            <option value="3">3 - Mild distress</option>
+                            <option value="4">4</option>
+                            <option value="5" selected>5 - Moderate distress</option>
+                            <option value="6">6</option>
+                            <option value="7">7 - High distress</option>
+                            <option value="8">8</option>
+                            <option value="9">9 - Extreme distress</option>
+                            <option value="10">10 - Active crisis state</option>
+                        </select>
                     </div>
+                    <button class="btn btn-primary" id="btn-unlock-safebox" style="width: 100%; padding: 0.75rem;">Submit & Unlock Safe Box</button>
+                </div>
 
-                    <div class="safebox-grid">
-                        
-                        <div class="safety-plan-block">
+                <!-- Main Safebox Content -->
+                <div id="safebox-content" style="display: none;">
+                    <div class="glass-card">
+                        <div class="safebox-header">
+                            <h2>CRISIS SAFE BOX Dashboard</h2>
+                            <span class="badge" style="background: var(--accent-red); color:#fff;">Highly Confidential / Local Storage Only</span>
+                        </div>
+
+                        <div class="safebox-grid">
                             
-                            <div>
-                                <div class="safebox-field-label">My Reasons to Live</div>
-                                <div class="safebox-display-box" id="display-reasons-live">Reasons list...</div>
-                            </div>
-
-                            <div>
-                                <div class="safebox-field-label">Safe Coping Actions</div>
-                                <div class="safebox-display-box" id="display-distraction-activities">Coping items...</div>
-                            </div>
-
-                            <div>
-                                <div class="safebox-field-label">Safe Contacts</div>
-                                <div class="safebox-display-box" id="display-safe-contacts">No safe contacts listed yet.</div>
-                            </div>
-
-                            <!-- Private Linked Writings Vault -->
-                            <div class="linked-files-block mt-2">
-                                <div class="linked-files-header">
-                                    <div class="safebox-field-label" style="margin-bottom:0;">Linked Writings & Private Logs</div>
-                                </div>
-                                <p class="text-muted" style="font-size:0.8rem; margin-top:-0.25rem;">Log file paths of your local notes/writings so you can quickly recall them in crisis states.</p>
+                            <div class="safety-plan-block">
                                 
-                                <div class="flex-between gap-1 mt-1">
-                                    <input type="text" id="input-link-filename" placeholder="File Name (e.g. My Suicide Note / Raw Thoughts)" style="flex:1;">
-                                    <input type="text" id="input-link-path" placeholder="File Path (e.g. C:/Users/rappd/thoughts.txt)" style="flex:1;">
-                                    <button class="btn btn-primary" id="btn-add-file-link" style="padding:0.75rem 1rem;">Link File</button>
+                                <div>
+                                    <div class="safebox-field-label">My Reasons to Live</div>
+                                    <div class="safebox-display-box" id="display-reasons-live">Reasons list...</div>
                                 </div>
 
-                                <div class="linked-files-list mt-2" id="linked-files-container">
+                                <div>
+                                    <div class="safebox-field-label">Safe Coping Actions</div>
+                                    <div class="safebox-display-box" id="display-distraction-activities">Coping items...</div>
                                 </div>
+
+                                <div>
+                                    <div class="safebox-field-label">Safe Contacts</div>
+                                    <div class="safebox-display-box" id="display-safe-contacts">No safe contacts listed yet.</div>
+                                </div>
+
+                                <!-- Private Linked Writings Vault -->
+                                <div class="linked-files-block mt-2">
+                                    <div class="linked-files-header">
+                                        <div class="safebox-field-label" style="margin-bottom:0;">Linked Writings & Private Logs</div>
+                                    </div>
+                                    <p class="text-muted" style="font-size:0.8rem; margin-top:-0.25rem;">Log file paths of your local notes/writings so you can quickly recall them in crisis states.</p>
+                                    
+                                    <div class="flex-between gap-1 mt-1">
+                                        <input type="text" id="input-link-filename" placeholder="File Name (e.g. My Suicide Note / Raw Thoughts)" style="flex:1;">
+                                        <input type="text" id="input-link-path" placeholder="File Path (e.g. C:/Users/rappd/thoughts.txt)" style="flex:1;">
+                                        <button class="btn btn-primary" id="btn-add-file-link" style="padding:0.75rem 1rem;">Link File</button>
+                                    </div>
+
+                                    <div class="linked-files-list mt-2" id="linked-files-container">
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- Right: Standard support resources -->
+                            <div class="safety-plan-block">
+                                
+                                <div class="hotline-card glass-card">
+                                    <h3 class="text-red">🚨 Immediate Crisis support</h3>
+                                    <p class="text-secondary mt-1" style="font-size:0.85rem;">If your thoughts turn to direct intent, please call or text these numbers immediately. It is anonymous, confidential, and safe.</p>
+                                    <ul class="hotline-list">
+                                        <li>
+                                            <span>National Crisis Line</span>
+                                            <span class="hotline-number">988</span>
+                                        </li>
+                                        <li>
+                                            <span>Crisis Text Line</span>
+                                            <span class="hotline-number">Text HOME to 741741</span>
+                                        </li>
+                                        <li>
+                                            <span>Emergency Services</span>
+                                            <span class="hotline-number">911</span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="glass-card">
+                                    <h3>The Suicide Note Paradigm</h3>
+                                    <p class="text-secondary mt-1" style="font-size:0.85rem; line-height: 1.45;">
+                                        Your linked crisis notes represent raw, intense feelings from previous severe states. 
+                                        By placing them here side-by-side with your <strong>Reasons to Live</strong> and <strong>Structured Safety Plan</strong>, 
+                                        we integrate those feelings into a survival architecture. 
+                                        <br><br>
+                                        Read your safety plan first. Reach out to a trusted person you named in your plan. Call 988. The state is temporary; it is not your fate.
+                                    </p>
+                                </div>
+
+                                <div class="glass-card mt-2" style="border-left: 2px solid var(--accent-orange); background: rgba(240, 115, 30, 0.01);">
+                                    <h3 style="color: var(--accent-orange);">💬 Quick Crisis Scripts</h3>
+                                    <p class="text-secondary mt-1" style="font-size:0.8rem; line-height: 1.4;">
+                                        When energy is zero or you are in panic, copy a script with a single click to reach out to a contact.
+                                    </p>
+                                    <div style="display:flex; flex-direction:column; gap:0.5rem; margin-top:0.75rem;">
+                                        <button class="btn btn-secondary btn-small" onclick="navigator.clipboard.writeText('I am not doing well and I do not want to be alone with my thoughts right now. Can you stay with me by text or phone while I get grounded or contact more support?'); showToast('Crisis check-in text copied.', 'success');" style="text-align:left; font-size:0.75rem; padding:0.5rem 0.75rem; justify-content:flex-start; display:flex; align-items:center; gap:0.4rem;">
+                                            <span>📋</span> <span>Copy: "I do not want to be alone right now..."</span>
+                                        </button>
+                                        <button class="btn btn-secondary btn-small" onclick="navigator.clipboard.writeText('My warning signs are getting worse and I need a little more contact than usual tonight. I do not need you to fix everything. I need you to stay connected with me while I follow my safety plan.'); showToast('Safety tracking text copied.', 'success');" style="text-align:left; font-size:0.75rem; padding:0.5rem 0.75rem; justify-content:flex-start; display:flex; align-items:center; gap:0.4rem;">
+                                            <span>📋</span> <span>Copy: "My warning signs are getting worse..."</span>
+                                        </button>
+                                    </div>
+                                </div>
+
                             </div>
 
                         </div>
 
-                        <!-- Right: Standard support resources -->
-                        <div class="safety-plan-block">
-                            
-                            <div class="hotline-card glass-card">
-                                <h3 class="text-red">🚨 Immediate Crisis support</h3>
-                                <p class="text-secondary mt-1" style="font-size:0.85rem;">If your thoughts turn to direct intent, please call or text these numbers immediately. It is anonymous, confidential, and safe.</p>
-                                <ul class="hotline-list">
-                                    <li>
-                                        <span>National Crisis Line</span>
-                                        <span class="hotline-number">988</span>
-                                    </li>
-                                    <li>
-                                        <span>Crisis Text Line</span>
-                                        <span class="hotline-number">Text HOME to 741741</span>
-                                    </li>
-                                    <li>
-                                        <span>Emergency Services</span>
-                                        <span class="hotline-number">911</span>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <div class="glass-card">
-                                <h3>The Suicide Note Paradigm</h3>
-                                <p class="text-secondary mt-1" style="font-size:0.85rem; line-height: 1.45;">
-                                    Your linked crisis notes represent raw, intense feelings from previous severe states. 
-                                    By placing them here side-by-side with your <strong>Reasons to Live</strong> and <strong>Structured Safety Plan</strong>, 
-                                    we integrate those feelings into a survival architecture. 
-                                    <br><br>
-                                    Read your safety plan first. Reach out to a trusted person you named in your plan. Call 988. The state is temporary; it is not your fate.
-                                </p>
-                            </div>
-
-                            <div class="glass-card mt-2" style="border-left: 2px solid var(--accent-orange); background: rgba(240, 115, 30, 0.01);">
-                                <h3 style="color: var(--accent-orange);">💬 Quick Crisis Scripts</h3>
-                                <p class="text-secondary mt-1" style="font-size:0.8rem; line-height: 1.4;">
-                                    When energy is zero or you are in panic, copy a script with a single click to reach out to a contact.
-                                </p>
-                                <div style="display:flex; flex-direction:column; gap:0.5rem; margin-top:0.75rem;">
-                                    <button class="btn btn-secondary btn-small" onclick="navigator.clipboard.writeText('I am not doing well and I do not want to be alone with my thoughts right now. Can you stay with me by text or phone while I get grounded or contact more support?'); showToast('Crisis check-in text copied.', 'success');" style="text-align:left; font-size:0.75rem; padding:0.5rem 0.75rem; justify-content:flex-start; display:flex; align-items:center; gap:0.4rem;">
-                                        <span>📋</span> <span>Copy: "I do not want to be alone right now..."</span>
-                                    </button>
-                                    <button class="btn btn-secondary btn-small" onclick="navigator.clipboard.writeText('My warning signs are getting worse and I need a little more contact than usual tonight. I do not need you to fix everything. I need you to stay connected with me while I follow my safety plan.'); showToast('Safety tracking text copied.', 'success');" style="text-align:left; font-size:0.75rem; padding:0.5rem 0.75rem; justify-content:flex-start; display:flex; align-items:center; gap:0.4rem;">
-                                        <span>📋</span> <span>Copy: "My warning signs are getting worse..."</span>
-                                    </button>
-                                </div>
-                            </div>
-
+                        <!-- Close button at the bottom -->
+                        <div style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem; display: flex; justify-content: flex-end;">
+                            <button class="btn btn-secondary" id="btn-close-safebox" style="padding: 0.75rem 1.5rem; color: var(--accent-red); border-color: rgba(230,40,60,0.35);">Close Safe Box</button>
                         </div>
-
                     </div>
+                </div>
+
+                <!-- Post-distress overlay -->
+                <div id="safebox-post-distress-overlay" class="glass-card text-center" style="display: none; max-width: 500px; margin: 2rem auto; padding: 2rem;">
+                    <h3 style="color: var(--accent-orange); margin-bottom: 1rem; font-size: 1.35rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                        <span>🔒</span> Close Crisis Safe Box
+                    </h3>
+                    <p class="text-secondary" style="font-size: 0.9rem; line-height: 1.5; margin-bottom: 1.5rem;">
+                        Please rate your distress level now. Did reviewing your reasons to live and safety plans help reduce your distress?
+                    </p>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="safebox-post-distress" class="safebox-field-label" style="display: block; margin-bottom: 0.5rem; font-weight: bold; font-size: 0.85rem;">Post-Safe Box Distress Level (1-10)</label>
+                        <select id="safebox-post-distress" style="width: 100%; padding: 0.75rem; border-radius: 6px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.15); color: var(--text-primary);">
+                            <option value="1">1 - Very peaceful / no distress</option>
+                            <option value="2">2</option>
+                            <option value="3">3 - Mild distress</option>
+                            <option value="4">4</option>
+                            <option value="5" selected>5 - Moderate distress</option>
+                            <option value="6">6</option>
+                            <option value="7">7 - High distress</option>
+                            <option value="8">8</option>
+                            <option value="9">9 - Extreme distress</option>
+                            <option value="10">10 - Active crisis state</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" id="btn-finalize-safebox" style="width: 100%; padding: 0.75rem; margin-bottom: 1rem;">Finalize & Save</button>
+
+                    <!-- Feedback message and Return button -->
+                    <div id="distress-feedback-msg" style="display: none; margin-bottom: 1.5rem; padding: 1rem; border-radius: 6px; background: rgba(40, 167, 69, 0.15); border: 1px solid rgba(40, 167, 69, 0.3); color: var(--accent-teal); font-size: 0.9rem; line-height: 1.4;">
+                        Distress level logged successfully. Thank you for utilizing your safety architecture. Remember: the state is temporary, it is not your fate.
+                    </div>
+                    <button class="btn btn-secondary" id="btn-return-dashboard" style="display: none; width: 100%; padding: 0.75rem;">Return to Dashboard</button>
                 </div>
             </div>
 
@@ -2303,6 +2369,7 @@
                                         <option value="table4">Table 4: Clinical Care Pathways</option>
                                         <option value="table5">Table 5: Public Health and Community Prevention</option>
                                         <option value="table6">Table 6: Equity and Special Populations</option>
+                                        <option value="chris_3_narrowing_options">Table 7: Option Narrowing & The Stop-Loss Technique</option>
                                     </select>
 
                                     <!-- Tables Display Area -->
@@ -3517,7 +3584,24 @@
             </div>
         </div>
 
-
+        <!-- ========================================== -->
+        <!-- CARING CONTACT MODAL                       -->
+        <!-- ========================================== -->
+        <div id="caring-contact-modal" class="modal-overlay">
+            <div class="modal-content safety-modal" style="max-width: 480px;">
+                <div class="modal-title" style="color: var(--accent-orange); font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <span>💌</span> 24-Hour Caring Contact check-in
+                </div>
+                <div class="modal-desc" style="line-height: 1.5; font-size: 0.9rem; color: var(--text-primary); margin-bottom: 1.5rem;">
+                    Hi David, it has been 24 hours since your last severe distress or crisis event. We are checking in because the days following a crisis can be particularly challenging. 
+                    <br><br>
+                    Remember, you are not alone, your progress is real, and support is always available. Keep taking small steps. Your state is temporary; it is not your fate.
+                </div>
+                <div class="modal-footer" style="display: flex; justify-content: flex-end;">
+                    <button class="btn btn-primary" id="btn-acknowledge-caring-contact" style="width: 100%; padding: 0.75rem;">Acknowledge & Close</button>
+                </div>
+            </div>
+        </div>
 
         <!-- ========================================== -->
         <!-- LOCK / PIN SCREEN                          -->

@@ -1,0 +1,146 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Obsidian Second Brain API",
+    "description": "API for interacting with the local Obsidian vault.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://rappd-obsidian-secondbrain.loca.lt",
+      "description": "Local Tunnel URL"
+    }
+  ],
+  "paths": {
+    "/search/": {
+      "get": {
+        "operationId": "searchVault",
+        "summary": "Search the vault for notes",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The search query."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "filename": { "type": "string" },
+                      "result": { "type": "object" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vault/{path}": {
+      "get": {
+        "operationId": "getNote",
+        "summary": "Read a note from the vault",
+        "parameters": [
+          {
+            "name": "path",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Path to the markdown file (e.g., folder/note.md)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The content of the note",
+            "content": {
+              "text/markdown": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "updateNote",
+        "summary": "Create or update a note in the vault",
+        "parameters": [
+          {
+            "name": "path",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Path to the markdown file (e.g., folder/note.md)"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "text/markdown": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Note updated successfully"
+          }
+        }
+      }
+    },
+    "/active/": {
+      "post": {
+        "operationId": "appendToActiveNote",
+        "summary": "Append content to the currently active note in Obsidian",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "text/markdown": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Appended successfully"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}
