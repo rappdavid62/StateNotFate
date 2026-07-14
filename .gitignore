@@ -24,3 +24,8 @@ openai-api-key.txt
 *-DESKTOP-*
 *-Laptop-*
 
+# Local AI Transcription Pipeline
+.venv/
+ingestion_inbox/
+outputs/
+__pycache__/
