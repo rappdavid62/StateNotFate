@@ -1,6 +1,12 @@
 /**
+ * EXPERIMENTAL — DO NOT IMPORT IN PRODUCTION UI
+ *
+ * This module is retained for research reference only.
+ * Production code must use src/safety-routing.js instead.
+ * See issue #5 and the suicide-prevention compendium boundaries.
+ *
  * SUICIDE DECISION DETECTION & RISK ASSESSMENT MODULE
- * 
+ *
  * State Not Fate Safety Enhancement
  * Integrated with Polaris system for real-time monitoring
  * 
