@@ -14,7 +14,8 @@
     "check:links": "node scripts/check-links.mjs",
     "audit:privacy": "node scripts/privacy-audit.mjs",
     "ci": "npm run test:unit && npm run test:integration && npm test",
-    "health": "node scripts/local-health-check.mjs"
+    "health": "node scripts/local-health-check.mjs",
+    "knowledge:build": "node scripts/generate-knowledge-bundle.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.2",
