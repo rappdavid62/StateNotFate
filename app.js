@@ -1800,8 +1800,11 @@ const COMPANION_QUESTION_TREE = {
             const feedbackMsg = document.getElementById("distress-feedback-msg");
             const btnReturn = document.getElementById("btn-return-dashboard");
 
-            if (overlay) overlay.style.display = "block";
-            if (content) content.style.display = "none";
+            const emergencyEntry = sessionStorage.getItem('snfEmergencyFloor') === '1';
+            if (emergencyEntry) sessionStorage.removeItem('snfEmergencyFloor');
+
+            if (overlay) overlay.style.display = emergencyEntry ? "none" : "block";
+            if (content) content.style.display = emergencyEntry ? "block" : "none";
             if (postOverlay) postOverlay.style.display = "none";
             if (feedbackMsg) feedbackMsg.style.display = "none";
             if (btnReturn) btnReturn.style.display = "none";
@@ -4293,6 +4296,10 @@ const COMPANION_QUESTION_TREE = {
             
             ensurePolarisState();
             state.lastVisitDate = getTodayString();
+
+            // Tiny anchors must enter the usable app, even before intake.
+            state.isOnboarded = true;
+            if (state.currentLayer === undefined || state.currentLayer === null) state.currentLayer = 0;
             
             // Set energy to low/collapse equivalent implicitly
             state.todayEnergy = 'low';
@@ -4313,7 +4320,7 @@ const COMPANION_QUESTION_TREE = {
             showScreen("dashboard");
             window.location.hash = "#/polaris";
             
-            showToast("Tiny anchor activated. You only need to do this one thing.", "info", 6000);
+            showToast(`Your one action: ${anchor.text}`, "info", 12000);
         }
 
         function startSmallAction() {
@@ -4384,6 +4391,9 @@ const COMPANION_QUESTION_TREE = {
                 showScreen('dashboard');
                 window.location.hash = "#/safebox";
             }
+            // Emergency entry must reveal support immediately; logging can happen later.
+            sessionStorage.setItem('snfEmergencyFloor', '1');
+
             // Also trigger crisis overlay if high risk
             if (isHighRiskActive()) {
                 triggerCrisisOverlay();
