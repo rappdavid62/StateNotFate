@@ -4738,23 +4738,31 @@ const COMPANION_QUESTION_TREE = {
             try {
                 const controller = new AbortController();
                 const timer = setTimeout(() => controller.abort(), 14000);
-                const response = await fetch('/.netlify/functions/polaris-synthesis', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        stateSummary: buildPolarisSummary(),
-                        knowledgeUnits: (knowledgeUnits || []).slice(0, 5),
-                    }),
-                    signal: controller.signal,
-                });
-                clearTimeout(timer);
+                let response;
+                try {
+                    response = await fetch('/.netlify/functions/polaris-synthesis', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            stateSummary: buildPolarisSummary(),
+                            knowledgeUnits: (knowledgeUnits || []).slice(0, 5),
+                        }),
+                        signal: controller.signal,
+                    });
+                } finally {
+                    clearTimeout(timer);
+                }
 
                 if (!response.ok) {
                     if (statusEl) { statusEl.textContent = 'Using local plan'; statusEl.dataset.source = 'local'; }
                     return null;
                 }
                 const data = await response.json();
-                if (statusEl) { statusEl.textContent = 'AI online'; statusEl.dataset.source = 'ai'; }
+                const isAI = data && data.synthesisSource === 'ai';
+                if (statusEl) {
+                    statusEl.textContent = isAI ? 'AI online' : 'Using local plan';
+                    statusEl.dataset.source = isAI ? 'ai' : 'local';
+                }
                 return data;
             } catch {
                 if (statusEl) { statusEl.textContent = 'Using local plan'; statusEl.dataset.source = 'local'; }

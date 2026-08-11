@@ -176,8 +176,6 @@ async function callOpenAI(systemPrompt, userContent) {
       signal: controller.signal,
     });
 
-    clearTimeout(timer);
-
     if (response.status === 429) throw new Error("rate_limit");
     if (!response.ok) throw new Error(`openai_http_${response.status}`);
 
