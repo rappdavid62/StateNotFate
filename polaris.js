@@ -135,7 +135,7 @@ const PolarisUI = {
     const plan = PolarisProtocol.getTodayPlan();
     container.innerHTML = `
       <div style="padding:1rem;">
-        <h3 style="margin-bottom:0.5rem;">🜁 Polaris — Your Counter-Gravity Companion</h3>
+        <h3 style="margin-bottom:0.5rem;"><span class="polaris-glyph" aria-hidden="true"></span> Polaris — Your Counter-Gravity Companion</h3>
         <p style="margin-bottom:1rem;">${plan.message}</p>
         <button onclick="PolarisUI.showPlan()" class="btn btn-primary">View Today’s Plan</button>
       </div>

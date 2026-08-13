@@ -5,6 +5,63 @@
         let safetyDetection = null;
         let polarisEnhanced = null;
 
+        const SNF_BUILD = {
+            date: '20260812',
+            shortSha: '3513f49',
+            channelHint: 'beta',
+            id: '20260812-3513f49-beta'
+        };
+
+        const LEGACY_GENDERED_MANTRA = "I am a happy, healthy, handsome, confident, charismatic man, and people like me.";
+        const NEUTRAL_DEFAULT_MANTRA = "State is information. I restart without punishment.";
+
+        function resolveSnfChannel(opts) {
+            const options = opts || {};
+            const host = String(options.hostname != null ? options.hostname : (location.hostname || '')).toLowerCase();
+            const search = options.search != null ? options.search : location.search;
+            const storage = options.storage || (typeof localStorage !== 'undefined' ? localStorage : null);
+            // Production host hard-gate: never show BETA UI even with query/localStorage overrides.
+            if (host === 'statenotfate.netlify.app' || host === 'www.statenotfate.netlify.app') {
+                return 'production';
+            }
+            const params = new URLSearchParams(search || '');
+            if (host.includes('statenotfatebeta') || params.get('channel') === 'beta') {
+                try { if (storage) storage.setItem('SNF_CHANNEL', 'beta'); } catch (e) {}
+                return 'beta';
+            }
+            try {
+                if (storage && storage.getItem('SNF_CHANNEL') === 'beta') return 'beta';
+            } catch (e) {}
+            return 'production';
+        }
+
+        function isBetaChannel() {
+            return resolveSnfChannel() === 'beta';
+        }
+
+        function applyChannelChrome() {
+            const channel = resolveSnfChannel();
+            document.documentElement.dataset.snfChannel = channel;
+            document.documentElement.dataset.buildId = SNF_BUILD.id;
+            document.documentElement.classList.toggle('snf-channel-beta', channel === 'beta');
+
+            const banner = document.getElementById('beta-channel-banner');
+            const stamp = document.getElementById('beta-build-stamp');
+            const stampText = `Build · ${SNF_BUILD.date} · ${SNF_BUILD.shortSha} · beta`;
+            if (stamp) {
+                stamp.textContent = stampText;
+                stamp.setAttribute('data-build-id', SNF_BUILD.id);
+            }
+            document.querySelectorAll('[data-beta-only]').forEach((el) => {
+                if (channel === 'beta') el.removeAttribute('hidden');
+                else el.setAttribute('hidden', '');
+            });
+            if (banner) {
+                if (channel === 'beta') banner.removeAttribute('hidden');
+                else banner.setAttribute('hidden', '');
+            }
+        }
+
         async function loadSafetyModules() {
             try {
                 const detectionMod = await import('./src/safety-detection.js');
@@ -44,7 +101,7 @@
                 psychosis: 0,
                 mania: 0
             },
-            customMantra: "I am a happy, healthy, handsome, confident, charismatic man, and people like me.",
+            customMantra: NEUTRAL_DEFAULT_MANTRA,
             negativeBeliefs: "",
             worstTime: "morning",
             stillWorks: "",
@@ -460,13 +517,16 @@ const COMPANION_QUESTION_TREE = {
             cognitivelab: document.getElementById("tab-cognitivelab"),
             documentcenter: document.getElementById("tab-documentcenter"),
             explorer: document.getElementById("tab-explorer"),
-            suicideprevention: document.getElementById("tab-suicideprevention")
+            suicideprevention: document.getElementById("tab-suicideprevention"),
+            settings: document.getElementById("tab-settings")
         };
 
         let tempPhqAnswers = new Array(9).fill(null);
-        let tempPinInput = ""; 
+        let tempPinInput = "";
+        let pendingDangerAction = null;
 
         function init() {
+            applyChannelChrome();
             loadState();
             loadSafetyModules();
             setupEventListeners();
@@ -505,7 +565,7 @@ const COMPANION_QUESTION_TREE = {
                 const tabId = parts[0];
                 const subtabId = parts[1];
 
-                const validTabs = ["dashboard", "polaris", "momentum", "safebox", "mediaconsole", "progression", "cognitivelab", "documentcenter", "explorer", "suicideprevention"];
+                const validTabs = ["dashboard", "polaris", "momentum", "safebox", "mediaconsole", "progression", "cognitivelab", "documentcenter", "explorer", "suicideprevention", "settings"];
                 let targetTab = tabId;
                 if (!validTabs.includes(targetTab)) {
                     targetTab = (state.polaris && state.polaris.enabled) ? "polaris" : "dashboard";
@@ -634,6 +694,9 @@ const COMPANION_QUESTION_TREE = {
                     if (state.lastCrisisEvent === undefined) state.lastCrisisEvent = null;
                     if (state.caringContactStage === undefined) state.caringContactStage = 0;
                     if (state.safeboxLogs === undefined) state.safeboxLogs = [];
+                    if (!state.customMantra || state.customMantra === LEGACY_GENDERED_MANTRA) {
+                        state.customMantra = NEUTRAL_DEFAULT_MANTRA;
+                    }
                     // Migrate polaris.anchors.today from array (v2/v3) to object (v4, ID-based)
                     if (state.polaris && state.polaris.anchors && Array.isArray(state.polaris.anchors.today)) {
                         state.polaris.anchors.today = {};
@@ -806,8 +869,60 @@ const COMPANION_QUESTION_TREE = {
                 renderMomentumTab();
             } else if (tabId === "suicideprevention") {
                 renderSuicidePreventionTab();
+            } else if (tabId === "settings") {
+                // Settings is static HTML; danger-zone handlers are wired once in setupEventListeners.
             }
             return true;
+        }
+
+        function openDangerConfirm(title, message, onConfirm) {
+            pendingDangerAction = onConfirm;
+            const modal = document.getElementById("danger-confirm-modal");
+            const titleEl = document.getElementById("danger-confirm-title");
+            const msgEl = document.getElementById("danger-confirm-message");
+            if (titleEl) titleEl.textContent = title;
+            if (msgEl) msgEl.textContent = message;
+            if (modal) modal.classList.add("active");
+        }
+
+        function closeDangerConfirm() {
+            pendingDangerAction = null;
+            const modal = document.getElementById("danger-confirm-modal");
+            if (modal) modal.classList.remove("active");
+        }
+
+        function shouldUseCollapseFirstHome() {
+            if (!isBetaChannel()) return false;
+            if (sessionStorage.getItem("snfShowFullMainFrame") === "1") return false;
+            const emergency = sessionStorage.getItem("snfEmergencyFloor") === "1";
+            const energy = (state.todayEnergy || "").toLowerCase();
+            return emergency || energy === "collapse";
+        }
+
+        function updateCollapseFirstHome() {
+            const panel = document.getElementById("collapse-first-home");
+            const full = document.getElementById("full-main-frame");
+            const active = shouldUseCollapseFirstHome();
+            document.documentElement.classList.toggle("collapse-first-active", active);
+            if (panel) panel.classList.toggle("hidden", !active);
+            if (full) full.classList.toggle("collapse-first-hidden", active);
+
+            const title = document.getElementById("collapse-next-action-title");
+            const copy = document.getElementById("collapse-next-action-copy");
+            const primary = document.getElementById("btn-collapse-primary-action");
+            if (!active || !title || !copy || !primary) return;
+
+            if (sessionStorage.getItem("snfEmergencyFloor") === "1") {
+                title.textContent = "Emergency Floor";
+                copy.textContent = "Open Crisis Safe Box and keep exits visible. One floor action is enough.";
+                primary.textContent = "Open Emergency Floor";
+                primary.dataset.mode = "emergency";
+            } else {
+                title.textContent = "Start Small";
+                copy.textContent = "Collapse mode: one tiny next action. Crisis exits stay unlocked above.";
+                primary.textContent = "Start Small";
+                primary.dataset.mode = "small";
+            }
         }
 
         function setupEventListeners() {
@@ -955,25 +1070,77 @@ const COMPANION_QUESTION_TREE = {
                     const tabBtn = e.target.closest(".nav-item");
                     if (!tabBtn) return;
                     const tabId = tabBtn.getAttribute("data-tab");
-                    const buttonId = tabBtn.id;
-                    if (tabId === "reset-intake") {
-                        if (confirm("Are you sure you want to reset your intake data? This will clear your current dashboard and progress history.")) {
-                            resetToOnboarding();
+                    if (!tabId) return;
+                    showTab(tabId);
+                    if (tabId === "safebox") {
+                        renderSafeBox();
+                        if (isHighRiskActive()) {
+                            triggerCrisisOverlay();
                         }
-                    } else if (buttonId === "btn-tab-lock") {
-                        lockApplication();
-                    } else {
-                        showTab(tabId);
-                        if (tabId === "safebox") {
-                            renderSafeBox();
-                            if (isHighRiskActive()) {
-                                triggerCrisisOverlay();
-                            }
-                        }
-                        window.location.hash = `#/${tabId}`;
                     }
+                    window.location.hash = `#/${tabId}`;
                 });
             });
+
+            document.querySelectorAll("[data-tab-jump]").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const tabId = btn.getAttribute("data-tab-jump");
+                    if (!tabId) return;
+                    showTab(tabId);
+                    window.location.hash = `#/${tabId}`;
+                    if (tabId === "safebox") renderSafeBox();
+                });
+            });
+
+            const btnSettingsLock = document.getElementById("btn-settings-lock");
+            if (btnSettingsLock) {
+                btnSettingsLock.addEventListener("click", () => {
+                    openDangerConfirm(
+                        "Lock App?",
+                        "This will lock the private dashboard behind your PIN. Crisis help links stay available on the lock screen without unlocking.",
+                        () => lockApplication()
+                    );
+                });
+            }
+            const btnSettingsReset = document.getElementById("btn-settings-reset");
+            if (btnSettingsReset) {
+                btnSettingsReset.addEventListener("click", () => {
+                    openDangerConfirm(
+                        "Reset Intake?",
+                        "This clears local intake data and progress history on this device. Crisis resources remain available.",
+                        () => resetToOnboarding()
+                    );
+                });
+            }
+            const btnDangerCancel = document.getElementById("btn-danger-confirm-cancel");
+            const btnDangerOk = document.getElementById("btn-danger-confirm-ok");
+            if (btnDangerCancel) btnDangerCancel.addEventListener("click", closeDangerConfirm);
+            if (btnDangerOk) {
+                btnDangerOk.addEventListener("click", () => {
+                    const action = pendingDangerAction;
+                    closeDangerConfirm();
+                    if (typeof action === "function") action();
+                });
+            }
+
+            const btnShowFull = document.getElementById("btn-show-full-main-frame");
+            if (btnShowFull) {
+                btnShowFull.addEventListener("click", () => {
+                    sessionStorage.setItem("snfShowFullMainFrame", "1");
+                    updateCollapseFirstHome();
+                });
+            }
+            const btnCollapsePrimary = document.getElementById("btn-collapse-primary-action");
+            if (btnCollapsePrimary) {
+                btnCollapsePrimary.addEventListener("click", () => {
+                    if (btnCollapsePrimary.dataset.mode === "emergency") goToEmergencyFloor();
+                    else startSmallAction();
+                });
+            }
+            const btnCollapseEmergency = document.getElementById("btn-collapse-emergency");
+            if (btnCollapseEmergency) {
+                btnCollapseEmergency.addEventListener("click", () => goToEmergencyFloor());
+            }
 
             document.querySelectorAll(".energy-btn").forEach(btn => {
                 btn.addEventListener("click", (e) => {
@@ -986,9 +1153,11 @@ const COMPANION_QUESTION_TREE = {
                     state.todayEnergy = energyVal;
                     if (energyVal === "collapse") {
                         logMissInHistory();
+                        if (isBetaChannel()) sessionStorage.removeItem("snfShowFullMainFrame");
                     }
                     
                     saveState();
+                    updateCollapseFirstHome();
                     
                     const safetyCard = document.getElementById("safety-checkin-card");
                     if (safetyCard) {
@@ -1472,6 +1641,7 @@ const COMPANION_QUESTION_TREE = {
             renderDailyChecklist();
             updateDashboardMetrics();
             renderReEntryCard();
+            updateCollapseFirstHome();
         }
 
         function isMantraCompletedToday() {
@@ -4160,7 +4330,7 @@ const COMPANION_QUESTION_TREE = {
             container.innerHTML = `
                 <div class="reentry-card">
                     <div class="reentry-header">
-                        <span class="icon">🜁</span> Smart Re-Entry Signal
+                        <span class="icon"><span class="polaris-glyph" aria-hidden="true"></span></span> Smart Re-Entry Signal
                     </div>
                     <div class="reentry-content">
                         ${message}
@@ -4393,6 +4563,8 @@ const COMPANION_QUESTION_TREE = {
             }
             // Emergency entry must reveal support immediately; logging can happen later.
             sessionStorage.setItem('snfEmergencyFloor', '1');
+            if (isBetaChannel()) sessionStorage.removeItem('snfShowFullMainFrame');
+            updateCollapseFirstHome();
 
             // Also trigger crisis overlay if high risk
             if (isHighRiskActive()) {
@@ -6354,6 +6526,11 @@ Your response should be under 100 words. Stick to objective mechanics, pattern d
         window.completeStopLoss = completeStopLoss;
         window.showTab = showTab;
         window.showScreen = showScreen;
+        window.resolveSnfChannel = resolveSnfChannel;
+        window.isBetaChannel = isBetaChannel;
+        window.applyChannelChrome = applyChannelChrome;
+        window.SNF_BUILD = SNF_BUILD;
+        window.updateCollapseFirstHome = updateCollapseFirstHome;
         window.answerCompanionQuestion = answerCompanionQuestion;
         window.removeGratitudeEntry = removeGratitudeEntry;
         window.removeThoughtCorrection = removeThoughtCorrection;
