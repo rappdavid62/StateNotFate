@@ -19,6 +19,11 @@ export class PolarisSafetyRouter {
     return Math.max(min, Math.min(max, Number(n) || 0));
   }
 
+  highBurden(value) {
+    // Polaris function-burden ratings are 0-4: 3=serious, 4=severe/disabling.
+    return Number(value) >= 3;
+  }
+
   recentJournalEntry(state = this.state) {
     const entries = Array.isArray(state.safetyJournal) ? state.safetyJournal : [];
     if (!entries.length) return null;
@@ -76,16 +81,16 @@ export class PolarisSafetyRouter {
       score += 1; domains.push('function'); reasons.push('multi-day loss of routine');
     }
 
-    if ((Number(ratings.social) || 0) > 30 || state.socialIsolation === 'severe') {
+    if (this.highBurden(ratings.social) || state.socialIsolation === 'severe') {
       score += 1; domains.push('connection'); reasons.push('marked isolation');
     }
-    if ((Number(ratings.meaning) || 0) > 30 && Number(state.currentHopeLevel) <= 1) {
+    if (this.highBurden(ratings.meaning) && Number(state.currentHopeLevel) <= 1) {
       score += 1.5; domains.push('future'); reasons.push('low hope plus meaning/future collapse');
     }
-    if ((Number(ratings.sleep) || 0) > 30 || state.sleepCrisis === true) {
+    if (this.highBurden(ratings.sleep) || state.sleepCrisis === true) {
       score += 1; domains.push('sleep'); reasons.push('major sleep/circadian disruption');
     }
-    if ((Number(ratings.shame) || 0) > 35 || state.entrapment === 'high') {
+    if (this.highBurden(ratings.shame) || state.entrapment === 'high') {
       score += 0.75; domains.push('cognition'); reasons.push('shame/entrapment load');
     }
     if (state.agitation === 'severe' || state.panic === 'severe') {
