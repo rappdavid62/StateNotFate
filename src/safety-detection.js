@@ -1,36 +1,25 @@
 /**
- * SUICIDE DECISION DETECTION & RISK ASSESSMENT MODULE
- * 
- * State Not Fate Safety Enhancement
- * Integrated with Polaris system for real-time monitoring
- * 
- * Design Principles:
- * - Non-shaming, evidence-based language
- * - Function-focused assessment (not just mood)
- * - Integration with existing anchors
- * - Ethical boundaries & professional care referral
- * - State as information, not identity
+ * POLARIS DIRECT SAFETY ASSESSMENT MODULE
+ *
+ * Numerical scoring is retained as a support-routing aid.
+ * The score is NOT an actuarial probability of attempt or suicide death.
+ * Dynamic deterioration is handled separately by polaris-safety-routing.js.
  */
 
 export class SafetyDetectionModule {
   constructor(polarisState = {}) {
     this.state = polarisState;
-    this.history = [];
+    this.assessmentHistory = [];
     this.riskProfile = {
-      currentLevel: 'low', // low, moderate, elevated, acute
-      trendDirection: 'stable', // stable, improving, worsening, critical
+      currentLevel: 'low',
+      trendDirection: 'stable',
       lastAssessmentDate: null,
       activeFlags: [],
       protectiveFactors: [],
       concerningPatterns: []
     };
-    this.assessmentHistory = [];
   }
 
-  /**
-   * TIER 1: Quick Ideation Screen (2 questions)
-   * Non-invasive daily check
-   */
   quickIdeationScreen() {
     return {
       id: 'quick-ideation',
@@ -38,8 +27,8 @@ export class SafetyDetectionModule {
       questions: [
         {
           id: 'ideation-presence',
-          text: 'In the last 24 hours, have you had any thoughts that life might be better if you were not here?',
-          subtext: 'This might feel like wanting to die, or just disappearing, or a general sense of hopelessness about the future.',
+          text: 'In the last 24 hours, have you had thoughts that life might be better if you were not here?',
+          subtext: 'The point is to understand what is happening now, not to label you.',
           responseScale: [
             { value: 0, label: 'Not at all' },
             { value: 1, label: 'Briefly, but it passed quickly' },
@@ -47,18 +36,17 @@ export class SafetyDetectionModule {
             { value: 3, label: 'Most of the day' },
             { value: 4, label: 'Almost constantly' }
           ],
-          followUpIf: [2, 3, 4]
+          followUpIf: [1, 2, 3, 4]
         },
         {
           id: 'active-planning',
-          text: 'Have you been thinking about ways to harm yourself or making plans?',
-          subtext: 'This includes detailed thinking about methods, gathering items, or saying goodbye.',
+          text: 'Have you been thinking about harming yourself or preparing to act on suicidal thoughts?',
           responseScale: [
             { value: 0, label: 'No' },
-            { value: 1, label: 'Brief thoughts I dismiss quickly' },
-            { value: 2, label: 'Some planning/research, but unclear if serious' },
-            { value: 3, label: 'Concrete plans' },
-            { value: 4, label: 'Imminent/active plans' }
+            { value: 1, label: 'Brief thoughts, no preparation' },
+            { value: 2, label: 'Some preparation or growing intent' },
+            { value: 3, label: 'Clear current plan or preparation' },
+            { value: 4, label: 'I may act very soon' }
           ],
           followUpIf: [1, 2, 3, 4]
         }
@@ -66,578 +54,302 @@ export class SafetyDetectionModule {
     };
   }
 
-  /**
-   * TIER 2: Intent vs Ideation Differentiation
-   * Follow-up if ideation is present
-   */
   intentVsIdeationAssessment() {
     return {
       id: 'intent-differentiation',
       type: 'detailed',
-      context: 'Understanding whether these thoughts reflect genuine intent or are intrusive thoughts',
+      context: 'Clarify current intent, immediacy, access, and ability to stay safe.',
       questions: [
         {
           id: 'intent-conviction',
-          text: 'On a scale of 0-10, how certain do you feel that acting on these thoughts is the right decision?',
-          responseType: 'slider',
-          range: [0, 10],
-          anchors: { 0: 'Not at all certain', 10: 'Completely certain' },
-          flagThreshold: 7
+          text: 'How strong is your current intention to act on these thoughts?',
+          responseScale: [
+            { value: 0, label: 'No intention to act' },
+            { value: 1, label: 'Very low' },
+            { value: 2, label: 'Uncertain / changing' },
+            { value: 3, label: 'Strong' },
+            { value: 4, label: 'I intend to act' }
+          ]
         },
         {
           id: 'access-means',
-          text: 'Do you have ready access to means that could be lethal? (method specificity)',
+          text: 'Do you currently have ready access to something you believe could be lethal?',
           responseScale: [
-            { value: 0, label: 'No access or unclear methods' },
-            { value: 1, label: 'Theoretical knowledge only' },
-            { value: 2, label: 'Some access, but requires effort to obtain' },
-            { value: 3, label: 'Ready access with minimal planning' },
-            { value: 4, label: 'Immediate lethal access' }
-          ],
-          flagThreshold: 2
+            { value: 0, label: 'No ready access' },
+            { value: 1, label: 'Not readily accessible' },
+            { value: 2, label: 'Access could be obtained' },
+            { value: 3, label: 'Ready access' },
+            { value: 4, label: 'Immediate access' }
+          ]
         },
         {
           id: 'plan-timeline',
-          text: 'When do you imagine this might happen?',
+          text: 'How immediate does acting on these thoughts feel?',
           responseScale: [
-            { value: 0, label: 'I do not imagine it happening' },
-            { value: 1, label: 'Vague future (years away or if things get worse)' },
-            { value: 2, label: 'Possible in coming months' },
-            { value: 3, label: 'Specific timeframe (days/weeks)' },
-            { value: 4, label: 'Imminent (today/tonight)' }
-          ],
-          flagThreshold: 2
+            { value: 0, label: 'I do not expect to act' },
+            { value: 1, label: 'Not soon / vague future' },
+            { value: 2, label: 'Could become a problem soon' },
+            { value: 3, label: 'Current specific timeframe' },
+            { value: 4, label: 'I may act now or very soon' }
+          ]
         },
         {
-          id: 'protective-deterrents',
-          text: 'What, if anything, is keeping you from acting on these thoughts?',
-          responseType: 'multiselect',
-          options: [
-            'Fear of the method itself',
-            'Worry about causing pain to others',
-            'Religious/spiritual beliefs',
-            'Uncertainty about whether I really want to die',
-            'Responsibilities (children, others depend on me)',
-            'Hope that things might improve',
-            'Fear of being stopped/discovered',
-            'Feeling too exhausted to plan or act',
-            'Other: ______________'
+          id: 'can-stay-safe',
+          text: 'Do you feel able to stay safe right now?',
+          responseScale: [
+            { value: 0, label: 'Yes' },
+            { value: 2, label: 'I am not sure' },
+            { value: 4, label: 'No' }
           ]
+        },
+        {
+          id: 'reachable-support',
+          text: 'Who or what support is actually reachable right now?',
+          responseType: 'multiselect',
+          options: ['Trusted person', 'Clinician', 'Crisis service', 'Safer place', 'Other reachable support', 'No reachable support']
         }
       ]
     };
   }
 
-  /**
-   * TIER 3: Comprehensive Risk Assessment
-   * Full evaluation if moderate+ risk detected
-   */
   comprehensiveRiskAssessment() {
     return {
       id: 'comprehensive-risk',
       type: 'extensive',
       sections: [
         {
-          name: 'Recent Behavioral Changes',
+          name: 'Current suicidal state',
           questions: [
-            {
-              id: 'social-withdrawal-change',
-              text: 'Have you withdrawn from people or activities significantly more in the last 1-2 weeks?',
-              relatedAnchor: 'Social reintegration anchors'
-            },
-            {
-              id: 'giving-away-items',
-              text: 'Have you given away possessions, written letters, or made arrangements that suggest finality?',
-              severityIndicator: 'high'
-            },
-            {
-              id: 'reckless-behavior',
-              text: 'Have you engaged in unusually risky behaviors (reckless driving, substance abuse spike, self-harm)?',
-              relatedAnchor: 'Body care and substance reality anchors'
-            },
-            {
-              id: 'sleep-pattern-shift',
-              text: 'Has there been a sudden shift in sleep pattern (extreme insomnia or sleeping excessively)?',
-              relatedAnchor: 'Sleep and circadian anchors'
-            }
+            { id: 'frequency-change', text: 'Have suicidal thoughts become more frequent, intense, persistent, or harder to control?' },
+            { id: 'intent-change', text: 'Has your intention to act changed recently?' },
+            { id: 'safety-control', text: 'How confident are you that you can keep yourself safe right now?' }
           ]
         },
         {
-          name: 'Access to Means',
+          name: 'Recent state change',
           questions: [
-            {
-              id: 'firearms-access',
-              text: 'Do you have access to firearms? If yes, are they secured away from you?',
-              specificMethod: true
-            },
-            {
-              id: 'medication-access',
-              text: 'Have you recently obtained or stockpiled medications?',
-              specificMethod: true
-            },
-            {
-              id: 'other-means',
-              text: 'Are there other methods accessible to you that you have researched or considered?',
-              specificMethod: true
-            }
+            { id: 'social-withdrawal-change', text: 'Have you withdrawn much more than usual?' },
+            { id: 'sleep-pattern-shift', text: 'Has sleep or circadian timing changed sharply?' },
+            { id: 'agitation-change', text: 'Has severe agitation, panic, or mixed activation increased?' },
+            { id: 'substance-change', text: 'Has intoxication, withdrawal, or substance-related loss of control increased?' },
+            { id: 'major-stressor', text: 'Has a major relationship, housing, legal, financial, medical, or care-transition stressor occurred?' }
           ]
         },
         {
-          name: 'Protective Factors Inventory',
+          name: 'Action / access',
           questions: [
-            {
-              id: 'reasons-to-live',
-              text: 'List specific reasons why you want to continue living (relationships, goals, values)',
-              responseType: 'freetext',
-              relatedState: 'reasonsLive'
-            },
-            {
-              id: 'social-support',
-              text: 'Do you have at least one person who knows you are struggling and you can contact?',
-              relatedState: 'safeContacts'
-            },
-            {
-              id: 'professional-connection',
-              text: 'Are you currently connected to a therapist, counselor, or psychiatrist?',
-              relatedAnchor: 'Therapy/medication integration'
-            },
-            {
-              id: 'hope-signal',
-              text: 'Have there been any small moments in the last week where you felt even slightly better or saw a possibility of improvement?',
-              relatedAnchor: 'Hope restoration'
-            }
+            { id: 'preparatory-behavior', text: 'Have you taken any steps that feel like preparation to act?' },
+            { id: 'lethal-access', text: 'Is highly lethal access immediate right now?' }
+          ]
+        },
+        {
+          name: 'Rescue capacity',
+          questions: [
+            { id: 'reachable-person', text: 'Is there a person who will answer or come be with you?' },
+            { id: 'reachable-care', text: 'Is urgent professional/crisis support actually reachable?' },
+            { id: 'safer-place', text: 'Is there a safer place you can go or a way to reduce isolation?' },
+            { id: 'environmental-safety', text: 'Can another person help increase time and distance from lethal means?' }
           ]
         }
       ]
     };
   }
 
-  /**
-   * PATTERN DETECTION ALGORITHM
-   * Passive monitoring of state changes for concerning trends
-   */
   detectRiskPatterns(currentState, previousState = null) {
     const patterns = [];
     const timestamp = new Date().toISOString();
+    const ratings = currentState.ratings || {};
+    const high = (v) => Number(v) >= 3;
 
-    // Pattern 1: Rapid Functional Collapse
-    if (currentState.todayEnergy === 'collapse' && 
-        previousState?.todayEnergy !== 'collapse') {
-      patterns.push({
-        type: 'rapid-collapse',
-        severity: 'moderate',
-        description: 'Sudden energy collapse after relative stability',
-        timestamp
-      });
+    if (currentState.todayEnergy === 'collapse' && previousState?.todayEnergy !== 'collapse') {
+      patterns.push({ type: 'rapid-collapse', severity: 'moderate', description: 'Sudden functional collapse', timestamp });
     }
 
-    // Pattern 2: Accelerating Rumination
-    if (currentState.thoughtCorrections?.length < 3 && 
-        (previousState?.thoughtCorrections?.length || 0) > 5) {
-      patterns.push({
-        type: 'rumination-escape',
-        severity: 'moderate',
-        description: 'Abandoned thought correction practice (increased rumination risk)',
-        timestamp
-      });
-    }
-
-    // Pattern 3: Complete Anchor Abandonment
     const todayCompleted = currentState.history?.[0]?.completed?.length || 0;
-    const recentCompleted = currentState.history?.slice(1, 7)
-      .map(d => d.completed?.length || 0)
-      .filter(x => x > 0).length || 0;
-    
-    if (todayCompleted === 0 && recentCompleted > 3) {
-      patterns.push({
-        type: 'anchor-abandonment',
-        severity: 'elevated',
-        description: 'Abrupt cessation of previously maintained anchors',
-        timestamp
-      });
+    const priorActive = currentState.history?.slice(1, 7).filter(d => (d.completed?.length || 0) > 0).length || 0;
+    if (todayCompleted === 0 && priorActive >= 3) {
+      patterns.push({ type: 'anchor-abandonment', severity: 'elevated', description: 'Abrupt loss of previously maintained routine', timestamp });
     }
 
-    // Pattern 4: Social Isolation Spike
-    if (currentState.social > 35 && previousState?.social < 20) {
-      patterns.push({
-        type: 'social-isolation-surge',
-        severity: 'elevated',
-        description: 'Rapid withdrawal from social contact',
-        timestamp
-      });
+    if (high(ratings.social)) {
+      patterns.push({ type: 'social-isolation', severity: 'moderate', description: 'Serious/severe isolation burden', timestamp });
+    }
+    if (high(ratings.meaning) && Number(currentState.currentHopeLevel) <= 1) {
+      patterns.push({ type: 'future-narrowing', severity: 'elevated', description: 'Low hope plus severe meaning/future burden', timestamp });
+    }
+    if (high(ratings.sleep)) {
+      patterns.push({ type: 'sleep-circadian-disruption', severity: 'moderate', description: 'Serious/severe sleep or rhythm disruption', timestamp });
     }
 
-    // Pattern 5: Meaning & Engagement Collapse
-    if (currentState.meaning > 35 && currentState.currentHopeLevel < 2) {
-      patterns.push({
-        type: 'meaning-collapse',
-        severity: 'elevated',
-        description: 'Combined low hope and loss of meaning/purpose',
-        timestamp
-      });
-    }
-
-    // Pattern 6: Zero-Day Accumulation
-    const zeroCount = (currentState.history || [])
-      .slice(0, 7)
-      .filter(d => d.completed?.length === 0)
-      .length;
-    
+    const zeroCount = (currentState.history || []).slice(0, 7).filter(d => (d.completed?.length || 0) === 0).length;
     if (zeroCount >= 5) {
-      patterns.push({
-        type: 'zero-day-cascade',
-        severity: 'acute',
-        description: 'Five or more days with zero anchor completion',
-        timestamp
-      });
+      patterns.push({ type: 'multi-day-functional-loss', severity: 'moderate', description: 'Five or more zero-anchor days', timestamp });
     }
 
     return patterns;
   }
 
-  /**
-   * CONTEXTUAL RISK ASSESSMENT
-   * Considers specific life circumstances and triggering events
-   */
   contextualRiskFactors(state) {
     const factors = {
       recent_losses: [],
       upcoming_stressors: [],
-      anniversary_effects: [],
+      care_transitions: [],
       substance_factors: [],
       medical_factors: []
     };
 
-    // Check for recent losses or rejection
-    if (state.dominantPattern === 'Rejection Sensitivity' || 
-        state.dominantPattern === 'Grief/Loss') {
-      factors.recent_losses.push('Recent relationship/loss theme active');
+    if (state.recentMajorLoss === true || ['Rejection Sensitivity', 'Grief/Loss'].includes(state.dominantPattern)) {
+      factors.recent_losses.push('Recent loss/rejection context');
     }
-
-    // Check for substance escalation
-    if (state.ratings?.eating > 30 || state.history?.[0]?.difficulty === 'extreme') {
-      factors.substance_factors.push('Possible substance use escalation');
+    if (state.recentPsychDischarge === true || state.recentCareTransition === true) {
+      factors.care_transitions.push('Recent care transition');
     }
-
-    // Check for medication changes
-    if (state.lastMedicationChange && 
-        new Date() - new Date(state.lastMedicationChange) < 14 * 24 * 60 * 60 * 1000) {
-      factors.medical_factors.push('Recent medication adjustment');
+    if (state.substanceSafetyConcern === true || state.severeIntoxication === true || state.acuteWithdrawal === true) {
+      factors.substance_factors.push('Current substance-related safety concern');
     }
-
+    if (state.lastMedicationChange && Date.now() - new Date(state.lastMedicationChange).getTime() < 14 * 86400000) {
+      factors.medical_factors.push('Recent medication change');
+    }
     return factors;
   }
 
-  /**
-   * REAL-TIME RISK LEVEL CALCULATION
-   * Combines multiple assessment layers
-   */
-  calculateRiskLevel(assessmentData) {
-    let riskScore = 0;
+  calculateRiskLevel(assessmentData = {}) {
+    const quick = assessmentData.quickScreen || {};
+    const intent = assessmentData.intentAssessment || {};
     const warnings = [];
 
-    // Ideation severity (0-4)
-    const ideationScore = assessmentData.quickScreen?.ideation?.value || 0;
-    riskScore += ideationScore;
+    const ideationScore = Number(quick.ideation?.value ?? quick.responses?.ideationPresence ?? 0) || 0;
+    const intentScore = Number(intent.intent?.value ?? intent.conviction?.value ?? 0) || 0;
+    const meansScore = Number(intent.access?.value ?? 0) || 0;
+    const timelineScore = Number(intent.timeline?.value ?? 0) || 0;
+    const canStaySafeScore = Number(intent.canStaySafe?.value ?? 0) || 0;
+    const safetyAnswer = quick.safety?.value ?? quick.responses?.feeling_safe;
 
-    // Intent assessment (0-4)
-    const intentScore = assessmentData.intentAssessment?.intent?.value || 0;
-    riskScore += intentScore;
-
-    // Means access (0-4)
-    const meansScore = assessmentData.intentAssessment?.access?.value || 0;
-    riskScore += meansScore;
-
-    // Plan timeline (0-4)
-    const timelineScore = assessmentData.intentAssessment?.timeline?.value || 0;
-    riskScore += timelineScore;
-
-    // Pattern penalties
+    const directScore = Math.min(16, ideationScore + intentScore + meansScore + timelineScore);
     const patterns = assessmentData.patterns || [];
-    const acutePatterns = patterns.filter(p => p.severity === 'acute').length;
-    riskScore += acutePatterns * 2;
+    const directOverrides = assessmentData.directOverrides || {};
 
-    // Journal distress integration
-    const journalEntries = (this.state && this.state.safetyJournal) ? this.state.safetyJournal : [];
-    if (journalEntries.length > 0) {
-      const latestEntry = journalEntries[journalEntries.length - 1];
-      const entryTime = new Date(latestEntry.timestamp);
-      const isRecent = (new Date() - entryTime) < 24 * 60 * 60 * 1000;
-      if (isRecent) {
-        if (latestEntry.distressLevel >= 8) {
-          riskScore += 4;
-          warnings.push(`ACUTE JOURNAL EVENT: Distress level ${latestEntry.distressLevel}/10 logged in last 24 hours.`);
-        } else if (latestEntry.distressLevel >= 5) {
-          riskScore += 2;
-          warnings.push(`MODERATE JOURNAL EVENT: Distress level ${latestEntry.distressLevel}/10 logged in last 24 hours.`);
-        }
-      }
-    }
+    const cannotStaySafe = safetyAnswer === 'no' || safetyAnswer === false || canStaySafeScore >= 4 || directOverrides.cannotStaySafe === true;
+    const currentIntent = directOverrides.currentIntent === true || intentScore >= 4;
+    const preparation = directOverrides.preparatoryBehavior === true || assessmentData.preparatoryBehavior === true;
+    const recentAttempt = directOverrides.recentAttempt === true || assessmentData.recentAttempt === true;
+    const imminent = timelineScore >= 4 && intentScore >= 3;
 
-    // Calculate level
     let level = 'low';
-    if (riskScore >= 12) {
+    if (cannotStaySafe || recentAttempt || preparation || (currentIntent && imminent)) {
       level = 'acute';
-      warnings.push('ACUTE RISK: Immediate safety assessment required');
-    } else if (riskScore >= 8) {
+      warnings.push('Immediate safety response is warranted from direct current danger evidence.');
+    } else if (directScore >= 10 || (ideationScore >= 3 && intentScore >= 2)) {
       level = 'elevated';
-      warnings.push('ELEVATED RISK: Enhanced monitoring and intervention needed');
-    } else if (riskScore >= 4) {
+      warnings.push('Direct safety information warrants prompt expanded assessment/support.');
+    } else if (directScore >= 4 || ideationScore >= 2) {
       level = 'moderate';
-      warnings.push('MODERATE RISK: Safety planning and protective factors review');
-    }
-
-    // Factor in protective factors
-    const protectiveCount = assessmentData.intentAssessment?.protective?.selected?.length || 0;
-    if (protectiveCount >= 3 && level === 'moderate') {
+      warnings.push('Direct safety information warrants clarification and safety planning/support as appropriate.');
+    } else if (directScore >= 1) {
       level = 'low-moderate';
     }
 
+    // Protective factors inform the plan but never mechanically cancel direct danger.
+    const protectiveFactors = intent.protective?.selected || intent.reachableSupport?.selected || [];
+
     return {
       level,
-      score: riskScore,
+      score: directScore,
       maxScore: 16,
-      percentile: (riskScore / 16) * 100,
+      scalePercent: Math.round((directScore / 16) * 100),
+      interpretation: 'Routing score only; not a suicide probability or population percentile.',
+      requiresExpandedAssessment: ideationScore > 0 || intentScore > 0 || meansScore > 0 || timelineScore > 0 || cannotStaySafe,
+      directOverrides: { cannotStaySafe, currentIntent, preparation, recentAttempt, imminent },
+      protectiveFactors,
+      patterns,
       warnings,
       timestamp: new Date().toISOString()
     };
   }
 
-  /**
-   * ADAPTIVE RESPONSE PROTOCOL
-   * Tailored intervention based on risk level
-   */
-  generateSafetyResponse(riskLevel, state) {
-    const response = {
-      riskLevel: riskLevel.level,
-      immediateActions: [],
-      supportResources: [],
-      anchorAdjustments: [],
-      followUpSchedule: null
-    };
+  generateSafetyResponse(riskLevel, state = this.state) {
+    const level = riskLevel?.level || 'low';
+    const response = { riskLevel: level, immediateActions: [], supportResources: [], anchorAdjustments: [], followUpSchedule: null };
 
-    switch (riskLevel.level) {
-      case 'acute':
-        response.immediateActions = [
-          'TRIGGER CRISIS PROTOCOL: Direct to 988 (US/Canada) or local emergency',
-          'Activate emergency contacts from user state',
-          'Enable Crisis Safe Box (pre-loaded resources)',
-          'Offer immediate grounding techniques',
-          'Provide suicide hotline directory (location-specific)'
-        ];
-        response.supportResources = [
-          { name: '988 Suicide & Crisis Lifeline', number: '988', type: 'immediate' },
-          { name: 'Crisis Text Line', text: 'HOME to 741741', type: 'immediate' },
-          { name: 'Emergency Services', number: '911', type: 'emergency' }
-        ];
-        response.followUpSchedule = 'Immediate (within 1 hour)';
-        break;
-
-      case 'elevated':
-        response.immediateActions = [
-          'Activate detailed safety planning',
-          'Increase check-in frequency to daily',
-          'Engage emergency contacts',
-          'Review and secure access to means',
-          'Transition to survival-level anchors only'
-        ];
-        response.anchorAdjustments = [
-          'Temporarily reduce to Level 0 (Survival)',
-          'Focus on contact/connection anchors',
-          'Implement hourly check-ins with safe person'
-        ];
-        response.followUpSchedule = 'Daily check-in, professional evaluation within 24 hours';
-        break;
-
-      case 'moderate':
-        response.immediateActions = [
-          'Initiate collaborative safety planning',
-          'Strengthen protective factor activation',
-          'Increase anchor frequency',
-          'Establish crisis contact protocol'
-        ];
-        response.anchorAdjustments = [
-          'Maintain current level but add support check-ins',
-          'Activate "reasons to live" review daily',
-          'Increase social anchor frequency'
-        ];
-        response.followUpSchedule = 'Check-in every 2-3 days, professional evaluation within 1 week';
-        break;
-
-      case 'low-moderate':
-      case 'low':
-        response.immediateActions = [
-          'Continue standard anchors',
-          'Weekly safety check-in'
-        ];
-        response.anchorAdjustments = [
-          'Maintain current anchor level',
-          'Ensure protective factors remain active',
-          'Weekly review of concerning patterns'
-        ];
-        response.followUpSchedule = 'Weekly monitoring, re-assess if patterns change';
-        break;
+    if (level === 'acute') {
+      response.immediateActions = [
+        'Bring another person or crisis/emergency support into the situation now.',
+        'Use the Crisis Safe Box / Emergency Floor.',
+        'Increase time and distance from lethal means with help from another person where possible.'
+      ];
+      response.supportResources = [{ name: '988 Suicide & Crisis Lifeline', number: '988', type: 'immediate-us' }];
+      response.anchorAdjustments = ['Suspend expansion goals; safety and human connection first.'];
+      response.followUpSchedule = 'Immediate human/crisis response';
+    } else if (level === 'elevated') {
+      response.immediateActions = ['Complete direct safety clarification.', 'Bring reachable human support closer.', 'Use collaborative safety planning.'];
+      response.anchorAdjustments = ['Reduce to survival/stabilization floor.'];
+      response.followUpSchedule = 'Prompt reassessment/support';
+    } else if (level === 'moderate') {
+      response.immediateActions = ['Clarify current safety and recent change.', 'Strengthen reachable supports and safety plan if needed.'];
+      response.anchorAdjustments = ['Keep load low and connection visible.'];
+      response.followUpSchedule = 'Reassess with meaningful state change';
+    } else {
+      response.immediateActions = ['Continue ordinary support unless the state changes.'];
+      response.followUpSchedule = 'Context-dependent';
     }
-
     return response;
   }
 
-  /**
-   * CRISIS SAFE BOX
-   * Structured crisis resources and de-escalation
-   */
-  generateCrisisSafeBox(state) {
+  generateCrisisSafeBox(state = this.state) {
     return {
       id: 'crisis-safe-box',
       activated: new Date().toISOString(),
       contents: {
-        immediateResources: [
-          {
-            name: '988 Suicide & Crisis Lifeline',
-            phone: '988',
-            text: 'Available 24/7 in US',
-            languages: ['English', 'Spanish']
-          },
-          {
-            name: 'Crisis Text Line',
-            text: 'HOME to 741741',
-            available: '24/7'
-          },
-          {
-            name: 'International Association for Suicide Prevention',
-            url: 'https://www.iasp.info/resources/Crisis_Centres/',
-            type: 'global-directory'
-          }
-        ],
+        immediateResources: [{ name: '988 Suicide & Crisis Lifeline', phone: '988', text: 'Call or text in the U.S.' }],
         safeContacts: state.safeContacts || [],
-        reasonsToLive: state.reasonsLive || 'Add reasons here: people, goals, incomplete projects',
-        distractions: state.distractions || [
-          'Walk outside for 5 minutes',
-          'Call a trusted person',
-          'Watch a specific show or video',
-          'Do a physical activity',
-          'Take a cold shower'
-        ],
-        groundingTechniques: [
-          {
-            name: '5-4-3-2-1 Technique',
-            steps: [
-              '5 things you can see',
-              '4 things you can touch',
-              '3 things you can hear',
-              '2 things you can smell',
-              '1 thing you can taste'
-            ]
-          },
-          {
-            name: 'Box Breathing',
-            steps: [
-              'Breathe in for 4 counts',
-              'Hold for 4 counts',
-              'Breathe out for 4 counts',
-              'Hold for 4 counts',
-              'Repeat 5-10 times'
-            ]
-          }
-        ],
-        contractOfSafety: {
-          commitment: 'I commit to staying alive and seeking help rather than harming myself',
-          recognizedTriggers: state.dominantPattern || 'Identify your triggers',
+        reasonsToLive: state.reasonsLive || [],
+        distractions: state.distractions || [],
+        collaborativeSafetyPlan: {
+          warningSigns: state.personalWarningSigns || [],
           copingStrategies: state.distractions || [],
-          supportPeople: state.safeContacts || [],
-          professionalHelp: 'Contact therapist or local mental health services',
-          helplineNumbers: ['988 (US)', '1-800-SUICIDE (older line)']
+          reachablePeople: state.safeContacts || [],
+          professionalHelp: state.professionalContacts || [],
+          environmentalSafety: 'Increase time and distance from lethal means with another person when possible.'
         }
       }
     };
   }
 
-  /**
-   * INTEGRATE WITH POLARIS ANCHORS
-   * Safety-aware anchor adjustments
-   */
-  adjustAnchorsForSafety(riskLevel, currentAnchors) {
-    const adjustedAnchors = { ...currentAnchors };
-
-    if (riskLevel.level === 'acute' || riskLevel.level === 'elevated') {
-      // Move to survival-only mode
-      adjustedAnchors.level = 0;
-      adjustedAnchors.primary = [
-        'Contact safe person (call, text, or visit)',
-        'Go to hospital/emergency room if thoughts are active',
-        'Do not isolate - stay in shared space if possible'
-      ];
-      adjustedAnchors.emergency = [
-        'Call 988 immediately',
-        'Tell someone you are thinking about suicide',
-        'Go to nearest ER'
-      ];
-    } else if (riskLevel.level === 'moderate') {
-      // Add protective anchors
-      adjustedAnchors.additionalFocus = [
-        'Increase social contact anchor frequency',
-        'Daily "reasons to live" reflection',
-        'Contact check-in with safe person'
-      ];
+  adjustAnchorsForSafety(riskLevel, currentAnchors = {}) {
+    const adjusted = { ...currentAnchors };
+    const level = riskLevel?.level || 'low';
+    if (level === 'acute' || level === 'elevated') {
+      adjusted.level = 0;
+      adjusted.primary = ['Bring human support closer', 'Use crisis/professional support', 'Reduce isolation and environmental danger'];
+    } else if (level === 'moderate') {
+      adjusted.additionalFocus = ['Keep one reachable person visible', 'Use the survival/stabilization floor'];
     }
-
-    adjustedAnchors.safetyFlags = {
+    adjusted.safetyFlags = {
       checked: true,
       lastAssessmentDate: new Date().toISOString(),
-      riskLevel: riskLevel.level,
-      nextReviewDate: this.calculateNextReviewDate(riskLevel.level)
+      riskLevel: level,
+      directSafetyScore: riskLevel?.score ?? null,
+      nextReviewDate: this.calculateNextReviewDate(level)
     };
-
-    return adjustedAnchors;
+    return adjusted;
   }
 
-  calculateNextReviewDate(riskLevel) {
-    const now = new Date();
-    let daysUntilReview = 7;
-
-    switch (riskLevel) {
-      case 'acute':
-        daysUntilReview = 0; // Immediate
-        break;
-      case 'elevated':
-        daysUntilReview = 1;
-        break;
-      case 'moderate':
-        daysUntilReview = 3;
-        break;
-      case 'low-moderate':
-        daysUntilReview = 7;
-        break;
-      case 'low':
-        daysUntilReview = 14;
-        break;
-    }
-
-    now.setDate(now.getDate() + daysUntilReview);
-    return now.toISOString().split('T')[0];
+  calculateNextReviewDate(level) {
+    const days = { acute: 0, elevated: 1, moderate: 3, 'low-moderate': 7, low: 14 }[level] ?? 7;
+    return new Date(Date.now() + days * 86400000).toISOString().split('T')[0];
   }
 
-  /**
-   * DOCUMENTATION & COMPLIANCE
-   * Track assessments for professional review
-   */
   logAssessment(assessmentData, response) {
     const log = {
       timestamp: new Date().toISOString(),
       assessmentType: assessmentData.type,
       responses: assessmentData,
-      riskLevel: response.riskLevel,
+      routingBand: response.riskLevel,
       actionsInitiated: response.immediateActions,
-      reviewNotes: 'User completed suicide risk assessment'
+      reviewNotes: 'Polaris safety routing record; not an actuarial prediction.'
     };
-
     this.assessmentHistory.push(log);
-    
-    return {
-      logged: true,
-      logId: `safety-${Date.now()}`,
-      recommendation: 'Share this log with your therapist or mental health provider'
-    };
+    return { logged: true, logId: `safety-${Date.now()}`, recommendation: 'Share with a clinician/support person if useful.' };
   }
 }
 
