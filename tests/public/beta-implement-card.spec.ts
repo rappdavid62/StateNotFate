@@ -1,5 +1,19 @@
 import { expect, test } from '@playwright/test';
 
+const onboardedCollapseState = {
+  isOnboarded: true,
+  securityPin: '',
+  isLocked: false,
+  customMantra: 'State is information. I restart without punishment.',
+  mvd: ['Water', 'Protein', 'Light'],
+  history: [],
+  ratings: { sleep: 0, morning: 0, initiation: 0, clutter: 0, energy: 0, shame: 0, hygiene: 0, eating: 0, social: 0, meaning: 0 },
+  safety: { suicide: 0, psychosis: 0, mania: 0 },
+  todayEnergy: 'collapse',
+  polarisUpgrade: true,
+  futureNarrowing: 'action'
+};
+
 test.describe('beta channel gating @critical', () => {
   test('shows BETA chip and build stamp when channel=beta', async ({ page }) => {
     await page.goto('/?channel=beta');
@@ -35,9 +49,8 @@ test.describe('beta channel gating @critical', () => {
 
 test.describe('lock screen crisis exits', () => {
   test('Help is never locked with 988 / 741741 / 911 / Safe Box without PIN', async ({ page }) => {
-    await page.goto('/');
-    await page.evaluate(() => {
-      const state = {
+    await page.addInitScript(() => {
+      localStorage.setItem('state_not_fate_state', JSON.stringify({
         isOnboarded: true,
         securityPin: '1234',
         isLocked: true,
@@ -47,12 +60,11 @@ test.describe('lock screen crisis exits', () => {
         ratings: {},
         safety: { suicide: 0, psychosis: 0, mania: 0 },
         todayEnergy: 'medium'
-      };
-      localStorage.setItem('state_not_fate_state', JSON.stringify(state));
+      }));
     });
     await page.goto('/');
     await expect(page.locator('#screen-lock')).toBeVisible();
-    await expect(page.getByText(/Help is never locked/i)).toBeVisible();
+    await expect(page.locator('#screen-lock .lock-help-title')).toHaveText(/Help is never locked/i);
     await expect(page.locator('#screen-lock a[href="tel:988"]')).toBeVisible();
     await expect(page.locator('#screen-lock a[href="sms:741741?body=HOME"]')).toBeVisible();
     await expect(page.locator('#screen-lock a[href="tel:911"]')).toBeVisible();
@@ -62,35 +74,24 @@ test.describe('lock screen crisis exits', () => {
 
 test.describe('collapse-first + rail safety (beta)', () => {
   test('collapse energy shows single next-action home on beta', async ({ page }) => {
-    await page.goto('/?channel=beta');
-    await page.evaluate(() => {
-      const state = {
-        isOnboarded: true,
-        securityPin: '',
-        isLocked: false,
-        customMantra: 'State is information. I restart without punishment.',
-        mvd: ['Water', 'Protein', 'Light'],
-        history: [],
-        ratings: {},
-        safety: { suicide: 0, psychosis: 0, mania: 0 },
-        todayEnergy: 'collapse',
-        polarisUpgrade: true
-      };
+    await page.addInitScript((state) => {
       localStorage.setItem('state_not_fate_state', JSON.stringify(state));
       sessionStorage.removeItem('snfShowFullMainFrame');
-    });
+      localStorage.setItem('SNF_CHANNEL', 'beta');
+    }, onboardedCollapseState);
     await page.goto('/?channel=beta#/dashboard');
+    await expect(page.locator('#screen-dashboard')).toBeVisible();
     await expect(page.locator('#collapse-first-home')).toBeVisible();
     await expect(page.getByRole('button', { name: /Show full Main Frame/i })).toBeVisible();
     await expect(page.locator('#collapse-first-home').getByText(/Help is never locked/i)).toBeVisible();
   });
 
   test('Reset Intake and Lock App live in Settings danger zone with confirm', async ({ page }) => {
-    await page.goto('/?channel=beta');
-    await page.evaluate(() => {
+    await page.addInitScript(() => {
+      localStorage.setItem('SNF_CHANNEL', 'beta');
       localStorage.setItem('state_not_fate_state', JSON.stringify({
         isOnboarded: true,
-        securityPin: '1234',
+        securityPin: '',
         isLocked: false,
         customMantra: 'State is information. I restart without punishment.',
         mvd: ['Water', 'Protein', 'Light'],
@@ -101,7 +102,10 @@ test.describe('collapse-first + rail safety (beta)', () => {
         polarisUpgrade: true
       }));
     });
-    await page.goto('/?channel=beta#/settings');
+    await page.goto('/?channel=beta#/dashboard');
+    await expect(page.locator('#screen-dashboard')).toBeVisible();
+
+    await page.locator('#btn-tab-settings').click();
     await expect(page.locator('#tab-settings')).toBeVisible();
     await expect(page.locator('#settings-danger-zone')).toBeVisible();
     await expect(page.locator('#btn-settings-lock')).toBeVisible();
