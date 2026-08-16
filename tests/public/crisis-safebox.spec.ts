@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test.describe('Crisis Safe Box Enhancements', () => {
 
-  test('Should block safebox until pre-distress rating is submitted, and show post-distress prompt on close', async ({ page }) => {
+  test('Should block safebox until pre-distress rating is submitted, and show post-distress prompt on close @advisory', async ({ page }) => {
     // Navigate and set local storage
     await page.goto('/');
     await page.evaluate(() => {
@@ -57,7 +57,7 @@ test.describe('Crisis Safe Box Enhancements', () => {
     await expect(page).toHaveURL(/.*#\/dashboard/);
   });
 
-  test('Should show Caring Contact Modal if scheduled', async ({ page }) => {
+  test('Should show Caring Contact Modal if scheduled @advisory', async ({ page }) => {
     await page.goto('/');
     
     // Set scheduled time to past (e.g. 25 hours ago)

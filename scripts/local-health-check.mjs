@@ -55,7 +55,6 @@ console.log('\n📋  Workflow Node version checks');
 
 const DEPRECATED_NODE = ['16.x', '18.x', '20.x'];
 const workflows = [
-  'hourly-synthetic-monitor.yml',
   'layered-ci.yml',
   'node.js.yml',
   'weekly-evidence-watch.yml',
@@ -106,23 +105,29 @@ for (const spec of specFiles) {
   });
 }
 
-// ─── Section 4: Monitor workflow has tiered steps ────────────────────────────
-console.log('\n📋  Hourly monitor resilience');
+// ─── Section 4: README badges and cache policy ────────────────────────────────
+console.log('\n📋  README badges and cache policy');
 
-check('monitor has @critical grep step', () => {
-  const content = readWorkflow('hourly-synthetic-monitor.yml');
-  if (!content.includes('@critical')) throw new Error('Missing @critical grep in monitor');
+check('README CI badges point at existing workflow files', () => {
+  const readme = readText('README.md');
+  const badgeRefs = [...readme.matchAll(/actions\/workflows\/([A-Za-z0-9._-]+\.yml)/g)].map((m) => m[1]);
+  if (badgeRefs.length === 0) throw new Error('README has no GitHub Actions workflow badges');
+  for (const wf of badgeRefs) {
+    if (!existsSync(join(root, '.github/workflows', wf))) {
+      throw new Error(`README badges missing workflow ${wf}`);
+    }
+  }
 });
 
-check('monitor has @advisory step with continue-on-error', () => {
-  const content = readWorkflow('hourly-synthetic-monitor.yml');
-  if (!content.includes('@advisory')) throw new Error('Missing @advisory grep in monitor');
-  if (!content.includes('continue-on-error: true')) throw new Error('Missing continue-on-error on advisory step');
-});
-
-check('monitor has job-level timeout-minutes', () => {
-  const content = readWorkflow('hourly-synthetic-monitor.yml');
-  if (!content.includes('timeout-minutes:')) throw new Error('No timeout-minutes — monitor can hang for 19+ minutes');
+check('unhashed JS and CSS are not immutable-cached', () => {
+  const content = readText('netlify.toml');
+  const blocks = content.split('[[headers]]').slice(1);
+  for (const pathPattern of ['/*.js', '/*.css']) {
+    const block = blocks.find((item) => item.includes(`for = "${pathPattern}"`));
+    if (block && /Cache-Control\s*=\s*".*immutable/i.test(block)) {
+      throw new Error(`${pathPattern} uses immutable caching, but filenames are not content-hashed`);
+    }
+  }
 });
 
 // ─── Section 5: package.json scripts intact ───────────────────────────────────
