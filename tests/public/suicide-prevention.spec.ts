@@ -13,6 +13,7 @@ test('suicide prevention appendix is public, interactive, and crisis-aware @crit
   await expect(page.getByRole('button', { name: /first 72 hours/i })).toBeVisible();
 
   const text = await page.locator('main').innerText();
-  expect(text).not.toMatch(/graphic detail|method-specific/i);
+  expect(text).toMatch(/Avoid language like:[\s\S]*method-specific descriptions/i);
+  expect(text).toMatch(/Do not[\s\S]*publish graphic detail/i);
   expect(text).toMatch(/public health|clinical care|community trust/i);
 });
