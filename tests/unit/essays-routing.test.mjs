@@ -16,4 +16,7 @@ test('essays pretty URL is wired in Netlify, local server, and sitemap', () => {
 
   const sitemap = readFileSync(join(root, 'sitemap.xml'), 'utf8');
   assert.match(sitemap, /https:\/\/statenotfate\.netlify\.app\/essays/);
+
+  const sw = readFileSync(join(root, 'service-worker.js'), 'utf8');
+  assert.match(sw, /essays\.html/);
 });
