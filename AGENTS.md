@@ -9,10 +9,12 @@ This repository is a static PWA / public website for the State Not Fate recovery
 - `index.html` - public landing page plus the embedded local app UI screens.
 - `index.css` - site and app styling.
 - `app.js` - primary application logic, onboarding flows, state management, PWA registration, and user interactions.
-- `service-worker.js` - offline support and caching behavior for the PWA.
+- `service-worker.js` - offline support. HTML, `app.js`, and `index.css` are network-first with cache fallback; other same-origin GETs stay cache-first.
+- `crisis.html`, `suicide-prevention.html`, `evidence.html`, `contact.html`, `essays.html` - public multi-page routes.
 - `tests/public/` - Playwright end-to-end checks for homepage, accessibility, SEO, safety, and evidence pages.
 - `package.json` - developer scripts and Playwright dependency.
-- `netlify.toml` - static hosting configuration, client-side routing fallback, and security headers.
+- `netlify.toml` - static hosting, pretty-URL rewrites, a 404 catch-all to `404.html`, and security headers.
+- `docs/agent/STATE_NOT_FATE_AGENT_LEDGER.md` - durable agent findings. Update only when state actually changes.
 - `docs/` - extended architecture and systems thinking notes; link here rather than duplicating.
 
 ## Recommended Agent Behavior
@@ -37,8 +39,10 @@ Windows note: if bare `npm` hits PowerShell execution-policy friction, use `npm.
 - This repo is not a framework-based app. It uses plain HTML, CSS, and vanilla JavaScript.
 - Application state is sandboxed to the browser via `localStorage`; there is no backend state.
 - Edits to `index.html` can affect both the public landing page and the embedded app experience.
-- `netlify.toml` expects a static deployment with a fallback redirect to `index.html`.
+- `netlify.toml` is a multi-page static publish. Known routes rewrite to `.html` files. Unknown paths return `404.html`. Do not add an SPA fallback to `index.html`.
+- Unhashed `app.js` and `index.css` must revalidate (`max-age=0, must-revalidate`). Do not mark them `immutable` unless filenames are content-hashed.
 - `docs/AI-Systems-MOC.md` and `docs/State-Not-Fate-MOC.md` contain domain context and should be referenced when adding larger system or evidence-related changes.
+- Run `npm run health` before pushing. It must describe the real routing and cache policy, not a commented workaround.
 
 ## Useful Links
 

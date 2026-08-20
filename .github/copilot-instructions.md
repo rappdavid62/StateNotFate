@@ -13,7 +13,7 @@ This repository is a static PWA / public website. Treat it as a plain HTML/CSS/J
 - Do not invent file paths.
 - Do not change core app files unless the user explicitly approves the plan.
 - Preserve browser localStorage state behavior; there is no backend state.
-- Preserve the static Netlify deployment assumption and fallback redirect to index.html.
+- Preserve the static Netlify deployment. Known routes rewrite to `.html` files. Unknown paths return `404.html`. Do not add an SPA fallback to `index.html`.
 
 ## Safe workflow rules
 1. Inspect relevant files before editing.

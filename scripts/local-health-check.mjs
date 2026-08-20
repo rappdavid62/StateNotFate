@@ -162,13 +162,21 @@ check('playwright.beta.config.ts references beta work area', () => {
   if (!content.includes('globalTimeout')) return '⚠️ No globalTimeout — beta runs can hang';
 });
 
-// ─── Section 7: netlify.toml has SPA fallback ────────────────────────────────
+// ─── Section 7: netlify.toml routing and cache ────────────────────────────────
 console.log('\n📋  Netlify / deployment config');
 
-check('netlify.toml has SPA catch-all redirect', () => {
+check('netlify.toml has a 404 catch-all, not an SPA fallback', () => {
   const content = readText('netlify.toml');
   if (!content.includes('from = "/*"')) throw new Error('Missing catch-all redirect in netlify.toml');
-  if (!content.includes('to = "/index.html"')) throw new Error('Redirect not pointing to index.html');
+  if (!content.includes('to = "/404.html"')) throw new Error('Catch-all should serve 404.html');
+  if (!/status\s*=\s*404/.test(content)) throw new Error('Catch-all should use status 404');
+  const activeSpaFallback = content.split('\n').some((line) => {
+    const trimmed = line.trim();
+    return trimmed.startsWith('to = "/index.html"') && !trimmed.startsWith('#');
+  });
+  if (activeSpaFallback) {
+    throw new Error('Active SPA fallback to index.html would hide missing pages');
+  }
 });
 
 check('netlify.toml NODE_VERSION is not deprecated', () => {

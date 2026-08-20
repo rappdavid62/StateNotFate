@@ -47,15 +47,11 @@
   to = "/essays.html"
   status = 200
 
-# Catch-all redirect for non-existent paths to return 404
+# Catch-all for unknown paths. This is a multi-page static site, not an SPA.
 [[redirects]]
   from = "/*"
   to = "/404.html"
   status = 404
-
-# Helper comment to pass the local health check's SPA checks:
-# from = "/*"
-# to = "/index.html"
 
 
 
