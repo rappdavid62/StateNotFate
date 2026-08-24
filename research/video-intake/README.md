@@ -9,8 +9,8 @@ MICP `scripts/ingest-media.cjs` is a different pipeline. Do not replace it.
 
 - DOV `C:\ROOT_OBSIDIAN\DOV`: NO ACCESS — promotion queue only
 - Google Drive intake folder `12x7dLat7sJnvptrrBV4BD5FrXAIzpMnR`: BRIDGE VERIFIED
-- GitHub `rappdavid62/StateNotFate`: this branch
-- Production: https://statenotfate.netlify.app — evidence.html watchlist is on this branch only until human merge
+- GitHub `rappdavid62/StateNotFate`: this branch (`grok/vid004-notebooklm-ingest`)
+- Production https://statenotfate.netlify.app/evidence.html : no meal-timing copy yet. Watchlist cards are **proposed**, not merged. Do not treat this branch as live production.
 
 ## VID-004 — Meal Timing & Mood
 
@@ -23,14 +23,18 @@ MICP `scripts/ingest-media.cjs` is a different pipeline. Do not replace it.
 - Do **not** auto-edit `suicide-prevention.html` or the Suicide Prevention Compendium
 - Transcript is Whisper `base`, labeled unreviewed
 
-Drive durable records:
+Drive durable records (full):
 - Intake: https://docs.google.com/document/d/10YYjAjgGxPr4303E8imVZW1J9pAiu8kQePzYrCOS9AY/edit
 - Queue addendum: https://docs.google.com/document/d/1Ek9F4kVrmxDHqnFHV0Ou5HiLq30Imnlskw4nfeHT3GY/edit
 - Claim ledger JSON: https://drive.google.com/file/d/1dmkktUnOKEe_s-7BA1Aa4ilcFS6SD3VK/view
 - Neighbor-canon preaudit: https://drive.google.com/file/d/1D4mBvKKhWnfPWQP0QR3rGckvzKqxBcS9/view
 
-Local files in this repo (same folder): `VID-004-meal-timing-intake.md`, `VID-004-claim-ledger.json`, `VID-004-neighbor-canon-preaudit.json`, Whisper transcript/SRT.
+## Proposed evidence.html watchlist (not production)
 
-## Fence
+Four cards, watchlist/boundary only:
+1. Wehrens 2017 PMID 28578930 — peripheral clocks, not master clock
+2. NHLBI 2023-09-06 — when, not just what; late eating undefined
+3. Hepler 2022 PMID 36264811 — mouse TRE, do not stretch
+4. VID-004 is not public copy — YRBS breakfast-suicidality stays off the page
 
-Not a diet. Not 16:8. Not a circadian-anchors edit. Hepler 2022 is mouse.
+Fence: not a diet, not 16:8, not a circadian-anchors edit.
