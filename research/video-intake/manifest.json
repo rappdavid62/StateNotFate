@@ -1,0 +1,88 @@
+{
+  "schema": "snf.video-intake.manifest.v2",
+  "updated": "2026-08-24T22:40:00Z",
+  "runtime_location": {
+    "dov": "NO ACCESS",
+    "google_drive": "BRIDGE VERIFIED",
+    "github_statenotfate": "BRIDGE VERIFIED",
+    "this_sandbox": "REMOTE SERVICE ONLY",
+    "production_site": "REMOTE SERVICE ONLY"
+  },
+  "pipeline": {
+    "name": "SNF Video Intake Pipeline v2",
+    "drive_file_id": "1V_mj26ns_l0Vcd6hLjcGz2pDMAcEouDYnIJlPOrQLWs"
+  },
+  "drive": {
+    "intake_folder_id": "12x7dLat7sJnvptrrBV4BD5FrXAIzpMnR",
+    "manifest_doc_id": "1xg9xSZdCFXUnSoFx_Vfrgf9u2ICpgsv3Tl74udByDRY",
+    "queue_doc_id": "1dpIYLUfEZkXUPg9yj574AImibbZ9insvSHfclChJFRI",
+    "queue_stale_note": "Drive queue and Drive manifest still say VID-003/004 source IDs unresolved. Sandbox manifest below is current as of 2026-08-24."
+  },
+  "failure_modes": {
+    "DRIVE_DOWNLOAD_REPORTED_SIZE_BYTES_NOT_LANDED": "google_drive_download_artifact can report size_bytes while no file appears under /workspace or /home/workdir. Direct Drive export hits Google login HTML. If bytes later appear under artifacts/snf/, treat as landed and run Whisper. Do not invent a transcript before bytes exist."
+  },
+  "videos": [
+    {
+      "id": "VID-001",
+      "title": "Depression Explainer",
+      "status": "PASS_WITH_EVIDENCE_GAPS",
+      "source_kind": "drive-mp4",
+      "source_id": "1x2mlAE3oq_pfnZyMIptLhKS4f--MkOa0",
+      "notebooklm": false,
+      "suicide_adjacent": false,
+      "public_use": "qualified"
+    },
+    {
+      "id": "VID-002",
+      "title": "STATE / NOT FATE Flagship",
+      "status": "PARTIAL",
+      "source_kind": "heygen",
+      "source_id": "974ab7ecaf344714aff4b41480b35fce",
+      "notebooklm": false,
+      "suicide_adjacent": false,
+      "public_use": "hold",
+      "open": [
+        "ingest exact final SRT",
+        "compare final narration to requested script",
+        "full visual/sound review",
+        "prompt-failure log",
+        "final evidence/safety gate"
+      ]
+    },
+    {
+      "id": "VID-003",
+      "title": "The Sleep Boundary",
+      "status": "PASS_WITH_EVIDENCE_GAPS_SAFETY_HOLD",
+      "source_kind": "notebooklm-mp4",
+      "source_id": "1g-xpggBBa2QnTeDdbcLv_7Yhl94d4_BC",
+      "source_id_copy_2026_08_24": "1UmbQ8wHFd1OjR-8dZNhriupo-i-k4oFg",
+      "notebooklm": true,
+      "suicide_adjacent": true,
+      "public_use": "blocked_pending_human_review",
+      "duration_sec": 406.02,
+      "record": "research/video-intake/VID-003-sleep-boundary-intake.md"
+    },
+    {
+      "id": "VID-004",
+      "title": "Meal Timing & Mood",
+      "status": "PASS_WITH_EVIDENCE_GAPS_SAFETY_HOLD",
+      "source_kind": "notebooklm-mp4",
+      "source_id": "177NveaQTD7Jdwkz6VYoDVYa7bPelv_AC",
+      "source_id_copy_2026_08_24": "1hb4PwzRCwwH1SdlKxTIVzfPHLFsovIto",
+      "source_size_bytes": 37622537,
+      "duration_sec": 408.88,
+      "notebooklm": true,
+      "suicide_adjacent": true,
+      "public_use": "blocked_pending_human_review",
+      "record": "research/video-intake/VID-004-meal-timing-intake.md",
+      "preaudit": "research/video-intake/VID-004-neighbor-canon-preaudit.json",
+      "media_local": "artifacts/snf/vid004/Meal_Timing___Mood.mp4",
+      "open": [
+        "human review before any public numeric or suicide-adjacent copy",
+        "confirm Liu 2022 primary tables vs 25.6/21.7/14.2/5.3",
+        "identify unnamed synaptic-plasticity quote",
+        "species-level microbiome/SI claim"
+      ]
+    }
+  ]
+}
