@@ -1,0 +1,28 @@
+{
+  "schema": "snf.video-intake.claim-ledger.v1",
+  "video_id": "VID-003",
+  "title": "The Sleep Boundary",
+  "processed": "2026-08-24",
+  "transcript_source": "machine-generated whisper-base, labeled unreviewed",
+  "suicide_adjacent": true,
+  "claims": [
+    {
+      "id": "C5",
+      "wording": "Five-fold increase in suicide risk at 3am after adjusting for who is awake.",
+      "class": "PUBLIC_CLAIM_CANDIDATE",
+      "evidence_status": "MISMATCH",
+      "suicide_adjacent": true,
+      "public_use": "blocked_pending_human_review",
+      "note": "Tubbs 2024: five-fold suicide and eight-fold homicide between 2am and 3am. Do not place fold-risk numbers on public SNF pages."
+    },
+    {
+      "id": "C14",
+      "wording": "Build a sleep boundary: name nocturnal vulnerability, anchor wake times, protect hours after midnight.",
+      "class": "PROJECT_PRINCIPLE",
+      "evidence_status": "DESIGN_ALIGNED",
+      "suicide_adjacent": false,
+      "public_use": "retain_as_snf_principle"
+    }
+  ],
+  "research_queue": ["Human review before any public numeric copy"]
+}
