@@ -1,0 +1,68 @@
+{
+  "schema": "snf.video-intake.claim-ledger.v1",
+  "video_id": "VID-004",
+  "title": "Meal Timing & Mood",
+  "processed": "2026-08-24",
+  "transcript_source": "machine-generated whisper-base, labeled unreviewed",
+  "suicide_adjacent": true,
+  "full_ledger_drive": "https://drive.google.com/file/d/1dmkktUnOKEe_s-7BA1Aa4ilcFS6SD3VK/view",
+  "claims": [
+    {
+      "id": "C1",
+      "wording": "Could the actual timing of your meals affect your will to live?",
+      "class": "METAPHOR_RHETORIC",
+      "evidence_status": "OVERCLAIM",
+      "suicide_adjacent": true,
+      "public_use": "blocked_pending_human_review"
+    },
+    {
+      "id": "C4",
+      "wording": "Exactly 25.6% of teens who completely skip breakfast report suicidal ideation.",
+      "class": "PUBLIC_CLAIM_CANDIDATE",
+      "evidence_status": "SUPPORTABLE_WITH_SOURCE",
+      "suicide_adjacent": true,
+      "public_use": "blocked_pending_human_review",
+      "note": "Liu et al. Nutrients 2022 PMID 35267931. Cross-sectional YRBS 2011-2019. Do not place on public SNF pages."
+    },
+    {
+      "id": "C5",
+      "wording": "This correlation has nothing to do with shame, laziness, or lack of willpower.",
+      "class": "PROJECT_PRINCIPLE",
+      "evidence_status": "DESIGN_ALIGNED",
+      "suicide_adjacent": false,
+      "public_use": "retain_as_snf_principle"
+    },
+    {
+      "id": "C11",
+      "wording": "Skip breakfast zero times/week: SI 25.6%, planning 21.7%, attempts 14.2%.",
+      "class": "PUBLIC_CLAIM_CANDIDATE",
+      "evidence_status": "SUPPORTABLE_WITH_QUALIFICATION",
+      "suicide_adjacent": true,
+      "public_use": "blocked_pending_human_review",
+      "note": "Video omitted medically serious attempts 5.3%."
+    },
+    {
+      "id": "C12",
+      "wording": "Up to 51.3% of the effect is serially mediated by weight and depression over time.",
+      "class": "PUBLIC_CLAIM_CANDIDATE",
+      "evidence_status": "MISMATCH",
+      "suicide_adjacent": true,
+      "public_use": "blocked_pending_human_review",
+      "note": "Liu 2022 is cross-sectional serial mediation 39.68-51.30%, not longitudinal."
+    },
+    {
+      "id": "C14",
+      "wording": "TRE re-entrains the circadian system, heals the gut barrier, and clears neuroinflammation.",
+      "class": "PUBLIC_CLAIM_CANDIDATE",
+      "evidence_status": "OVERCLAIM",
+      "suicide_adjacent": false,
+      "public_use": "hold",
+      "note": "Contradicts Wehrens 2017 master-clock markers. Hepler 2022 is mouse."
+    }
+  ],
+  "research_queue": [
+    "Human review before any public numeric or suicide-adjacent copy",
+    "Confirm Liu 2022 primary tables vs 25.6/21.7/14.2/5.3",
+    "Identify unnamed synaptic-plasticity quote"
+  ]
+}
