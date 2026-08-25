@@ -1,0 +1,3792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'sha256-DiSdbgoLgZ9cUK0HuVRUsLVVxzpe65hYlOvQ/4DGZ7o='; img-src 'none'; font-src 'none'; connect-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none';">
+  <title>Suicide Compendium Education Reader v3.0</title>
+  <style>
+    /* DESIGN TOKENS & WCAG CONTRAST SYSTEM */
+    :root {
+      --bg-dark: #080c14;
+      --bg-card: #111827;
+      --bg-card-alt: #1a2234;
+      --bg-hover: #222d44;
+      --border-color: #243048;
+      --border-accent: #3b82f6;
+      --text-primary: #f9fafb;     /* >15:1 contrast on dark */
+      --text-secondary: #cbd5e1;   /* >11:1 contrast on dark */
+      --text-muted: #94a3b8;       /* >7.2:1 contrast on dark (exceeds 4.5:1 WCAG AA) */
+      --accent-blue: #3b82f6;
+      --accent-cyan: #06b6d4;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --accent-emerald: #10b981;
+      --crisis-bg: #881337;
+      --crisis-border: #be123c;
+      --crisis-text: #ffffff;
+      --focus-ring: #60a5fa;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.65;
+      color: var(--text-primary);
+      background-color: var(--bg-dark);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ACCESSIBILITY: FORCED COLORS & REDUCED MOTION */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    @media (forced-colors: active) {
+      :root {
+        --border-color: CanvasText;
+        --border-accent: Highlight;
+        --focus-ring: Highlight;
+      }
+      .module-card, .sidebar, .takeaway-card, .quiz-card, .claims-box {
+        border: 1px solid CanvasText !important;
+      }
+    }
+
+    /* SKIP LINK */
+    .skip-link {
+      position: absolute;
+      top: -60px;
+      left: 16px;
+      background: var(--accent-blue);
+      color: #ffffff;
+      padding: 12px 20px;
+      z-index: 10000;
+      text-decoration: none;
+      font-weight: 700;
+      border-radius: 6px;
+      transition: top 0.2s ease-in-out;
+    }
+    .skip-link:focus {
+      top: 16px;
+      outline: 3px solid #ffffff;
+    }
+
+    /* CRISIS BANNER WITH CONSTRAINED SCREEN FALLBACK */
+    header.crisis-banner {
+      position: sticky;
+      top: 0;
+      z-index: 9999;
+      background-color: var(--crisis-bg);
+      border-bottom: 2px solid var(--crisis-border);
+      color: var(--crisis-text);
+      padding: 12px 20px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+    }
+    @media (max-height: 520px) {
+      header.crisis-banner {
+        position: static;
+      }
+    }
+
+    .crisis-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .crisis-heading {
+      font-weight: 800;
+      font-size: 1.05rem;
+      letter-spacing: 0.02em;
+    }
+    .crisis-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+    .crisis-pill {
+      background-color: rgba(255, 255, 255, 0.22);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-weight: 700;
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      display: inline-block;
+    }
+    .crisis-pill:focus-visible {
+      outline: 3px solid #ffffff;
+    }
+    .crisis-notice {
+      font-size: 0.82rem;
+      color: #ffe4e6;
+      width: 100%;
+      text-align: right;
+    }
+
+    /* BOUNDARY NOTICE */
+    .edu-boundary-banner {
+      background: linear-gradient(90deg, #1e1b4b, #0f172a);
+      border-bottom: 1px solid #312e81;
+      padding: 12px 20px;
+      font-size: 0.9rem;
+      color: #c7d2fe;
+      text-align: center;
+    }
+    .edu-boundary-banner strong {
+      color: #ffffff;
+    }
+
+    /* APP LAYOUT */
+    .app-layout {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 28px 20px 80px 20px;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 32px;
+    }
+    @media (max-width: 960px) {
+      .app-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* SIDEBAR */
+    aside.sidebar {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 20px;
+      height: fit-content;
+      position: sticky;
+      top: 100px;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+    }
+    @media (max-width: 960px) {
+      aside.sidebar {
+        position: static;
+        max-height: none;
+      }
+    }
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+    }
+    .sidebar-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--accent-cyan);
+    }
+    .module-nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .module-nav-item a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.88rem;
+      display: block;
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .module-nav-item a:hover, .module-nav-item a:focus-visible {
+      background-color: var(--bg-hover);
+      color: #ffffff;
+      outline: 2px solid var(--focus-ring);
+    }
+
+    /* CONTROLS */
+    .controls-panel {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .search-input {
+      width: 100%;
+      background-color: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 12px 16px;
+      color: #ffffff;
+      font-size: 0.95rem;
+    }
+    .search-input:focus-visible {
+      outline: 2px solid var(--focus-ring);
+      border-color: var(--accent-blue);
+    }
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .category-filter-btn {
+      background-color: #1a2234;
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .category-filter-btn[aria-pressed="true"] {
+      background-color: var(--accent-blue);
+      color: #ffffff;
+      border-color: var(--accent-blue);
+    }
+    .category-filter-btn:focus-visible {
+      outline: 2px solid var(--focus-ring);
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
+    /* MODULE CARDS */
+    article.module-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 40px;
+      scroll-margin-top: 140px;
+    }
+    .module-header {
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 18px;
+      margin-bottom: 22px;
+    }
+    .module-meta-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .module-badge {
+      background-color: #1e293b;
+      color: var(--accent-cyan);
+      font-size: 0.8rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .module-category {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+    .module-title {
+      font-size: 1.6rem;
+      color: #ffffff;
+      line-height: 1.35;
+      font-weight: 800;
+    }
+    .module-summary {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      margin-top: 12px;
+    }
+
+    /* TAKEAWAY */
+    .takeaway-card {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.08), rgba(59, 130, 246, 0.08));
+      border-left: 4px solid var(--accent-cyan);
+      padding: 18px 22px;
+      border-radius: 0 8px 8px 0;
+      margin: 24px 0;
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      border-left: 4px solid var(--accent-cyan);
+    }
+    .takeaway-title {
+      font-weight: 800;
+      color: var(--accent-cyan);
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+
+    /* TERMS TABLE */
+    .terms-box {
+      margin: 24px 0;
+    }
+    .terms-heading {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--accent-amber);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .terms-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    .terms-table th, .terms-table td {
+      border: 1px solid var(--border-color);
+      padding: 12px 16px;
+      text-align: left;
+    }
+    .terms-table th {
+      background-color: #1a2234;
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    /* CLAIMS BOX */
+    .claims-box {
+      margin: 24px 0;
+      background-color: rgba(0, 0, 0, 0.3);
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .claims-box-title {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 14px;
+    }
+    .claim-item {
+      padding: 12px 0;
+      border-bottom: 1px dashed #243048;
+      font-size: 0.95rem;
+    }
+    .claim-item:last-child {
+      border-bottom: none;
+    }
+    .claim-badge-pill {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      margin-right: 8px;
+    }
+    .badge-draft {
+      background-color: #1e293b;
+      color: #93c5fd;
+      border: 1px solid #3b82f6;
+    }
+    .badge-hold {
+      background-color: #450a0a;
+      color: #fca5a5;
+      border: 1px solid #dc2626;
+    }
+    .claim-locator-line {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+    .source-backlink {
+      color: var(--accent-cyan);
+      text-decoration: none;
+      font-weight: 600;
+      word-break: break-all;
+    }
+    .source-backlink:hover, .source-backlink:focus-visible {
+      text-decoration: underline;
+      outline: 2px solid var(--focus-ring);
+    }
+
+    /* QUIZ GATED CARD */
+    .quiz-card {
+      margin-top: 28px;
+      background: linear-gradient(180deg, #111827 0%, #0d131f 100%);
+      border: 1px solid #243048;
+      border-radius: 10px;
+      padding: 22px;
+    }
+    .quiz-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .quiz-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--accent-blue);
+    }
+    .quiz-gating-badge {
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 12px;
+      background-color: #1e293b;
+      color: var(--text-muted);
+      border: 1px solid #334155;
+    }
+    .quiz-block {
+      margin-bottom: 22px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid #1a2234;
+    }
+    .quiz-block:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .quiz-question {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 12px;
+    }
+    .quiz-options-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .quiz-opt-item {
+      background-color: #1a2234;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 10px 14px;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      opacity: 0.75;
+      cursor: not-allowed;
+    }
+    .quiz-notice {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* GLOSSARY & ATLAS SECTION */
+    .atlas-section {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 40px;
+    }
+    .atlas-title {
+      font-size: 1.5rem;
+      color: #ffffff;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+    }
+    .source-entry {
+      background-color: var(--bg-card-alt);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 18px;
+      margin-bottom: 16px;
+      scroll-margin-top: 140px;
+    }
+    .source-entry-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+    .source-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .source-locator {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-top: 6px;
+    }
+
+    /* FOOTER */
+    footer.app-footer {
+      border-top: 1px solid var(--border-color);
+      background-color: #050811;
+      padding: 40px 20px;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      text-align: center;
+    }
+    .footer-container {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* PRINT */
+    @media print {
+      body { background: #ffffff; color: #000000; }
+      header.crisis-banner, .skip-link, aside.sidebar, .controls-panel { display: none !important; }
+      .app-layout { display: block; padding: 0; }
+      article.module-card, .atlas-section { border: 1px solid #999; background: transparent; color: #000; page-break-inside: avoid; }
+      .takeaway-card { background: #f0fdf4; color: #000; border-left: 4px solid #16a34a; }
+    }
+  </style>
+</head>
+<body>
+  <!-- SKIP LINK -->
+  <a href="#main-content" class="skip-link">Skip to Main Educational Content</a>
+
+  <!-- CRISIS BANNER -->
+  <header class="crisis-banner" role="banner">
+    <div class="crisis-container">
+      <div class="crisis-heading">
+        <span>⚠️ Immediate Crisis Support (United States)</span>
+      </div>
+      <div class="crisis-actions">
+        <span><strong>Call/Text:</strong> <a href="tel:988" class="crisis-pill">988</a> (24/7 Lifeline)</span>
+        <span><strong>Text:</strong> <span class="crisis-pill">HOME to 741741</span> (Crisis Text Line)</span>
+        <span><strong>Emergency:</strong> <a href="tel:911" class="crisis-pill">911</a></span>
+      </div>
+      <div class="crisis-notice">
+        <span>This page is an unmonitored educational document. For acute support, contact resources above. Verified: 2026-08-24.</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- BOUNDARY NOTICE -->
+  <div class="edu-boundary-banner" role="region" aria-label="Educational Boundary Notice">
+    <strong>Educational Research Literacy Document</strong> — This compendium teaches surveillance definitions, population metrics, and published scientific studies. It does not provide clinical care, therapy, medical diagnosis, or personal risk calculation.
+  </div>
+
+  <div class="app-layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" aria-label="Table of Contents">
+      <div class="sidebar-header">
+        <h2 class="sidebar-title">Modules</h2>
+        <span style="font-size: 0.85rem; color: var(--text-muted);">18 Units</span>
+      </div>
+      <nav>
+        <ul class="module-nav-list">
+          
+          <li class="module-nav-item">
+            <a href="#mod-01-orientation" id="nav-mod-01-orientation">1. Orientation &amp; Boundary</a>
+          </li>
+          
+          <li class="module-nav-item">
+            <a href="#mod-02-data-currency" id="nav-mod-02-data-currency">2. Data Currency &amp; Timelines</a>
+          </li>
+          
+          <li class="module-nav-item">
+            <a href="#mod-03-count-rate-rank" id="nav-mod-03-count-rate-rank">3. Count vs Rate vs Rank</a>
+          </li>
+          
+          <li class="module-nav-item">
+            <a href="#mod-04-crude-vs-age-adj" id="nav-mod-04-crude-vs-age-adj">4. Crude vs Age-Adjusted</a>
+          </li>
+          
+          <li class="module-nav-item">
+            <a href="#mod-05-yppl-derived" id="nav-mod-05-yppl-derived">5. YPLL &amp; Derived Metrics</a>
+          </li>
+          
+          <li class="module-nav-item">
+            <a href="#mod-06-surveillance-systems" id="nav-mod-06-surveillance-systems">6. Surveillance Systems</a>
+          </li>
+          
+          <li class="module-nav-item">
+            <a href="#mod-07-small-numbers" id="nav-mod-07-small-numbers">7. Small Numbers &amp; Suppression</a>
+          </li>
+          
+          <li class="module-nav-item">
+            <a href="#mod-08-caring-contacts" id="nav-mod-08-caring-contacts">8. Caring Contacts Evidence</a>
+          </li>
+          
+          <li class="module-nav-item">
+            <a href="#mod-09-ails-curriculum" id="nav-mod-09-ails-curriculum">9. AILS School Curriculum</a>
+          </li>
+          
+          <li class="module-nav-item">
+            <a href="#mod-10-asian-vs-nhpi" id="nav-mod-10-asian-vs-nhpi">10. Asian vs NHPI Data</a>
+          </li>
+          
+          <li class="module-nav-item">
+            <a href="#mod-11-aian-surveillance" id="nav-mod-11-aian-surveillance">11. AI/AN Surveillance &amp; Governance</a>
+          </li>
+          
+          <li class="module-nav-item">
+            <a href="#mod-12-equity-trends" id="nav-mod-12-equity-trends">12. Wider Equity Trends</a>
+          </li>
+          
+          <li class="module-nav-item">
+            <a href="#mod-13-screening-vs-assessment" id="nav-mod-13-screening-vs-assessment">13. Screening vs Assessment</a>
+          </li>
+          
+          <li class="module-nav-item">
+            <a href="#mod-14-national-strategy" id="nav-mod-14-national-strategy">14. National Strategy</a>
+          </li>
+          
+          <li class="module-nav-item">
+            <a href="#mod-15-lifeline-literacy" id="nav-mod-15-lifeline-literacy">15. 988 Lifeline Operations</a>
+          </li>
+          
+          <li class="module-nav-item">
+            <a href="#mod-16-safe-communication" id="nav-mod-16-safe-communication">16. Safe Communication &amp; Postvention</a>
+          </li>
+          
+          <li class="module-nav-item">
+            <a href="#mod-17-evidence-lifecycle" id="nav-mod-17-evidence-lifecycle">17. Claim Labels &amp; Lifecycle</a>
+          </li>
+          
+          <li class="module-nav-item">
+            <a href="#mod-18-source-atlas-gaps" id="nav-mod-18-source-atlas-gaps">18. Source Atlas &amp; Gaps</a>
+          </li>
+          
+          <li class="module-nav-item" style="border-top: 1px solid var(--border-color); margin-top: 8px; padding-top: 8px;">
+            <a href="#master-source-atlas" id="nav-master-source-atlas">📚 Master Source Atlas</a>
+          </li>
+          <li class="module-nav-item">
+            <a href="#master-glossary" id="nav-master-glossary">📖 Epidemiological Glossary</a>
+          </li>
+          <li class="module-nav-item">
+            <a href="#conflict-ledger" id="nav-conflict-ledger">⚖️ Conflict Ledger</a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main id="main-content" role="main">
+      <!-- CONTROLS -->
+      <section class="controls-panel" aria-label="Search and Category Filters">
+        <div>
+          <label for="module-search" class="sr-only">Search modules, concepts, or claim IDs</label>
+          <input type="text" id="module-search" class="search-input" placeholder="Search modules, concepts, vital statistics, or claim IDs..." aria-label="Search modules">
+        </div>
+        <div class="filter-group" role="group" aria-label="Category filters">
+          <button type="button" class="category-filter-btn" data-category="ALL" aria-pressed="true">All Categories</button>
+          <button type="button" class="category-filter-btn" data-category="Foundations" aria-pressed="false">Foundations</button>
+          <button type="button" class="category-filter-btn" data-category="Surveillance Literacy" aria-pressed="false">Surveillance</button>
+          <button type="button" class="category-filter-btn" data-category="Epidemiological Metrics" aria-pressed="false">Metrics</button>
+          <button type="button" class="category-filter-btn" data-category="Intervention Science" aria-pressed="false">Interventions</button>
+          <button type="button" class="category-filter-btn" data-category="Demographic & Health Equity" aria-pressed="false">Equity</button>
+          <button type="button" class="category-filter-btn" data-category="Public Health Architecture" aria-pressed="false">Architecture</button>
+        </div>
+        <div id="search-live-announcer" class="sr-only" aria-live="polite"></div>
+      </section>
+
+      <!-- 18 MODULES -->
+      
+      <article id="mod-01-orientation" class="module-card" data-category="Foundations">
+        <header class="module-header">
+          <div class="module-meta-line">
+            <span class="module-badge">Module 1</span>
+            <span class="module-category">Foundations</span>
+          </div>
+          <h2 class="module-title">1. Orientation and Educational Boundary</h2>
+          <p class="module-summary">The core educational mission of the Suicide Compendium, safety rails, and strict boundary separating research literacy from clinical care or crisis intervention.</p>
+        </header>
+
+        <!-- 30-SECOND TAKEAWAY -->
+        <div class="takeaway-card">
+          <div class="takeaway-title">30-Second Takeaway</div>
+          <p>This reader teaches statistical and scientific literacy about suicide prevention research. It is strictly educational—not clinical care, screening, diagnosis, or personalized advice. Crisis resources (988 and 911) are immediately accessible.</p>
+        </div>
+
+        <!-- TERMS NOT TO CONFLATE -->
+        
+        <div class="terms-box">
+          <h3 class="terms-heading">Terms Not to Conflate</h3>
+          <table class="terms-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;">Term A</th>
+                <th style="width: 25%;">Term B</th>
+                <th>Scientific Distinction</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>Educational Research Literacy</strong></td>
+                <td><strong>Clinical Psychotherapy or Diagnosis</strong></td>
+                <td>Research literacy explores population epidemiology and scientific study design; clinical care diagnoses and treats individual patients.</td>
+              </tr>
+              
+              <tr>
+                <td><strong>Factual Recall Check</strong></td>
+                <td><strong>Psychiatric Screening Questionnaire</strong></td>
+                <td>Factual recall tests understanding of epidemiological definitions; screening scores individual psychological distress or suicidal ideation.</td>
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+        
+
+        <!-- PERMITTED CLAIMS & LOCATORS -->
+        <div class="claims-box">
+          <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
+          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>Research literacy enables community members, educators, and researchers to understand surveillance data and evidence-based public health interventions.</em></p>
+          <div>
+            
+            <div id="mod-01-orientation-CLM-EVIDENCE-LABEL-LIFECYCLE" class="claim-item">
+              <span class="claim-badge-pill badge-draft">[DRAFT - OPEN]</span>
+              <strong>CLM-EVIDENCE-LABEL-LIFECYCLE:</strong> Scientific claim labeling categorizes assertions into VERIFIED (direct peer-reviewed or official dataset support), STRONG INFERENCE (consistent multi-system extrapolation with visible reasoning), HYPOTHESIS (theoretically grounded proposal awaiting empirical confirmation), and OPEN (unresolved research question), preventing unverified synthesis from masquerading as settled fact.
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> DOV Knowledge Base Governance &amp; Research Claim Label Standards
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-CDC-NVSS-2022-FINAL" class="source-backlink">[SRC-CDC-NVSS-2022-FINAL]</a> <a href="#SRC-HHS-NATSTRAT-2024" class="source-backlink">[SRC-HHS-NATSTRAT-2024]</a>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+
+        <!-- QUIZ GATING SECTION -->
+        <section class="quiz-card" aria-label="Module 1 Factual Recall Check">
+          <div class="quiz-card-header">
+            <h3 class="quiz-title">📝 Factual Recall Check</h3>
+            <span class="quiz-gating-badge">🔒 GATED: PENDING_CLAIM_REVIEW</span>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">1. What is the strict role and boundary of the Suicide Compendium Education Reader?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ To provide personalized mental health diagnosis, screening, and treatment recommendations.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ To deliver standalone scientific and statistical literacy on suicide research without clinical advice or risk scoring.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ To act as an emergency dispatcher and dispatch first responders automatically.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ To replace the 988 Suicide &amp; Crisis Lifeline with an interactive AI chatbot.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">2. How do the factual recall checks in this reader differ from psychological screening questionnaires?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ They score your personal emotional distress level on a scale from 1 to 10.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ They assess your memory and understanding of objective epidemiological concepts rather than personal feelings or behavior.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ They predict your statistical likelihood of experiencing a mental health crisis.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ They store your responses in a cloud database to track behavioral trends.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+        </section>
+      </article>
+        
+
+      <article id="mod-02-data-currency" class="module-card" data-category="Surveillance Literacy">
+        <header class="module-header">
+          <div class="module-meta-line">
+            <span class="module-badge">Module 2</span>
+            <span class="module-category">Surveillance Literacy</span>
+          </div>
+          <h2 class="module-title">2. What Is Current: Final vs. Provisional Data &amp; &quot;Data Through&quot; Timelines</h2>
+          <p class="module-summary">How federal vital statistics are generated, the lag time for coroner/medical examiner toxicological reports, and the critical distinction between provisional and finalized annual data.</p>
+        </header>
+
+        <!-- 30-SECOND TAKEAWAY -->
+        <div class="takeaway-card">
+          <div class="takeaway-title">30-Second Takeaway</div>
+          <p>Final mortality data require 12–18 months for death certificate certification and toxicology completion. Final 2022 data record 49,476 deaths (14.2/100k; NVSR Vol. 74, No. 4, Table B); final 2023 data record 49,316 deaths (14.1/100k); final 2024 data record 48,824 deaths (13.7/100k; rank 10). Always verify the &quot;data through&quot; period.</p>
+        </div>
+
+        <!-- TERMS NOT TO CONFLATE -->
+        
+        <div class="terms-box">
+          <h3 class="terms-heading">Terms Not to Conflate</h3>
+          <table class="terms-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;">Term A</th>
+                <th style="width: 25%;">Term B</th>
+                <th>Scientific Distinction</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>Final NVSS Mortality Data</strong></td>
+                <td><strong>Provisional Quarterly Rapid Releases</strong></td>
+                <td>Final data represent fully locked, audited national vital records; provisional data are incomplete rolling estimates subject to upward or downward adjustment.</td>
+              </tr>
+              
+              <tr>
+                <td><strong>Publication Year (Release Date)</strong></td>
+                <td><strong>Data Collection Year (Event Period)</strong></td>
+                <td>A report published in 2024 typically reports on deaths that occurred in 2022 or 2023.</td>
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+        
+
+        <!-- PERMITTED CLAIMS & LOCATORS -->
+        <div class="claims-box">
+          <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
+          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>Draft candidate tables record 49,476 suicide deaths in 2022 (rate 14.2/100k; NVSR Vol. 74, No. 4, Table B), 49,316 suicide deaths in 2023 (rate 14.1/100k), and 48,824 deaths in 2024 (rate 13.7/100k; rank 10) based on locked CDC NVSS vital statistics.</em></p>
+          <div>
+            
+            <div id="mod-02-data-currency-CLM-NVSS-FINAL-2022" class="claim-item">
+              <span class="claim-badge-pill badge-draft">[DRAFT - OPEN]</span>
+              <strong>CLM-NVSS-FINAL-2022:</strong> According to final CDC NVSS mortality data, the official U.S. age-adjusted suicide rate in 2022 was 14.2 deaths per 100,000 standard population (49,476 total recorded deaths).
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> NVSR Volume 74, Number 4, June 10, 2025; Table B, Intentional self-harm row (Total Deaths: 49,476; Age-Adjusted Rate: 14.2)
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-CDC-NVSS-2022-FINAL" class="source-backlink">[SRC-CDC-NVSS-2022-FINAL]</a> <a href="#SRC-CDC-WISQARS-2024" class="source-backlink">[SRC-CDC-WISQARS-2024]</a>
+              </div>
+            </div>
+            
+            <div id="mod-02-data-currency-CLM-NVSS-FINAL-2023" class="claim-item">
+              <span class="claim-badge-pill badge-draft">[DRAFT - OPEN]</span>
+              <strong>CLM-NVSS-FINAL-2023:</strong> According to final CDC NVSS mortality data, the official U.S. age-adjusted suicide rate in 2023 was 14.1 deaths per 100,000 standard population (49,316 total recorded deaths), reflecting a final 0.3% decrease from 2022.
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> CDC NCHS NVSS 2023 Final Mortality Release (Total Deaths: 49,316; Age-Adjusted Rate: 14.1)
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-CDC-NVSS-2023-FINAL" class="source-backlink">[SRC-CDC-NVSS-2023-FINAL]</a>
+              </div>
+            </div>
+            
+            <div id="mod-02-data-currency-CLM-NVSS-FINAL-2024" class="claim-item">
+              <span class="claim-badge-pill badge-draft">[DRAFT - OPEN]</span>
+              <strong>CLM-NVSS-FINAL-2024:</strong> According to final CDC NVSS mortality data, the official U.S. age-adjusted suicide rate in 2024 was 13.7 deaths per 100,000 standard population (48,824 total recorded deaths; rank 10), reflecting a continuous decline from 2022 and 2023 peaks.
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> NCHS NVSS 2024 Annual Mortality Tables (Total Deaths: 48,824; Age-Adjusted Rate: 13.7; Rank: 10)
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-CDC-NVSS-2024-FINAL" class="source-backlink">[SRC-CDC-NVSS-2024-FINAL]</a>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+
+        <!-- QUIZ GATING SECTION -->
+        <section class="quiz-card" aria-label="Module 2 Factual Recall Check">
+          <div class="quiz-card-header">
+            <h3 class="quiz-title">📝 Factual Recall Check</h3>
+            <span class="quiz-gating-badge">🔒 GATED: PENDING_CLAIM_REVIEW</span>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">1. Why is there a standard 12-to-18-month reporting lag before CDC NVSS mortality data are published as &quot;final&quot;?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because government computers only process death records once every two years.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because thorough death certification, forensic coroner investigations, and toxicological analyses take months to resolve across 50 states.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because death certificates are kept confidential for a mandatory two-year embargo period.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because provisional estimates must be debated and voted on by Congress.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">2. What is the primary difference between &quot;provisional&quot; and &quot;final&quot; vital statistics data?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Provisional data are rapid rolling estimates subject to subsequent revision, while final data represent locked, audited historical records.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Provisional data are gathered from social media, while final data come from hospitals.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Provisional data only count deaths in rural areas.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Final data only report on military personnel.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+        </section>
+      </article>
+        
+
+      <article id="mod-03-count-rate-rank" class="module-card" data-category="Surveillance Literacy">
+        <header class="module-header">
+          <div class="module-meta-line">
+            <span class="module-badge">Module 3</span>
+            <span class="module-category">Surveillance Literacy</span>
+          </div>
+          <h2 class="module-title">3. Count vs. Rate vs. Leading-Cause Rank vs. Trend</h2>
+          <p class="module-summary">Why absolute death counts, crude rates, leading-cause ordinal ranks, and annual percentage trends convey fundamentally different information about public health burden.</p>
+        </header>
+
+        <!-- 30-SECOND TAKEAWAY -->
+        <div class="takeaway-card">
+          <div class="takeaway-title">30-Second Takeaway</div>
+          <p>Leading-cause rank depends entirely on what other causes kill people at that age. In youth, chronic diseases are rare, so suicide ranks high (#2) despite a lower absolute rate (~10.5/100k) than in older adults (~18–22/100k) where heart disease and cancer dominate.</p>
+        </div>
+
+        <!-- TERMS NOT TO CONFLATE -->
+        
+        <div class="terms-box">
+          <h3 class="terms-heading">Terms Not to Conflate</h3>
+          <table class="terms-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;">Term A</th>
+                <th style="width: 25%;">Term B</th>
+                <th>Scientific Distinction</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>Absolute Count</strong></td>
+                <td><strong>Population Rate per 100k</strong></td>
+                <td>Count is the total number of events; rate divides count by population size to measure incidence.</td>
+              </tr>
+              
+              <tr>
+                <td><strong>Leading Cause Rank</strong></td>
+                <td><strong>Absolute Mortality Rate</strong></td>
+                <td>Rank is relative to all other competing causes of death in that cohort; rate is the frequency per 100,000 people.</td>
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+        
+
+        <!-- PERMITTED CLAIMS & LOCATORS -->
+        <div class="claims-box">
+          <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
+          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>Suicide ranks as the second leading cause of death among U.S. adolescents and young adults aged 10–24 because competing causes of mortality are minimal in this cohort.</em></p>
+          <div>
+            
+            <div id="mod-03-count-rate-rank-CLM-RATE-VS-RANK-LOGIC" class="claim-item">
+              <span class="claim-badge-pill badge-draft">[DRAFT - OPEN]</span>
+              <strong>CLM-RATE-VS-RANK-LOGIC:</strong> A high leading-cause rank (e.g., suicide as the 2nd leading cause of death among ages 10–14 or 15–24) does not imply a higher absolute mortality rate than in older adult groups; it occurs because overall all-cause mortality (such as chronic disease and cancer) is extremely low in youth cohorts.
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> WISQARS Leading Causes of Death Visualization System &amp; Explanatory Guides
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-CDC-WISQARS-2024" class="source-backlink">[SRC-CDC-WISQARS-2024]</a> <a href="#SRC-CDC-NVSS-2022-FINAL" class="source-backlink">[SRC-CDC-NVSS-2022-FINAL]</a>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+
+        <!-- QUIZ GATING SECTION -->
+        <section class="quiz-card" aria-label="Module 3 Factual Recall Check">
+          <div class="quiz-card-header">
+            <h3 class="quiz-title">📝 Factual Recall Check</h3>
+            <span class="quiz-gating-badge">🔒 GATED: PENDING_CLAIM_REVIEW</span>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">1. Why does suicide rank as the 2nd leading cause of death in youth (ages 10–24) despite having a lower mortality rate than in older adults?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because youth suicide counts are higher than all other age groups combined.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because overall mortality from chronic diseases (like cancer and heart disease) is extremely low in youth cohorts.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because leading cause rankings only evaluate deaths that occur on school property.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because the CDC calculates youth rankings using a different mathematical formula.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">2. Which metric measures the actual population-level frequency of an event independent of competing causes of death?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Ordinal Leading Cause Rank (e.g., 2nd vs 9th)</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Mortality Rate per 100,000 population</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Total National Raw Count alone without population denominator</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Percentage of deaths occurring on weekends</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+        </section>
+      </article>
+        
+
+      <article id="mod-04-crude-vs-age-adj" class="module-card" data-category="Epidemiological Metrics">
+        <header class="module-header">
+          <div class="module-meta-line">
+            <span class="module-badge">Module 4</span>
+            <span class="module-category">Epidemiological Metrics</span>
+          </div>
+          <h2 class="module-title">4. Crude vs. Age-Adjusted Rates</h2>
+          <p class="module-summary">The mathematical necessity of direct age standardization, how differing demographic age pyramids distort crude comparisons, and how the 2000 U.S. Standard Population is applied.</p>
+        </header>
+
+        <!-- 30-SECOND TAKEAWAY -->
+        <div class="takeaway-card">
+          <div class="takeaway-title">30-Second Takeaway</div>
+          <p>Crude rates divide raw deaths by total population. Age-adjusted rates apply age-specific rates to a standard population (U.S. 2000 benchmark) so that older populations (like Florida) and younger populations (like Utah or Alaska) can be fairly compared.</p>
+        </div>
+
+        <!-- TERMS NOT TO CONFLATE -->
+        
+        <div class="terms-box">
+          <h3 class="terms-heading">Terms Not to Conflate</h3>
+          <table class="terms-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;">Term A</th>
+                <th style="width: 25%;">Term B</th>
+                <th>Scientific Distinction</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>Crude Mortality Rate</strong></td>
+                <td><strong>Age-Adjusted Mortality Rate</strong></td>
+                <td>Crude rate reflects actual unadjusted events in the specific local population; age-adjusted rate standardizes for age structure.</td>
+              </tr>
+              
+              <tr>
+                <td><strong>Direct Age Standardization</strong></td>
+                <td><strong>Indirect Standardization</strong></td>
+                <td>Direct standardization applies observed age-specific rates to a single benchmark population.</td>
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+        
+
+        <!-- PERMITTED CLAIMS & LOCATORS -->
+        <div class="claims-box">
+          <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
+          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>Age-adjusted rates eliminate the confounding effect of age distribution differences when comparing suicide risk between different states or demographic groups.</em></p>
+          <div>
+            
+            <div id="mod-04-crude-vs-age-adj-CLM-CRUDE-VS-AGEADJ" class="claim-item">
+              <span class="claim-badge-pill badge-draft">[DRAFT - OPEN]</span>
+              <strong>CLM-CRUDE-VS-AGEADJ:</strong> Crude death rates measure actual observed events divided by the unweighted population, whereas age-adjusted rates standardize the population distribution to allow valid comparison across geographic regions or demographic groups with differing age pyramids.
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> NCHS Age Standardization Statistical Reports (Anderson &amp; Rosenberg)
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-CDC-NVSS-2022-FINAL" class="source-backlink">[SRC-CDC-NVSS-2022-FINAL]</a> <a href="#SRC-CDC-WISQARS-2024" class="source-backlink">[SRC-CDC-WISQARS-2024]</a>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+
+        <!-- QUIZ GATING SECTION -->
+        <section class="quiz-card" aria-label="Module 4 Factual Recall Check">
+          <div class="quiz-card-header">
+            <h3 class="quiz-title">📝 Factual Recall Check</h3>
+            <span class="quiz-gating-badge">🔒 GATED: PENDING_CLAIM_REVIEW</span>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">1. What is the purpose of calculating an &quot;age-adjusted&quot; mortality rate?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ To remove the confounding effect of differences in age distribution across states or demographic groups.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ To inflate rates in states with small populations.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ To hide mortality trends among elderly individuals.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ To adjust for inflation in healthcare costs.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">2. If State X has an older population and State Y has a younger population, how might their crude and age-adjusted rates compare?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Crude and age-adjusted rates will always be exactly identical in both states.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ State X crude rate may look higher simply due to its older age structure, while age adjustment reveals the true standardized risk.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Age adjustment will eliminate all reported deaths in State Y.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ State Y rate can only be calculated using crude data.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+        </section>
+      </article>
+        
+
+      <article id="mod-05-yppl-derived" class="module-card" data-category="Epidemiological Metrics">
+        <header class="module-header">
+          <div class="module-meta-line">
+            <span class="module-badge">Module 5</span>
+            <span class="module-category">Epidemiological Metrics</span>
+          </div>
+          <h2 class="module-title">5. Years of Potential Life Lost (YPLL) &amp; Derived Measures</h2>
+          <p class="module-summary">How premature mortality is quantified through YPLL-75, economic and societal impact modeling, and the limitations of derived statistical indicators.</p>
+        </header>
+
+        <!-- 30-SECOND TAKEAWAY -->
+        <div class="takeaway-card">
+          <div class="takeaway-title">30-Second Takeaway</div>
+          <p>YPLL subtracts age at death from a benchmark (typically age 75). A death at age 20 equals 55 YPLL; a death at age 70 equals 5 YPLL. Because suicide disproportionately affects youth and middle-aged adults, it generates massive YPLL compared to late-life diseases.</p>
+        </div>
+
+        <!-- TERMS NOT TO CONFLATE -->
+        
+        <div class="terms-box">
+          <h3 class="terms-heading">Terms Not to Conflate</h3>
+          <table class="terms-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;">Term A</th>
+                <th style="width: 25%;">Term B</th>
+                <th>Scientific Distinction</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>Years of Potential Life Lost (YPLL-75)</strong></td>
+                <td><strong>Total Mortality Count</strong></td>
+                <td>YPLL weights each death by how many years prior to age 75 it occurred; mortality count treats every death as 1 unit regardless of age.</td>
+              </tr>
+              
+              <tr>
+                <td><strong>YPLL Rate per 100k</strong></td>
+                <td><strong>Crude Death Rate per 100k</strong></td>
+                <td>YPLL rate standardizes total lost years across population sizes; crude death rate standardizes event counts.</td>
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+        
+
+        <!-- PERMITTED CLAIMS & LOCATORS -->
+        <div class="claims-box">
+          <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
+          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>Years of Potential Life Lost (YPLL-75) demonstrates the profound societal burden of suicide by illustrating that deaths among youth and young adults result in decades of unlived potential.</em></p>
+          <div>
+            
+            <div id="mod-05-yppl-derived-CLM-YPLL-LOGIC" class="claim-item">
+              <span class="claim-badge-pill badge-draft">[DRAFT - OPEN]</span>
+              <strong>CLM-YPLL-LOGIC:</strong> Years of Potential Life Lost (YPLL-75) measures premature mortality by calculating the difference between an individual age at death and a standard benchmark (usually age 75), highlighting the disproportionate societal and economic burden when mortality occurs in younger cohorts.
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> CDC WISQARS Fatal Injury Reports, Years of Potential Life Lost Module
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-CDC-WISQARS-2024" class="source-backlink">[SRC-CDC-WISQARS-2024]</a>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+
+        <!-- QUIZ GATING SECTION -->
+        <section class="quiz-card" aria-label="Module 5 Factual Recall Check">
+          <div class="quiz-card-header">
+            <h3 class="quiz-title">📝 Factual Recall Check</h3>
+            <span class="quiz-gating-badge">🔒 GATED: PENDING_CLAIM_REVIEW</span>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">1. How is Years of Potential Life Lost before age 75 (YPLL-75) calculated for a person who dies at age 25?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ 75 minus 25 = 50 Years of Potential Life Lost.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ 75 plus 25 = 100 Years of Potential Life Lost.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ 25 divided by 75 = 0.33 Years of Potential Life Lost.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ It is always counted as 1 year regardless of age.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">2. Why does suicide contribute a disproportionately large share of total national YPLL compared to its raw mortality rank?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because suicide only occurs among people older than 75.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because a substantial proportion of suicide deaths occur among youth and working-age adults.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because the CDC triples YPLL scores for violent deaths.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because YPLL is only calculated in large urban hospitals.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+        </section>
+      </article>
+        
+
+      <article id="mod-06-surveillance-systems" class="module-card" data-category="Surveillance Literacy">
+        <header class="module-header">
+          <div class="module-meta-line">
+            <span class="module-badge">Module 6</span>
+            <span class="module-category">Surveillance Literacy</span>
+          </div>
+          <h2 class="module-title">6. Fatal vs. Nonfatal Systems: NVSS, NSDUH, YRBS, WISQARS, NVDRS</h2>
+          <p class="module-summary">The multi-system public health infrastructure in the U.S., detailing how death certificates, household surveys, school surveys, and emergency department surveillance capture different signals.</p>
+        </header>
+
+        <!-- 30-SECOND TAKEAWAY -->
+        <div class="takeaway-card">
+          <div class="takeaway-title">30-Second Takeaway</div>
+          <p>No single system tracks all aspects of suicide. NVSS tracks official deaths via certificates; NSDUH surveys household adults on thoughts and attempts; YRBS surveys high schoolers; WISQARS compiles fatal and ED injury data; NVDRS links coroner and police narratives.</p>
+        </div>
+
+        <!-- TERMS NOT TO CONFLATE -->
+        
+        <div class="terms-box">
+          <h3 class="terms-heading">Terms Not to Conflate</h3>
+          <table class="terms-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;">Term A</th>
+                <th style="width: 25%;">Term B</th>
+                <th>Scientific Distinction</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>NVSS (Vital Statistics)</strong></td>
+                <td><strong>NSDUH / YRBS (Surveys)</strong></td>
+                <td>NVSS is a complete legal mortality registry; NSDUH and YRBS are sample surveys measuring nonfatal thoughts and self-reported attempts.</td>
+              </tr>
+              
+              <tr>
+                <td><strong>NVDRS (Violent Death Reporting)</strong></td>
+                <td><strong>Standard Death Certificates</strong></td>
+                <td>NVDRS adds rich qualitative context from coroner/law enforcement incident narratives to death certificates.</td>
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+        
+
+        <!-- PERMITTED CLAIMS & LOCATORS -->
+        <div class="claims-box">
+          <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
+          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>Combining NVSS mortality data with NSDUH and YRBS survey findings provides a multi-layered picture of fatal outcomes, nonfatal attempts, and suicidal ideation across the U.S.</em></p>
+          <div>
+            
+            <div id="mod-06-surveillance-systems-CLM-SYSTEMS-MORT-VS-SURV" class="claim-item">
+              <span class="claim-badge-pill badge-draft">[DRAFT - OPEN]</span>
+              <strong>CLM-SYSTEMS-MORT-VS-SURV:</strong> Mortality counts from death certificates (NVSS) and self-reported ideation or behavior from surveys (NSDUH, YRBS) measure completely distinct public-health endpoints; the ratio of self-reported lifetime suicide attempts to recorded suicide deaths is estimated at approximately 20:1 to 30:1 in adults and over 100:1 in adolescents.
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> SAMHSA NSDUH Table 8.1 &amp; CDC YRBS Overview Report 2023
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-CDC-NVSS-2022-FINAL" class="source-backlink">[SRC-CDC-NVSS-2022-FINAL]</a> <a href="#SRC-SAMHSA-NSDUH-2023" class="source-backlink">[SRC-SAMHSA-NSDUH-2023]</a> <a href="#SRC-CDC-YRBS-2023" class="source-backlink">[SRC-CDC-YRBS-2023]</a>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+
+        <!-- QUIZ GATING SECTION -->
+        <section class="quiz-card" aria-label="Module 6 Factual Recall Check">
+          <div class="quiz-card-header">
+            <h3 class="quiz-title">📝 Factual Recall Check</h3>
+            <span class="quiz-gating-badge">🔒 GATED: PENDING_CLAIM_REVIEW</span>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">1. Which national system provides the official count of legal suicide deaths based on death certificates in the U.S.?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ National Vital Statistics System (NVSS)</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ National Survey on Drug Use and Health (NSDUH)</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Youth Risk Behavior Surveillance System (YRBSS)</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ National Poison Data System (NPDS)</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">2. What is the primary role of the National Violent Death Reporting System (NVDRS)?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ To link death certificates with coroner/medical examiner records and law enforcement reports for multi-source incident context.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ To prescribe anti-depressant medications to survey respondents.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ To manage 988 phone call routing.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ To track global airline safety statistics.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+        </section>
+      </article>
+        
+
+      <article id="mod-07-small-numbers" class="module-card" data-category="Epidemiological Metrics">
+        <header class="module-header">
+          <div class="module-meta-line">
+            <span class="module-badge">Module 7</span>
+            <span class="module-category">Epidemiological Metrics</span>
+          </div>
+          <h2 class="module-title">7. Small Numbers, Cell Suppression &amp; False Precision</h2>
+          <p class="module-summary">Statistical instability in low-incidence events, federal cell suppression rules (n &lt; 10), relative standard error (RSE) thresholds, and avoiding misleading claims based on small-sample noise.</p>
+        </header>
+
+        <!-- 30-SECOND TAKEAWAY -->
+        <div class="takeaway-card">
+          <div class="takeaway-title">30-Second Takeaway</div>
+          <p>If a small county has 1 suicide in year one and 3 in year two, the rate appears to &quot;triple (+200%),&quot; but this is random noise in a small cell. CDC suppresses counts under 10 for privacy and flags counts under 20 (RSE &gt;= 30%) as unstable.</p>
+        </div>
+
+        <!-- TERMS NOT TO CONFLATE -->
+        
+        <div class="terms-box">
+          <h3 class="terms-heading">Terms Not to Conflate</h3>
+          <table class="terms-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;">Term A</th>
+                <th style="width: 25%;">Term B</th>
+                <th>Scientific Distinction</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>Statistical Instability (High RSE)</strong></td>
+                <td><strong>Real Epidemiological Trend</strong></td>
+                <td>Instability occurs when small event numbers cause extreme percentage swings purely by chance; a trend requires stable, statistically significant multi-year changes.</td>
+              </tr>
+              
+              <tr>
+                <td><strong>Data Suppression for Privacy</strong></td>
+                <td><strong>Data Suppression for Reliability</strong></td>
+                <td>Privacy suppression protects individual confidentiality (counts 1–9); reliability suppression prevents publishing misleading unstable rates.</td>
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+        
+
+        <!-- PERMITTED CLAIMS & LOCATORS -->
+        <div class="claims-box">
+          <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
+          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>Multi-year data pooling is necessary when analyzing suicide rates in small rural counties or disaggregated racial subgroups to achieve statistical reliability.</em></p>
+          <div>
+            
+            <div id="mod-07-small-numbers-CLM-SMALL-CELL-INSTABILITY" class="claim-item">
+              <span class="claim-badge-pill badge-draft">[DRAFT - OPEN]</span>
+              <strong>CLM-SMALL-CELL-INSTABILITY:</strong> When calculating suicide rates for small demographic subgroups or low-population rural counties with fewer than 20 recorded events per year, rates fluctuate drastically due to random variation, requiring suppression or multi-year pooling to avoid manufactured false precision.
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> CDC NCHS Guideline for Reporting and Assessing Data Reliability
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-CDC-NVSS-2022-FINAL" class="source-backlink">[SRC-CDC-NVSS-2022-FINAL]</a> <a href="#SRC-CDC-WISQARS-2024" class="source-backlink">[SRC-CDC-WISQARS-2024]</a>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+
+        <!-- QUIZ GATING SECTION -->
+        <section class="quiz-card" aria-label="Module 7 Factual Recall Check">
+          <div class="quiz-card-header">
+            <h3 class="quiz-title">📝 Factual Recall Check</h3>
+            <span class="quiz-gating-badge">🔒 GATED: PENDING_CLAIM_REVIEW</span>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">1. What happens to statistical reliability when calculating annual suicide rates for small counties with fewer than 20 events?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ The rates become extremely stable and precise.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Random variation causes extreme fluctuations, creating misleading percentage swings (high Relative Standard Error).</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ The CDC automatically rounds all counts up to 100.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ The rates become immune to sampling error.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">2. What standard method do epidemiologists use to report reliable statistics for small populations or rural areas?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Pooling multiple consecutive years of data (e.g., 3-year or 5-year averages).</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Guessing the missing numbers based on neighboring cities.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Publishing unverified social media estimates.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Multiplying the small numbers by 10 to make them look larger.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+        </section>
+      </article>
+        
+
+      <article id="mod-08-caring-contacts" class="module-card" data-category="Intervention Science">
+        <header class="module-header">
+          <div class="module-meta-line">
+            <span class="module-badge">Module 8</span>
+            <span class="module-category">Intervention Science</span>
+          </div>
+          <h2 class="module-title">8. Caring Contacts: Evidence by Endpoint, Dose &amp; Limitation</h2>
+          <p class="module-summary">The landmark Motto trials (Motto 1976; Motto &amp; Bostrom 2001), mechanism of unconditional non-demanding contact, follow-up trajectories over 15 years, and limits across modern digital modalities (SMS, email).</p>
+        </header>
+
+        <!-- 30-SECOND TAKEAWAY -->
+        <div class="takeaway-card">
+          <div class="takeaway-title">30-Second Takeaway</div>
+          <p>In Motto 1976 and Motto &amp; Bostrom 2001 landmark inpatient trials, sending 24 brief, unconditional, non-demanding letters over 5 years to treatment-refusing patients significantly lowered suicide mortality in years 1–4. Modern automated texts, however, vary widely in efficacy.</p>
+        </div>
+
+        <!-- TERMS NOT TO CONFLATE -->
+        
+        <div class="terms-box">
+          <h3 class="terms-heading">Terms Not to Conflate</h3>
+          <table class="terms-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;">Term A</th>
+                <th style="width: 25%;">Term B</th>
+                <th>Scientific Distinction</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>Unconditional Caring Contact</strong></td>
+                <td><strong>Clinical Compliance Follow-up</strong></td>
+                <td>Caring contacts make zero demands, require no response, and offer pure empathy; compliance calls demand appointment scheduling or medication checks.</td>
+              </tr>
+              
+              <tr>
+                <td><strong>Long-term Multi-year Schedule (24 letters)</strong></td>
+                <td><strong>Single Modern Automated SMS</strong></td>
+                <td>Motto protocol delivered sustained, spaced contact over 5 years; single automated check-ins have distinct, often smaller effect sizes.</td>
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+        
+
+        <!-- PERMITTED CLAIMS & LOCATORS -->
+        <div class="claims-box">
+          <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
+          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>In Motto landmark RCTs (1976, 2001), sustained, unconditional caring letters were associated with reduced suicide mortality in treatment-refusing psychiatric patients over early follow-up years.</em></p>
+          <div>
+            
+            <div id="mod-08-caring-contacts-CLM-CARING-CONTACTS-MOTTO-RCT" class="claim-item">
+              <span class="claim-badge-pill badge-draft">[DRAFT - OPEN]</span>
+              <strong>CLM-CARING-CONTACTS-MOTTO-RCT:</strong> Jerome Motto landmark randomized controlled trials demonstrated that brief, unconditional, non-demanding caring letters sent over a multi-year schedule significantly reduced suicide mortality among high-risk psychiatric patients post-discharge in the first 2–4 years compared to contact-free controls (p &lt; 0.05).
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> Motto (1976), SLTB 6(4):248–257; Motto &amp; Bostrom (2001), Psychiatric Services 52(6):828–833
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-MOTTO-1976" class="source-backlink">[SRC-MOTTO-1976]</a> <a href="#SRC-MOTTO-BOSTROM-2001" class="source-backlink">[SRC-MOTTO-BOSTROM-2001]</a>
+              </div>
+            </div>
+            
+            <div id="mod-08-caring-contacts-CLM-CARING-CONTACTS-MODALITY-LIMIT" class="claim-item">
+              <span class="claim-badge-pill badge-draft">[DRAFT - OPEN]</span>
+              <strong>CLM-CARING-CONTACTS-MODALITY-LIMIT:</strong> Caring contacts cannot be assumed to produce universal mortality reduction across all modalities (e.g., automated one-way SMS vs personalized letters); clinical trials show varying efficacy on nonfatal re-attempt endpoints, and caring contacts do not replace comprehensive crisis care or clinical safety planning.
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> VA/DoD Clinical Practice Guideline for Suicide Prevention (2024 Update)
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-MOTTO-BOSTROM-2001" class="source-backlink">[SRC-MOTTO-BOSTROM-2001]</a> <a href="#SRC-CDC-NVSS-2022-FINAL" class="source-backlink">[SRC-CDC-NVSS-2022-FINAL]</a>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+
+        <!-- QUIZ GATING SECTION -->
+        <section class="quiz-card" aria-label="Module 8 Factual Recall Check">
+          <div class="quiz-card-header">
+            <h3 class="quiz-title">📝 Factual Recall Check</h3>
+            <span class="quiz-gating-badge">🔒 GATED: PENDING_CLAIM_REVIEW</span>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">1. In Jerome Motto landmark RCT, what was a defining characteristic of the caring letters sent to patients?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ They required patients to return a mandatory monthly health questionnaire.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ They were brief, unconditional, and made zero clinical demands or response requirements.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ They billed patients for ongoing hospital administrative services.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ They required patients to attend mandatory outpatient group therapy.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">2. Why cannot modern automated text-message interventions be assumed to replicate Motto exact trial results without evaluation?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because postal mail is the only communication medium permitted by law.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because trial outcomes vary by dose, personalization, tone, and human connection versus automated system messages.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because text messages cannot be received by people under age 50.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because Motto study only evaluated radio broadcasts.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+        </section>
+      </article>
+        
+
+      <article id="mod-09-ails-curriculum" class="module-card" data-category="Intervention Science">
+        <header class="module-header">
+          <div class="module-meta-line">
+            <span class="module-badge">Module 9</span>
+            <span class="module-category">Intervention Science</span>
+          </div>
+          <h2 class="module-title">9. AILS Curriculum: School Skills &amp; Tribal Community Authority</h2>
+          <p class="module-summary">The American Indian Life Skills Development Curriculum (LaFromboise), school-based universal life-skills model, peer communication training, and why it is not therapy.</p>
+        </header>
+
+        <!-- 30-SECOND TAKEAWAY -->
+        <div class="takeaway-card">
+          <div class="takeaway-title">30-Second Takeaway</div>
+          <p>AILS is a 30-lesson classroom curriculum developed with tribal elders (Zuni Pueblo) that teaches problem-solving, emotional regulation, and peer help-giving. It is universal school-based education—not clinical psychotherapy or psychiatric care.</p>
+        </div>
+
+        <!-- TERMS NOT TO CONFLATE -->
+        
+        <div class="terms-box">
+          <h3 class="terms-heading">Terms Not to Conflate</h3>
+          <table class="terms-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;">Term A</th>
+                <th style="width: 25%;">Term B</th>
+                <th>Scientific Distinction</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>Universal Classroom Curriculum (AILS)</strong></td>
+                <td><strong>Individual Clinical Psychotherapy</strong></td>
+                <td>AILS is taught in high school classrooms to entire cohorts to build life skills; psychotherapy is one-on-one clinical treatment for diagnosed disorders.</td>
+              </tr>
+              
+              <tr>
+                <td><strong>Culturally Grounded Co-Creation</strong></td>
+                <td><strong>Top-Down Generic Adaptation</strong></td>
+                <td>AILS was designed in partnership with tribal communities integrating Indigenous cultural strengths.</td>
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+        
+
+        <!-- PERMITTED CLAIMS & LOCATORS -->
+        <div class="claims-box">
+          <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
+          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>The American Indian Life Skills curriculum is an evidence-supported school-based curriculum designed to strengthen problem-solving and peer help-seeking in Indigenous youth.</em></p>
+          <div>
+            
+            <div id="mod-09-ails-curriculum-CLM-AILS-SCHOOL-CURRICULUM" class="claim-item">
+              <span class="claim-badge-pill badge-draft">[DRAFT - OPEN]</span>
+              <strong>CLM-AILS-SCHOOL-CURRICULUM:</strong> The American Indian Life Skills (AILS) program is a culturally grounded school-based universal life-skills and problem-solving curriculum designed for Native American youth, evaluated primarily in reservation school settings (Zuni High School) to build communication, stress management, and peer help-giving skills.
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> LaFromboise &amp; Howard-Pitney (1995), J. Counseling Psychology 42(4):479–486
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-LAFROMBOISE-1994" class="source-backlink">[SRC-LAFROMBOISE-1994]</a> <a href="#SRC-IHS-PROGRAM-2024" class="source-backlink">[SRC-IHS-PROGRAM-2024]</a>
+              </div>
+            </div>
+            
+            <div id="mod-09-ails-curriculum-CLM-AILS-NOT-THERAPY" class="claim-item">
+              <span class="claim-badge-pill badge-draft">[DRAFT - OPEN]</span>
+              <strong>CLM-AILS-NOT-THERAPY:</strong> AILS is explicitly a classroom educational curriculum taught by trained educators or community facilitators, not an individual clinical psychotherapy, psychiatric treatment, or standalone acute crisis intervention.
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> AILS Curriculum Instructor Manual (Stanford University Press)
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-LAFROMBOISE-1994" class="source-backlink">[SRC-LAFROMBOISE-1994]</a> <a href="#SRC-IHS-PROGRAM-2024" class="source-backlink">[SRC-IHS-PROGRAM-2024]</a>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+
+        <!-- QUIZ GATING SECTION -->
+        <section class="quiz-card" aria-label="Module 9 Factual Recall Check">
+          <div class="quiz-card-header">
+            <h3 class="quiz-title">📝 Factual Recall Check</h3>
+            <span class="quiz-gating-badge">🔒 GATED: PENDING_CLAIM_REVIEW</span>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">1. What is the American Indian Life Skills (AILS) program?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ A school-based universal life-skills and problem-solving curriculum co-created with tribal communities.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ An inpatient psychiatric treatment protocol for acute crisis stabilization.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ A prescription medication regimen for adolescent depression.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ A mandatory state law enforcement training program.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">2. Why is it incorrect to describe AILS as &quot;psychotherapy&quot; or &quot;clinical treatment&quot;?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because AILS is taught in educational classroom settings by teachers or facilitators, not delivered as individual psychotherapy.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because AILS was never evaluated in any research study.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because schools are prohibited from teaching health concepts.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because AILS only applies to adult hospital patients.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+        </section>
+      </article>
+        
+
+      <article id="mod-10-asian-vs-nhpi" class="module-card" data-category="Demographic &amp; Health Equity">
+        <header class="module-header">
+          <div class="module-meta-line">
+            <span class="module-badge">Module 10</span>
+            <span class="module-category">Demographic &amp; Health Equity</span>
+          </div>
+          <h2 class="module-title">10. Asian vs. Native Hawaiian &amp; Pacific Islander Data Separation</h2>
+          <p class="module-summary">Why federal OMB standards mandate separating Asian Americans from Native Hawaiians and Pacific Islanders (NHPI), and how aggregating them masks severe NHPI youth mortality disparities.</p>
+        </header>
+
+        <!-- 30-SECOND TAKEAWAY -->
+        <div class="takeaway-card">
+          <div class="takeaway-title">30-Second Takeaway</div>
+          <p>Lumping Asian Americans and Pacific Islanders together creates a misleading aggregate. In pooled epidemiological studies, NHPI adolescents demonstrate distinct, elevated suicide rates compared to Asian American youth.</p>
+        </div>
+
+        <!-- TERMS NOT TO CONFLATE -->
+        
+        <div class="terms-box">
+          <h3 class="terms-heading">Terms Not to Conflate</h3>
+          <table class="terms-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;">Term A</th>
+                <th style="width: 25%;">Term B</th>
+                <th>Scientific Distinction</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>Asian American Disaggregated Data</strong></td>
+                <td><strong>Native Hawaiian &amp; Pacific Islander Data</strong></td>
+                <td>Asian Americans and NHPI represent distinct racial groups with distinct histories, languages, health profiles, and epidemiological patterns.</td>
+              </tr>
+              
+              <tr>
+                <td><strong>Aggregated &quot;AAPI&quot; Category</strong></td>
+                <td><strong>Disaggregated Subgroup Surveillance</strong></td>
+                <td>Aggregate AAPI blends high-population Asian averages with smaller NHPI populations, completely masking NHPI health disparities.</td>
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+        
+
+        <!-- PERMITTED CLAIMS & LOCATORS -->
+        <div class="claims-box">
+          <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
+          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>Disaggregating Asian and NHPI mortality data is required by OMB standards to expose health disparities masked by aggregate reporting.</em></p>
+          <div>
+            
+            <div id="mod-10-asian-vs-nhpi-CLM-ASIAN-NHPI-SEPARATION" class="claim-item">
+              <span class="claim-badge-pill badge-hold">[HOLD - OPEN]</span>
+              <strong>CLM-ASIAN-NHPI-SEPARATION:</strong> Aggregating Asian American and Native Hawaiian/Pacific Islander (NHPI) populations into a single &quot;AAPI&quot; category obscures profound public health disparities: NHPI youth and young adults have historically demonstrated suicide mortality rates more than double those of Asian American youth cohorts.
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> CDC NCHS Disaggregated Demographic Tables &amp; Reyes 2024 Cross-Sectional Analysis
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-REYES-2024" class="source-backlink">[SRC-REYES-2024]</a> <a href="#SRC-CDC-NVSS-2022-FINAL" class="source-backlink">[SRC-CDC-NVSS-2022-FINAL]</a>
+              </div>
+            </div>
+            
+            <div id="mod-10-asian-vs-nhpi-CLM-NHPI-YOUTH-RATE" class="claim-item">
+              <span class="claim-badge-pill badge-hold">[HOLD - OPEN]</span>
+              <strong>CLM-NHPI-YOUTH-RATE:</strong> Among Native Hawaiian and Other Pacific Islander adolescents and young adults (ages 15–24), suicide is a leading cause of death, with age-specific mortality rates substantially exceeding the national youth average in disaggregated multi-year pooled analyses.
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> WISQARS Disaggregated Query System &amp; Reyes 2024 Analysis
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-REYES-2024" class="source-backlink">[SRC-REYES-2024]</a> <a href="#SRC-CDC-WISQARS-2024" class="source-backlink">[SRC-CDC-WISQARS-2024]</a>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+
+        <!-- QUIZ GATING SECTION -->
+        <section class="quiz-card" aria-label="Module 10 Factual Recall Check">
+          <div class="quiz-card-header">
+            <h3 class="quiz-title">📝 Factual Recall Check</h3>
+            <span class="quiz-gating-badge">🔒 GATED: PENDING_CLAIM_REVIEW</span>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">1. Why do federal statistical standards require separating Asian American data from Native Hawaiian and Pacific Islander (NHPI) data?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because combining them into &quot;AAPI&quot; masks significant public health disparities and higher youth mortality in NHPI populations.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because Asian Americans live in a different hemisphere than Pacific Islanders.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because NHPI data are only collected by international organizations.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because federal law prohibits publishing data on groups smaller than 1 million.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">2. What do disaggregated epidemiological studies show regarding Native Hawaiian and Pacific Islander youth suicide rates?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ NHPI youth suicide rates are among the lowest of any demographic group.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ NHPI youth experience mortality rates substantially higher than the national youth average in disaggregated multi-year studies.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ NHPI mortality rates can only be measured in hospital emergency departments.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ There are zero recorded suicide deaths among NHPI youth in U.S. history.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+        </section>
+      </article>
+        
+
+      <article id="mod-11-aian-surveillance" class="module-card" data-category="Demographic &amp; Health Equity">
+        <header class="module-header">
+          <div class="module-meta-line">
+            <span class="module-badge">Module 11</span>
+            <span class="module-category">Demographic &amp; Health Equity</span>
+          </div>
+          <h2 class="module-title">11. AI/AN Surveillance, Misclassification &amp; Cultural Governance</h2>
+          <p class="module-summary">Racial misclassification of American Indian/Alaska Native individuals on death certificates, data sovereignty, tribal research governance, and cultural protective factors.</p>
+        </header>
+
+        <!-- 30-SECOND TAKEAWAY -->
+        <div class="takeaway-card">
+          <div class="takeaway-title">30-Second Takeaway</div>
+          <p>In CHSDA linkage studies, AI/AN death rates are estimated to be undercounted by 15%–33% due to death certificate misclassification. Indigenous data sovereignty ensures tribes govern their own health data.</p>
+        </div>
+
+        <!-- TERMS NOT TO CONFLATE -->
+        
+        <div class="terms-box">
+          <h3 class="terms-heading">Terms Not to Conflate</h3>
+          <table class="terms-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;">Term A</th>
+                <th style="width: 25%;">Term B</th>
+                <th>Scientific Distinction</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>Unadjusted Vital Statistics AI/AN Rate</strong></td>
+                <td><strong>CHSDA-Linked Adjusted AI/AN Rate</strong></td>
+                <td>Unadjusted rates suffer from 15–33% misclassification undercount; CHSDA-linked rates match vital records to tribal rosters to correct accuracy.</td>
+              </tr>
+              
+              <tr>
+                <td><strong>Indigenous Data Sovereignty</strong></td>
+                <td><strong>Generic Institutional Review Board (IRB)</strong></td>
+                <td>Tribal data sovereignty vests research approval, data ownership, and publication governance directly in sovereign Tribal Nations.</td>
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+        
+
+        <!-- PERMITTED CLAIMS & LOCATORS -->
+        <div class="claims-box">
+          <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
+          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>Racial misclassification on death certificates systematically undercounts American Indian and Alaska Native suicide deaths, requiring data-linkage studies for accurate estimation.</em></p>
+          <div>
+            
+            <div id="mod-11-aian-surveillance-CLM-AIAN-MISCLASSIFICATION" class="claim-item">
+              <span class="claim-badge-pill badge-draft">[DRAFT - OPEN]</span>
+              <strong>CLM-AIAN-MISCLASSIFICATION:</strong> American Indian and Alaska Native (AI/AN) suicide mortality rates are systematically underestimated by an estimated 15% to 33% on standard death certificates due to racial misclassification, coroner under-reporting, and jurisdictional boundaries across state and tribal lands.
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> IHS Division of Behavioral Health Surveillance Report 2024 &amp; CDC MMWR Racial Misclassification Studies
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-CDC-NVDRS-2023" class="source-backlink">[SRC-CDC-NVDRS-2023]</a> <a href="#SRC-IHS-PROGRAM-2024" class="source-backlink">[SRC-IHS-PROGRAM-2024]</a> <a href="#SRC-CDC-NVSS-2022-FINAL" class="source-backlink">[SRC-CDC-NVSS-2022-FINAL]</a>
+              </div>
+            </div>
+            
+            <div id="mod-11-aian-surveillance-CLM-AIAN-CULTURAL-AUTHORITY" class="claim-item">
+              <span class="claim-badge-pill badge-draft">[DRAFT - OPEN]</span>
+              <strong>CLM-AIAN-CULTURAL-AUTHORITY:</strong> Effective suicide prevention in Indigenous communities requires community sovereignty, elder involvement, and integration of cultural protective factors (such as language preservation and traditional spiritual practices), which research demonstrates operate as core biological and psychological buffers.
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> IHS Suicide Prevention Strategic Plan 2024–2027; Chandler &amp; Lalonde Cultural Continuity Studies
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-LAFROMBOISE-1994" class="source-backlink">[SRC-LAFROMBOISE-1994]</a> <a href="#SRC-IHS-PROGRAM-2024" class="source-backlink">[SRC-IHS-PROGRAM-2024]</a>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+
+        <!-- QUIZ GATING SECTION -->
+        <section class="quiz-card" aria-label="Module 11 Factual Recall Check">
+          <div class="quiz-card-header">
+            <h3 class="quiz-title">📝 Factual Recall Check</h3>
+            <span class="quiz-gating-badge">🔒 GATED: PENDING_CLAIM_REVIEW</span>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">1. How does racial misclassification on standard death certificates affect American Indian and Alaska Native (AI/AN) mortality rates?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ It systematically underestimates AI/AN suicide deaths by an estimated 15% to 33%.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ It artificially inflates AI/AN suicide counts by 500%.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ It has zero measurable impact on statistical accuracy.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ It only affects deaths that occur outside the United States.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">2. What role does Indigenous data sovereignty play in tribal health research?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ It ensures sovereign Tribal Nations govern, own, and approve how their community health data are gathered, analyzed, and published.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ It bans all public health research in tribal communities.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ It requires state health departments to confiscate tribal medical records.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ It replaces all scientific research with commercial advertising.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+        </section>
+      </article>
+        
+
+      <article id="mod-12-equity-trends" class="module-card" data-category="Demographic &amp; Health Equity">
+        <header class="module-header">
+          <div class="module-meta-line">
+            <span class="module-badge">Module 12</span>
+            <span class="module-category">Demographic &amp; Health Equity</span>
+          </div>
+          <h2 class="module-title">12. Wider Equity Trends: Black, Hispanic &amp; Demographic Patterns</h2>
+          <p class="module-summary">Longitudinal shifts across Black youth (&gt;50% rate increase between 2012 baseline and 2022), Hispanic adolescent female attempt-to-death disparities, and intersecting socio-economic drivers.</p>
+        </header>
+
+        <!-- 30-SECOND TAKEAWAY -->
+        <div class="takeaway-card">
+          <div class="takeaway-title">30-Second Takeaway</div>
+          <p>Between 2012 baseline (~5.4/100k) and 2022 (~8.9/100k), Black youth (10–24) experienced a &gt;50% increase in suicide rates. Hispanic female teens report high attempt rates on surveys despite lower fatal mortality rates.</p>
+        </div>
+
+        <!-- TERMS NOT TO CONFLATE -->
+        
+        <div class="terms-box">
+          <h3 class="terms-heading">Terms Not to Conflate</h3>
+          <table class="terms-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;">Term A</th>
+                <th style="width: 25%;">Term B</th>
+                <th>Scientific Distinction</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>Longitudinal Rate Growth (Trend %)</strong></td>
+                <td><strong>Absolute Rate Level</strong></td>
+                <td>A demographic group can have a high percentage increase (e.g., +50% in Black youth) while their absolute rate (~8.9/100k) remains lower than other groups (~28/100k in AI/AN).</td>
+              </tr>
+              
+              <tr>
+                <td><strong>High School Self-Reported Attempts</strong></td>
+                <td><strong>Medically Recorded Fatalities</strong></td>
+                <td>Self-reported attempt surveys capture psychological crisis and distress; fatality data record verified lethal outcomes.</td>
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+        
+
+        <!-- PERMITTED CLAIMS & LOCATORS -->
+        <div class="claims-box">
+          <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
+          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>CDC vital statistics document a significant, multi-year increase of over 50% in suicide mortality rates among Black youth aged 10–24 between 2012 and 2022.</em></p>
+          <div>
+            
+            <div id="mod-12-equity-trends-CLM-BLACK-YOUTH-TRENDS" class="claim-item">
+              <span class="claim-badge-pill badge-draft">[DRAFT - OPEN]</span>
+              <strong>CLM-BLACK-YOUTH-TRENDS:</strong> Over the past decade (2012–2022), the age-adjusted suicide rate among Black youth and young adults (ages 10–24) in the U.S. increased by more than 50%, representing one of the fastest percentage increases of any demographic group according to CDC NVSS surveillance.
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> CDC MMWR Surveillance Summary (October 2023) &amp; Ring the Alarm Congressional Black Caucus Report
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-CDC-NVSS-2022-FINAL" class="source-backlink">[SRC-CDC-NVSS-2022-FINAL]</a> <a href="#SRC-CDC-WISQARS-2024" class="source-backlink">[SRC-CDC-WISQARS-2024]</a> <a href="#SRC-CDC-YRBS-2023" class="source-backlink">[SRC-CDC-YRBS-2023]</a>
+              </div>
+            </div>
+            
+            <div id="mod-12-equity-trends-CLM-HISPANIC-TRENDS" class="claim-item">
+              <span class="claim-badge-pill badge-draft">[DRAFT - OPEN]</span>
+              <strong>CLM-HISPANIC-TRENDS:</strong> Suicide rates among Hispanic populations historically remain lower than non-Hispanic White rates across all ages, yet adolescent Hispanic females report some of the highest rates of self-reported suicide attempts in biennial CDC YRBS school surveys.
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> CDC YRBS 2023 High School Survey Highlights Report
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-CDC-YRBS-2023" class="source-backlink">[SRC-CDC-YRBS-2023]</a> <a href="#SRC-CDC-NVSS-2022-FINAL" class="source-backlink">[SRC-CDC-NVSS-2022-FINAL]</a>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+
+        <!-- QUIZ GATING SECTION -->
+        <section class="quiz-card" aria-label="Module 12 Factual Recall Check">
+          <div class="quiz-card-header">
+            <h3 class="quiz-title">📝 Factual Recall Check</h3>
+            <span class="quiz-gating-badge">🔒 GATED: PENDING_CLAIM_REVIEW</span>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">1. What significant trend has CDC NVSS data documented regarding Black youth suicide mortality between 2012 and 2022?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ A sustained decrease of over 40% across all age brackets.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ A significant increase of over 50% in suicide rates among Black youth aged 10–24.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Zero statistical change over the ten-year period.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ A complete disappearance of suicide in urban centers.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">2. What important pattern emerges when comparing Hispanic youth survey attempt data with fatal mortality rates?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ High school survey attempt prevalence is high among Hispanic female teens despite lower overall fatal suicide rates compared to White peers.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Hispanic youth never report suicidal thoughts on school surveys.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Survey attempt rates are identical to death certificate counts in every school district.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Hispanic mortality rates are only tracked in the adult population.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+        </section>
+      </article>
+        
+
+      <article id="mod-13-screening-vs-assessment" class="module-card" data-category="Psychometrics &amp; Clinical Seams">
+        <header class="module-header">
+          <div class="module-meta-line">
+            <span class="module-badge">Module 13</span>
+            <span class="module-category">Psychometrics &amp; Clinical Seams</span>
+          </div>
+          <h2 class="module-title">13. Screening vs. Assessment vs. Prediction vs. Educational Recall</h2>
+          <p class="module-summary">The mathematical impossibility of high-precision individual suicide prediction in rare events (pooled PPV is 5.5% in meta-analyses), the difference between broad triage screeners and comprehensive assessments, and why educational quizzes only test recall.</p>
+        </header>
+
+        <!-- 30-SECOND TAKEAWAY -->
+        <div class="takeaway-card">
+          <div class="takeaway-title">30-Second Takeaway</div>
+          <p>Because suicide is statistically rare (~14/100k), systematic meta-analyses (Carter et al. 2017 Br J Psychiatry) show that clinical risk scales achieve a pooled Positive Predictive Value of 5.5% (over 94% false positives). Screeners prompt clinical triage; they cannot forecast individual behavior.</p>
+        </div>
+
+        <!-- TERMS NOT TO CONFLATE -->
+        
+        <div class="terms-box">
+          <h3 class="terms-heading">Terms Not to Conflate</h3>
+          <table class="terms-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;">Term A</th>
+                <th style="width: 25%;">Term B</th>
+                <th>Scientific Distinction</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>Brief Triage Screener (e.g., C-SSRS)</strong></td>
+                <td><strong>Comprehensive Clinical Assessment</strong></td>
+                <td>Screeners broadly identify presence of ideation to prompt care; assessment is an in-depth clinical interview evaluating history, stressors, and protective factors.</td>
+              </tr>
+              
+              <tr>
+                <td><strong>Individual Suicide Prediction</strong></td>
+                <td><strong>Population Risk Stratification</strong></td>
+                <td>Statistical prediction attempts to forecast individual outcomes (which fails mathematically); population risk describes statistical associations in large cohorts.</td>
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+        
+
+        <!-- PERMITTED CLAIMS & LOCATORS -->
+        <div class="claims-box">
+          <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
+          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>Screening tools identify individuals experiencing distress who may benefit from clinical evaluation, but psychometric tools cannot predict with certainty which individual will die by suicide.</em></p>
+          <div>
+            
+            <div id="mod-13-screening-vs-assessment-CLM-SCREENING-VS-ASSESSMENT-SEAM" class="claim-item">
+              <span class="claim-badge-pill badge-draft">[DRAFT - OPEN]</span>
+              <strong>CLM-SCREENING-VS-ASSESSMENT-SEAM:</strong> Suicide screening tools (e.g., Columbia-Suicide Severity Rating Scale C-SSRS, PHQ-9 Item 9) are brief standardized triage mechanisms with high sensitivity but low positive predictive value (pooled PPV for suicide is 5.5% in meta-analyses); they identify who needs further clinical evaluation but cannot predict with statistical precision which individual will die by suicide.
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> Carter et al. (2017) Br J Psychiatry 210(6):387–395 (Meta-analysis of 70 Studies, PPV 5.5%, 95% CI 3.9–7.9)
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-CARTER-2017-PPV" class="source-backlink">[SRC-CARTER-2017-PPV]</a> <a href="#SRC-HHS-NATSTRAT-2024" class="source-backlink">[SRC-HHS-NATSTRAT-2024]</a>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+
+        <!-- QUIZ GATING SECTION -->
+        <section class="quiz-card" aria-label="Module 13 Factual Recall Check">
+          <div class="quiz-card-header">
+            <h3 class="quiz-title">📝 Factual Recall Check</h3>
+            <span class="quiz-gating-badge">🔒 GATED: PENDING_CLAIM_REVIEW</span>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">1. Why do psychiatric screening tools have low Positive Predictive Value (PPV &lt; 5%) when predicting suicide?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because suicide is a statistically rare base-rate event, meaning even highly accurate tests produce mostly false positives.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because clinicians intentionally answer screening questions incorrectly.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because screening tools only evaluate physical blood pressure.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because screening tools have zero sensitivity.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">2. What is the appropriate clinical role of a suicide screener (e.g., C-SSRS)?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ To act as a rapid triage prompt identifying who needs a comprehensive clinical interview, not a deterministic forecast of behavior.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ To predict the exact date and time a person will experience a crisis.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ To replace human doctors with automated computer algorithms.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ To assign a permanent credit score penalty.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+        </section>
+      </article>
+        
+
+      <article id="mod-14-national-strategy" class="module-card" data-category="Public Health Architecture">
+        <header class="module-header">
+          <div class="module-meta-line">
+            <span class="module-badge">Module 14</span>
+            <span class="module-category">Public Health Architecture</span>
+          </div>
+          <h2 class="module-title">14. National Strategy for Suicide Prevention Overview</h2>
+          <p class="module-summary">The 2024–2027 U.S. National Strategy for Suicide Prevention, its four strategic directions, community-clinical coordination, and federal action plans.</p>
+        </header>
+
+        <!-- 30-SECOND TAKEAWAY -->
+        <div class="takeaway-card">
+          <div class="takeaway-title">30-Second Takeaway</div>
+          <p>The 2024 National Strategy sets a 10-year public health blueprint with four pillars: (1) Community-Based Suicide Prevention; (2) Treatment and Crisis Services; (3) Surveillance, Quality Improvement, and Research; (4) Health Equity in Suicide Prevention.</p>
+        </div>
+
+        <!-- TERMS NOT TO CONFLATE -->
+        
+        <div class="terms-box">
+          <h3 class="terms-heading">Terms Not to Conflate</h3>
+          <table class="terms-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;">Term A</th>
+                <th style="width: 25%;">Term B</th>
+                <th>Scientific Distinction</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>National Strategy for Suicide Prevention</strong></td>
+                <td><strong>Local Clinical Practice Protocol</strong></td>
+                <td>The National Strategy is a comprehensive federal policy and funding roadmap; clinical practice protocols guide specific hospital or therapist workflows.</td>
+              </tr>
+              
+              <tr>
+                <td><strong>Upstream Prevention</strong></td>
+                <td><strong>Downstream Crisis Intervention</strong></td>
+                <td>Upstream addresses economic stability, housing, and social connectedness; downstream intervenes during acute psychological crises.</td>
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+        
+
+        <!-- PERMITTED CLAIMS & LOCATORS -->
+        <div class="claims-box">
+          <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
+          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>The 2024 National Strategy for Suicide Prevention establishes a multi-sector public health roadmap emphasizing health equity, community prevention, and clinical quality.</em></p>
+          <div>
+            
+            <div id="mod-14-national-strategy-CLM-NAT-STRATEGY-GOALS" class="claim-item">
+              <span class="claim-badge-pill badge-draft">[DRAFT - OPEN]</span>
+              <strong>CLM-NAT-STRATEGY-GOALS:</strong> The 2024 National Strategy for Suicide Prevention outlines four core strategic directions: (1) Community-Based Suicide Prevention; (2) Treatment and Crisis Services; (3) Surveillance, Quality Improvement, and Research; and (4) Health Equity in Suicide Prevention.
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> 2024 National Strategy for Suicide Prevention, Executive Summary, pp. 6–15 (Exact Direction Titles)
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-HHS-NATSTRAT-2024" class="source-backlink">[SRC-HHS-NATSTRAT-2024]</a>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+
+        <!-- QUIZ GATING SECTION -->
+        <section class="quiz-card" aria-label="Module 14 Factual Recall Check">
+          <div class="quiz-card-header">
+            <h3 class="quiz-title">📝 Factual Recall Check</h3>
+            <span class="quiz-gating-badge">🔒 GATED: PENDING_CLAIM_REVIEW</span>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">1. Which of the following is one of the four core Strategic Directions of the 2024 National Strategy for Suicide Prevention?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Community-Based Suicide Prevention</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Elimination of All Outpatient Mental Health Clinics</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Mandatory Commercial Insurance Premiums for Crisis Centers</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Replacing Hospital Staff with AI Chatbots</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">2. What distinguishes upstream public health prevention from downstream crisis intervention in the National Strategy?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Upstream addresses root social determinants (economic stability, connectedness), while downstream provides immediate acute crisis stabilization.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Upstream only applies to people who live near rivers and lakes.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Downstream is only funded by local city governments.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ There is no difference between upstream and downstream interventions.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+        </section>
+      </article>
+        
+
+      <article id="mod-15-lifeline-literacy" class="module-card" data-category="Public Health Architecture">
+        <header class="module-header">
+          <div class="module-meta-line">
+            <span class="module-badge">Module 15</span>
+            <span class="module-category">Public Health Architecture</span>
+          </div>
+          <h2 class="module-title">15. 988 Suicide &amp; Crisis Lifeline Operational Literacy</h2>
+          <p class="module-summary">Operational structure of the 988 Lifeline, call/text/chat routing architecture, implemented carrier wireless cell-tower georouting vs GPS tracking, specialized sub-networks, and volume trends.</p>
+        </header>
+
+        <!-- 30-SECOND TAKEAWAY -->
+        <div class="takeaway-card">
+          <div class="takeaway-title">30-Second Takeaway</div>
+          <p>988 is free, confidential, and available 24/7 by call or text. Wireless voice calls route to local centers based on cell-tower coverage area (georouting) without transmitting exact GPS coordinates or street addresses.</p>
+        </div>
+
+        <!-- TERMS NOT TO CONFLATE -->
+        
+        <div class="terms-box">
+          <h3 class="terms-heading">Terms Not to Conflate</h3>
+          <table class="terms-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;">Term A</th>
+                <th style="width: 25%;">Term B</th>
+                <th>Scientific Distinction</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>Wireless Cell-Tower Georouting</strong></td>
+                <td><strong>Real-Time GPS Satellite Tracking</strong></td>
+                <td>988 routes wireless calls to the nearest crisis center based on network tower region; it does NOT track or transmit precise GPS coordinates.</td>
+              </tr>
+              
+              <tr>
+                <td><strong>Legacy Area Code Routing</strong></td>
+                <td><strong>Carrier Georouting</strong></td>
+                <td>Area code routing directs by phone number prefix; georouting directs by physical carrier tower region while protecting exact location privacy.</td>
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+        
+
+        <!-- PERMITTED CLAIMS & LOCATORS -->
+        <div class="claims-box">
+          <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
+          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>The 988 Lifeline provides 24/7 confidential crisis support, routing wireless voice calls through privacy-preserving carrier georouting.</em></p>
+          <div>
+            
+            <div id="mod-15-lifeline-literacy-CLM-988-ROUTING-GEO" class="claim-item">
+              <span class="claim-badge-pill badge-draft">[DRAFT - OPEN]</span>
+              <strong>CLM-988-ROUTING-GEO:</strong> The 988 Suicide &amp; Crisis Lifeline has implemented privacy-preserving carrier wireless cell-tower region georouting for voice calls, connecting callers to the nearest local crisis call center based on network coverage area without tracking or transmitting precise GPS satellite coordinates or street addresses.
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> FCC 988 Georouting Orders &amp; SAMHSA 988 Georouting Deployment Fact Sheet 2024
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-SAMHSA-988-2024" class="source-backlink">[SRC-SAMHSA-988-2024]</a> <a href="#SRC-HHS-NATSTRAT-2024" class="source-backlink">[SRC-HHS-NATSTRAT-2024]</a>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+
+        <!-- QUIZ GATING SECTION -->
+        <section class="quiz-card" aria-label="Module 15 Factual Recall Check">
+          <div class="quiz-card-header">
+            <h3 class="quiz-title">📝 Factual Recall Check</h3>
+            <span class="quiz-gating-badge">🔒 GATED: PENDING_CLAIM_REVIEW</span>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">1. How does the 988 Suicide &amp; Crisis Lifeline primarily route incoming phone calls?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ By phone area code to one of over 200 local and state crisis call centers.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ By tracking real-time GPS satellite coordinates to pinpoint caller homes.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ By routing all calls to a single international call center.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ By analyzing social media profiles.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">2. What is the purpose of the FCC and SAMHSA privacy-preserving &quot;georouting&quot; initiative for 988?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ To route callers to crisis centers closer to their physical location based on cellular tower regions without sharing exact GPS coordinates.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ To publish caller names on a public government website.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ To charge callers per-minute long distance fees.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ To connect callers to overseas marketing companies.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+        </section>
+      </article>
+        
+
+      <article id="mod-16-safe-communication" class="module-card" data-category="Communication Science">
+        <header class="module-header">
+          <div class="module-meta-line">
+            <span class="module-badge">Module 16</span>
+            <span class="module-category">Communication Science</span>
+          </div>
+          <h2 class="module-title">16. Safe Communication, Media Guidelines &amp; Postvention Context</h2>
+          <p class="module-summary">Evidence-based communication standards (ReportingOnSuicide.org), contagion mechanisms (Werther vs. Papageno effect), safe school/community postvention, and responsible public discourse.</p>
+        </header>
+
+        <!-- 30-SECOND TAKEAWAY -->
+        <div class="takeaway-card">
+          <div class="takeaway-title">30-Second Takeaway</div>
+          <p>How we talk about suicide matters. Sensational headlines, graphic method details, and romanticizing death increase contagion (Werther effect). Sharing stories of hope, coping, recovery, and crisis resources encourages help-seeking (Papageno effect).</p>
+        </div>
+
+        <!-- TERMS NOT TO CONFLATE -->
+        
+        <div class="terms-box">
+          <h3 class="terms-heading">Terms Not to Conflate</h3>
+          <table class="terms-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;">Term A</th>
+                <th style="width: 25%;">Term B</th>
+                <th>Scientific Distinction</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>The Werther Effect (Contagion)</strong></td>
+                <td><strong>The Papageno Effect (Protective Modeling)</strong></td>
+                <td>Werther effect is an increase in suicides following sensationalized media coverage; Papageno effect is an increase in help-seeking following stories of coping and recovery.</td>
+              </tr>
+              
+              <tr>
+                <td><strong>Postvention (Bereavement &amp; Containment)</strong></td>
+                <td><strong>Primary Prevention (Upstream)</strong></td>
+                <td>Postvention supports suicide loss survivors, facilitates grieving, and mitigates contagion in the aftermath of a death.</td>
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+        
+
+        <!-- PERMITTED CLAIMS & LOCATORS -->
+        <div class="claims-box">
+          <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
+          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>Adhering to evidence-based media guidelines mitigates suicide contagion and increases public awareness of crisis support resources.</em></p>
+          <div>
+            
+            <div id="mod-16-safe-communication-CLM-POSTVENTION-EMPIRICAL-MODELS" class="claim-item">
+              <span class="claim-badge-pill badge-hold">[HOLD - OPEN]</span>
+              <strong>CLM-POSTVENTION-EMPIRICAL-MODELS:</strong> Empirical postvention outcome studies evaluate specialized bereavement support models, group grief counseling, and active outreach protocols (such as the Local Outreach to Suicide Survivors [LOSS] model) to reduce complicated grief, depression, and subsequent crisis vulnerability among suicide-loss survivors.
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> Andriessen et al. 2019 Frontiers in Psychology; Ramamurthy et al. 2025 Preventive Medicine
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-ANDRIESSEN-2019" class="source-backlink">[SRC-ANDRIESSEN-2019]</a> <a href="#SRC-RAMAMURTHY-2025" class="source-backlink">[SRC-RAMAMURTHY-2025]</a>
+              </div>
+            </div>
+            
+            <div id="mod-16-safe-communication-CLM-SAFE-COMMUNICATION-GUIDELINES" class="claim-item">
+              <span class="claim-badge-pill badge-draft">[DRAFT - OPEN]</span>
+              <strong>CLM-SAFE-COMMUNICATION-GUIDELINES:</strong> Safe communication guidelines developed by the CDC and public health organizations (ReportingOnSuicide.org) emphasize avoiding graphic method details, sensational headlines, simplistic mono-causal narratives, and romanticized eulogies to mitigate contagion (Werther effect) while promoting help-seeking (Papageno effect).
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> ReportingOnSuicide.org &amp; CDC Suicide Prevention Communication Playbook; HHS National Strategy Goal 5
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-HHS-NATSTRAT-2024" class="source-backlink">[SRC-HHS-NATSTRAT-2024]</a> <a href="#SRC-CDC-NVSS-2022-FINAL" class="source-backlink">[SRC-CDC-NVSS-2022-FINAL]</a>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+
+        <!-- QUIZ GATING SECTION -->
+        <section class="quiz-card" aria-label="Module 16 Factual Recall Check">
+          <div class="quiz-card-header">
+            <h3 class="quiz-title">📝 Factual Recall Check</h3>
+            <span class="quiz-gating-badge">🔒 GATED: PENDING_CLAIM_REVIEW</span>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">1. What is the &quot;Papageno effect&quot; in suicide communication research?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ An increase in help-seeking and resilience following exposure to stories of coping, recovery, and available support.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ A rise in suicide deaths following sensationalized or graphic news coverage.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ A musical theory describing sound frequencies in hospitals.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ A method for calculating hospital billing rates.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">2. Which of the following is a key safe messaging recommendation for media reporting on suicide?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Avoid graphic descriptions of methods and include prominent 988 crisis contact resources.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Publish detailed step-by-step method descriptions on the front page.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Attribute the death to a single simplistic cause such as a bad grade.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Use sensationalized, romanticized headlines to maximize clicks.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+        </section>
+      </article>
+        
+
+      <article id="mod-17-evidence-lifecycle" class="module-card" data-category="Scientific Methodology">
+        <header class="module-header">
+          <div class="module-meta-line">
+            <span class="module-badge">Module 17</span>
+            <span class="module-category">Scientific Methodology</span>
+          </div>
+          <h2 class="module-title">17. Claim Labels &amp; Scientific Evidence Lifecycle</h2>
+          <p class="module-summary">The four-tier evidence governance taxonomy (VERIFIED, STRONG INFERENCE, HYPOTHESIS, OPEN), peer-review standards, replication, and scientific humility.</p>
+        </header>
+
+        <!-- 30-SECOND TAKEAWAY -->
+        <div class="takeaway-card">
+          <div class="takeaway-title">30-Second Takeaway</div>
+          <p>We label every assertion to maintain scientific integrity: VERIFIED = official data or reviewed paper; STRONG INFERENCE = logical deduction from multiple systems; HYPOTHESIS = grounded theory awaiting proof; OPEN = unresolved question.</p>
+        </div>
+
+        <!-- TERMS NOT TO CONFLATE -->
+        
+        <div class="terms-box">
+          <h3 class="terms-heading">Terms Not to Conflate</h3>
+          <table class="terms-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;">Term A</th>
+                <th style="width: 25%;">Term B</th>
+                <th>Scientific Distinction</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>VERIFIED Claim</strong></td>
+                <td><strong>STRONG INFERENCE Claim</strong></td>
+                <td>VERIFIED requires direct primary dataset or peer-reviewed empirical proof; STRONG INFERENCE is a reasoned conclusion synthesizing multiple empirical streams.</td>
+              </tr>
+              
+              <tr>
+                <td><strong>HYPOTHESIS Claim</strong></td>
+                <td><strong>OPEN Research Question</strong></td>
+                <td>HYPOTHESIS proposes a specific testable mechanism; OPEN identifies an unresolved empirical gap where data are missing.</td>
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+        
+
+        <!-- PERMITTED CLAIMS & LOCATORS -->
+        <div class="claims-box">
+          <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
+          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>Explicit claim labeling ensures transparency by distinguishing direct empirical facts from inferences, theoretical models, and unresolved research gaps.</em></p>
+          <div>
+            
+            <div id="mod-17-evidence-lifecycle-CLM-EVIDENCE-LABEL-LIFECYCLE" class="claim-item">
+              <span class="claim-badge-pill badge-draft">[DRAFT - OPEN]</span>
+              <strong>CLM-EVIDENCE-LABEL-LIFECYCLE:</strong> Scientific claim labeling categorizes assertions into VERIFIED (direct peer-reviewed or official dataset support), STRONG INFERENCE (consistent multi-system extrapolation with visible reasoning), HYPOTHESIS (theoretically grounded proposal awaiting empirical confirmation), and OPEN (unresolved research question), preventing unverified synthesis from masquerading as settled fact.
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> DOV Knowledge Base Governance &amp; Research Claim Label Standards
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-CDC-NVSS-2022-FINAL" class="source-backlink">[SRC-CDC-NVSS-2022-FINAL]</a> <a href="#SRC-HHS-NATSTRAT-2024" class="source-backlink">[SRC-HHS-NATSTRAT-2024]</a>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+
+        <!-- QUIZ GATING SECTION -->
+        <section class="quiz-card" aria-label="Module 17 Factual Recall Check">
+          <div class="quiz-card-header">
+            <h3 class="quiz-title">📝 Factual Recall Check</h3>
+            <span class="quiz-gating-badge">🔒 GATED: PENDING_CLAIM_REVIEW</span>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">1. What is required for a factual claim to receive the &quot;VERIFIED&quot; label in this compendium?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Direct footing in a reviewed official primary dataset or peer-reviewed empirical paper with exact locator.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ An AI chatbot claiming the fact is true without a source.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ A viral social media post with more than 10,000 likes.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ An informal opinion expressed on a podcast.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">2. What does a &quot;STRONG INFERENCE&quot; label indicate in the evidence taxonomy?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ A reasoned epidemiological conclusion synthesizing multiple empirical surveillance systems with a visible reasoning note.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ An ungrounded rumor with zero empirical evidence.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ A claim that has been proven false by medical researchers.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ A private commercial trademark.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+        </section>
+      </article>
+        
+
+      <article id="mod-18-source-atlas-gaps" class="module-card" data-category="Knowledge Base Navigation">
+        <header class="module-header">
+          <div class="module-meta-line">
+            <span class="module-badge">Module 18</span>
+            <span class="module-category">Knowledge Base Navigation</span>
+          </div>
+          <h2 class="module-title">18. Source Atlas, Glossary, Conflicts &amp; Open Research Gaps</h2>
+          <p class="module-summary">Master source catalog, epidemiological glossary, cross-system data tensions, and active research gaps (e.g., lethal means surveillance, nonfatal attempt tracking, youth social media mechanisms).</p>
+        </header>
+
+        <!-- 30-SECOND TAKEAWAY -->
+        <div class="takeaway-card">
+          <div class="takeaway-title">30-Second Takeaway</div>
+          <p>Science advances by identifying gaps and resolving contradictions. This atlas catalogs all primary sources, definitions, and open questions—such as improving nonfatal attempt surveillance and refining tribal vital records linkage.</p>
+        </div>
+
+        <!-- TERMS NOT TO CONFLATE -->
+        
+        <div class="terms-box">
+          <h3 class="terms-heading">Terms Not to Conflate</h3>
+          <table class="terms-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;">Term A</th>
+                <th style="width: 25%;">Term B</th>
+                <th>Scientific Distinction</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <td><strong>Primary Empirical Source</strong></td>
+                <td><strong>Secondary Review / Commentary</strong></td>
+                <td>Primary sources report direct original data collection; secondary reviews summarize or interpret primary literature.</td>
+              </tr>
+              
+              <tr>
+                <td><strong>Documented Data Conflict</strong></td>
+                <td><strong>Clerical Error</strong></td>
+                <td>A data conflict represents differing empirical estimates across distinct surveillance methods; a clerical error is a typographical or mathematical mistake.</td>
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+        
+
+        <!-- PERMITTED CLAIMS & LOCATORS -->
+        <div class="claims-box">
+          <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
+          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>The Source Atlas and Evidence Registry provide transparent, bidirectional traceability between every educational claim and its underlying scientific literature.</em></p>
+          <div>
+            
+            <div id="mod-18-source-atlas-gaps-CLM-NVSS-FINAL-2022" class="claim-item">
+              <span class="claim-badge-pill badge-draft">[DRAFT - OPEN]</span>
+              <strong>CLM-NVSS-FINAL-2022:</strong> According to final CDC NVSS mortality data, the official U.S. age-adjusted suicide rate in 2022 was 14.2 deaths per 100,000 standard population (49,476 total recorded deaths).
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> NVSR Volume 74, Number 4, June 10, 2025; Table B, Intentional self-harm row (Total Deaths: 49,476; Age-Adjusted Rate: 14.2)
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-CDC-NVSS-2022-FINAL" class="source-backlink">[SRC-CDC-NVSS-2022-FINAL]</a> <a href="#SRC-CDC-WISQARS-2024" class="source-backlink">[SRC-CDC-WISQARS-2024]</a>
+              </div>
+            </div>
+            
+            <div id="mod-18-source-atlas-gaps-CLM-NVSS-FINAL-2023" class="claim-item">
+              <span class="claim-badge-pill badge-draft">[DRAFT - OPEN]</span>
+              <strong>CLM-NVSS-FINAL-2023:</strong> According to final CDC NVSS mortality data, the official U.S. age-adjusted suicide rate in 2023 was 14.1 deaths per 100,000 standard population (49,316 total recorded deaths), reflecting a final 0.3% decrease from 2022.
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> CDC NCHS NVSS 2023 Final Mortality Release (Total Deaths: 49,316; Age-Adjusted Rate: 14.1)
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-CDC-NVSS-2023-FINAL" class="source-backlink">[SRC-CDC-NVSS-2023-FINAL]</a>
+              </div>
+            </div>
+            
+            <div id="mod-18-source-atlas-gaps-CLM-NVSS-FINAL-2024" class="claim-item">
+              <span class="claim-badge-pill badge-draft">[DRAFT - OPEN]</span>
+              <strong>CLM-NVSS-FINAL-2024:</strong> According to final CDC NVSS mortality data, the official U.S. age-adjusted suicide rate in 2024 was 13.7 deaths per 100,000 standard population (48,824 total recorded deaths; rank 10), reflecting a continuous decline from 2022 and 2023 peaks.
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> NCHS NVSS 2024 Annual Mortality Tables (Total Deaths: 48,824; Age-Adjusted Rate: 13.7; Rank: 10)
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-CDC-NVSS-2024-FINAL" class="source-backlink">[SRC-CDC-NVSS-2024-FINAL]</a>
+              </div>
+            </div>
+            
+            <div id="mod-18-source-atlas-gaps-CLM-EVIDENCE-LABEL-LIFECYCLE" class="claim-item">
+              <span class="claim-badge-pill badge-draft">[DRAFT - OPEN]</span>
+              <strong>CLM-EVIDENCE-LABEL-LIFECYCLE:</strong> Scientific claim labeling categorizes assertions into VERIFIED (direct peer-reviewed or official dataset support), STRONG INFERENCE (consistent multi-system extrapolation with visible reasoning), HYPOTHESIS (theoretically grounded proposal awaiting empirical confirmation), and OPEN (unresolved research question), preventing unverified synthesis from masquerading as settled fact.
+              <div class="claim-locator-line">
+                <strong>Primary Locator:</strong> DOV Knowledge Base Governance &amp; Research Claim Label Standards
+              </div>
+              <div class="claim-locator-line">
+                <strong>Underlying Sources:</strong>
+                <a href="#SRC-CDC-NVSS-2022-FINAL" class="source-backlink">[SRC-CDC-NVSS-2022-FINAL]</a> <a href="#SRC-HHS-NATSTRAT-2024" class="source-backlink">[SRC-HHS-NATSTRAT-2024]</a>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+
+        <!-- QUIZ GATING SECTION -->
+        <section class="quiz-card" aria-label="Module 18 Factual Recall Check">
+          <div class="quiz-card-header">
+            <h3 class="quiz-title">📝 Factual Recall Check</h3>
+            <span class="quiz-gating-badge">🔒 GATED: PENDING_CLAIM_REVIEW</span>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">1. Why does the Source Atlas maintain bidirectional traceability between claims and sources?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ So that learners and researchers can independently audit the primary source and methodology behind every educational assertion.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ To prevent readers from accessing public health websites.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ To encrypt the text and make it unreadable without a password.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ To generate advertising revenue from scientific journals.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+          <div class="quiz-block">
+            <p class="quiz-question">2. Why are open research gaps and data conflicts explicitly documented in this compendium?</p>
+            <ul class="quiz-options-list">
+              
+              <li class="quiz-opt-item">
+                <span>⚪ To maintain scientific honesty by identifying where current data are incomplete, conflicting, or awaiting further empirical study.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ Because the authors forgot to finish writing those sections.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ To prove that scientific research has stopped permanently.</span>
+              </li>
+              
+              <li class="quiz-opt-item">
+                <span>⚪ To confuse students taking academic exams.</span>
+              </li>
+              
+            </ul>
+            <p class="quiz-notice">ℹ️ Factual recall checks are disabled and scoring is omitted pending human evidence review.</p>
+          </div>
+          
+        </section>
+      </article>
+        
+
+      <!-- MASTER SOURCE ATLAS SECTION -->
+      <section id="master-source-atlas" class="atlas-section" aria-label="Master Source Atlas">
+        <h2 class="atlas-title">📚 Master Source Atlas</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 20px;">Complete catalog of all 18 registered primary datasets, peer-reviewed studies, and federal guidance documents with bidirectional claim backlinks.</p>
+        
+        <div>
+          
+          <div id="SRC-CDC-NVSS-2022-FINAL" class="source-entry">
+            <div class="source-entry-title">Deaths: Final Data for 2022. National Vital Statistics Reports (NVSR)</div>
+            <div class="source-meta-row">
+              <span><strong>ID:</strong> SRC-CDC-NVSS-2022-FINAL</span>
+              <span><strong>Type:</strong> <code>official_dataset</code></span>
+              <span><strong>Authority:</strong> <code>PROMOTED_PRIMARY</code></span>
+              <span><strong>Review:</strong> <code>DRAFT</code></span>
+              <span><strong>Year:</strong> 2025</span>
+            </div>
+            <div class="source-locator">
+              <strong>Exact Locator:</strong> NVSR Volume 74, Number 4, June 10, 2025; Table B, Intentional self-harm row (Total Suicide Deaths: 49,476; Age-Adjusted Rate: 14.2 per 100,000)
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>URL / DOI:</strong> <a href="https://www.cdc.gov/nchs/data/nvsr/nvsr74/nvsr74-04.pdf" class="source-backlink" rel="noopener noreferrer">https://www.cdc.gov/nchs/data/nvsr/nvsr74/nvsr74-04.pdf</a>
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>Referencing Claims:</strong>
+              <a href="#mod-02-data-currency-CLM-NVSS-FINAL-2022" class="source-backlink">[CLM-NVSS-FINAL-2022]</a> <a href="#mod-03-count-rate-rank-CLM-RATE-VS-RANK-LOGIC" class="source-backlink">[CLM-RATE-VS-RANK-LOGIC]</a> <a href="#mod-04-crude-vs-age-adj-CLM-CRUDE-VS-AGEADJ" class="source-backlink">[CLM-CRUDE-VS-AGEADJ]</a>
+            </div>
+          </div>
+          
+          <div id="SRC-CDC-NVSS-2023-FINAL" class="source-entry">
+            <div class="source-entry-title">Mortality in the United States, 2023: Final National Vital Statistics System Release</div>
+            <div class="source-meta-row">
+              <span><strong>ID:</strong> SRC-CDC-NVSS-2023-FINAL</span>
+              <span><strong>Type:</strong> <code>official_dataset</code></span>
+              <span><strong>Authority:</strong> <code>PROMOTED_PRIMARY</code></span>
+              <span><strong>Review:</strong> <code>DRAFT</code></span>
+              <span><strong>Year:</strong> 2024</span>
+            </div>
+            <div class="source-locator">
+              <strong>Exact Locator:</strong> NCHS NVSS 2023 Annual Mortality Tables (Total Deaths: 49,316; Age-Adjusted Rate: 14.1 per 100,000)
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>URL / DOI:</strong> <a href="https://www.cdc.gov/nchs/nvss/deaths.htm" class="source-backlink" rel="noopener noreferrer">https://www.cdc.gov/nchs/nvss/deaths.htm</a>
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>Referencing Claims:</strong>
+              <a href="#mod-02-data-currency-CLM-NVSS-FINAL-2023" class="source-backlink">[CLM-NVSS-FINAL-2023]</a>
+            </div>
+          </div>
+          
+          <div id="SRC-CDC-NVSS-2024-FINAL" class="source-entry">
+            <div class="source-entry-title">Mortality in the United States, 2024: Final National Vital Statistics System Release</div>
+            <div class="source-meta-row">
+              <span><strong>ID:</strong> SRC-CDC-NVSS-2024-FINAL</span>
+              <span><strong>Type:</strong> <code>official_dataset</code></span>
+              <span><strong>Authority:</strong> <code>PROMOTED_PRIMARY</code></span>
+              <span><strong>Review:</strong> <code>DRAFT</code></span>
+              <span><strong>Year:</strong> 2025</span>
+            </div>
+            <div class="source-locator">
+              <strong>Exact Locator:</strong> NCHS NVSS 2024 Annual Mortality Tables (Total Deaths: 48,824; Age-Adjusted Rate: 13.7 per 100,000; Rank: 10)
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>URL / DOI:</strong> <a href="https://www.cdc.gov/nchs/nvss/deaths.htm" class="source-backlink" rel="noopener noreferrer">https://www.cdc.gov/nchs/nvss/deaths.htm</a>
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>Referencing Claims:</strong>
+              <a href="#mod-02-data-currency-CLM-NVSS-FINAL-2024" class="source-backlink">[CLM-NVSS-FINAL-2024]</a>
+            </div>
+          </div>
+          
+          <div id="SRC-SAMHSA-NSDUH-2023" class="source-entry">
+            <div class="source-entry-title">National Survey on Drug Use and Health: 2023 Detailed Tables and National Findings</div>
+            <div class="source-meta-row">
+              <span><strong>ID:</strong> SRC-SAMHSA-NSDUH-2023</span>
+              <span><strong>Type:</strong> <code>official_dataset</code></span>
+              <span><strong>Authority:</strong> <code>PROMOTED_PRIMARY</code></span>
+              <span><strong>Review:</strong> <code>DRAFT</code></span>
+              <span><strong>Year:</strong> 2024</span>
+            </div>
+            <div class="source-locator">
+              <strong>Exact Locator:</strong> NSDUH 2023 Detailed Tables, Section 8 (Suicidal Thoughts and Behaviors among Adults)
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>URL / DOI:</strong> <a href="https://www.samhsa.gov/data/report/2023-nsduh-detailed-tables" class="source-backlink" rel="noopener noreferrer">https://www.samhsa.gov/data/report/2023-nsduh-detailed-tables</a>
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>Referencing Claims:</strong>
+              <a href="#mod-06-surveillance-systems-CLM-SYSTEMS-MORT-VS-SURV" class="source-backlink">[CLM-SYSTEMS-MORT-VS-SURV]</a>
+            </div>
+          </div>
+          
+          <div id="SRC-CDC-YRBS-2023" class="source-entry">
+            <div class="source-entry-title">Youth Risk Behavior Surveillance System (YRBSS): 2023 High School Survey Data</div>
+            <div class="source-meta-row">
+              <span><strong>ID:</strong> SRC-CDC-YRBS-2023</span>
+              <span><strong>Type:</strong> <code>official_dataset</code></span>
+              <span><strong>Authority:</strong> <code>PROMOTED_PRIMARY</code></span>
+              <span><strong>Review:</strong> <code>DRAFT</code></span>
+              <span><strong>Year:</strong> 2024</span>
+            </div>
+            <div class="source-locator">
+              <strong>Exact Locator:</strong> MMWR Surveillance Summaries / 2023 YRBS Overview Report, Table 4
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>URL / DOI:</strong> <a href="https://www.cdc.gov/yrbs/index.html" class="source-backlink" rel="noopener noreferrer">https://www.cdc.gov/yrbs/index.html</a>
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>Referencing Claims:</strong>
+              <a href="#mod-06-surveillance-systems-CLM-SYSTEMS-MORT-VS-SURV" class="source-backlink">[CLM-SYSTEMS-MORT-VS-SURV]</a> <a href="#mod-12-equity-trends-CLM-BLACK-YOUTH-TRENDS" class="source-backlink">[CLM-BLACK-YOUTH-TRENDS]</a> <a href="#mod-12-equity-trends-CLM-HISPANIC-TRENDS" class="source-backlink">[CLM-HISPANIC-TRENDS]</a>
+            </div>
+          </div>
+          
+          <div id="SRC-CDC-WISQARS-2024" class="source-entry">
+            <div class="source-entry-title">Web-based Injury Statistics Query and Reporting System (WISQARS)</div>
+            <div class="source-meta-row">
+              <span><strong>ID:</strong> SRC-CDC-WISQARS-2024</span>
+              <span><strong>Type:</strong> <code>official_dataset</code></span>
+              <span><strong>Authority:</strong> <code>PROMOTED_PRIMARY</code></span>
+              <span><strong>Review:</strong> <code>DRAFT</code></span>
+              <span><strong>Year:</strong> 2024</span>
+            </div>
+            <div class="source-locator">
+              <strong>Exact Locator:</strong> WISQARS Leading Causes of Death Visualization Engine / YPLL Calculator Module
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>URL / DOI:</strong> <a href="https://www.cdc.gov/wisqars/index.html" class="source-backlink" rel="noopener noreferrer">https://www.cdc.gov/wisqars/index.html</a>
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>Referencing Claims:</strong>
+              <a href="#mod-03-count-rate-rank-CLM-RATE-VS-RANK-LOGIC" class="source-backlink">[CLM-RATE-VS-RANK-LOGIC]</a> <a href="#mod-05-yppl-derived-CLM-YPLL-LOGIC" class="source-backlink">[CLM-YPLL-LOGIC]</a> <a href="#mod-04-crude-vs-age-adj-CLM-CRUDE-VS-AGEADJ" class="source-backlink">[CLM-CRUDE-VS-AGEADJ]</a> <a href="#mod-07-small-numbers-CLM-SMALL-CELL-INSTABILITY" class="source-backlink">[CLM-SMALL-CELL-INSTABILITY]</a>
+            </div>
+          </div>
+          
+          <div id="SRC-CDC-NVDRS-2023" class="source-entry">
+            <div class="source-entry-title">National Violent Death Reporting System (NVDRS): Multi-Source Incident Surveillance</div>
+            <div class="source-meta-row">
+              <span><strong>ID:</strong> SRC-CDC-NVDRS-2023</span>
+              <span><strong>Type:</strong> <code>official_dataset</code></span>
+              <span><strong>Authority:</strong> <code>PROMOTED_PRIMARY</code></span>
+              <span><strong>Review:</strong> <code>DRAFT</code></span>
+              <span><strong>Year:</strong> 2023</span>
+            </div>
+            <div class="source-locator">
+              <strong>Exact Locator:</strong> NVDRS Surveillance Summaries 2023, Multi-Agency Incident Synthesis
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>URL / DOI:</strong> <a href="https://www.cdc.gov/violenceprevention/datasources/nvdrs/index.html" class="source-backlink" rel="noopener noreferrer">https://www.cdc.gov/violenceprevention/datasources/nvdrs/index.html</a>
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>Referencing Claims:</strong>
+              <a href="#mod-11-aian-surveillance-CLM-AIAN-MISCLASSIFICATION" class="source-backlink">[CLM-AIAN-MISCLASSIFICATION]</a>
+            </div>
+          </div>
+          
+          <div id="SRC-MOTTO-1976" class="source-entry">
+            <div class="source-entry-title">Suicide Prevention for Post-Discharge Psychiatric Patients: A Controlled Study of Contact by Mail</div>
+            <div class="source-meta-row">
+              <span><strong>ID:</strong> SRC-MOTTO-1976</span>
+              <span><strong>Type:</strong> <code>primary_study</code></span>
+              <span><strong>Authority:</strong> <code>PROMOTED_PRIMARY</code></span>
+              <span><strong>Review:</strong> <code>DRAFT</code></span>
+              <span><strong>Year:</strong> 1976</span>
+            </div>
+            <div class="source-locator">
+              <strong>Exact Locator:</strong> Suicide and Life-Threatening Behavior Vol. 6, No. 4, pp. 248–257
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>URL / DOI:</strong> <a href="https://doi.org/10.1111/j.1943-278X.1976.tb00570.x" class="source-backlink" rel="noopener noreferrer">https://doi.org/10.1111/j.1943-278X.1976.tb00570.x</a>
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>Referencing Claims:</strong>
+              <a href="#mod-08-caring-contacts-CLM-CARING-CONTACTS-MOTTO-RCT" class="source-backlink">[CLM-CARING-CONTACTS-MOTTO-RCT]</a>
+            </div>
+          </div>
+          
+          <div id="SRC-MOTTO-BOSTROM-2001" class="source-entry">
+            <div class="source-entry-title">A Randomized Controlled Trial of Postcrisis Suicide Prevention</div>
+            <div class="source-meta-row">
+              <span><strong>ID:</strong> SRC-MOTTO-BOSTROM-2001</span>
+              <span><strong>Type:</strong> <code>primary_study</code></span>
+              <span><strong>Authority:</strong> <code>PROMOTED_PRIMARY</code></span>
+              <span><strong>Review:</strong> <code>DRAFT</code></span>
+              <span><strong>Year:</strong> 2001</span>
+            </div>
+            <div class="source-locator">
+              <strong>Exact Locator:</strong> Psychiatric Services Vol. 52, No. 6, pp. 828–833, Table 2 &amp; Results Section
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>URL / DOI:</strong> <a href="https://doi.org/10.1176/appi.ps.52.6.828" class="source-backlink" rel="noopener noreferrer">https://doi.org/10.1176/appi.ps.52.6.828</a>
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>Referencing Claims:</strong>
+              <a href="#mod-08-caring-contacts-CLM-CARING-CONTACTS-MOTTO-RCT" class="source-backlink">[CLM-CARING-CONTACTS-MOTTO-RCT]</a> <a href="#mod-08-caring-contacts-CLM-CARING-CONTACTS-MODALITY-LIMIT" class="source-backlink">[CLM-CARING-CONTACTS-MODALITY-LIMIT]</a>
+            </div>
+          </div>
+          
+          <div id="SRC-LAFROMBOISE-1994" class="source-entry">
+            <div class="source-entry-title">The Zuni Life Skills Development Curriculum: Evaluation of a Culturally Grounded Suicide Prevention Intervention</div>
+            <div class="source-meta-row">
+              <span><strong>ID:</strong> SRC-LAFROMBOISE-1994</span>
+              <span><strong>Type:</strong> <code>primary_study</code></span>
+              <span><strong>Authority:</strong> <code>PROMOTED_PRIMARY</code></span>
+              <span><strong>Review:</strong> <code>DRAFT</code></span>
+              <span><strong>Year:</strong> 1995</span>
+            </div>
+            <div class="source-locator">
+              <strong>Exact Locator:</strong> Journal of Counseling Psychology Vol. 42, No. 4, pp. 479–486
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>URL / DOI:</strong> <a href="https://doi.org/10.1037/0022-0167.42.4.479" class="source-backlink" rel="noopener noreferrer">https://doi.org/10.1037/0022-0167.42.4.479</a>
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>Referencing Claims:</strong>
+              <a href="#mod-09-ails-curriculum-CLM-AILS-SCHOOL-CURRICULUM" class="source-backlink">[CLM-AILS-SCHOOL-CURRICULUM]</a> <a href="#mod-09-ails-curriculum-CLM-AILS-NOT-THERAPY" class="source-backlink">[CLM-AILS-NOT-THERAPY]</a> <a href="#mod-11-aian-surveillance-CLM-AIAN-CULTURAL-AUTHORITY" class="source-backlink">[CLM-AIAN-CULTURAL-AUTHORITY]</a>
+            </div>
+          </div>
+          
+          <div id="SRC-IHS-PROGRAM-2024" class="source-entry">
+            <div class="source-entry-title">Indian Health Service Suicide Prevention and Care Program: Strategic Plan and Community Guidance</div>
+            <div class="source-meta-row">
+              <span><strong>ID:</strong> SRC-IHS-PROGRAM-2024</span>
+              <span><strong>Type:</strong> <code>official_guidance</code></span>
+              <span><strong>Authority:</strong> <code>PROMOTED_PRIMARY</code></span>
+              <span><strong>Review:</strong> <code>DRAFT</code></span>
+              <span><strong>Year:</strong> 2024</span>
+            </div>
+            <div class="source-locator">
+              <strong>Exact Locator:</strong> IHS Behavioral Health Strategic Framework, Sections 2 &amp; 4
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>URL / DOI:</strong> <a href="https://www.ihs.gov/suicideprevention/" class="source-backlink" rel="noopener noreferrer">https://www.ihs.gov/suicideprevention/</a>
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>Referencing Claims:</strong>
+              <a href="#mod-11-aian-surveillance-CLM-AIAN-MISCLASSIFICATION" class="source-backlink">[CLM-AIAN-MISCLASSIFICATION]</a> <a href="#mod-11-aian-surveillance-CLM-AIAN-CULTURAL-AUTHORITY" class="source-backlink">[CLM-AIAN-CULTURAL-AUTHORITY]</a>
+            </div>
+          </div>
+          
+          <div id="SRC-HHS-NATSTRAT-2024" class="source-entry">
+            <div class="source-entry-title">National Strategy for Suicide Prevention and Federal Action Plan (2024–2027)</div>
+            <div class="source-meta-row">
+              <span><strong>ID:</strong> SRC-HHS-NATSTRAT-2024</span>
+              <span><strong>Type:</strong> <code>official_guidance</code></span>
+              <span><strong>Authority:</strong> <code>PROMOTED_PRIMARY</code></span>
+              <span><strong>Review:</strong> <code>DRAFT</code></span>
+              <span><strong>Year:</strong> 2024</span>
+            </div>
+            <div class="source-locator">
+              <strong>Exact Locator:</strong> Executive Summary, pp. 6–15 (Four Strategic Directions &amp; 15 Goals)
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>URL / DOI:</strong> <a href="https://www.hhs.gov/national-strategy-suicide-prevention/index.html" class="source-backlink" rel="noopener noreferrer">https://www.hhs.gov/national-strategy-suicide-prevention/index.html</a>
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>Referencing Claims:</strong>
+              <a href="#mod-14-national-strategy-CLM-NAT-STRATEGY-GOALS" class="source-backlink">[CLM-NAT-STRATEGY-GOALS]</a> <a href="#mod-15-lifeline-literacy-CLM-988-ROUTING-GEO" class="source-backlink">[CLM-988-ROUTING-GEO]</a>
+            </div>
+          </div>
+          
+          <div id="SRC-SAMHSA-988-2024" class="source-entry">
+            <div class="source-entry-title">988 Suicide &amp; Crisis Lifeline Performance Metrics and Georouting Implementation Reports</div>
+            <div class="source-meta-row">
+              <span><strong>ID:</strong> SRC-SAMHSA-988-2024</span>
+              <span><strong>Type:</strong> <code>official_dataset</code></span>
+              <span><strong>Authority:</strong> <code>PROMOTED_PRIMARY</code></span>
+              <span><strong>Review:</strong> <code>DRAFT</code></span>
+              <span><strong>Year:</strong> 2024</span>
+            </div>
+            <div class="source-locator">
+              <strong>Exact Locator:</strong> SAMHSA 988 Operations Monthly Dashboard &amp; FCC 988 Wireless Georouting Orders
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>URL / DOI:</strong> <a href="https://www.samhsa.gov/find-help/988/performance-metrics" class="source-backlink" rel="noopener noreferrer">https://www.samhsa.gov/find-help/988/performance-metrics</a>
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>Referencing Claims:</strong>
+              <a href="#mod-15-lifeline-literacy-CLM-988-ROUTING-GEO" class="source-backlink">[CLM-988-ROUTING-GEO]</a>
+            </div>
+          </div>
+          
+          <div id="SRC-CARTER-2017-PPV" class="source-entry">
+            <div class="source-entry-title">Predicting Suicidal Behaviours Using Clinical Instruments: Systematic Review and Meta-Analysis of Positive Predictive Value</div>
+            <div class="source-meta-row">
+              <span><strong>ID:</strong> SRC-CARTER-2017-PPV</span>
+              <span><strong>Type:</strong> <code>systematic_review</code></span>
+              <span><strong>Authority:</strong> <code>PROMOTED_PRIMARY</code></span>
+              <span><strong>Review:</strong> <code>DRAFT</code></span>
+              <span><strong>Year:</strong> 2017</span>
+            </div>
+            <div class="source-locator">
+              <strong>Exact Locator:</strong> British Journal of Psychiatry 2017; 210(6):387–395, Table 3 &amp; Results (Pooled PPV for Suicide: 5.5%, 95% CI 3.9%–7.9%)
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>URL / DOI:</strong> <a href="https://doi.org/10.1192/bjp.bp.116.182717" class="source-backlink" rel="noopener noreferrer">https://doi.org/10.1192/bjp.bp.116.182717</a>
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>Referencing Claims:</strong>
+              <a href="#mod-13-screening-vs-assessment-CLM-SCREENING-VS-ASSESSMENT-SEAM" class="source-backlink">[CLM-SCREENING-VS-ASSESSMENT-SEAM]</a>
+            </div>
+          </div>
+          
+          <div id="SRC-REYES-2024" class="source-entry">
+            <div class="source-entry-title">Suicide and suicidal behaviors among Asian American, Native Hawaiian, and Pacific Islander youth</div>
+            <div class="source-meta-row">
+              <span><strong>ID:</strong> SRC-REYES-2024</span>
+              <span><strong>Type:</strong> <code>primary_study</code></span>
+              <span><strong>Authority:</strong> <code>HOLD</code></span>
+              <span><strong>Review:</strong> <code>HOLD</code></span>
+              <span><strong>Year:</strong> 2024</span>
+            </div>
+            <div class="source-locator">
+              <strong>Exact Locator:</strong> Child and Adolescent Mental Health (2024), DOI: 10.1111/camh.12708. Quarantined on HOLD pending primary disaggregated table extraction.
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>URL / DOI:</strong> <a href="https://doi.org/10.1111/camh.12708" class="source-backlink" rel="noopener noreferrer">https://doi.org/10.1111/camh.12708</a>
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>Referencing Claims:</strong>
+              <a href="#mod-10-asian-vs-nhpi-CLM-ASIAN-NHPI-SEPARATION" class="source-backlink">[CLM-ASIAN-NHPI-SEPARATION]</a> <a href="#mod-10-asian-vs-nhpi-CLM-NHPI-YOUTH-RATE" class="source-backlink">[CLM-NHPI-YOUTH-RATE]</a>
+            </div>
+          </div>
+          
+          <div id="SRC-ANDRIESSEN-2019" class="source-entry">
+            <div class="source-entry-title">Effectiveness of Interventions for Suicide-Bereaved Children and Adolescents, and Suicide-Bereaved Adults: A Systematic Review</div>
+            <div class="source-meta-row">
+              <span><strong>ID:</strong> SRC-ANDRIESSEN-2019</span>
+              <span><strong>Type:</strong> <code>systematic_review</code></span>
+              <span><strong>Authority:</strong> <code>HOLD</code></span>
+              <span><strong>Review:</strong> <code>HOLD</code></span>
+              <span><strong>Year:</strong> 2019</span>
+            </div>
+            <div class="source-locator">
+              <strong>Exact Locator:</strong> Frontiers in Psychology 10:2677. Quarantined: systematic secondary review of postvention grief models.
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>URL / DOI:</strong> <a href="https://doi.org/10.3389/fpsyg.2019.02677" class="source-backlink" rel="noopener noreferrer">https://doi.org/10.3389/fpsyg.2019.02677</a>
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>Referencing Claims:</strong>
+              <a href="#mod-16-safe-communication-CLM-POSTVENTION-EMPIRICAL-MODELS" class="source-backlink">[CLM-POSTVENTION-EMPIRICAL-MODELS]</a>
+            </div>
+          </div>
+          
+          <div id="SRC-RAMAMURTHY-2025" class="source-entry">
+            <div class="source-entry-title">Suicide Postvention Interventions and Community Service Models: A Scoping Review</div>
+            <div class="source-meta-row">
+              <span><strong>ID:</strong> SRC-RAMAMURTHY-2025</span>
+              <span><strong>Type:</strong> <code>systematic_review</code></span>
+              <span><strong>Authority:</strong> <code>HOLD</code></span>
+              <span><strong>Review:</strong> <code>HOLD</code></span>
+              <span><strong>Year:</strong> 2025</span>
+            </div>
+            <div class="source-locator">
+              <strong>Exact Locator:</strong> Preventive Medicine (2025), DOI: 10.1016/j.ypmed.2025.108279. Secondary scoping review on postvention models.
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>URL / DOI:</strong> <a href="https://doi.org/10.1016/j.ypmed.2025.108279" class="source-backlink" rel="noopener noreferrer">https://doi.org/10.1016/j.ypmed.2025.108279</a>
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>Referencing Claims:</strong>
+              <a href="#mod-16-safe-communication-CLM-POSTVENTION-EMPIRICAL-MODELS" class="source-backlink">[CLM-POSTVENTION-EMPIRICAL-MODELS]</a>
+            </div>
+          </div>
+          
+          <div id="SRC-BROWN-2012" class="source-entry">
+            <div class="source-entry-title">Safety Planning Intervention: A Brief Intervention to Mitigate Suicide Risk</div>
+            <div class="source-meta-row">
+              <span><strong>ID:</strong> SRC-BROWN-2012</span>
+              <span><strong>Type:</strong> <code>primary_study</code></span>
+              <span><strong>Authority:</strong> <code>HOLD</code></span>
+              <span><strong>Review:</strong> <code>HOLD</code></span>
+              <span><strong>Year:</strong> 2012</span>
+            </div>
+            <div class="source-locator">
+              <strong>Exact Locator:</strong> Cognitive and Behavioral Practice Vol. 19, No. 2, pp. 256–264. Quarantined: journal article describing clinical protocol, not a clinical trial establishing PPV data.
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>URL / DOI:</strong> <a href="https://doi.org/10.1016/j.cbpra.2011.01.001" class="source-backlink" rel="noopener noreferrer">https://doi.org/10.1016/j.cbpra.2011.01.001</a>
+            </div>
+            <div class="source-locator" style="margin-top: 6px;">
+              <strong>Referencing Claims:</strong>
+              <a href="#mod-13-screening-vs-assessment-CLM-SCREENING-VS-ASSESSMENT-SEAM" class="source-backlink">[CLM-SCREENING-VS-ASSESSMENT-SEAM]</a>
+            </div>
+          </div>
+          
+        </div>
+      </section>
+
+      <!-- MASTER GLOSSARY SECTION -->
+      <section id="master-glossary" class="atlas-section" aria-label="Epidemiological Glossary">
+        <h2 class="atlas-title">📖 Comprehensive Epidemiological & Surveillance Glossary</h2>
+        <table class="terms-table">
+          <thead>
+            <tr>
+              <th style="width: 25%;">Term</th>
+              <th style="width: 15%;">Domain</th>
+              <th>Operational Definition & Distinction</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+            <tr>
+              <td><strong>Age-Adjusted Mortality Rate</strong></td>
+              <td><code>Metrics</code></td>
+              <td>A weighted average of age-specific death rates calculated by applying observed age-specific rates to a standard population distribution (2000 U.S. Standard Population). Eliminates confounding when comparing populations with differing age structures.</td>
+            </tr>
+            
+            <tr>
+              <td><strong>Crude Death Rate</strong></td>
+              <td><code>Metrics</code></td>
+              <td>The total number of observed deaths divided by the total resident population, expressed per 100,000 people. Represents the actual unadjusted event frequency in a specific geographic area.</td>
+            </tr>
+            
+            <tr>
+              <td><strong>Leading Cause Rank</strong></td>
+              <td><code>Surveillance</code></td>
+              <td>An ordinal ranking of mortality causes relative to all competing causes within a specific demographic cohort. Suicide ranks high (#2) in youth primarily because chronic diseases are rare, not because youth mortality rates exceed older adult rates.</td>
+            </tr>
+            
+            <tr>
+              <td><strong>Years of Potential Life Lost (YPLL-75)</strong></td>
+              <td><code>Metrics</code></td>
+              <td>An epidemiological measure of premature mortality calculated by subtracting the exact age at death from benchmark age 75. Emphasizes the societal and economic burden of deaths occurring in young and middle-aged cohorts.</td>
+            </tr>
+            
+            <tr>
+              <td><strong>Direct Standardization</strong></td>
+              <td><code>Metrics</code></td>
+              <td>The mathematical process of applying group-specific rates to a single standard population distribution to generate comparable summary rates independent of demographic differences.</td>
+            </tr>
+            
+            <tr>
+              <td><strong>Relative Standard Error (RSE)</strong></td>
+              <td><code>Statistics</code></td>
+              <td>A measure of statistical precision calculated as the standard error divided by the estimate, multiplied by 100. CDC guidelines flag estimates with RSE &gt;= 30% as statistically unstable.</td>
+            </tr>
+            
+            <tr>
+              <td><strong>Cell Suppression</strong></td>
+              <td><code>Surveillance</code></td>
+              <td>The policy of withholding small cell counts (typically fewer than 10 events) to protect individual privacy and prevent misleading interpretations derived from random variance.</td>
+            </tr>
+            
+            <tr>
+              <td><strong>National Vital Statistics System (NVSS)</strong></td>
+              <td><code>Surveillance</code></td>
+              <td>The intergovernmental federal system managed by CDC NCHS that compiles complete legal death certificate data from all 50 states, DC, and territories.</td>
+            </tr>
+            
+            <tr>
+              <td><strong>National Survey on Drug Use and Health (NSDUH)</strong></td>
+              <td><code>Surveillance</code></td>
+              <td>A nationally representative annual household survey of the civilian noninstitutionalized population aged 12+ measuring self-reported suicidal thoughts, plans, and attempts.</td>
+            </tr>
+            
+            <tr>
+              <td><strong>Youth Risk Behavior Surveillance System (YRBSS)</strong></td>
+              <td><code>Surveillance</code></td>
+              <td>A biennial school-based survey conducted by the CDC among 9th–12th grade public and private high school students tracking self-reported health risk behaviors.</td>
+            </tr>
+            
+            <tr>
+              <td><strong>WISQARS</strong></td>
+              <td><code>Surveillance</code></td>
+              <td>CDC Web-based Injury Statistics Query and Reporting System, an interactive database providing fatal injury, nonfatal emergency department, and cost-of-injury estimates.</td>
+            </tr>
+            
+            <tr>
+              <td><strong>National Violent Death Reporting System (NVDRS)</strong></td>
+              <td><code>Surveillance</code></td>
+              <td>A state-based surveillance system combining death certificates, coroner/medical examiner toxicology reports, and law enforcement incident narratives into a single unified incident record.</td>
+            </tr>
+            
+            <tr>
+              <td><strong>Positive Predictive Value (PPV)</strong></td>
+              <td><code>Psychometrics</code></td>
+              <td>The probability that a person flagged as high risk by a screening instrument will actually experience the target outcome. In rare events like suicide, systematic meta-analyses (Carter et al. 2017) demonstrate a pooled PPV of 5.5%.</td>
+            </tr>
+            
+            <tr>
+              <td><strong>Sensitivity</strong></td>
+              <td><code>Psychometrics</code></td>
+              <td>The proportion of actual positive cases that are correctly identified by a screening tool.</td>
+            </tr>
+            
+            <tr>
+              <td><strong>Specificity</strong></td>
+              <td><code>Psychometrics</code></td>
+              <td>The proportion of actual negative cases that are correctly identified as negative by a screening tool.</td>
+            </tr>
+            
+            <tr>
+              <td><strong>Triage Screener</strong></td>
+              <td><code>Psychometrics</code></td>
+              <td>A brief standardized questionnaire (e.g., C-SSRS, PHQ-9 Item 9) designed for broad detection to prompt clinical conversation, not to predict individual suicide behavior.</td>
+            </tr>
+            
+            <tr>
+              <td><strong>Caring Contacts</strong></td>
+              <td><code>Intervention</code></td>
+              <td>An evidence-based suicide prevention strategy consisting of brief, unconditional, non-demanding expressions of care sent at spaced intervals post-discharge (Motto 1976; Motto &amp; Bostrom 2001).</td>
+            </tr>
+            
+            <tr>
+              <td><strong>American Indian Life Skills (AILS)</strong></td>
+              <td><code>Intervention</code></td>
+              <td>A 30-lesson culturally grounded classroom curriculum developed in partnership with tribal community elders to build communication, problem-solving, and peer help-giving skills in Indigenous youth.</td>
+            </tr>
+            
+            <tr>
+              <td><strong>Indigenous Data Sovereignty</strong></td>
+              <td><code>Governance</code></td>
+              <td>The inherent right of sovereign Tribal Nations to govern, own, manage, approve, and protect data collection and research concerning their peoples and lands.</td>
+            </tr>
+            
+            <tr>
+              <td><strong>Contract Health Service Delivery Areas (CHSDA)</strong></td>
+              <td><code>Surveillance</code></td>
+              <td>Geographic county designations where Indian Health Service (IHS) data linkage studies are conducted to correct for death certificate racial misclassification.</td>
+            </tr>
+            
+            <tr>
+              <td><strong>Racial Misclassification</strong></td>
+              <td><code>Surveillance</code></td>
+              <td>The erroneous recording of an individual race on legal death certificates by coroners, funeral directors, or hospital staff, undercounting American Indian/Alaska Native suicide mortality by 15%–33%.</td>
+            </tr>
+            
+            <tr>
+              <td><strong>Carrier Wireless Georouting</strong></td>
+              <td><code>Architecture</code></td>
+              <td>A privacy-preserving telecommunications protocol implemented in 988 that routes calls to the nearest local crisis center based on mobile cell-tower region without tracking GPS coordinates.</td>
+            </tr>
+            
+            <tr>
+              <td><strong>Werther Effect</strong></td>
+              <td><code>Communication</code></td>
+              <td>An observed increase in suicide rates or copycat behavior following sensationalized, graphic, or romanticized media coverage of a suicide death.</td>
+            </tr>
+            
+            <tr>
+              <td><strong>Papageno Effect</strong></td>
+              <td><code>Communication</code></td>
+              <td>An observed increase in crisis help-seeking, hope, and resilience following media stories highlighting coping, overcoming suicidal crises, and available support resources.</td>
+            </tr>
+            
+            <tr>
+              <td><strong>Postvention</strong></td>
+              <td><code>Intervention</code></td>
+              <td>Organized community, clinical, and bereavement interventions provided after a suicide death to support loss survivors, facilitate grieving, and mitigate contagion.</td>
+            </tr>
+            
+            <tr>
+              <td><strong>Four-Tier Claim Labeling</strong></td>
+              <td><code>Governance</code></td>
+              <td>An evidence governance taxonomy categorizing assertions into VERIFIED (direct peer-reviewed/vital statistics proof), STRONG INFERENCE (multi-system logical deduction), HYPOTHESIS (testable theoretical model), and OPEN (unresolved empirical gap).</td>
+            </tr>
+            
+          </tbody>
+        </table>
+      </section>
+
+      <!-- CONFLICT LEDGER & SUPERSESSION HISTORY -->
+      <section id="conflict-ledger" class="atlas-section" aria-label="Conflict Ledger and Supersession History">
+        <h2 class="atlas-title">⚖️ Conflict Ledger & Supersession History</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 16px;">Transparent tracking of cross-system surveillance variations, vital statistics supersessions, and unresolved empirical gaps.</p>
+        
+        <div>
+          
+          <div style="background-color: var(--bg-card-alt); border: 1px solid var(--border-color); border-radius: 8px; padding: 18px; margin-bottom: 16px;">
+            <div style="font-size: 1.05rem; font-weight: 700; color: #ffffff; margin-bottom: 6px;">CONF-01-2022-2024-FINAL-LOCK: 2022, 2023, and 2024 Final Vital Statistics Releases</div>
+            <div style="font-size: 0.85rem; color: var(--accent-amber); margin-bottom: 8px;"><strong>Status:</strong> <code>RESOLVED_BY_FINAL_DATA</code></div>
+            <p style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 8px;">Prior provisional CDC quarterly estimates have been superseded by final audited NVSS vital statistics for 2022 (49,476 deaths; 14.2 rate; NVSR Vol. 74, No. 4, Table B), 2023 (49,316 deaths; 14.1 rate), and 2024 (48,824 deaths; 13.7 rate; Rank 10).</p>
+            <div style="font-size: 0.88rem; color: var(--text-muted);">
+              <strong>Resolution Protocol:</strong> Display final locked annual counts and age-adjusted rates across all compendium tables.
+            </div>
+          </div>
+          
+          <div style="background-color: var(--bg-card-alt); border: 1px solid var(--border-color); border-radius: 8px; padding: 18px; margin-bottom: 16px;">
+            <div style="font-size: 1.05rem; font-weight: 700; color: #ffffff; margin-bottom: 6px;">CONF-02-AANHPI-DISAGGREGATION: Historic AAPI Aggregation vs. OMB Disaggregated NHPI Metrics</div>
+            <div style="font-size: 0.85rem; color: var(--accent-amber); margin-bottom: 8px;"><strong>Status:</strong> <code>HOLD_PENDING_PRIMARY_RE_EXTRACTION</code></div>
+            <p style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 8px;">Older federal reports aggregate Asian and Pacific Islander data into &quot;AAPI,&quot; obscuring an NHPI youth mortality rate that is more than double that of Asian peers. Primary disaggregated data tables are on HOLD pending re-extraction.</p>
+            <div style="font-size: 0.88rem; color: var(--text-muted);">
+              <strong>Resolution Protocol:</strong> Hold disaggregated claims in OPEN/HOLD status until primary CDC NCHS disaggregated tables are extracted directly.
+            </div>
+          </div>
+          
+          <div style="background-color: var(--bg-card-alt); border: 1px solid var(--border-color); border-radius: 8px; padding: 18px; margin-bottom: 16px;">
+            <div style="font-size: 1.05rem; font-weight: 700; color: #ffffff; margin-bottom: 6px;">CONF-03-AIAN-MISCLASSIFICATION-ESTIMATE: AI/AN Death Certificate Undercount Factor Range</div>
+            <div style="font-size: 0.85rem; color: var(--accent-amber); margin-bottom: 8px;"><strong>Status:</strong> <code>EXPLICIT_RANGE_DISCLOSED</code></div>
+            <p style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 8px;">Vital-records linkage studies report racial misclassification rates ranging between 15% and 33% depending on whether CHSDA counties or urban areas are examined.</p>
+            <div style="font-size: 0.88rem; color: var(--text-muted);">
+              <strong>Resolution Protocol:</strong> Report the full empirical range (15%–33%) with explanatory context rather than a manufactured single point estimate.
+            </div>
+          </div>
+          
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="app-footer" role="contentinfo">
+    <div class="footer-container">
+      <p><strong>Suicide Compendium Education Reader v3.0</strong></p>
+      <p>Target WCAG 2.2 AA; formal conformance remains unclaimed pending automated and manual assistive technology audits.</p>
+      <p>Zero external telemetry scripts, 100% offline single-file execution.</p>
+    </div>
+  </footer>
+
+  <script>document.addEventListener('DOMContentLoaded', function() {
+  // Search and Category Filter with Accessible Live Announcements
+  var searchInput = document.getElementById('module-search');
+  var filterButtons = document.querySelectorAll('.category-filter-btn');
+  var moduleCards = document.querySelectorAll('.module-card');
+  var liveAnnouncer = document.getElementById('search-live-announcer');
+
+  function updateFilter() {
+    var query = (searchInput ? searchInput.value : '').toLowerCase().trim();
+    var activeBtn = document.querySelector('.category-filter-btn[aria-pressed="true"]');
+    var selectedCategory = activeBtn ? activeBtn.getAttribute('data-category') : 'ALL';
+    var visibleCount = 0;
+
+    moduleCards.forEach(function(card) {
+      var cardCat = card.getAttribute('data-category') || '';
+      var cardText = card.textContent.toLowerCase();
+      var matchesCat = (selectedCategory === 'ALL' || cardCat.indexOf(selectedCategory) !== -1);
+      var matchesQuery = (!query || cardText.indexOf(query) !== -1);
+
+      if (matchesCat && matchesQuery) {
+        card.style.display = 'block';
+        visibleCount++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    if (liveAnnouncer) {
+      liveAnnouncer.textContent = 'Showing ' + visibleCount + ' of ' + moduleCards.length + ' modules matching filters.';
+    }
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener('input', updateFilter);
+  }
+
+  filterButtons.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      filterButtons.forEach(function(b) { b.setAttribute('aria-pressed', 'false'); });
+      btn.setAttribute('aria-pressed', 'true');
+      updateFilter();
+    });
+  });
+});</script>
+</body>
+</html>
