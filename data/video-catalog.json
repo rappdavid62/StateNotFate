@@ -1,0 +1,88 @@
+{
+  "schema": "snf.public-video-catalog.v1",
+  "updated": "2026-08-25T04:15:00Z",
+  "production_base": "3513f492b27c63c848fd9c95615ece952a972f25",
+  "branch": "grok/video-watcher-vnext",
+  "deploy": false,
+  "disclaimer": "NotebookLM Video Overviews are research synthesis. They are not evidence, not treatment, and not a biological repair mechanism. Suicide-adjacent titles are withheld. Source MP4s are not shipped in git.",
+  "excluded": [
+    {
+      "id": "VID-010",
+      "reason": "suicide_adjacent filename fence; not in public watcher"
+    },
+    {
+      "id": "VID-002",
+      "reason": "HeyGen flagship still PARTIAL"
+    },
+    {
+      "id": "VID-003",
+      "reason": "suicide_adjacent safety hold"
+    },
+    {
+      "id": "VID-004",
+      "reason": "suicide_adjacent safety hold"
+    }
+  ],
+  "items": [
+    {
+      "id": "VID-001",
+      "title": "Depression Explainer",
+      "drive_id": "1x2mlAE3oq_pfnZyMIptLhKS4f--MkOa0",
+      "notebooklm": false,
+      "public_use": "qualified",
+      "status": "PASS_WITH_EVIDENCE_GAPS"
+    },
+    {
+      "id": "VID-005",
+      "title": "State, Not A Fate",
+      "file": "State,_Not_A_Fate.mp4",
+      "drive_id": "1T5ksulCyeV5gwPgdgGm8uhOuW6aQ6fLj",
+      "size_bytes": 70351965,
+      "notebooklm": true,
+      "public_use": "qualified",
+      "status": "PARTIAL",
+      "duration": "1:37:42"
+    },
+    {
+      "id": "VID-006",
+      "title": "Rebuild the Code: The Systems Approach to Depression",
+      "file": "Rebuild_the_Code__The_Systems_Approach_to_Depression.mp4",
+      "drive_id": "1SuglIct_MArERoNcwoYliUWUJ025JkgD",
+      "size_bytes": 56107418,
+      "notebooklm": true,
+      "public_use": "qualified",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "VID-007",
+      "title": "Rebuilding the Depressed Brain",
+      "file": "Rebuilding_the_Depressed_Brain.mp4",
+      "drive_id": "191-ufSf2owTkk2UPFez0mHyRa-gSI_Jz",
+      "size_bytes": 55514418,
+      "notebooklm": true,
+      "public_use": "qualified",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "VID-008",
+      "title": "The Brain's Broken Calculator",
+      "file": "The_Brain’s_Broken_Calculator.mp4",
+      "drive_id": "1sNtx0l1pzgfgGn6CRlK2oQiPJiKtFVuP",
+      "size_bytes": 46941799,
+      "notebooklm": true,
+      "public_use": "qualified",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "VID-009",
+      "title": "The Broken Firmware: A Mechanical Guide to Depression",
+      "file": "The_Broken_Firmware__A_Mechanical_Guide_to_Depression.mp4",
+      "drive_id": "1SNJdAX0_oLQf7QhQBFpyylSOgG0l-dqg",
+      "size_bytes": 46207096,
+      "notebooklm": true,
+      "public_use": "qualified",
+      "status": "PARTIAL",
+      "duration": "1:04:10"
+    }
+  ]
+}

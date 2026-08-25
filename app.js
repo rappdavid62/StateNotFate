@@ -100,19 +100,25 @@
 
         let state = { ...DEFAULT_STATE };
 
-        const MEDIA_PLAYLIST = [
-            { title: "Treating depression as a systems failure", file: "Treating_depression_as_a_systems_failure.m4a", type: "audio", duration: "48:09" },
-            { title: "The Reprogramming Protocol: Debugging Depression", file: "The_Reprogramming_Protocol__Debugging_Depression.mp4", type: "video", duration: "1:21:49" },
-            { title: "State, Not A Fate", file: "State,_Not_A_Fate.mp4", type: "video", duration: "1:37:42" },
-            { title: "Stop treating depression like broken bones", file: "Stop_treating_depression_like_broken_bones.m4a", type: "audio", duration: "47:17" },
-            { title: "The Broken Firmware: A Mechanical Guide to Depression", file: "The_Broken_Firmware__A_Mechanical_Guide_to_Depression.mp4", type: "video", duration: "1:04:10" },
-            { title: "The Depression Project", file: "The_Depression_Project.mp4", type: "video", duration: "1:21:34" },
-            { title: "Depression is a mechanical system failure", file: "Depression_is_a_mechanical_system_failure.m4a", type: "audio", duration: "56:43" },
-            { title: "Developing a Trial Outreach Plan", file: "Developing_a_Trial_Community_Outreach_Action_Plan.mp4", type: "video", duration: "47:04" },
-            { title: "Why recovery requires proof not inspiration", file: "Why_recovery_requires_proof_not_inspiration.m4a", type: "audio", duration: "1:02:07" },
-            { title: "The Mechanics of State vs. Fate", file: "The_Mechanics_of_State_vs.mp4", type: "video", duration: "47:55" },
-            { title: "The 6-Minute System Synopsis", file: "6_minute_synopsis.mp4", type: "video", duration: "6:00" }
-        ];
+        const MEDIA_PLAYLIST = (window.SNF_VIDEO_CATALOG || []).filter(function (t) {
+            return t && t.public_use !== "blocked_pending_human_review" && t.public_use !== "hold" && !t.suicide_adjacent;
+        }).map(function (t) {
+            return {
+                id: t.id,
+                title: t.title,
+                file: t.file || "",
+                type: t.type || "video",
+                duration: t.duration || "unverified",
+                source_kind: t.source_kind || "",
+                drive_id: t.drive_id || null,
+                notebooklm: !!t.notebooklm,
+                not_evidence: true,
+                suicide_adjacent: !!t.suicide_adjacent,
+                public_use: t.public_use,
+                status: t.status || "",
+                label: t.label || "Not evidence. Not treatment."
+            };
+        });
 const COMPANION_QUESTION_TREE = {
     "q1": { text: "I feel slowed down or weighed down much of the day.", next: {'0': 'q2', '1': 'q2', '2': 'q1_a', '3': 'q1_a', '4': 'q1_a', 'default': 'q2'} },
     "q1_a": { text: "What daily activities are most impacted when you feel slowed down or weighed down?", next: {'default': 'q2'} },
@@ -1886,31 +1892,41 @@ const COMPANION_QUESTION_TREE = {
 
         function renderMediaConsole() {
             const container = document.getElementById("media-playlist-container");
+            if (!container) return;
             container.innerHTML = "";
-            
+
+            if (!MEDIA_PLAYLIST.length) {
+                container.innerHTML = '<p class="text-muted" style="font-size:0.85rem;line-height:1.45;">No public catalog items loaded. Suicide-adjacent titles are withheld. Giant source files are not shipped in this app.</p>';
+            }
+
             MEDIA_PLAYLIST.forEach((track, index) => {
                 const item = document.createElement("div");
                 const isActive = state.activeMediaIndex === index;
-                
+                const safeTitle = String(track.title || "").replace(/</g, "<");
+                const tags = [
+                    '<span class="media-tag tag-' + (track.type || "video") + '">' + (track.type || "video") + '</span>',
+                    track.notebooklm ? '<span class="media-tag tag-notebooklm">NotebookLM synthesis</span>' : "",
+                    '<span class="media-tag tag-not-evidence">not evidence</span>'
+                ].filter(Boolean).join("");
                 item.className = `playlist-item ${isActive ? 'active' : ''}`;
                 item.innerHTML = `
                     <div class="playlist-item-info">
-                        <span class="media-tag tag-${track.type}">${track.type}</span>
-                        <div class="playlist-item-title" title="${track.title}">${track.title}</div>
+                        ${tags}
+                        <div class="playlist-item-title" title="${safeTitle}">${safeTitle}</div>
+                        <div class="text-muted" style="font-size:0.7rem;margin-top:0.25rem;">${track.id || ""} · not treatment</div>
                     </div>
-                    <div style="display:flex; gap:0.5rem; align-items:center;">
-                        <span class="text-muted" style="font-size:0.75rem; font-family:monospace;">${track.duration}</span>
-                        <button class="btn btn-primary btn-play" style="padding:0.35rem 0.6rem; font-size:0.75rem;">${isActive ? 'Playing' : 'Play'}</button>
+                    <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; justify-content:flex-end;">
+                        <span class="text-muted" style="font-size:0.75rem; font-family:monospace;">${track.duration || "unverified"}</span>
+                        <button class="btn btn-primary btn-play" style="padding:0.35rem 0.6rem; font-size:0.75rem;">${isActive ? 'Selected' : 'Open'}</button>
                     </div>
                 `;
-                
                 item.addEventListener("click", () => {
                     loadAndPlayTrack(index);
                 });
                 container.appendChild(item);
             });
 
-            document.querySelectorAll(".speed-badge").forEach(btn => {
+                        document.querySelectorAll(".speed-badge").forEach(btn => {
                 if (parseFloat(btn.getAttribute("data-speed")) === state.playbackSpeed) {
                     btn.classList.add("active");
                 } else {
@@ -1933,7 +1949,7 @@ const COMPANION_QUESTION_TREE = {
             const errorFallback = document.getElementById("media-error-fallback");
             
             title.innerHTML = track.title;
-            typeLabel.innerHTML = `Format: ${track.type.toUpperCase()} | Duration: ${track.duration} | Relative Offline Link`;
+            typeLabel.innerHTML = `${track.notebooklm ? "NotebookLM synthesis · not evidence · " : ""}${track.id || ""} · ${String(track.type || "video").toUpperCase()} · ${track.duration || "unverified"}`;
             
             if (errorFallback) errorFallback.classList.add("hidden");
 
@@ -1942,18 +1958,18 @@ const COMPANION_QUESTION_TREE = {
                 if (videoContainer) videoContainer.classList.add("hidden");
                 if (errorFallback) {
                     errorFallback.classList.remove("hidden");
-                    const streamUrl = track.url || "https://statenotfate.org/media"; // Placeholder until exact external URLs are ready
+                    const driveUrl = track.drive_id ? ("https://drive.google.com/file/d/" + track.drive_id + "/view") : null;
                     errorFallback.innerHTML = `
-                        <h4 class="text-orange" style="margin-top:0; margin-bottom:0.75rem; font-size:1rem; color: #ffcc00;">⚠️ Local File Not Found (Email-Safe Core Frame):</h4>
+                        <h4 class="text-orange" style="margin-top:0; margin-bottom:0.75rem; font-size:1rem; color: #ffcc00;">Source is not in this lightweight app frame</h4>
                         <p style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-secondary); line-height: 1.4;">
-                            To keep this app lightweight and emailable (&lt; 1.5 MB), the heavy 500 MB media assets are excluded from this core program frame.
+                            ${track.notebooklm ? "This is a NotebookLM Video Overview — a research synthesis, not evidence and not treatment. " : ""}
+                            46–70 MB source files are kept out of git on purpose. There is no public stream hosted on this site.
                         </p>
-                        <div style="font-size: 0.9rem; color: var(--text-primary); margin-bottom: 0.5rem;">Options to play:</div>
                         <ol style="font-size: 0.85rem; color: var(--text-secondary); padding-left: 1.25rem; margin-bottom: 1.5rem; line-height: 1.5;">
-                            <li style="margin-bottom: 0.5rem;"><strong class="text-teal">Stream Online:</strong> Stream this high-fidelity track instantly from our secure vault.</li>
-                            <li><strong>Play Locally:</strong> Download the full version or place this file (<code>${track.file}</code>) in your local <code>knowledge/</code> folder.</li>
+                            <li style="margin-bottom: 0.5rem;"><strong class="text-teal">Owner Drive source:</strong> open the original file if you are signed into the project Drive. Visitors will not see a public embed.</li>
+                            <li><strong>Play locally:</strong> place <code>${track.file || ""}</code> in a local <code>knowledge/</code> folder beside this app.</li>
                         </ol>
-                        <a href="${streamUrl}" target="_blank" class="btn btn-primary" style="background: var(--accent-teal); color: #0b0f13; border:none; text-decoration: none; padding: 0.6rem 1.2rem; font-weight: 600; display: inline-block;">Stream Online ➔</a>
+                        ${driveUrl ? `<a href="${driveUrl}" target="_blank" rel="noopener" class="btn btn-primary" style="background: var(--accent-teal); color: #0b0f13; border:none; text-decoration: none; padding: 0.6rem 1.2rem; font-weight: 600; display: inline-block;">Open Drive source</a>` : `<p class="text-muted" style="font-size:0.85rem;">No public stream URL.</p>`}
                     `;
                 }
             };
