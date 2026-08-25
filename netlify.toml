@@ -1,6 +1,7 @@
 [build]
   publish = "."
   command = ""
+  functions = "netlify/functions"
   [build.environment]
     NODE_VERSION = "22"
 
@@ -72,7 +73,7 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "same-origin"
-    Content-Security-Policy = "default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: https://api.openai.com; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; media-src 'self' data: https:; connect-src 'self' https: https://api.openai.com; child-src 'self' https:;"
+    Content-Security-Policy = "default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; media-src 'self' data: https:; connect-src 'self' https:; child-src 'self' https:;"
     Cache-Control = "public, max-age=0, must-revalidate"
 
 # Cache-control for static scripts

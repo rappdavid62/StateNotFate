@@ -4713,6 +4713,73 @@ const COMPANION_QUESTION_TREE = {
             renderPolarisTab();
         }
 
+        // ---- AI SYNTHESIS: Server-side Polaris with offline fallback ----
+
+        /**
+         * Builds a compact, privacy-preserving state summary to send to the
+         * server-side synthesis function. Only structured fields are included —
+         * no free-text journal entries.
+         */
+        function buildPolarisSummary() {
+            ensurePolarisState();
+            return {
+                dayState: (state.todayEnergy || 'medium').toLowerCase(),
+                hopeLevel: state.polaris.hopeLevel || null,
+                proofPointsToday: state.polaris.proof.today || 0,
+                floorWinsMode: !!(state.polaris.day && state.polaris.day.floorWinsMode),
+                missedDays: (state.polaris.resilience && state.polaris.resilience.missedDays) || 0,
+            };
+        }
+
+        /**
+         * Calls /.netlify/functions/polaris-synthesis and returns the validated
+         * AI response object, or null if the call fails or the response is
+         * invalid (triggering local fallback).
+         *
+         * @param {object[]} [knowledgeUnits=[]] - Retrieved knowledge units to send
+         * @returns {Promise<object|null>}
+         */
+        async function requestPolarisSynthesis(knowledgeUnits = []) {
+            const statusEl = document.getElementById('polaris-synthesis-status');
+            if (statusEl) {
+                statusEl.textContent = 'AI is thinking…';
+                statusEl.dataset.source = 'loading';
+            }
+            try {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), 14000);
+                let response;
+                try {
+                    response = await fetch('/.netlify/functions/polaris-synthesis', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            stateSummary: buildPolarisSummary(),
+                            knowledgeUnits: (knowledgeUnits || []).slice(0, 5),
+                        }),
+                        signal: controller.signal,
+                    });
+                } finally {
+                    clearTimeout(timer);
+                }
+
+                if (!response.ok) {
+                    if (statusEl) { statusEl.textContent = 'Using local plan'; statusEl.dataset.source = 'local'; }
+                    return null;
+                }
+                const data = await response.json();
+                const isAI = data && data.synthesisSource === 'ai';
+                if (statusEl) {
+                    statusEl.textContent = isAI ? 'AI online' : 'Using local plan';
+                    statusEl.dataset.source = isAI ? 'ai' : 'local';
+                }
+                return data;
+            } catch {
+                if (statusEl) { statusEl.textContent = 'Using local plan'; statusEl.dataset.source = 'local'; }
+                return null;
+            }
+        }
+
         // ---- RENDER: Main Polaris Tab ----
 
         function renderPolarisTab() {
