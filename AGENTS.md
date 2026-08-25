@@ -23,19 +23,6 @@ This repository is a static PWA / public website for the State Not Fate recovery
 - Use `npm test` and `npm run test:public` to validate changes with Playwright. On Windows PowerShell, prefer `npm.cmd test` and `npm.cmd run test:public`.
 - Use `npm run serve` to run the local static server before verifying UI changes in a browser. On Windows PowerShell, prefer `npm.cmd run serve`.
 
-## Styling Conventions (Utility Classes & Maintainability)
-
-- Prefer extracting repeated or common inline styles into reusable utility classes in the relevant CSS file (primarily `index.css`, or version-specific files such as those under experimental Polaris builds).
-- When working on Polaris versioned UI (e.g. polaris-22.x, 23.x, 24.x, 25.x), use clear version-prefixed utility class names (pattern: `.polaris-NN-x-u-N { ... }`) to avoid collisions and improve long-term maintainability.
-- Replace `style="..."` attributes on HTML elements with the corresponding utility class for common properties: font-size, margin, padding, color, border-color, display, flex/gap, width, background, border-radius, etc.
-- Collect the utility class definitions in a clearly marked block at the end of the CSS (e.g. `/* Extracted Utility Classes */`).
-- Benefits: reduced HTML noise, consistent design tokens, easier responsive and theme changes, better reviewability of diffs.
-- Example approach (as used in Polaris 22.x–25.x UI cleanups):
-  - Define `.polaris-25-x-u-1 { font-size:18px }`
-  - Define `.polaris-25-x-u-2 { display:flex;gap:8px }`
-  - Update the matching HTML elements to use the class instead of the inline style.
-- Do not invent new global utility systems (Tailwind, etc.) unless explicitly requested; keep the approach lightweight and local to the files being edited.
-
 ## Build / Test Commands
 
 - `npm install` - install dev dependencies
