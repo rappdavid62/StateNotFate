@@ -15,6 +15,9 @@ This repository is a static PWA / public website. Treat it as a plain HTML/CSS/J
 - Preserve browser localStorage state behavior; there is no backend state.
 - Preserve the static Netlify deployment assumption and fallback redirect to index.html.
 
+## Styling note (from AGENTS.md)
+- Prefer extracting repeated inline styles into utility classes (see full guidance in AGENTS.md under "Styling Conventions"). For Polaris versioned builds use the `.polaris-NN-x-u-N` pattern.
+
 ## Safe workflow rules
 1. Inspect relevant files before editing.
 2. Produce a short plan before edits.
