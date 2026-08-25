@@ -1,28 +1,57 @@
 // INJECTED JAVASCRIPT Logic Engine
         let PolarisEnhancedSafety = null;
-        let SafetyDetectionModule = null;
         let CrisisProtocol = null;
-        let safetyDetection = null;
+        let SafetyRouting = null;
+        let safetyRouting = null;
         let polarisEnhanced = null;
 
         async function loadSafetyModules() {
             try {
-                const detectionMod = await import('./src/safety-detection.js');
+                // safety-detection.js is EXPERIMENTAL and must NOT be imported here.
+                // Use safety-routing.js for all production safety support routing.
+                const routingMod = await import('./src/safety-routing.js');
                 const protocolMod = await import('./src/crisis-protocol.js');
                 const integrationMod = await import('./src/polaris-safety-integration.js');
-                
-                SafetyDetectionModule = detectionMod.default || detectionMod.SafetyDetectionModule;
+
+                SafetyRouting = routingMod.default || routingMod.SafetyRouting;
                 CrisisProtocol = protocolMod.default || protocolMod.CrisisProtocol;
                 PolarisEnhancedSafety = integrationMod.default || integrationMod.PolarisEnhancedSafety;
-                
-                // Initialize safety modules
-                safetyDetection = new SafetyDetectionModule(state);
+
+                // Initialize safety routing (region defaults to 'us'; can be overridden via state)
+                safetyRouting = new SafetyRouting({ region: state.region || 'us' });
                 polarisEnhanced = new PolarisEnhancedSafety(state);
-                
-                console.log("Polaris Enhanced Safety modules loaded successfully.");
+
+                console.log("Safe support routing modules loaded successfully.");
             } catch (err) {
-                console.error("Failed to load Polaris Enhanced Safety modules:", err);
+                console.error("Failed to load safe support routing modules:", err);
             }
+        }
+
+        /**
+         * Open safe support routing:
+         *   1. Pause ordinary coaching and proof rewards.
+         *   2. Record only that routing was opened (no clinical data).
+         *   3. Trigger the crisis resource overlay.
+         * Does NOT calculate any risk score or category.
+         */
+        function openSafetyRouting() {
+            state.safety = state.safety || {};
+            state.safety.routingActive = true;
+
+            if (safetyRouting) {
+                state.polaris = safetyRouting.pauseCoaching(state.polaris || {});
+                safetyRouting.recordRoutingOpened(state);
+            } else {
+                // Fallback when module has not yet loaded
+                state.safetyRoutingLog = state.safetyRoutingLog || [];
+                state.safetyRoutingLog.push({ openedAt: new Date().toISOString() });
+                if (state.polaris) {
+                    state.polaris.safetyRoutingActive = true;
+                }
+            }
+
+            saveState();
+            triggerCrisisOverlay();
         }
 
         const DEFAULT_STATE = {
@@ -1031,49 +1060,22 @@ const COMPANION_QUESTION_TREE = {
                 state.safetyAssessments = state.safetyAssessments || [];
                 state.safetyAssessments.push(assessment);
                 
-                // Calculate risk
-                let riskLevel = { level: 'low', score: 0 };
-                if (safetyDetection) {
-                    riskLevel = safetyDetection.calculateRiskLevel({
-                        quickScreen: assessment,
-                        patterns: safetyDetection.detectRiskPatterns ? safetyDetection.detectRiskPatterns(state) : []
-                    });
-                } else {
-                    let score = ideationVal;
-                    if (safetyVal === "no") score += 5;
-                    else if (safetyVal === "unsure") score += 2;
-                    let level = 'low';
-                    if (score >= 8) level = 'acute';
-                    else if (score >= 5) level = 'elevated';
-                    else if (score >= 3) level = 'moderate';
-                    else if (score >= 1) level = 'low-moderate';
-                    riskLevel = { level, score };
-                }
-                
                 // Hide card
                 document.getElementById("safety-checkin-card").style.display = "none";
                 
-                // Update safety state
+                // Route to support if any concern is present — no risk scoring
                 state.safety = state.safety || {};
-                if (riskLevel.level === "acute" || riskLevel.level === "elevated" || safetyVal === "no") {
-                    state.safety.suicide = 2; // High alert
-                    triggerCrisisOverlay();
-                } else if (riskLevel.level === "moderate" || safetyVal === "unsure") {
-                    state.safety.suicide = 1;
+                if (ideationVal > 0 || safetyVal === "no" || safetyVal === "unsure") {
+                    openSafetyRouting();
                 } else {
-                    state.safety.suicide = 0;
-                }
-                
-                // Adapt anchors based on risk
-                if (polarisEnhanced && polarisEnhanced.generateAdaptiveAnchors) {
-                    state.polaris = polarisEnhanced.generateAdaptiveAnchors(riskLevel, state.polaris || {});
+                    state.safety.routingActive = false;
                 }
                 
                 saveState();
                 renderDailyChecklist();
                 updateDashboardMetrics();
                 
-                showToast("Safety check complete. Risk level: " + riskLevel.level.toUpperCase(), "success");
+                showToast("Safety check complete. Support resources are available if needed.", "success");
             });
 
             document.getElementById("btn-check-mantra").addEventListener("click", () => {
@@ -2476,60 +2478,26 @@ const COMPANION_QUESTION_TREE = {
             if (bufferInput && state.supportMap) bufferInput.value = state.supportMap.bufferContact || "";
             if (envInput && state.supportMap) envInput.value = state.supportMap.safeEnvironment || "";
 
-            // Calculate active risk level
-            let riskLevel = { level: 'low', score: 0 };
-            if (safetyDetection) {
-                const latestCheckin = state.safetyAssessments && state.safetyAssessments.length > 0
-                    ? state.safetyAssessments[state.safetyAssessments.length - 1]
-                    : null;
-                riskLevel = safetyDetection.calculateRiskLevel({
-                    quickScreen: latestCheckin,
-                    patterns: safetyDetection.detectRiskPatterns ? safetyDetection.detectRiskPatterns(state) : []
-                });
-            } else {
-                let score = 0;
-                if (state.safety && state.safety.suicide === 2) score = 8;
-                else if (state.safety && state.safety.suicide === 1) score = 4;
-                let level = 'low';
-                if (score >= 8) level = 'acute';
-                else if (score >= 5) level = 'elevated';
-                else if (score >= 3) level = 'moderate';
-                riskLevel = { level, score };
-            }
-
-            // Update active risk badge
+            // Show safety routing status (no risk score is displayed)
             const badge = document.getElementById("safety-sp-risk-badge");
             if (badge) {
-                badge.innerText = riskLevel.level.toUpperCase();
-                
-                badge.className = ""; // clear all custom classes
-                if (riskLevel.level === "acute") {
-                    badge.style.color = "var(--accent-red)";
-                } else if (riskLevel.level === "elevated") {
-                    badge.style.color = "var(--accent-orange)";
-                } else if (riskLevel.level === "moderate") {
-                    badge.style.color = "var(--accent-lavender)";
-                } else {
-                    badge.style.color = "var(--accent-teal)";
-                }
+                const isActive = state.safety && state.safety.routingActive;
+                badge.innerText = isActive ? "SUPPORT ROUTING ACTIVE" : "SUPPORT AVAILABLE";
+                badge.className = "";
+                badge.style.color = isActive ? "var(--accent-orange)" : "var(--accent-teal)";
             }
 
-            // Show deterioration warnings if any
+            // Show high-distress journal alert if applicable (no risk scoring)
             const warningsContainer = document.getElementById("safety-sp-warnings-container");
             const warningsList = document.getElementById("safety-sp-warnings-list");
             if (warningsContainer && warningsList) {
                 warningsList.innerHTML = "";
-                
-                let activeWarnings = [];
-                if (safetyDetection && safetyDetection.detectRiskPatterns) {
-                    const patterns = safetyDetection.detectRiskPatterns(state);
-                    patterns.forEach(p => activeWarnings.push(p.description));
-                }
-                
-                // If distress is very high on recent journal check-ins, add alert
+                const activeWarnings = [];
+
+                // If distress is very high on recent journal check-ins, surface a supportive prompt
                 const recentJournal = state.safetyJournal || [];
                 if (recentJournal.length > 0 && recentJournal[recentJournal.length - 1].distressLevel >= 8) {
-                    activeWarnings.push(`Recent acute distress check-in (Level ${recentJournal[recentJournal.length - 1].distressLevel}/10)`);
+                    activeWarnings.push(`Recent high-distress check-in — support resources are available below.`);
                 }
 
                 if (activeWarnings.length > 0) {
@@ -2952,7 +2920,7 @@ const COMPANION_QUESTION_TREE = {
                 cancelAssessmentBtn.addEventListener("click", closeSafetyAssessmentModal);
             }
 
-            // Safety Assessment navigation steps
+            // Safety Assessment navigation steps (kept for compatibility)
             let saCurrentStep = 1;
             
             function openSafetyAssessmentModal() {
@@ -2960,20 +2928,15 @@ const COMPANION_QUESTION_TREE = {
                 document.getElementById("sa-step-1").classList.remove("hidden");
                 document.getElementById("sa-step-2").classList.add("hidden");
                 document.getElementById("btn-sa-prev").classList.add("hidden");
-                document.getElementById("btn-sa-next").classList.remove("hidden");
-                document.getElementById("btn-sa-submit").classList.add("hidden");
-                
-                // Set default inputs
-                document.getElementById("input-sa-conviction").value = 0;
-                document.getElementById("display-sa-conviction").innerText = 0;
-                
-                // Set radios to first option
-                document.querySelectorAll("input[name='sa-access']")[0].checked = true;
-                document.querySelectorAll("input[name='sa-timeline']")[0].checked = true;
-                
-                // Clear checkboxes
-                document.querySelectorAll("#sa-deterrents-container input").forEach(c => c.checked = false);
-                document.querySelectorAll("#sa-behaviors-container input").forEach(c => c.checked = false);
+                document.getElementById("btn-sa-next").classList.add("hidden");
+                document.getElementById("btn-sa-submit").classList.remove("hidden");
+
+                // Populate trusted contacts from saved state
+                const tcEl = document.getElementById("sa-trusted-contacts");
+                if (tcEl) {
+                    const contacts = (state && state.safeContacts) ? state.safeContacts.trim() : '';
+                    tcEl.innerText = contacts || 'No contacts saved yet — add them in the Support Plan tab.';
+                }
 
                 document.getElementById("safety-assessment-modal").classList.add("active");
             }
@@ -2982,10 +2945,12 @@ const COMPANION_QUESTION_TREE = {
                 document.getElementById("safety-assessment-modal").classList.remove("active");
             }
 
+            // saConvictionSlider no longer exists but guard kept so no throw if cached HTML present
             const saConvictionSlider = document.getElementById("input-sa-conviction");
             if (saConvictionSlider) {
                 saConvictionSlider.addEventListener("input", (e) => {
-                    document.getElementById("display-sa-conviction").innerText = e.target.value;
+                    const disp = document.getElementById("display-sa-conviction");
+                    if (disp) disp.innerText = e.target.value;
                 });
             }
 
@@ -3017,71 +2982,15 @@ const COMPANION_QUESTION_TREE = {
             const saSubmitBtn = document.getElementById("btn-sa-submit");
             if (saSubmitBtn) {
                 saSubmitBtn.addEventListener("click", () => {
-                    const convictionVal = parseInt(document.getElementById("input-sa-conviction").value, 10);
-                    const accessVal = parseInt(document.querySelector("input[name='sa-access']:checked").value, 10);
-                    const timelineVal = parseInt(document.querySelector("input[name='sa-timeline']:checked").value, 10);
-                    
-                    const selectedDeterrents = [];
-                    document.querySelectorAll("#sa-deterrents-container input:checked").forEach(c => {
-                        selectedDeterrents.push(c.value);
-                    });
+                    // Open safe support routing — no method-specific data is collected
+                    // and no risk score is calculated.
+                    openSafetyRouting();
 
-                    const selectedBehaviors = [];
-                    document.querySelectorAll("#sa-behaviors-container input:checked").forEach(c => {
-                        selectedBehaviors.push(c.value);
-                    });
-
-                    const assessment = {
-                        id: Date.now(),
-                        timestamp: new Date().toISOString(),
-                        ideation: { value: Math.ceil(convictionVal / 2.5) }, // normalize conviction 0-10 to 0-4
-                        intentAssessment: {
-                            intent: { value: convictionVal > 5 ? 3 : (convictionVal > 1 ? 1 : 0) },
-                            access: { value: accessVal },
-                            timeline: { value: timelineVal },
-                            protective: { selected: selectedDeterrents }
-                        }
-                    };
-
-                    state.safetyAssessments = state.safetyAssessments || [];
-                    state.safetyAssessments.push(assessment);
-
-                    // Run safety detection logic
-                    let riskLevel = { level: 'low', score: 0 };
-                    if (safetyDetection) {
-                        riskLevel = safetyDetection.calculateRiskLevel({
-                            quickScreen: assessment,
-                            intentAssessment: assessment.intentAssessment,
-                            patterns: safetyDetection.detectRiskPatterns ? safetyDetection.detectRiskPatterns(state) : []
-                        });
-                    } else {
-                        let score = convictionVal;
-                        if (accessVal >= 2) score += 3;
-                        if (timelineVal >= 2) score += 3;
-                        let level = 'low';
-                        if (score >= 12) level = 'acute';
-                        else if (score >= 8) level = 'elevated';
-                        else if (score >= 4) level = 'moderate';
-                        riskLevel = { level, score };
-                    }
-
-                    // Update safety state
-                    state.safety = state.safety || {};
-                    if (riskLevel.level === "acute" || riskLevel.level === "elevated") {
-                        state.safety.suicide = 2; // High alert
-                        triggerCrisisOverlay();
-                    } else if (riskLevel.level === "moderate") {
-                        state.safety.suicide = 1;
-                    } else {
-                        state.safety.suicide = 0;
-                    }
-
-                    saveState();
                     closeSafetyAssessmentModal();
                     renderSuicidePreventionTab();
                     updateDashboardMetrics();
                     
-                    showToast("Safety Assessment completed successfully. Risk status updated: " + riskLevel.level.toUpperCase(), "success");
+                    showToast("Support routing opened. Crisis resources are available.", "success");
                 });
             }
 

@@ -3236,161 +3236,49 @@
         </div>
 
         <!-- ========================================== -->
-        <!-- FULL SAFETY ASSESSMENT MODAL               -->
-        <!-- ========================================== -->
+        <!-- SAFE SUPPORT ROUTING MODAL                 -->
+        <!-- (replaces former method-specific assessment) -->
         <div id="safety-assessment-modal" class="modal-overlay">
             <div class="modal-content safety-modal" style="max-width: 550px; max-height: 85vh; overflow-y: auto;">
                 <button class="modal-close-btn" id="btn-close-safety-assessment-modal">×</button>
                 <div class="modal-title" style="color: var(--accent-orange); display: flex; align-items: center; gap: 0.5rem; font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem;">
-                    <span>📋</span> Safety Assessment
+                    <span>🛟</span> Support Routing
                 </div>
                 <div class="modal-desc" style="margin-bottom: 1rem; font-size: 0.85rem; color: var(--text-secondary);">
-                    This questionnaire helps evaluate your current risk level and establish protective anchors. It takes about 2-3 minutes.
+                    Coaching and rewards are paused. Reach out to a person you trust or a crisis line right now.
+                    This app does not evaluate risk — please contact a professional if you need clinical support.
                 </div>
-                
+
                 <div id="safety-assessment-form-content">
-                    <!-- Step 1: Tier 2 (Intent & Timeline) -->
+                    <!-- Crisis resources -->
                     <div id="sa-step-1" class="sa-step">
-                        <h4 style="color: var(--accent-orange); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.4rem; margin-bottom: 0.75rem; font-size: 0.95rem; font-weight: 500;">Section 1: Intent & Timeline</h4>
-                        
-                        <!-- Question 1: Conviction -->
-                        <div class="mb-3">
-                            <label class="safebox-field-label" style="display:block; margin-bottom: 0.4rem; font-weight: bold; font-size: 0.85rem;">
-                                How certain do you feel that acting on thoughts of suicide is the right decision?
-                            </label>
-                            <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-bottom:0.25rem;">
-                                <span>0 - Not at all certain</span>
-                                <span>10 - Completely certain</span>
-                            </div>
-                            <input type="range" id="input-sa-conviction" min="0" max="10" value="0" style="width:100%; accent-color: var(--accent-orange);">
-                            <div style="text-align:center; font-weight:bold; color:var(--accent-orange); font-size:1.1rem; margin-top:0.25rem;" id="display-sa-conviction">0</div>
-                        </div>
+                        <h4 style="color: var(--accent-orange); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.4rem; margin-bottom: 0.75rem; font-size: 0.95rem; font-weight: 500;">Crisis &amp; Emergency Resources</h4>
+                        <ul style="list-style:none; padding:0; margin:0 0 1rem 0; display:flex; flex-direction:column; gap:0.6rem;">
+                            <li><a href="tel:988" style="color:var(--accent-teal); font-weight:bold;">📞 Call or text 988</a> — Suicide &amp; Crisis Lifeline (US)</li>
+                            <li><a href="sms:741741?body=HOME" style="color:var(--accent-teal);">💬 Text HOME to 741741</a> — Crisis Text Line (US)</li>
+                            <li><a href="tel:911" style="color:var(--accent-red); font-weight:bold;">🚨 Call 911</a> — Emergency services</li>
+                        </ul>
 
-                        <!-- Question 2: Access to Means -->
-                        <div class="mb-3" style="margin-top: 1rem;">
-                            <label class="safebox-field-label" style="display:block; margin-bottom: 0.4rem; font-weight: bold; font-size: 0.85rem;">
-                                Do you have ready access to means that could be lethal?
-                            </label>
-                            <div style="display:flex; flex-direction:column; gap:0.4rem;">
-                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
-                                    <input type="radio" name="sa-access" value="0" checked>
-                                    <span style="font-size:0.85rem;">No access or unclear methods</span>
-                                </label>
-                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
-                                    <input type="radio" name="sa-access" value="1">
-                                    <span style="font-size:0.85rem;">Theoretical knowledge only</span>
-                                </label>
-                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
-                                    <input type="radio" name="sa-access" value="2">
-                                    <span style="font-size:0.85rem;">Some access, but requires effort to obtain</span>
-                                </label>
-                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
-                                    <input type="radio" name="sa-access" value="3">
-                                    <span style="font-size:0.85rem;">Ready access with minimal planning</span>
-                                </label>
-                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
-                                    <input type="radio" name="sa-access" value="4">
-                                    <span style="font-size:0.85rem; color:var(--accent-red); font-weight:bold;">Immediate lethal access</span>
-                                </label>
-                            </div>
-                        </div>
+                        <h4 style="color: var(--accent-lavender); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.4rem; margin-bottom: 0.75rem; font-size: 0.95rem; font-weight: 500;">Your Trusted Contacts</h4>
+                        <div id="sa-trusted-contacts" style="font-size:0.9rem; color:var(--text-primary); white-space:pre-wrap; margin-bottom:1rem; min-height:2rem;">(loading…)</div>
 
-                        <!-- Question 3: Timeline -->
-                        <div class="mb-3" style="margin-top: 1rem;">
-                            <label class="safebox-field-label" style="display:block; margin-bottom: 0.4rem; font-weight: bold; font-size: 0.85rem;">
-                                When do you imagine this might happen?
-                            </label>
-                            <div style="display:flex; flex-direction:column; gap:0.4rem;">
-                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
-                                    <input type="radio" name="sa-timeline" value="0" checked>
-                                    <span style="font-size:0.85rem;">I do not imagine it happening</span>
-                                </label>
-                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
-                                    <input type="radio" name="sa-timeline" value="1">
-                                    <span style="font-size:0.85rem;">Vague future (years away or if things get worse)</span>
-                                </label>
-                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
-                                    <input type="radio" name="sa-timeline" value="2">
-                                    <span style="font-size:0.85rem;">Possible in coming months</span>
-                                </label>
-                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
-                                    <input type="radio" name="sa-timeline" value="3">
-                                    <span style="font-size:0.85rem;">Specific timeframe (days/weeks)</span>
-                                </label>
-                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
-                                    <input type="radio" name="sa-timeline" value="4">
-                                    <span style="font-size:0.85rem; color:var(--accent-red); font-weight:bold;">Imminent (today/tonight)</span>
-                                </label>
-                            </div>
-                        </div>
+                        <h4 style="color: var(--accent-lavender); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.4rem; margin-bottom: 0.75rem; font-size: 0.95rem; font-weight: 500;">Help-Request Script</h4>
+                        <blockquote style="font-size:0.9rem; color:var(--text-primary); border-left:3px solid var(--accent-lavender); margin:0 0 1rem 0; padding:0.5rem 0.75rem; background:rgba(255,255,255,0.03); border-radius:0 6px 6px 0;">
+                            "I'm not feeling safe right now and I need to talk to someone. Can you stay with me for a few minutes?"
+                        </blockquote>
                     </div>
 
-                    <!-- Step 2: Tier 3 (Behavior & Deterrents) -->
-                    <div id="sa-step-2" class="sa-step hidden">
-                        <h4 style="color: var(--accent-orange); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.4rem; margin-bottom: 0.75rem; font-size: 0.95rem; font-weight: 500;">Section 2: Behaviors & Deterrents</h4>
-                        
-                        <!-- Question 4: Protective Deterrents -->
-                        <div class="mb-3">
-                            <label class="safebox-field-label" style="display:block; margin-bottom: 0.4rem; font-weight: bold; font-size: 0.85rem;">
-                                What is keeping you from acting on these thoughts? (Select all that apply)
-                            </label>
-                            <div style="display:grid; grid-template-columns: 1fr; gap: 0.4rem;" id="sa-deterrents-container">
-                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.85rem;">
-                                    <input type="checkbox" value="Worry about causing pain to others" checked>
-                                    <span>Worry about causing pain to others</span>
-                                </label>
-                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.85rem;">
-                                    <input type="checkbox" value="Uncertainty about whether I really want to die">
-                                    <span>Uncertainty about whether I really want to die</span>
-                                </label>
-                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.85rem;">
-                                    <input type="checkbox" value="Hope that things might improve">
-                                    <span>Hope that things might improve</span>
-                                </label>
-                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.85rem;">
-                                    <input type="checkbox" value="Responsibilities (children, others depend on me)" checked>
-                                    <span>Responsibilities (children, others depend on me)</span>
-                                </label>
-                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.85rem;">
-                                    <input type="checkbox" value="Religious/spiritual beliefs">
-                                    <span>Religious/spiritual beliefs</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Question 5: Recent Behavioral Changes -->
-                        <div class="mb-3" style="margin-top: 1rem;">
-                            <label class="safebox-field-label" style="display:block; margin-bottom: 0.4rem; font-weight: bold; font-size: 0.85rem;">
-                                Have you experienced any of the following recently? (Select all that apply)
-                            </label>
-                            <div style="display:grid; grid-template-columns: 1fr; gap: 0.4rem;" id="sa-behaviors-container">
-                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.85rem;">
-                                    <input type="checkbox" value="Withdrawing from social contact completely">
-                                    <span>Withdrawing from social contact completely</span>
-                                </label>
-                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.85rem;">
-                                    <input type="checkbox" value="Giving away items, writing final letters/notes">
-                                    <span>Giving away items, writing final letters/notes</span>
-                                </label>
-                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.85rem;">
-                                    <input type="checkbox" value="Sudden reckless behaviors or self-harm spikes">
-                                    <span>Sudden reckless behaviors or self-harm spikes</span>
-                                </label>
-                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.85rem;">
-                                    <input type="checkbox" value="Severe insomnia or sleeping constantly">
-                                    <span>Severe insomnia or sleeping constantly (over 12h)</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Hidden placeholders kept so existing JS that references these IDs does not throw -->
+                    <div id="sa-step-2" class="sa-step hidden" aria-hidden="true"></div>
                 </div>
 
                 <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center; margin-top:1.5rem;">
-                    <button class="btn btn-secondary" id="btn-sa-cancel">Cancel</button>
+                    <button class="btn btn-secondary" id="btn-sa-cancel">Close</button>
                     <div>
+                        <!-- Hidden nav buttons kept so existing JS does not throw -->
                         <button class="btn btn-secondary hidden" id="btn-sa-prev" style="margin-right: 0.5rem;">Back</button>
-                        <button class="btn btn-primary" id="btn-sa-next" style="background: var(--accent-orange); border-color: var(--accent-orange); color: #0b0713;">Next Section</button>
-                        <button class="btn btn-primary hidden" id="btn-sa-submit" style="background: var(--accent-orange); border-color: var(--accent-orange); color: #0b0713;">✓ Submit Assessment</button>
+                        <button class="btn btn-secondary hidden" id="btn-sa-next">Next</button>
+                        <button class="btn btn-primary" id="btn-sa-submit" style="background: var(--accent-orange); border-color: var(--accent-orange); color: #0b0713;">Open Crisis Resources</button>
                     </div>
                 </div>
             </div>
