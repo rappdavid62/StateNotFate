@@ -564,6 +564,64 @@
       gap: 10px;
     }
 
+    .sidebar-count {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .nav-atlas-divider {
+      border-top: 1px solid var(--border-color);
+      margin-top: 8px;
+      padding-top: 8px;
+    }
+    .terms-table th.col-w25 {
+      width: 25%;
+    }
+    .terms-table th.col-w15 {
+      width: 15%;
+    }
+    .permitted-claim-summary {
+      font-size: 0.95rem;
+      margin-bottom: 14px;
+    }
+    .atlas-subtitle {
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+    .source-locator-mt6 {
+      margin-top: 6px;
+    }
+    .conflict-item-card {
+      background-color: var(--bg-card-alt);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+    .conflict-item-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+    .conflict-item-status {
+      font-size: 0.85rem;
+      color: var(--accent-amber);
+      margin-bottom: 8px;
+    }
+    .conflict-item-nature {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+    .conflict-item-resolution {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+    .conflict-subtitle {
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
     /* PRINT */
     @media print {
       body { background: #ffffff; color: #000000; }
@@ -605,7 +663,7 @@
     <aside class="sidebar" aria-label="Table of Contents">
       <div class="sidebar-header">
         <h2 class="sidebar-title">Modules</h2>
-        <span style="font-size: 0.85rem; color: var(--text-muted);">18 Units</span>
+        <span class="sidebar-count">18 Units</span>
       </div>
       <nav>
         <ul class="module-nav-list">
@@ -682,7 +740,7 @@
             <a href="#mod-18-source-atlas-gaps" id="nav-mod-18-source-atlas-gaps">18. Source Atlas &amp; Gaps</a>
           </li>
           
-          <li class="module-nav-item" style="border-top: 1px solid var(--border-color); margin-top: 8px; padding-top: 8px;">
+          <li class="module-nav-item nav-atlas-divider">
             <a href="#master-source-atlas" id="nav-master-source-atlas">📚 Master Source Atlas</a>
           </li>
           <li class="module-nav-item">
@@ -740,8 +798,8 @@
           <table class="terms-table">
             <thead>
               <tr>
-                <th style="width: 25%;">Term A</th>
-                <th style="width: 25%;">Term B</th>
+                <th class="col-w25">Term A</th>
+                <th class="col-w25">Term B</th>
                 <th>Scientific Distinction</th>
               </tr>
             </thead>
@@ -767,7 +825,7 @@
         <!-- PERMITTED CLAIMS & LOCATORS -->
         <div class="claims-box">
           <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
-          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>Research literacy enables community members, educators, and researchers to understand surveillance data and evidence-based public health interventions.</em></p>
+          <p class="permitted-claim-summary"><em>Research literacy enables community members, educators, and researchers to understand surveillance data and evidence-based public health interventions.</em></p>
           <div>
             
             <div id="mod-01-orientation-CLM-EVIDENCE-LABEL-LIFECYCLE" class="claim-item">
@@ -867,8 +925,8 @@
           <table class="terms-table">
             <thead>
               <tr>
-                <th style="width: 25%;">Term A</th>
-                <th style="width: 25%;">Term B</th>
+                <th class="col-w25">Term A</th>
+                <th class="col-w25">Term B</th>
                 <th>Scientific Distinction</th>
               </tr>
             </thead>
@@ -894,7 +952,7 @@
         <!-- PERMITTED CLAIMS & LOCATORS -->
         <div class="claims-box">
           <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
-          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>Draft candidate tables record 49,476 suicide deaths in 2022 (rate 14.2/100k; NVSR Vol. 74, No. 4, Table B), 49,316 suicide deaths in 2023 (rate 14.1/100k), and 48,824 deaths in 2024 (rate 13.7/100k; rank 10) based on locked CDC NVSS vital statistics.</em></p>
+          <p class="permitted-claim-summary"><em>Draft candidate tables record 49,476 suicide deaths in 2022 (rate 14.2/100k; NVSR Vol. 74, No. 4, Table B), 49,316 suicide deaths in 2023 (rate 14.1/100k), and 48,824 deaths in 2024 (rate 13.7/100k; rank 10) based on locked CDC NVSS vital statistics.</em></p>
           <div>
             
             <div id="mod-02-data-currency-CLM-NVSS-FINAL-2022" class="claim-item">
@@ -1018,8 +1076,8 @@
           <table class="terms-table">
             <thead>
               <tr>
-                <th style="width: 25%;">Term A</th>
-                <th style="width: 25%;">Term B</th>
+                <th class="col-w25">Term A</th>
+                <th class="col-w25">Term B</th>
                 <th>Scientific Distinction</th>
               </tr>
             </thead>
@@ -1045,7 +1103,7 @@
         <!-- PERMITTED CLAIMS & LOCATORS -->
         <div class="claims-box">
           <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
-          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>Suicide ranks as the second leading cause of death among U.S. adolescents and young adults aged 10–24 because competing causes of mortality are minimal in this cohort.</em></p>
+          <p class="permitted-claim-summary"><em>Suicide ranks as the second leading cause of death among U.S. adolescents and young adults aged 10–24 because competing causes of mortality are minimal in this cohort.</em></p>
           <div>
             
             <div id="mod-03-count-rate-rank-CLM-RATE-VS-RANK-LOGIC" class="claim-item">
@@ -1145,8 +1203,8 @@
           <table class="terms-table">
             <thead>
               <tr>
-                <th style="width: 25%;">Term A</th>
-                <th style="width: 25%;">Term B</th>
+                <th class="col-w25">Term A</th>
+                <th class="col-w25">Term B</th>
                 <th>Scientific Distinction</th>
               </tr>
             </thead>
@@ -1172,7 +1230,7 @@
         <!-- PERMITTED CLAIMS & LOCATORS -->
         <div class="claims-box">
           <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
-          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>Age-adjusted rates eliminate the confounding effect of age distribution differences when comparing suicide risk between different states or demographic groups.</em></p>
+          <p class="permitted-claim-summary"><em>Age-adjusted rates eliminate the confounding effect of age distribution differences when comparing suicide risk between different states or demographic groups.</em></p>
           <div>
             
             <div id="mod-04-crude-vs-age-adj-CLM-CRUDE-VS-AGEADJ" class="claim-item">
@@ -1272,8 +1330,8 @@
           <table class="terms-table">
             <thead>
               <tr>
-                <th style="width: 25%;">Term A</th>
-                <th style="width: 25%;">Term B</th>
+                <th class="col-w25">Term A</th>
+                <th class="col-w25">Term B</th>
                 <th>Scientific Distinction</th>
               </tr>
             </thead>
@@ -1299,7 +1357,7 @@
         <!-- PERMITTED CLAIMS & LOCATORS -->
         <div class="claims-box">
           <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
-          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>Years of Potential Life Lost (YPLL-75) demonstrates the profound societal burden of suicide by illustrating that deaths among youth and young adults result in decades of unlived potential.</em></p>
+          <p class="permitted-claim-summary"><em>Years of Potential Life Lost (YPLL-75) demonstrates the profound societal burden of suicide by illustrating that deaths among youth and young adults result in decades of unlived potential.</em></p>
           <div>
             
             <div id="mod-05-yppl-derived-CLM-YPLL-LOGIC" class="claim-item">
@@ -1399,8 +1457,8 @@
           <table class="terms-table">
             <thead>
               <tr>
-                <th style="width: 25%;">Term A</th>
-                <th style="width: 25%;">Term B</th>
+                <th class="col-w25">Term A</th>
+                <th class="col-w25">Term B</th>
                 <th>Scientific Distinction</th>
               </tr>
             </thead>
@@ -1426,7 +1484,7 @@
         <!-- PERMITTED CLAIMS & LOCATORS -->
         <div class="claims-box">
           <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
-          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>Combining NVSS mortality data with NSDUH and YRBS survey findings provides a multi-layered picture of fatal outcomes, nonfatal attempts, and suicidal ideation across the U.S.</em></p>
+          <p class="permitted-claim-summary"><em>Combining NVSS mortality data with NSDUH and YRBS survey findings provides a multi-layered picture of fatal outcomes, nonfatal attempts, and suicidal ideation across the U.S.</em></p>
           <div>
             
             <div id="mod-06-surveillance-systems-CLM-SYSTEMS-MORT-VS-SURV" class="claim-item">
@@ -1526,8 +1584,8 @@
           <table class="terms-table">
             <thead>
               <tr>
-                <th style="width: 25%;">Term A</th>
-                <th style="width: 25%;">Term B</th>
+                <th class="col-w25">Term A</th>
+                <th class="col-w25">Term B</th>
                 <th>Scientific Distinction</th>
               </tr>
             </thead>
@@ -1553,7 +1611,7 @@
         <!-- PERMITTED CLAIMS & LOCATORS -->
         <div class="claims-box">
           <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
-          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>Multi-year data pooling is necessary when analyzing suicide rates in small rural counties or disaggregated racial subgroups to achieve statistical reliability.</em></p>
+          <p class="permitted-claim-summary"><em>Multi-year data pooling is necessary when analyzing suicide rates in small rural counties or disaggregated racial subgroups to achieve statistical reliability.</em></p>
           <div>
             
             <div id="mod-07-small-numbers-CLM-SMALL-CELL-INSTABILITY" class="claim-item">
@@ -1653,8 +1711,8 @@
           <table class="terms-table">
             <thead>
               <tr>
-                <th style="width: 25%;">Term A</th>
-                <th style="width: 25%;">Term B</th>
+                <th class="col-w25">Term A</th>
+                <th class="col-w25">Term B</th>
                 <th>Scientific Distinction</th>
               </tr>
             </thead>
@@ -1680,7 +1738,7 @@
         <!-- PERMITTED CLAIMS & LOCATORS -->
         <div class="claims-box">
           <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
-          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>In Motto landmark RCTs (1976, 2001), sustained, unconditional caring letters were associated with reduced suicide mortality in treatment-refusing psychiatric patients over early follow-up years.</em></p>
+          <p class="permitted-claim-summary"><em>In Motto landmark RCTs (1976, 2001), sustained, unconditional caring letters were associated with reduced suicide mortality in treatment-refusing psychiatric patients over early follow-up years.</em></p>
           <div>
             
             <div id="mod-08-caring-contacts-CLM-CARING-CONTACTS-MOTTO-RCT" class="claim-item">
@@ -1792,8 +1850,8 @@
           <table class="terms-table">
             <thead>
               <tr>
-                <th style="width: 25%;">Term A</th>
-                <th style="width: 25%;">Term B</th>
+                <th class="col-w25">Term A</th>
+                <th class="col-w25">Term B</th>
                 <th>Scientific Distinction</th>
               </tr>
             </thead>
@@ -1819,7 +1877,7 @@
         <!-- PERMITTED CLAIMS & LOCATORS -->
         <div class="claims-box">
           <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
-          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>The American Indian Life Skills curriculum is an evidence-supported school-based curriculum designed to strengthen problem-solving and peer help-seeking in Indigenous youth.</em></p>
+          <p class="permitted-claim-summary"><em>The American Indian Life Skills curriculum is an evidence-supported school-based curriculum designed to strengthen problem-solving and peer help-seeking in Indigenous youth.</em></p>
           <div>
             
             <div id="mod-09-ails-curriculum-CLM-AILS-SCHOOL-CURRICULUM" class="claim-item">
@@ -1931,8 +1989,8 @@
           <table class="terms-table">
             <thead>
               <tr>
-                <th style="width: 25%;">Term A</th>
-                <th style="width: 25%;">Term B</th>
+                <th class="col-w25">Term A</th>
+                <th class="col-w25">Term B</th>
                 <th>Scientific Distinction</th>
               </tr>
             </thead>
@@ -1958,7 +2016,7 @@
         <!-- PERMITTED CLAIMS & LOCATORS -->
         <div class="claims-box">
           <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
-          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>Disaggregating Asian and NHPI mortality data is required by OMB standards to expose health disparities masked by aggregate reporting.</em></p>
+          <p class="permitted-claim-summary"><em>Disaggregating Asian and NHPI mortality data is required by OMB standards to expose health disparities masked by aggregate reporting.</em></p>
           <div>
             
             <div id="mod-10-asian-vs-nhpi-CLM-ASIAN-NHPI-SEPARATION" class="claim-item">
@@ -2070,8 +2128,8 @@
           <table class="terms-table">
             <thead>
               <tr>
-                <th style="width: 25%;">Term A</th>
-                <th style="width: 25%;">Term B</th>
+                <th class="col-w25">Term A</th>
+                <th class="col-w25">Term B</th>
                 <th>Scientific Distinction</th>
               </tr>
             </thead>
@@ -2097,7 +2155,7 @@
         <!-- PERMITTED CLAIMS & LOCATORS -->
         <div class="claims-box">
           <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
-          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>Racial misclassification on death certificates systematically undercounts American Indian and Alaska Native suicide deaths, requiring data-linkage studies for accurate estimation.</em></p>
+          <p class="permitted-claim-summary"><em>Racial misclassification on death certificates systematically undercounts American Indian and Alaska Native suicide deaths, requiring data-linkage studies for accurate estimation.</em></p>
           <div>
             
             <div id="mod-11-aian-surveillance-CLM-AIAN-MISCLASSIFICATION" class="claim-item">
@@ -2209,8 +2267,8 @@
           <table class="terms-table">
             <thead>
               <tr>
-                <th style="width: 25%;">Term A</th>
-                <th style="width: 25%;">Term B</th>
+                <th class="col-w25">Term A</th>
+                <th class="col-w25">Term B</th>
                 <th>Scientific Distinction</th>
               </tr>
             </thead>
@@ -2236,7 +2294,7 @@
         <!-- PERMITTED CLAIMS & LOCATORS -->
         <div class="claims-box">
           <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
-          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>CDC vital statistics document a significant, multi-year increase of over 50% in suicide mortality rates among Black youth aged 10–24 between 2012 and 2022.</em></p>
+          <p class="permitted-claim-summary"><em>CDC vital statistics document a significant, multi-year increase of over 50% in suicide mortality rates among Black youth aged 10–24 between 2012 and 2022.</em></p>
           <div>
             
             <div id="mod-12-equity-trends-CLM-BLACK-YOUTH-TRENDS" class="claim-item">
@@ -2348,8 +2406,8 @@
           <table class="terms-table">
             <thead>
               <tr>
-                <th style="width: 25%;">Term A</th>
-                <th style="width: 25%;">Term B</th>
+                <th class="col-w25">Term A</th>
+                <th class="col-w25">Term B</th>
                 <th>Scientific Distinction</th>
               </tr>
             </thead>
@@ -2375,7 +2433,7 @@
         <!-- PERMITTED CLAIMS & LOCATORS -->
         <div class="claims-box">
           <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
-          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>Screening tools identify individuals experiencing distress who may benefit from clinical evaluation, but psychometric tools cannot predict with certainty which individual will die by suicide.</em></p>
+          <p class="permitted-claim-summary"><em>Screening tools identify individuals experiencing distress who may benefit from clinical evaluation, but psychometric tools cannot predict with certainty which individual will die by suicide.</em></p>
           <div>
             
             <div id="mod-13-screening-vs-assessment-CLM-SCREENING-VS-ASSESSMENT-SEAM" class="claim-item">
@@ -2475,8 +2533,8 @@
           <table class="terms-table">
             <thead>
               <tr>
-                <th style="width: 25%;">Term A</th>
-                <th style="width: 25%;">Term B</th>
+                <th class="col-w25">Term A</th>
+                <th class="col-w25">Term B</th>
                 <th>Scientific Distinction</th>
               </tr>
             </thead>
@@ -2502,7 +2560,7 @@
         <!-- PERMITTED CLAIMS & LOCATORS -->
         <div class="claims-box">
           <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
-          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>The 2024 National Strategy for Suicide Prevention establishes a multi-sector public health roadmap emphasizing health equity, community prevention, and clinical quality.</em></p>
+          <p class="permitted-claim-summary"><em>The 2024 National Strategy for Suicide Prevention establishes a multi-sector public health roadmap emphasizing health equity, community prevention, and clinical quality.</em></p>
           <div>
             
             <div id="mod-14-national-strategy-CLM-NAT-STRATEGY-GOALS" class="claim-item">
@@ -2602,8 +2660,8 @@
           <table class="terms-table">
             <thead>
               <tr>
-                <th style="width: 25%;">Term A</th>
-                <th style="width: 25%;">Term B</th>
+                <th class="col-w25">Term A</th>
+                <th class="col-w25">Term B</th>
                 <th>Scientific Distinction</th>
               </tr>
             </thead>
@@ -2629,7 +2687,7 @@
         <!-- PERMITTED CLAIMS & LOCATORS -->
         <div class="claims-box">
           <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
-          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>The 988 Lifeline provides 24/7 confidential crisis support, routing wireless voice calls through privacy-preserving carrier georouting.</em></p>
+          <p class="permitted-claim-summary"><em>The 988 Lifeline provides 24/7 confidential crisis support, routing wireless voice calls through privacy-preserving carrier georouting.</em></p>
           <div>
             
             <div id="mod-15-lifeline-literacy-CLM-988-ROUTING-GEO" class="claim-item">
@@ -2729,8 +2787,8 @@
           <table class="terms-table">
             <thead>
               <tr>
-                <th style="width: 25%;">Term A</th>
-                <th style="width: 25%;">Term B</th>
+                <th class="col-w25">Term A</th>
+                <th class="col-w25">Term B</th>
                 <th>Scientific Distinction</th>
               </tr>
             </thead>
@@ -2756,7 +2814,7 @@
         <!-- PERMITTED CLAIMS & LOCATORS -->
         <div class="claims-box">
           <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
-          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>Adhering to evidence-based media guidelines mitigates suicide contagion and increases public awareness of crisis support resources.</em></p>
+          <p class="permitted-claim-summary"><em>Adhering to evidence-based media guidelines mitigates suicide contagion and increases public awareness of crisis support resources.</em></p>
           <div>
             
             <div id="mod-16-safe-communication-CLM-POSTVENTION-EMPIRICAL-MODELS" class="claim-item">
@@ -2868,8 +2926,8 @@
           <table class="terms-table">
             <thead>
               <tr>
-                <th style="width: 25%;">Term A</th>
-                <th style="width: 25%;">Term B</th>
+                <th class="col-w25">Term A</th>
+                <th class="col-w25">Term B</th>
                 <th>Scientific Distinction</th>
               </tr>
             </thead>
@@ -2895,7 +2953,7 @@
         <!-- PERMITTED CLAIMS & LOCATORS -->
         <div class="claims-box">
           <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
-          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>Explicit claim labeling ensures transparency by distinguishing direct empirical facts from inferences, theoretical models, and unresolved research gaps.</em></p>
+          <p class="permitted-claim-summary"><em>Explicit claim labeling ensures transparency by distinguishing direct empirical facts from inferences, theoretical models, and unresolved research gaps.</em></p>
           <div>
             
             <div id="mod-17-evidence-lifecycle-CLM-EVIDENCE-LABEL-LIFECYCLE" class="claim-item">
@@ -2995,8 +3053,8 @@
           <table class="terms-table">
             <thead>
               <tr>
-                <th style="width: 25%;">Term A</th>
-                <th style="width: 25%;">Term B</th>
+                <th class="col-w25">Term A</th>
+                <th class="col-w25">Term B</th>
                 <th>Scientific Distinction</th>
               </tr>
             </thead>
@@ -3022,7 +3080,7 @@
         <!-- PERMITTED CLAIMS & LOCATORS -->
         <div class="claims-box">
           <div class="claims-box-title">Permitted Claims & Primary Citation Locators</div>
-          <p style="font-size: 0.95rem; margin-bottom: 14px;"><em>The Source Atlas and Evidence Registry provide transparent, bidirectional traceability between every educational claim and its underlying scientific literature.</em></p>
+          <p class="permitted-claim-summary"><em>The Source Atlas and Evidence Registry provide transparent, bidirectional traceability between every educational claim and its underlying scientific literature.</em></p>
           <div>
             
             <div id="mod-18-source-atlas-gaps-CLM-NVSS-FINAL-2022" class="claim-item">
@@ -3138,7 +3196,7 @@
       <!-- MASTER SOURCE ATLAS SECTION -->
       <section id="master-source-atlas" class="atlas-section" aria-label="Master Source Atlas">
         <h2 class="atlas-title">📚 Master Source Atlas</h2>
-        <p style="color: var(--text-secondary); margin-bottom: 20px;">Complete catalog of all 18 registered primary datasets, peer-reviewed studies, and federal guidance documents with bidirectional claim backlinks.</p>
+        <p class="atlas-subtitle">Complete catalog of all 18 registered primary datasets, peer-reviewed studies, and federal guidance documents with bidirectional claim backlinks.</p>
         
         <div>
           
@@ -3154,10 +3212,10 @@
             <div class="source-locator">
               <strong>Exact Locator:</strong> NVSR Volume 74, Number 4, June 10, 2025; Table B, Intentional self-harm row (Total Suicide Deaths: 49,476; Age-Adjusted Rate: 14.2 per 100,000)
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>URL / DOI:</strong> <a href="https://www.cdc.gov/nchs/data/nvsr/nvsr74/nvsr74-04.pdf" class="source-backlink" rel="noopener noreferrer">https://www.cdc.gov/nchs/data/nvsr/nvsr74/nvsr74-04.pdf</a>
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>Referencing Claims:</strong>
               <a href="#mod-02-data-currency-CLM-NVSS-FINAL-2022" class="source-backlink">[CLM-NVSS-FINAL-2022]</a> <a href="#mod-03-count-rate-rank-CLM-RATE-VS-RANK-LOGIC" class="source-backlink">[CLM-RATE-VS-RANK-LOGIC]</a> <a href="#mod-04-crude-vs-age-adj-CLM-CRUDE-VS-AGEADJ" class="source-backlink">[CLM-CRUDE-VS-AGEADJ]</a>
             </div>
@@ -3175,10 +3233,10 @@
             <div class="source-locator">
               <strong>Exact Locator:</strong> NCHS NVSS 2023 Annual Mortality Tables (Total Deaths: 49,316; Age-Adjusted Rate: 14.1 per 100,000)
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>URL / DOI:</strong> <a href="https://www.cdc.gov/nchs/nvss/deaths.htm" class="source-backlink" rel="noopener noreferrer">https://www.cdc.gov/nchs/nvss/deaths.htm</a>
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>Referencing Claims:</strong>
               <a href="#mod-02-data-currency-CLM-NVSS-FINAL-2023" class="source-backlink">[CLM-NVSS-FINAL-2023]</a>
             </div>
@@ -3196,10 +3254,10 @@
             <div class="source-locator">
               <strong>Exact Locator:</strong> NCHS NVSS 2024 Annual Mortality Tables (Total Deaths: 48,824; Age-Adjusted Rate: 13.7 per 100,000; Rank: 10)
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>URL / DOI:</strong> <a href="https://www.cdc.gov/nchs/nvss/deaths.htm" class="source-backlink" rel="noopener noreferrer">https://www.cdc.gov/nchs/nvss/deaths.htm</a>
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>Referencing Claims:</strong>
               <a href="#mod-02-data-currency-CLM-NVSS-FINAL-2024" class="source-backlink">[CLM-NVSS-FINAL-2024]</a>
             </div>
@@ -3217,10 +3275,10 @@
             <div class="source-locator">
               <strong>Exact Locator:</strong> NSDUH 2023 Detailed Tables, Section 8 (Suicidal Thoughts and Behaviors among Adults)
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>URL / DOI:</strong> <a href="https://www.samhsa.gov/data/report/2023-nsduh-detailed-tables" class="source-backlink" rel="noopener noreferrer">https://www.samhsa.gov/data/report/2023-nsduh-detailed-tables</a>
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>Referencing Claims:</strong>
               <a href="#mod-06-surveillance-systems-CLM-SYSTEMS-MORT-VS-SURV" class="source-backlink">[CLM-SYSTEMS-MORT-VS-SURV]</a>
             </div>
@@ -3238,10 +3296,10 @@
             <div class="source-locator">
               <strong>Exact Locator:</strong> MMWR Surveillance Summaries / 2023 YRBS Overview Report, Table 4
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>URL / DOI:</strong> <a href="https://www.cdc.gov/yrbs/index.html" class="source-backlink" rel="noopener noreferrer">https://www.cdc.gov/yrbs/index.html</a>
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>Referencing Claims:</strong>
               <a href="#mod-06-surveillance-systems-CLM-SYSTEMS-MORT-VS-SURV" class="source-backlink">[CLM-SYSTEMS-MORT-VS-SURV]</a> <a href="#mod-12-equity-trends-CLM-BLACK-YOUTH-TRENDS" class="source-backlink">[CLM-BLACK-YOUTH-TRENDS]</a> <a href="#mod-12-equity-trends-CLM-HISPANIC-TRENDS" class="source-backlink">[CLM-HISPANIC-TRENDS]</a>
             </div>
@@ -3259,10 +3317,10 @@
             <div class="source-locator">
               <strong>Exact Locator:</strong> WISQARS Leading Causes of Death Visualization Engine / YPLL Calculator Module
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>URL / DOI:</strong> <a href="https://www.cdc.gov/wisqars/index.html" class="source-backlink" rel="noopener noreferrer">https://www.cdc.gov/wisqars/index.html</a>
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>Referencing Claims:</strong>
               <a href="#mod-03-count-rate-rank-CLM-RATE-VS-RANK-LOGIC" class="source-backlink">[CLM-RATE-VS-RANK-LOGIC]</a> <a href="#mod-05-yppl-derived-CLM-YPLL-LOGIC" class="source-backlink">[CLM-YPLL-LOGIC]</a> <a href="#mod-04-crude-vs-age-adj-CLM-CRUDE-VS-AGEADJ" class="source-backlink">[CLM-CRUDE-VS-AGEADJ]</a> <a href="#mod-07-small-numbers-CLM-SMALL-CELL-INSTABILITY" class="source-backlink">[CLM-SMALL-CELL-INSTABILITY]</a>
             </div>
@@ -3280,10 +3338,10 @@
             <div class="source-locator">
               <strong>Exact Locator:</strong> NVDRS Surveillance Summaries 2023, Multi-Agency Incident Synthesis
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>URL / DOI:</strong> <a href="https://www.cdc.gov/violenceprevention/datasources/nvdrs/index.html" class="source-backlink" rel="noopener noreferrer">https://www.cdc.gov/violenceprevention/datasources/nvdrs/index.html</a>
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>Referencing Claims:</strong>
               <a href="#mod-11-aian-surveillance-CLM-AIAN-MISCLASSIFICATION" class="source-backlink">[CLM-AIAN-MISCLASSIFICATION]</a>
             </div>
@@ -3301,10 +3359,10 @@
             <div class="source-locator">
               <strong>Exact Locator:</strong> Suicide and Life-Threatening Behavior Vol. 6, No. 4, pp. 248–257
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>URL / DOI:</strong> <a href="https://doi.org/10.1111/j.1943-278X.1976.tb00570.x" class="source-backlink" rel="noopener noreferrer">https://doi.org/10.1111/j.1943-278X.1976.tb00570.x</a>
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>Referencing Claims:</strong>
               <a href="#mod-08-caring-contacts-CLM-CARING-CONTACTS-MOTTO-RCT" class="source-backlink">[CLM-CARING-CONTACTS-MOTTO-RCT]</a>
             </div>
@@ -3322,10 +3380,10 @@
             <div class="source-locator">
               <strong>Exact Locator:</strong> Psychiatric Services Vol. 52, No. 6, pp. 828–833, Table 2 &amp; Results Section
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>URL / DOI:</strong> <a href="https://doi.org/10.1176/appi.ps.52.6.828" class="source-backlink" rel="noopener noreferrer">https://doi.org/10.1176/appi.ps.52.6.828</a>
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>Referencing Claims:</strong>
               <a href="#mod-08-caring-contacts-CLM-CARING-CONTACTS-MOTTO-RCT" class="source-backlink">[CLM-CARING-CONTACTS-MOTTO-RCT]</a> <a href="#mod-08-caring-contacts-CLM-CARING-CONTACTS-MODALITY-LIMIT" class="source-backlink">[CLM-CARING-CONTACTS-MODALITY-LIMIT]</a>
             </div>
@@ -3343,10 +3401,10 @@
             <div class="source-locator">
               <strong>Exact Locator:</strong> Journal of Counseling Psychology Vol. 42, No. 4, pp. 479–486
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>URL / DOI:</strong> <a href="https://doi.org/10.1037/0022-0167.42.4.479" class="source-backlink" rel="noopener noreferrer">https://doi.org/10.1037/0022-0167.42.4.479</a>
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>Referencing Claims:</strong>
               <a href="#mod-09-ails-curriculum-CLM-AILS-SCHOOL-CURRICULUM" class="source-backlink">[CLM-AILS-SCHOOL-CURRICULUM]</a> <a href="#mod-09-ails-curriculum-CLM-AILS-NOT-THERAPY" class="source-backlink">[CLM-AILS-NOT-THERAPY]</a> <a href="#mod-11-aian-surveillance-CLM-AIAN-CULTURAL-AUTHORITY" class="source-backlink">[CLM-AIAN-CULTURAL-AUTHORITY]</a>
             </div>
@@ -3364,10 +3422,10 @@
             <div class="source-locator">
               <strong>Exact Locator:</strong> IHS Behavioral Health Strategic Framework, Sections 2 &amp; 4
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>URL / DOI:</strong> <a href="https://www.ihs.gov/suicideprevention/" class="source-backlink" rel="noopener noreferrer">https://www.ihs.gov/suicideprevention/</a>
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>Referencing Claims:</strong>
               <a href="#mod-11-aian-surveillance-CLM-AIAN-MISCLASSIFICATION" class="source-backlink">[CLM-AIAN-MISCLASSIFICATION]</a> <a href="#mod-11-aian-surveillance-CLM-AIAN-CULTURAL-AUTHORITY" class="source-backlink">[CLM-AIAN-CULTURAL-AUTHORITY]</a>
             </div>
@@ -3385,10 +3443,10 @@
             <div class="source-locator">
               <strong>Exact Locator:</strong> Executive Summary, pp. 6–15 (Four Strategic Directions &amp; 15 Goals)
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>URL / DOI:</strong> <a href="https://www.hhs.gov/national-strategy-suicide-prevention/index.html" class="source-backlink" rel="noopener noreferrer">https://www.hhs.gov/national-strategy-suicide-prevention/index.html</a>
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>Referencing Claims:</strong>
               <a href="#mod-14-national-strategy-CLM-NAT-STRATEGY-GOALS" class="source-backlink">[CLM-NAT-STRATEGY-GOALS]</a> <a href="#mod-15-lifeline-literacy-CLM-988-ROUTING-GEO" class="source-backlink">[CLM-988-ROUTING-GEO]</a>
             </div>
@@ -3406,10 +3464,10 @@
             <div class="source-locator">
               <strong>Exact Locator:</strong> SAMHSA 988 Operations Monthly Dashboard &amp; FCC 988 Wireless Georouting Orders
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>URL / DOI:</strong> <a href="https://www.samhsa.gov/find-help/988/performance-metrics" class="source-backlink" rel="noopener noreferrer">https://www.samhsa.gov/find-help/988/performance-metrics</a>
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>Referencing Claims:</strong>
               <a href="#mod-15-lifeline-literacy-CLM-988-ROUTING-GEO" class="source-backlink">[CLM-988-ROUTING-GEO]</a>
             </div>
@@ -3427,10 +3485,10 @@
             <div class="source-locator">
               <strong>Exact Locator:</strong> British Journal of Psychiatry 2017; 210(6):387–395, Table 3 &amp; Results (Pooled PPV for Suicide: 5.5%, 95% CI 3.9%–7.9%)
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>URL / DOI:</strong> <a href="https://doi.org/10.1192/bjp.bp.116.182717" class="source-backlink" rel="noopener noreferrer">https://doi.org/10.1192/bjp.bp.116.182717</a>
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>Referencing Claims:</strong>
               <a href="#mod-13-screening-vs-assessment-CLM-SCREENING-VS-ASSESSMENT-SEAM" class="source-backlink">[CLM-SCREENING-VS-ASSESSMENT-SEAM]</a>
             </div>
@@ -3448,10 +3506,10 @@
             <div class="source-locator">
               <strong>Exact Locator:</strong> Child and Adolescent Mental Health (2024), DOI: 10.1111/camh.12708. Quarantined on HOLD pending primary disaggregated table extraction.
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>URL / DOI:</strong> <a href="https://doi.org/10.1111/camh.12708" class="source-backlink" rel="noopener noreferrer">https://doi.org/10.1111/camh.12708</a>
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>Referencing Claims:</strong>
               <a href="#mod-10-asian-vs-nhpi-CLM-ASIAN-NHPI-SEPARATION" class="source-backlink">[CLM-ASIAN-NHPI-SEPARATION]</a> <a href="#mod-10-asian-vs-nhpi-CLM-NHPI-YOUTH-RATE" class="source-backlink">[CLM-NHPI-YOUTH-RATE]</a>
             </div>
@@ -3469,10 +3527,10 @@
             <div class="source-locator">
               <strong>Exact Locator:</strong> Frontiers in Psychology 10:2677. Quarantined: systematic secondary review of postvention grief models.
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>URL / DOI:</strong> <a href="https://doi.org/10.3389/fpsyg.2019.02677" class="source-backlink" rel="noopener noreferrer">https://doi.org/10.3389/fpsyg.2019.02677</a>
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>Referencing Claims:</strong>
               <a href="#mod-16-safe-communication-CLM-POSTVENTION-EMPIRICAL-MODELS" class="source-backlink">[CLM-POSTVENTION-EMPIRICAL-MODELS]</a>
             </div>
@@ -3490,10 +3548,10 @@
             <div class="source-locator">
               <strong>Exact Locator:</strong> Preventive Medicine (2025), DOI: 10.1016/j.ypmed.2025.108279. Secondary scoping review on postvention models.
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>URL / DOI:</strong> <a href="https://doi.org/10.1016/j.ypmed.2025.108279" class="source-backlink" rel="noopener noreferrer">https://doi.org/10.1016/j.ypmed.2025.108279</a>
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>Referencing Claims:</strong>
               <a href="#mod-16-safe-communication-CLM-POSTVENTION-EMPIRICAL-MODELS" class="source-backlink">[CLM-POSTVENTION-EMPIRICAL-MODELS]</a>
             </div>
@@ -3511,10 +3569,10 @@
             <div class="source-locator">
               <strong>Exact Locator:</strong> Cognitive and Behavioral Practice Vol. 19, No. 2, pp. 256–264. Quarantined: journal article describing clinical protocol, not a clinical trial establishing PPV data.
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>URL / DOI:</strong> <a href="https://doi.org/10.1016/j.cbpra.2011.01.001" class="source-backlink" rel="noopener noreferrer">https://doi.org/10.1016/j.cbpra.2011.01.001</a>
             </div>
-            <div class="source-locator" style="margin-top: 6px;">
+            <div class="source-locator source-locator-mt6">
               <strong>Referencing Claims:</strong>
               <a href="#mod-13-screening-vs-assessment-CLM-SCREENING-VS-ASSESSMENT-SEAM" class="source-backlink">[CLM-SCREENING-VS-ASSESSMENT-SEAM]</a>
             </div>
@@ -3529,8 +3587,8 @@
         <table class="terms-table">
           <thead>
             <tr>
-              <th style="width: 25%;">Term</th>
-              <th style="width: 15%;">Domain</th>
+              <th class="col-w25">Term</th>
+              <th class="col-w15">Domain</th>
               <th>Operational Definition & Distinction</th>
             </tr>
           </thead>
@@ -3699,33 +3757,33 @@
       <!-- CONFLICT LEDGER & SUPERSESSION HISTORY -->
       <section id="conflict-ledger" class="atlas-section" aria-label="Conflict Ledger and Supersession History">
         <h2 class="atlas-title">⚖️ Conflict Ledger & Supersession History</h2>
-        <p style="color: var(--text-secondary); margin-bottom: 16px;">Transparent tracking of cross-system surveillance variations, vital statistics supersessions, and unresolved empirical gaps.</p>
+        <p class="conflict-subtitle">Transparent tracking of cross-system surveillance variations, vital statistics supersessions, and unresolved empirical gaps.</p>
         
         <div>
           
-          <div style="background-color: var(--bg-card-alt); border: 1px solid var(--border-color); border-radius: 8px; padding: 18px; margin-bottom: 16px;">
-            <div style="font-size: 1.05rem; font-weight: 700; color: #ffffff; margin-bottom: 6px;">CONF-01-2022-2024-FINAL-LOCK: 2022, 2023, and 2024 Final Vital Statistics Releases</div>
-            <div style="font-size: 0.85rem; color: var(--accent-amber); margin-bottom: 8px;"><strong>Status:</strong> <code>RESOLVED_BY_FINAL_DATA</code></div>
-            <p style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 8px;">Prior provisional CDC quarterly estimates have been superseded by final audited NVSS vital statistics for 2022 (49,476 deaths; 14.2 rate; NVSR Vol. 74, No. 4, Table B), 2023 (49,316 deaths; 14.1 rate), and 2024 (48,824 deaths; 13.7 rate; Rank 10).</p>
-            <div style="font-size: 0.88rem; color: var(--text-muted);">
+          <div class="conflict-item-card">
+            <div class="conflict-item-title">CONF-01-2022-2024-FINAL-LOCK: 2022, 2023, and 2024 Final Vital Statistics Releases</div>
+            <div class="conflict-item-status"><strong>Status:</strong> <code>RESOLVED_BY_FINAL_DATA</code></div>
+            <p class="conflict-item-nature">Prior provisional CDC quarterly estimates have been superseded by final audited NVSS vital statistics for 2022 (49,476 deaths; 14.2 rate; NVSR Vol. 74, No. 4, Table B), 2023 (49,316 deaths; 14.1 rate), and 2024 (48,824 deaths; 13.7 rate; Rank 10).</p>
+            <div class="conflict-item-resolution">
               <strong>Resolution Protocol:</strong> Display final locked annual counts and age-adjusted rates across all compendium tables.
             </div>
           </div>
           
-          <div style="background-color: var(--bg-card-alt); border: 1px solid var(--border-color); border-radius: 8px; padding: 18px; margin-bottom: 16px;">
-            <div style="font-size: 1.05rem; font-weight: 700; color: #ffffff; margin-bottom: 6px;">CONF-02-AANHPI-DISAGGREGATION: Historic AAPI Aggregation vs. OMB Disaggregated NHPI Metrics</div>
-            <div style="font-size: 0.85rem; color: var(--accent-amber); margin-bottom: 8px;"><strong>Status:</strong> <code>HOLD_PENDING_PRIMARY_RE_EXTRACTION</code></div>
-            <p style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 8px;">Older federal reports aggregate Asian and Pacific Islander data into &quot;AAPI,&quot; obscuring an NHPI youth mortality rate that is more than double that of Asian peers. Primary disaggregated data tables are on HOLD pending re-extraction.</p>
-            <div style="font-size: 0.88rem; color: var(--text-muted);">
+          <div class="conflict-item-card">
+            <div class="conflict-item-title">CONF-02-AANHPI-DISAGGREGATION: Historic AAPI Aggregation vs. OMB Disaggregated NHPI Metrics</div>
+            <div class="conflict-item-status"><strong>Status:</strong> <code>HOLD_PENDING_PRIMARY_RE_EXTRACTION</code></div>
+            <p class="conflict-item-nature">Older federal reports aggregate Asian and Pacific Islander data into &quot;AAPI,&quot; obscuring an NHPI youth mortality rate that is more than double that of Asian peers. Primary disaggregated data tables are on HOLD pending re-extraction.</p>
+            <div class="conflict-item-resolution">
               <strong>Resolution Protocol:</strong> Hold disaggregated claims in OPEN/HOLD status until primary CDC NCHS disaggregated tables are extracted directly.
             </div>
           </div>
           
-          <div style="background-color: var(--bg-card-alt); border: 1px solid var(--border-color); border-radius: 8px; padding: 18px; margin-bottom: 16px;">
-            <div style="font-size: 1.05rem; font-weight: 700; color: #ffffff; margin-bottom: 6px;">CONF-03-AIAN-MISCLASSIFICATION-ESTIMATE: AI/AN Death Certificate Undercount Factor Range</div>
-            <div style="font-size: 0.85rem; color: var(--accent-amber); margin-bottom: 8px;"><strong>Status:</strong> <code>EXPLICIT_RANGE_DISCLOSED</code></div>
-            <p style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 8px;">Vital-records linkage studies report racial misclassification rates ranging between 15% and 33% depending on whether CHSDA counties or urban areas are examined.</p>
-            <div style="font-size: 0.88rem; color: var(--text-muted);">
+          <div class="conflict-item-card">
+            <div class="conflict-item-title">CONF-03-AIAN-MISCLASSIFICATION-ESTIMATE: AI/AN Death Certificate Undercount Factor Range</div>
+            <div class="conflict-item-status"><strong>Status:</strong> <code>EXPLICIT_RANGE_DISCLOSED</code></div>
+            <p class="conflict-item-nature">Vital-records linkage studies report racial misclassification rates ranging between 15% and 33% depending on whether CHSDA counties or urban areas are examined.</p>
+            <div class="conflict-item-resolution">
               <strong>Resolution Protocol:</strong> Report the full empirical range (15%–33%) with explanatory context rather than a manufactured single point estimate.
             </div>
           </div>
