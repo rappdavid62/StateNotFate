@@ -114,7 +114,10 @@ export class PolarisEnhancedSafety {
     if (!card) return false;
 
     const applyGate = () => {
-      if (card.style.display === 'none' || card.classList.contains('hidden')) return;
+      // After SNF extracted inline styles, this card is CSS-hidden via
+      // `.snf-ui-47 { display: none }`. Only intercept once app.js reveals it
+      // with inline display:block after energy check-in.
+      if (card.style.display !== 'block') return;
       const decision = this.evaluateSafetyState(this.polarisState);
       const ideationScale = card.querySelector('#ideation-scale');
       const ideationBlock = ideationScale?.closest('.safety-question');
