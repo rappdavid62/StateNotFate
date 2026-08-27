@@ -25,6 +25,10 @@ This repository is a static PWA / public website for the State Not Fate recovery
 - Use `npm test` and `npm run test:public` to validate changes with Playwright. On Windows PowerShell, prefer `npm.cmd test` and `npm.cmd run test:public`.
 - Use `npm run serve` to run the local static server before verifying UI changes in a browser. On Windows PowerShell, prefer `npm.cmd run serve`.
 
+## File Delivery Rule (Hard Constraint)
+
+Never treat a private sandbox, container, home directory, temporary directory, or internal runtime path as the final delivery location for a file I am expected to read, download, edit, reuse, share, or keep. Temporary internal storage is allowed during processing, but the finished artifact must be copied, exported, attached, or saved somewhere actually accessible to me, with a usable link or path. If no user-accessible destination is available, say so explicitly rather than claiming the file was delivered.
+
 ## Build / Test Commands
 
 - `npm install` - install dev dependencies

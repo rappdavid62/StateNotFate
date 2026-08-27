@@ -47,6 +47,16 @@
   to = "/essays.html"
   status = 200
 
+[[redirects]]
+  from = "/education-reader"
+  to = "/education-reader.html"
+  status = 200
+
+[[redirects]]
+  from = "/reader"
+  to = "/education-reader.html"
+  status = 200
+
 # Catch-all for unknown paths. This is a multi-page static site, not an SPA.
 [[redirects]]
   from = "/*"

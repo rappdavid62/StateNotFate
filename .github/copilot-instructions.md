@@ -14,6 +14,7 @@ This repository is a static PWA / public website. Treat it as a plain HTML/CSS/J
 - Do not change core app files unless the user explicitly approves the plan.
 - Preserve browser localStorage state behavior; there is no backend state.
 - Preserve the static Netlify deployment. Known routes rewrite to `.html` files. Unknown paths return `404.html`. Do not add an SPA fallback to `index.html`.
+- Never treat a private sandbox, container, home directory, temporary directory, or internal runtime path as the final delivery location for a file the user is expected to read, download, edit, reuse, share, or keep. Temporary internal storage is allowed during processing, but the finished artifact must be copied, exported, attached, or saved somewhere actually accessible to the user, with a usable link or path. If no user-accessible destination is available, say so explicitly rather than claiming the file was delivered. (Full rule in AGENTS.md.)
 
 ## Safe workflow rules
 1. Inspect relevant files before editing.
