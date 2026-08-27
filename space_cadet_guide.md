@@ -77,8 +77,8 @@ cd C:\Users\rappd\OneDrive\Desktop\SNF_Deploy
 # 2. Check current status
 git status
 
-# 3. Launch the local development server to test the PWA
-npm run dev
+# 3. Launch the local static server to test the PWA
+npm run serve
 ```
 
 Remember: **State, not fate.** Pausing is allowed. Progress never resets.

@@ -28,6 +28,10 @@ test('public presence SEO/performance skeleton exists @advisory', async ({ page 
 
   expect((await page.goto('/sitemap.xml'))?.ok()).toBeTruthy();
   await expect(page.locator('body')).toContainText('/evidence');
+  await expect(page.locator('body')).toContainText('/essays');
+
+  expect((await page.goto('/essays'))?.ok()).toBeTruthy();
+  await expect(page).toHaveTitle(/Essays/i);
 
   const notFound = await page.goto('/missing-page-for-public-test');
   expect(notFound?.status()).toBe(404);
