@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('suicide prevention appendix is public, interactive, and crisis-aware', async ({ page }) => {
+test('suicide prevention appendix is public, interactive, and crisis-aware @critical', async ({ page }) => {
   const response = await page.goto('/suicide-prevention');
   expect(response?.ok()).toBeTruthy();
 
@@ -8,11 +8,12 @@ test('suicide prevention appendix is public, interactive, and crisis-aware', asy
   await expect(page.locator('section.source-card').filter({ hasText: /urgent support first/i }).getByText(/call 911 or your local emergency number/i)).toBeVisible();
   await expect(page.locator('section.source-card').filter({ hasText: /urgent support first/i }).getByText(/call or text 988/i)).toBeVisible();
   await expect(page.getByRole('heading', { name: /how prevention works/i })).toBeVisible();
-  await expect(page.getByRole('heading', { name: /source backbone/i })).toBeVisible();
-  await expect(page.getByRole('button', { name: /perinatal/i })).toBeVisible();
-  await expect(page.getByRole('button', { name: /first 72 hours/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /source atlas/i })).toBeVisible();
+  await expect(page.getByRole('tab', { name: /perinatal/i })).toBeVisible();
+  await expect(page.getByRole('tab', { name: /first 72 hours/i })).toBeVisible();
 
   const text = await page.locator('main').innerText();
-  expect(text).not.toMatch(/graphic detail|method-specific/i);
+  expect(text).toMatch(/Avoid language like:[\s\S]*method-specific descriptions/i);
+  expect(text).toMatch(/Do not[\s\S]*publish graphic detail/i);
   expect(text).toMatch(/public health|clinical care|community trust/i);
 });

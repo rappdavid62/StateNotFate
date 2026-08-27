@@ -25,6 +25,7 @@ function resolveRequestPath(url) {
   if (pathname === '/contact' || pathname === '/join') return join(root, 'contact.html');
   if (pathname === '/crisis' || pathname === '/help') return join(root, 'crisis.html');
   if (pathname === '/suicide-prevention') return join(root, 'suicide-prevention.html');
+  if (pathname === '/essays') return join(root, 'essays.html');
   if (pathname === '/favicon.ico') return join(root, 'favicon.svg');
 
   const normalized = normalize(pathname).replace(/^(\.\.[/\\])+/, '');

@@ -1,6 +1,5 @@
 # StateNotFate - Enhanced Master Operating System v2
 
-[![Hourly Monitor](https://github.com/rappdavid62/StateNotFate/actions/workflows/hourly-synthetic-monitor.yml/badge.svg?branch=SNF)](https://github.com/rappdavid62/StateNotFate/actions/workflows/hourly-synthetic-monitor.yml)
 [![Node.js CI](https://github.com/rappdavid62/StateNotFate/actions/workflows/node.js.yml/badge.svg?branch=SNF)](https://github.com/rappdavid62/StateNotFate/actions/workflows/node.js.yml)
 [![Layered CI](https://github.com/rappdavid62/StateNotFate/actions/workflows/layered-ci.yml/badge.svg?branch=SNF)](https://github.com/rappdavid62/StateNotFate/actions/workflows/layered-ci.yml)
 
