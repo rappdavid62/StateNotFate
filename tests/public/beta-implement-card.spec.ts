@@ -31,6 +31,11 @@ test.describe('beta channel gating @critical', () => {
     await page.goto('/');
     await expect(page.locator('html')).toHaveAttribute('data-snf-channel', 'production');
     await expect(page.locator('#beta-channel-banner')).toBeHidden();
+    await expect(page.locator('.public-brand .beta-chip')).toBeHidden();
+    await expect(page.locator('[data-beta-only]')).toHaveCount(3);
+    for (const chip of await page.locator('[data-beta-only]').all()) {
+      await expect(chip).toBeHidden();
+    }
   });
 
   test('production hostname hard-gate ignores channel query', async ({ page }) => {
