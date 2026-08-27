@@ -10,6 +10,10 @@ https://statenotfatebeta.netlify.app
 
 Hostname gating keeps the BETA chip / collapse-first defaults off on the production host even if the same files are later promoted.
 
+## Rebase status (2026-08-27)
+
+Branch `CursAge/beta-implement-card-0a2b` was rebased onto current `SNF` (includes merged PR #15). **Git PR only** — this rebase did **not** deploy production site `7edc347d-9ad4-4e43-8d19-4dc238c4ee35` and did **not** deploy beta site `38ca3a04-5be4-49aa-bec9-3074dd89a521`.
+
 ## Deploy (beta site only)
 
 Cloud agent had **no** `NETLIFY_AUTH_TOKEN`. From a machine where David is logged into Netlify:

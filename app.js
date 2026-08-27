@@ -7,9 +7,9 @@
 
         const SNF_BUILD = {
             date: '20260812',
-            shortSha: '2e53944',
+            shortSha: '36bebf8',
             channelHint: 'beta',
-            id: '20260812-2e53944-beta'
+            id: '20260812-36bebf8-beta'
         };
 
         const LEGACY_GENDERED_MANTRA = "I am a happy, healthy, handsome, confident, charismatic man, and people like me.";
