@@ -1,35 +1,46 @@
 /**
  * POLARIS SAFETY INTEGRATION LAYER
- * 
- * Seamlessly integrates suicide detection and crisis protocols
- * with the existing Polaris 2.0 daily anchor system
+ *
+ * The safety score is preserved as an internal routing aid.
+ * It is NOT an individual suicide probability and must not be presented as one.
+ *
+ * Core behavior:
+ * - stable / ordinary bad depression day -> do not force a suicide question
+ * - meaningful multi-domain deterioration -> tighten support / ask general safety
+ * - strong stacked deterioration -> ask directly about suicide
+ * - explicit danger -> bypass routine flow and respond immediately
  */
 
 import SafetyDetectionModule from './safety-detection.js';
 import CrisisProtocol from './crisis-protocol.js';
+import PolarisSafetyRouter from './polaris-safety-routing.js';
 
 export class PolarisEnhancedSafety {
   constructor(polarisState = {}, userLocation = null) {
     this.polarisState = polarisState;
     this.safetyDetection = new SafetyDetectionModule(polarisState);
     this.crisisProtocol = new CrisisProtocol(userLocation);
+    this.safetyRouter = new PolarisSafetyRouter(polarisState);
     this.safetyIntegration = {
       lastScreeningDate: null,
       nextScreeningDate: null,
-      screeningFrequency: 'daily', // daily, weekly, or context-dependent
-      integratedAnchors: []
+      screeningFrequency: 'context-dependent',
+      integratedAnchors: [],
+      lastRoutingDecision: null
     };
+
+    // Existing app.js currently tries to reveal the safety card after each energy check.
+    // This gate intercepts that behavior without requiring repetitive suicide screening.
+    queueMicrotask(() => this.installAdaptiveSafetyGate());
   }
 
   /**
-   * INTEGRATED DAILY CHECK-IN
-   * Combines mood/anchor tracking with safety screening
+   * Daily check-in structure. Safety inquiry is conditional, not mandatory.
    */
   dailyCheckInWithSafety() {
     return {
       id: 'daily-check-in-enhanced',
       structure: [
-        // Standard Polaris check-in
         {
           section: 'Energy & Mood',
           questions: [
@@ -37,382 +48,300 @@ export class PolarisEnhancedSafety {
             { id: 'today-mood', text: 'How would you describe your mood?', type: 'mood-scale' }
           ]
         },
-        // Integrated safety screening
         {
-          section: 'Daily Safety Check',
-          subtext: 'Quick check-in to understand how you\'re doing',
-          questions: [
-            {
-              id: 'today-ideation',
-              text: 'Have you had thoughts today that life might be better if you weren\'t here?',
-              scale: [0, 1, 2, 3, 4],
-              escalateIf: [2, 3, 4],
-              followUp: true
-            },
-            {
-              id: 'today-safety',
-              text: 'Do you feel safe in your current situation?',
-              responseType: 'yesno',
-              escalateIf: 'no'
-            }
-          ]
+          section: 'Safety',
+          conditional: true,
+          decision: this.evaluateSafetyState(this.polarisState),
+          generalQuestion: 'Things look rougher than your recent baseline. Do you feel able to stay safe right now?',
+          directQuestions: this.safetyDetection.quickIdeationScreen().questions
         },
-        // Anchor completion
         {
           section: 'Anchors Completed',
           type: 'anchor-tracking'
         }
-      ],
-      conditionalFollowUp: {
-        ifIdeationScoreGreaterThan1: 'Offer expanded safety screen',
-        ifNotFeelingSafe: 'Activate alert protocol',
-        ifCollapsedLevel: 'Assess additional risk factors'
-      }
+      ]
+    };
+  }
+
+  evaluateSafetyState(state = this.polarisState) {
+    const decision = this.safetyRouter.decideInquiry(state);
+    this.safetyIntegration.lastRoutingDecision = decision;
+    state.polarisSafetyRouting = {
+      action: decision.action,
+      urgency: decision.urgency,
+      stateSignalScore: decision.deterioration.score,
+      domains: decision.deterioration.domains,
+      reasons: decision.deterioration.reasons,
+      directSignals: decision.directSignals,
+      timestamp: new Date().toISOString(),
+      note: 'Routing signal only; not a probability or clinical prediction.'
+    };
+    return decision;
+  }
+
+  /**
+   * Compatibility method retained for existing callers.
+   * Time alone no longer forces a suicide screen.
+   */
+  shouldAdministerExpandedScreen(currentState, lastScreeningDate = null) {
+    const decision = this.evaluateSafetyState(currentState);
+    return {
+      shouldScreen: decision.askDirect,
+      shouldAskGeneralSafety: decision.askGeneralSafety,
+      action: decision.action,
+      urgency: decision.urgency,
+      stateSignalScore: decision.deterioration.score,
+      domains: decision.deterioration.domains,
+      directSignals: decision.directSignals,
+      triggers: {
+        timeBased: false,
+        stateBased: decision.deterioration.score > 0,
+        patternBased: decision.deterioration.domains.length > 1,
+        directDanger: decision.directSignals.length > 0
+      },
+      lastScreeningDate
     };
   }
 
   /**
-   * INTELLIGENT SCREENING TRIGGER
-   * Determines when to administer expanded safety assessments
+   * Existing UI compatibility gate.
+   * app.js sets #safety-checkin-card to display:block after an energy response.
+   * We let that happen only when the current state supports asking.
    */
-  shouldAdministerExpandedScreen(currentState, lastScreeningDate) {
-    const triggers = {
-      timeBasedTriggers: [
-        lastScreeningDate === null, // First time
-        this.daysSinceLastAssessment(lastScreeningDate) >= 7 // Weekly minimum
-      ],
-      stateBasedTriggers: [
-        currentState.todayEnergy === 'collapse',
-        currentState.currentHopeLevel < 2,
-        currentState.dominantPattern === 'Rumination' ||
-          currentState.dominantPattern === 'Meaning Loss',
-        (currentState.history?.[0]?.completed?.length || 0) === 0, // Zero-day
-        (currentState.ratings?.shame || 0) > 30
-      ],
-      patternBasedTriggers: [
-        this.detectRapidDeteriorationPattern(currentState),
-        this.detectAnchorAbandonmentPattern(currentState),
-        this.detectSocialIsolationSpike(currentState)
-      ]
-    };
+  installAdaptiveSafetyGate() {
+    if (typeof document === 'undefined' || typeof MutationObserver === 'undefined') return false;
+    const card = document.getElementById('safety-checkin-card');
+    if (!card) return false;
 
-    const shouldScreen =
-      triggers.timeBasedTriggers.some(t => t) ||
-      triggers.stateBasedTriggers.some(t => t) ||
-      triggers.patternBasedTriggers.some(t => t);
+    const applyGate = () => {
+      // After SNF extracted inline styles, this card is CSS-hidden via
+      // `.snf-ui-47 { display: none }`. Only intercept once app.js reveals it
+      // with inline display:block after energy check-in.
+      if (card.style.display !== 'block') return;
+      const decision = this.evaluateSafetyState(this.polarisState);
+      const ideationScale = card.querySelector('#ideation-scale');
+      const ideationBlock = ideationScale?.closest('.safety-question');
 
-    return {
-      shouldScreen,
-      triggers: {
-        timeBased: triggers.timeBasedTriggers.filter(t => t).length > 0,
-        stateBased: triggers.stateBasedTriggers.filter(t => t).length > 0,
-        patternBased: triggers.patternBasedTriggers.filter(t => t).length > 0
+      if (this.shouldActivateCrisisNow(decision)) {
+        if (ideationBlock) ideationBlock.style.display = 'block';
+        card.style.display = 'block';
+        this.activateExistingCrisisFlow(decision);
+        return;
       }
+
+      if (decision.askDirect) {
+        if (ideationBlock) ideationBlock.style.display = 'block';
+        card.style.display = 'block';
+        return;
+      }
+
+      if (decision.askGeneralSafety) {
+        if (ideationBlock) ideationBlock.style.display = 'none';
+        const title = card.querySelector('.card-title');
+        if (title) title.textContent = 'Quick Safety Check';
+        card.style.display = 'block';
+        return;
+      }
+
+      // No safety question is warranted: continue the normal daily flow.
+      card.style.display = 'none';
+      if (ideationBlock) ideationBlock.style.display = 'block';
+      this.resumeRoutineFlow(decision);
     };
+
+    this._safetyGateObserver?.disconnect?.();
+    this._safetyGateObserver = new MutationObserver(() => applyGate());
+    this._safetyGateObserver.observe(card, { attributes: true, attributeFilter: ['style', 'class'] });
+    applyGate();
+    return true;
+  }
+
+  shouldActivateCrisisNow(decision) {
+    const critical = new Set([
+      'cannot-stay-safe',
+      'current-intent',
+      'preparatory-behavior',
+      'recent-attempt',
+      'journal-unsafe',
+      'journal-direct-risk',
+      'existing-high-suicide-safety-flag',
+      'signal-feed:explicit-suicidal-intent',
+      'signal-feed:cannot-stay-safe',
+      'signal-feed:preparatory-behavior',
+      'signal-feed:recent-attempt'
+    ]);
+    return decision.directSignals.some(signal => critical.has(signal));
+  }
+
+  activateExistingCrisisFlow(decision) {
+    this.polarisState.safety = this.polarisState.safety || {};
+    this.polarisState.safety.suicide = Math.max(2, Number(this.polarisState.safety.suicide) || 0);
+    this.polarisState.polarisSafetyRouting.crisisBypass = true;
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('polaris:direct-danger', { detail: decision }));
+      if (typeof window.triggerCrisisOverlay === 'function') {
+        window.triggerCrisisOverlay();
+      }
+    }
+  }
+
+  resumeRoutineFlow(decision) {
+    if (typeof window === 'undefined') return;
+    window.dispatchEvent(new CustomEvent('polaris:safety-gate-skipped', { detail: decision }));
+
+    // These are existing global functions in the static PWA when available.
+    const safeCalls = ['renderDailyChecklist', 'updateDashboardMetrics'];
+    for (const name of safeCalls) {
+      try {
+        if (typeof window[name] === 'function') window[name]();
+      } catch (err) {
+        console.warn(`Polaris safety routing could not call ${name}:`, err);
+      }
+    }
+  }
+
+  recordCompanionSafetySignal(type, metadata = {}) {
+    const item = this.safetyRouter.recordDirectSafetySignal(type, 'polaris-companion', metadata);
+    const decision = this.evaluateSafetyState(this.polarisState);
+    if (this.shouldActivateCrisisNow(decision)) this.activateExistingCrisisFlow(decision);
+    return { item, decision };
   }
 
   daysSinceLastAssessment(lastDate) {
     if (!lastDate) return Infinity;
-    const days = (new Date() - new Date(lastDate)) / (1000 * 60 * 60 * 24);
-    return Math.floor(days);
+    return Math.floor((Date.now() - new Date(lastDate).getTime()) / (1000 * 60 * 60 * 24));
   }
 
   detectRapidDeteriorationPattern(state) {
     if (!state.history || state.history.length < 3) return false;
     const recent = state.history.slice(0, 3);
-    return recent.every((d, i) => {
-      if (i === 0) return true;
-      return (d.completed?.length || 0) < (recent[i - 1].completed?.length || 0);
-    });
+    return recent.every((d, i) => i === 0 || (d.completed?.length || 0) < (recent[i - 1].completed?.length || 0));
   }
 
   detectAnchorAbandonmentPattern(state) {
     if (!state.history || state.history.length < 7) return false;
     const hadAnchors = state.history.slice(1, 7).some(d => (d.completed?.length || 0) > 0);
-    const nowHasNone = (state.history[0]?.completed?.length || 0) === 0;
-    return hadAnchors && nowHasNone;
+    return hadAnchors && (state.history[0]?.completed?.length || 0) === 0;
   }
 
   detectSocialIsolationSpike(state) {
     if (!state.history || state.history.length < 3) return false;
-    const currentSocialScore = state.ratings?.social || 0;
-    const recentAverage = state.history
-      .slice(0, 7)
-      .reduce((sum, h) => sum + (h.socialScore || 0), 0) / Math.min(7, state.history.length);
-    return currentSocialScore > recentAverage + 15;
+    const current = Number(state.ratings?.social) || 0;
+    const average = state.history.slice(0, 7)
+      .reduce((sum, h) => sum + (Number(h.socialScore) || 0), 0) / Math.min(7, state.history.length);
+    return current > average + 15;
   }
 
   /**
-   * ADAPTIVE SAFETY ANCHORS
-   * Integrate protective anchors based on risk level
+   * Preserve adaptive anchors, but do not let an indirect score alone create an emergency.
    */
-  generateAdaptiveAnchors(riskLevel, baseAnchors) {
-    const adaptiveAnchors = { ...baseAnchors };
+  generateAdaptiveAnchors(riskLevel, baseAnchors = {}) {
+    const adaptive = { ...baseAnchors };
+    const level = riskLevel?.level || 'low';
 
-    // Map risk levels to anchor adjustments
-    const anchorModifications = {
-      low: {
-        addAnchors: [],
-        frequency: 'standard'
-      },
+    const map = {
+      low: { safetyAnchors: [], checkInFrequency: 'standard' },
       'low-moderate': {
-        addAnchors: [
-          {
-            id: 'weekly-safety-review',
-            text: 'Weekly check-in: Review why you want to live',
-            category: 'protective',
-            level: 1
-          }
-        ],
-        frequency: 'standard'
+        safetyAnchors: [{ id: 'support-bridge', text: 'Keep one reachable human connection open today.', category: 'connection', level: 1 }],
+        checkInFrequency: 'standard'
       },
       moderate: {
-        addAnchors: [
-          {
-            id: 'daily-safe-contact',
-            text: 'Contact one safe person today (call, text, or visit)',
-            category: 'connection',
-            level: 0,
-            critical: true
-          },
-          {
-            id: 'daily-reasons-review',
-            text: 'Spend 2 minutes thinking about why you want to live',
-            category: 'protective',
-            level: 0,
-            critical: true
-          }
+        safetyAnchors: [
+          { id: 'daily-safe-contact', text: 'Contact one safe person today.', category: 'connection', level: 0, critical: true },
+          { id: 'reduce-load', text: 'Reduce the day to the survival floor.', category: 'stabilization', level: 0, critical: true }
         ],
-        frequency: 'increased',
-        checkInTiming: 'twice-daily'
+        checkInFrequency: 'increased'
       },
       elevated: {
-        replaceLevel: 0,
-        anchors: [
-          {
-            id: 'emergency-contact',
-            text: 'Contact safe person NOW - tell them you are in crisis',
-            category: 'crisis',
-            critical: true
-          },
-          {
-            id: 'immediate-grounding',
-            text: 'Use 5-4-3-2-1 grounding technique or box breathing',
-            category: 'coping',
-            critical: true
-          },
-          {
-            id: 'locate-support',
-            text: 'Have written list of crisis resources visible',
-            category: 'connection',
-            critical: true
-          }
+        safetyAnchors: [
+          { id: 'contact-now', text: 'Bring another person into the situation now.', category: 'crisis', critical: true },
+          { id: 'professional-support', text: 'Use your crisis/professional support route now.', category: 'crisis', critical: true }
         ],
-        frequency: 'continuous',
-        checkInTiming: 'hourly'
+        checkInFrequency: 'high'
       },
-      acute: {
-        action: 'EMERGENCY_PROTOCOL',
-        override: true,
-        instructions: 'Call 911 or go to nearest ER immediately'
-      }
+      acute: { action: 'EMERGENCY_PROTOCOL', override: true }
     };
 
-    if (riskLevel.level === 'acute') {
-      return anchorModifications.acute;
-    }
-
-    const mods = anchorModifications[riskLevel.level] || anchorModifications.low;
-
-    if (mods.replaceLevel !== undefined) {
-      adaptiveAnchors.currentLevel = mods.replaceLevel;
-      adaptiveAnchors.safetyAnchors = mods.anchors;
-    } else {
-      adaptiveAnchors.safetyAnchors = mods.addAnchors;
-    }
-
-    adaptiveAnchors.checkInFrequency = mods.frequency;
-    adaptiveAnchors.checkInTiming = mods.checkInTiming || 'daily';
-
-    return adaptiveAnchors;
+    return { ...adaptive, ...(map[level] || map.low) };
   }
 
-  /**
-   * SAFETY-AWARE HOPE CALCULATION
-   * Adjusts hope level based on safety status
-   */
-  calculateSafetyAwareHope(currentHope, riskLevel, protectiveFactors) {
-    let adjustedHope = currentHope;
-
-    // Safety penalties to hope
-    if (riskLevel.level === 'acute' || riskLevel.level === 'elevated') {
-      // Acute crisis temporarily suppresses hope perception
-      adjustedHope = Math.max(0, currentHope - 2);
-    }
-
-    // Protective factor bonuses
-    if (protectiveFactors.length > 3) {
-      adjustedHope = Math.min(4, adjustedHope + 1);
-    }
-
+  calculateSafetyAwareHope(currentHope, riskLevel, protectiveFactors = []) {
+    const level = riskLevel?.level || 'low';
     return {
       official: currentHope,
-      safetyAdjusted: adjustedHope,
-      protectiveBoost: protectiveFactors.length > 3 ? 1 : 0,
-      crisisAdjustment: riskLevel.level !== 'low' ? -1 : 0,
-      message:
-        riskLevel.level === 'acute'
-          ? 'Right now, getting to safety is more important than feeling hope. Hope can come after immediate help.'
-          : riskLevel.level === 'elevated'
-            ? 'You are in a difficult place, but crisis passes. Reach out for help now.'
-            : 'Your protective factors are strong. Hold onto them.'
+      safetyAdjusted: currentHope,
+      protectiveFactorCount: protectiveFactors.length,
+      message: level === 'acute'
+        ? 'The priority is immediate safety and human support.'
+        : level === 'elevated'
+          ? 'Reduce load and bring support closer.'
+          : 'Keep the current floor stable.'
     };
   }
 
-  /**
-   * EMERGENCY ANCHOR HIERARCHY
-   * What to focus on during crisis
-   */
   getEmergencyAnchorHierarchy() {
     return {
       tier1_immediate: [
-        {
-          action: 'Tell someone you are in crisis',
-          how: 'Call safe person, crisis line (988), or go to ER',
-          why: 'You need immediate support - this is not something to handle alone'
-        },
-        {
-          action: 'Do not isolate',
-          how: 'Stay with someone, go to public place, or go to ER',
-          why: 'Isolation increases risk. Being around others is protective'
-        },
-        {
-          action: 'Use grounding technique',
-          how: '5-4-3-2-1 sensory, box breathing, or cold water',
-          why: 'Brings you back to present moment and reduces acute distress'
-        }
+        { action: 'Tell another person you are not safe', how: 'Use a trusted person, crisis service, or emergency service.' },
+        { action: 'Reduce isolation', how: 'Move toward another person or another supervised/supported setting.' },
+        { action: 'Increase time and distance from lethal means', how: 'Use another person to help create safer distance and access control.' }
       ],
       tier2_first_24_hours: [
-        {
-          action: 'Contact therapist or mental health provider',
-          how: 'Call office, use crisis line to find provider, or ask ER for referral',
-          why: 'Professional assessment and care is essential'
-        },
-        {
-          action: 'Secure means (if applicable)',
-          how: 'Tell safe person about methods, secure medications, separate from access',
-          why: 'Reduces impulsivity risk during high-distress periods'
-        },
-        {
-          action: 'Build safety plan with support person',
-          how: 'Write down warning signs, coping strategies, emergency contacts',
-          why: 'Having a plan reduces anxiety and improves crisis response'
-        }
+        { action: 'Connect with professional support', how: 'Use the care route appropriate to the current level of danger.' },
+        { action: 'Review a collaborative safety plan', how: 'Use warning signs, coping steps, reachable people, professional contacts, and environmental safety.' }
       ],
       tier3_ongoing: [
-        {
-          action: 'Daily check-in with safe person',
-          how: 'Call, text, or in-person meeting',
-          why: 'Maintains connection and allows early detection of worsening'
-        },
-        {
-          action: 'Engage protective anchors',
-          how: 'Use distractions, movement, social contact',
-          why: 'Builds resilience and reduces rumination'
-        },
-        {
-          action: 'Increase therapy frequency',
-          how: 'Request twice-weekly or more intensive treatment',
-          why: 'Professional support accelerates crisis resolution'
-        }
+        { action: 'Maintain follow-up contact', how: 'Keep agreed check-ins and care transitions visible.' },
+        { action: 'Restore biological and functional floor', how: 'Sleep/rhythm, food, hydration, prescribed medication routine, movement, and basic environment.' }
       ]
     };
   }
 
-  /**
-   * SAFETY DASHBOARD
-   * Real-time safety status visualization
-   */
-  generateSafetyDashboard(state, riskAssessment) {
+  generateSafetyDashboard(state, riskAssessment = {}) {
+    const route = this.evaluateSafetyState(state);
     return {
       timestamp: new Date().toISOString(),
-      riskLevel: {
-        current: riskAssessment.level,
-        score: riskAssessment.score,
-        severity: {
-          low: '✓ Stable',
-          'low-moderate': '⚠ Monitor',
-          moderate: '⚠ Alert',
-          elevated: '🚨 High Alert',
-          acute: '🚨🚨 EMERGENCY'
-        }[riskAssessment.level]
-      },
+      directSafetyScore: riskAssessment.score ?? null,
+      directSafetyBand: riskAssessment.level ?? null,
+      stateSignalScore: route.deterioration.score,
+      stateSignalDomains: route.deterioration.domains,
+      routingAction: route.action,
+      directSignals: route.directSignals,
       protectiveFactors: {
-        count: (state.safeContacts?.length || 0) + (state.reasonsLive?.length || 0),
-        status: 'Strong' || 'Adequate' || 'Limited'
+        reachableContacts: state.safeContacts || null,
+        reasonsForLiving: state.reasonsLive || null
       },
-      concerningPatterns: {
-        active: riskAssessment.patterns?.length || 0,
-        types: riskAssessment.patterns?.map(p => p.type) || []
-      },
-      nextCheckIn: this.calculateNextCheckIn(riskAssessment.level),
-      recommendedActions: this.crisisProtocol.generateSafetyResponse(
-        riskAssessment,
-        state
-      ).immediateActions
+      interpretation: 'Scores guide support routing and questioning; they are not suicide probabilities.'
     };
   }
 
   calculateNextCheckIn(riskLevel) {
-    const now = new Date();
-    const intervals = {
-      acute: '1 hour',
-      elevated: '12 hours',
-      moderate: '24 hours',
-      'low-moderate': '3 days',
-      low: '7 days'
-    };
-    return {
-      interval: intervals[riskLevel],
-      nextTime: new Date(now.getTime() + this.parseInterval(intervals[riskLevel]))
-    };
+    const intervals = { acute: '1 hour', elevated: '12 hours', moderate: '24 hours', 'low-moderate': '3 days', low: '7 days' };
+    const interval = intervals[riskLevel] || '7 days';
+    return { interval, nextTime: new Date(Date.now() + this.parseInterval(interval)) };
   }
 
   parseInterval(interval) {
-    const match = interval.match(/(\d+)\s+(\w+)/);
+    const match = String(interval).match(/(\d+)\s+(\w+)/);
     if (!match) return 0;
-    const [, num, unit] = match;
-    const multipliers = {
-      hour: 60 * 60 * 1000,
-      day: 24 * 60 * 60 * 1000,
-      week: 7 * 24 * 60 * 60 * 1000
-    };
-    return parseInt(num) * multipliers[unit];
+    const multipliers = { hour: 3600000, hours: 3600000, day: 86400000, days: 86400000, week: 604800000, weeks: 604800000 };
+    return Number(match[1]) * (multipliers[match[2]] || 0);
   }
 
-  /**
-   * DOCUMENTATION FOR PROGRESS HANDOFF
-   * Create shareable assessment for therapist
-   */
-  prepareForProgressHandoff(state, assessments, riskLevel) {
+  prepareForProgressHandoff(state, assessments = [], riskLevel = {}) {
     return {
       preparedDate: new Date().toISOString(),
       summary: {
-        currentRiskLevel: riskLevel.level,
-        assessmentsCompleted: assessments.map(a => a.type),
-        concerningFindings: riskLevel.warnings
+        directSafetyBand: riskLevel.level || null,
+        directSafetyScore: riskLevel.score ?? null,
+        stateRouting: this.evaluateSafetyState(state),
+        assessmentsCompleted: assessments.map(a => a.type)
       },
       assessmentResponses: assessments,
-      recommendedActions: [
-        'Share this with your therapist',
-        'Schedule urgent appointment if not recent',
-        'Consider psychiatric evaluation if appropriate',
-        'Implement safety plan collaboratively'
-      ],
-      safetyPlan: this.crisisProtocol.generateSafetyPlan(state, {
-        recognizedTrigger: state.dominantPattern
-      }),
-      followUpSchedule: this.crisisProtocol.postCrisisFollowUp(state)
+      note: 'Polaris data is longitudinal context for a human professional, not an actuarial prediction.',
+      safetyPlan: this.crisisProtocol.generateSafetyPlan?.(state, { recognizedTrigger: state.dominantPattern }) || null,
+      followUpSchedule: this.crisisProtocol.postCrisisFollowUp?.(state) || null
     };
   }
 }
