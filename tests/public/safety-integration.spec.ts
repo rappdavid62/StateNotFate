@@ -71,7 +71,7 @@ test('stable bad-day flow does not force a suicide question @critical', async ({
   await expect(page.locator('#safety-checkin-card')).toBeHidden();
 });
 
-test('meaningful deterioration asks general safety without forcing ideation question', async ({ page }) => {
+test('meaningful deterioration asks general safety without forcing ideation question @critical', async ({ page }) => {
   await seed(page, baseState({
     currentHopeLevel: 0,
     ratings: { sleep: 4, social: 4, meaning: 4, shame: 4 }
@@ -85,7 +85,7 @@ test('meaningful deterioration asks general safety without forcing ideation ques
   await expect(card.getByText('Do you feel safe right now?')).toBeVisible();
 });
 
-test('strong stacked deterioration earns a direct suicide safety inquiry', async ({ page }) => {
+test('strong stacked deterioration earns a direct suicide safety inquiry @critical', async ({ page }) => {
   const history = [
     { completed: [] },
     { completed: ['a'] }, { completed: ['a'] }, { completed: ['a'] }, { completed: ['a'] }
