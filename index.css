@@ -152,6 +152,26 @@
             flex-direction: column;
             max-width: 1000px;
         }
+
+        /* Dashboard is a full application shell, not a centered content card. */
+        .app-container:has(#screen-dashboard:not(.hidden)) {
+            width: 100%;
+            max-width: none;
+            padding: 0;
+            display: block;
+        }
+
+        .app-container:has(#screen-dashboard:not(.hidden)) #screen-dashboard {
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+
+        .app-container:has(#screen-dashboard:not(.hidden)) .snf-ui-37 {
+            min-width: 0;
+            width: 0;
+            flex: 1 1 auto;
+        }
         
         /* Mobile Bottom Nav */
         .bottom-nav {
@@ -166,6 +186,19 @@
             z-index: 100;
         }
         
+        @media (min-width: 769px) and (max-width: 1100px) {
+            .app-container:has(#screen-dashboard:not(.hidden)) .sidebar-nav {
+                width: 220px;
+                padding: 1.5rem 1rem;
+            }
+            .app-container:has(#screen-dashboard:not(.hidden)) .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .app-container:has(#screen-dashboard:not(.hidden)) .glass-card {
+                min-width: 0;
+            }
+        }
+
         @media (max-width: 768px) {
             .sidebar-nav { display: none; }
             .bottom-nav { display: flex; justify-content: space-around; }
