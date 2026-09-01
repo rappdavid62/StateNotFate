@@ -3,8 +3,8 @@ import { expect, test } from '@playwright/test';
 test('scope, safety, and professional-care boundaries are visible @critical', async ({ page }) => {
   await page.goto('/');
 
-  await expect(page.getByText(/adjunctive support/i)).toBeVisible();
-  await expect(page.getByText(/not a replacement for professional care/i)).toBeVisible();
+  await expect(page.locator('[data-public-site]').getByText(/adjunctive support/i).first()).toBeVisible();
+  await expect(page.locator('[data-public-site]').getByText(/not a replacement for professional care/i).first()).toBeVisible();
 
   const publicText = (await page.locator('[data-public-site]').allInnerTexts()).join(' ');
   expect(publicText).not.toMatch(/\bdiagnose\b/i);

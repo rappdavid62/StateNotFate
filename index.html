@@ -10,15 +10,40 @@
     <meta property="og:type" content="website">
     <link rel="canonical" href="https://statenotfate.netlify.app/">
     <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="/favicon.svg">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="index.css?v=2.6">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <link rel="stylesheet" href="index.css?v=2.8">
+    <script>
+      (function () {
+        var host = (location.hostname || '').toLowerCase();
+        var isProdHost = host === 'statenotfate.netlify.app' || host === 'www.statenotfate.netlify.app';
+        var params = new URLSearchParams(location.search);
+        var channel = 'production';
+        if (!isProdHost) {
+          if (host.indexOf('statenotfatebeta') !== -1 || params.get('channel') === 'beta') {
+            channel = 'beta';
+            try { localStorage.setItem('SNF_CHANNEL', 'beta'); } catch (e) {}
+          } else {
+            try {
+              if (localStorage.getItem('SNF_CHANNEL') === 'beta') channel = 'beta';
+            } catch (e) {}
+          }
+        }
+        document.documentElement.dataset.snfChannel = channel;
+        document.documentElement.dataset.buildId = '20260812-36bebf8-beta';
+        if (channel === 'beta') document.documentElement.classList.add('snf-channel-beta');
+      })();
+    </script>
 </head>
 <body>
     <a class="skip-link" href="#public-main">Skip to public project information</a>
+    <div id="beta-channel-banner" class="beta-channel-banner" hidden data-beta-only>
+        <span class="beta-chip" aria-label="Beta channel">BETA</span>
+        <span id="beta-build-stamp" class="beta-build-stamp" data-build-id="20260812-36bebf8-beta">Build · 20260812 · 36bebf8 · beta</span>
+    </div>
     <header class="public-header" data-public-site>
         <nav class="public-nav" aria-label="Public site navigation">
-            <a class="public-brand" href="/">State Not Fate</a>
+            <a class="public-brand" href="/">State Not Fate <span class="beta-chip beta-chip-inline" data-beta-only hidden>BETA</span></a>
             <div class="public-nav-links">
                 <a href="#learn">Learn</a>
                 <a href="#program">Start / Try the program</a>
@@ -67,7 +92,18 @@
         <div id="screen-lock" class="welcome-screen hidden">
             <h1 class="logo-header">STATE, NOT FATE</h1>
             <h3 class="text-lavender mb-2">Security Locked</h3>
-            <p class="text-secondary mb-3 snf-ui-1" >Enter your 4-digit PIN to unlock your private recovery dashboard and Crisis Safe Box.</p>
+            <p class="text-secondary mb-3 snf-ui-1" >Enter your 4-digit PIN to unlock your private recovery dashboard.</p>
+
+            <aside class="lock-help-never-locked" aria-label="Crisis help available without unlocking">
+                <strong class="lock-help-title">Help is never locked</strong>
+                <p class="lock-help-copy">Crisis exits stay available without your PIN. This tool does not replace professional or emergency care.</p>
+                <div class="lock-help-actions">
+                    <a class="btn btn-primary" href="tel:988">Call / Text 988</a>
+                    <a class="btn btn-secondary" href="sms:741741?body=HOME">Text HOME to 741741</a>
+                    <a class="btn btn-secondary" href="tel:911">Call 911</a>
+                    <a class="btn btn-secondary" href="/crisis" id="lock-help-safebox">Safe Box / Crisis Help</a>
+                </div>
+            </aside>
             
             <div class="glass-card snf-ui-2" >
                 <div class="snf-ui-3">
@@ -93,7 +129,7 @@
                 </div>
             </div>
             <p class="text-muted mt-2 snf-ui-7" >
-                Data is fully sandboxed on your machine. Correct PIN is required to unlock your local data.
+                Data is fully sandboxed on your machine. Correct PIN unlocks your local recovery data — help links above never require it.
             </p>
         </div>
 
@@ -379,9 +415,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label>What is the extreme-opposite, proud, identity-rewrite mantra you will repeat aloud?</label>
-                            <textarea id="input-custom-mantra" rows="3" placeholder="e.g. I am a happy, healthy, handsome, confident, charismatic man, and people like me."></textarea>
-                            <div class="description">This statement is your core load-bearing anchor. We will display it prominently as your daily identity shield.</div>
+                            <label>What neutral, restart-friendly Identity Shield mantra will you repeat aloud? (editable)</label>
+                            <textarea id="input-custom-mantra" rows="3" placeholder="State is information. I restart without punishment."></textarea>
+                            <div class="description">Default is gender-neutral and non-punitive. Edit freely — this is your daily identity shield, not a clinical prescription.</div>
                         </div>
 
                         <div class="wizard-controls">
@@ -548,7 +584,10 @@
             
             <!-- Sidebar Navigation (Desktop) -->
             <nav class="sidebar-nav">
-                <div class="sidebar-brand">STATE NOT FATE</div>
+                <div class="sidebar-brand">
+                    STATE NOT FATE
+                    <span class="beta-chip beta-chip-rail" data-beta-only hidden>BETA</span>
+                </div>
                 
                 <div class="sidebar-group">
                     <div class="sidebar-group-title">Home</div>
@@ -556,7 +595,7 @@
                         <span class="snf-ui-31">⌂</span> Dashboard
                     </button>
                     <button class="nav-item" data-tab="polaris">
-                        <span class="snf-ui-31">🜁</span> Polaris
+                        <span class="polaris-glyph" aria-hidden="true"></span> Polaris
                     </button>
                 </div>
                 
@@ -592,18 +631,15 @@
                         <span class="snf-ui-31">⚠</span> Crisis Safe Box
                     </button>
                     <button class="nav-item snf-ui-32" data-tab="suicideprevention" >
-                        <span class="snf-ui-31">🎗️</span> Suicide Prevention
+                        <span class="snf-ui-31">◆</span> Suicide Prevention
                     </button>
                 </div>
                 
                 <div class="snf-ui-33"></div>
                 
                 <div class="sidebar-group snf-ui-34" >
-                    <button class="nav-item" id="btn-tab-lock">
-                        <span class="snf-ui-31">🔒</span> Lock App
-                    </button>
-                    <button class="nav-item" data-tab="reset-intake" id="btn-tab-reset">
-                        <span class="snf-ui-31">⚙</span> Reset Intake
+                    <button class="nav-item" data-tab="settings" id="btn-tab-settings">
+                        <span class="snf-ui-31">⚙</span> Settings
                     </button>
                 </div>
             </nav>
@@ -626,7 +662,7 @@
                     <span class="snf-ui-36">⚠</span>
                     <span class="snf-ui-32">Safety</span>
                 </button>
-                <button class="nav-item" data-tab="reset-intake">
+                <button class="nav-item" data-tab="settings">
                     <span class="snf-ui-35">⚙</span>
                     <span>Settings</span>
                 </button>
@@ -642,15 +678,38 @@
 
             <!-- TAB 1: MAIN DASHBOARD VIEW -->
             <div id="tab-dashboard" class="tab-content">
+
+                <!-- Collapse-first single next-action home (beta + collapse/emergency) -->
+                <div id="collapse-first-home" class="collapse-first-home hidden" data-beta-feature>
+                    <div class="crisis-exits-strip" aria-label="Crisis exits always available">
+                        <span class="crisis-exits-label">Help is never locked</span>
+                        <a href="tel:988">988</a>
+                        <a href="sms:741741?body=HOME">HOME → 741741</a>
+                        <a href="tel:911">911</a>
+                        <button type="button" class="linkish" data-tab-jump="safebox">Safe Box</button>
+                    </div>
+                    <div class="glass-card next-action-card">
+                        <p class="next-action-kicker">Collapse floor · one next action</p>
+                        <h2 id="collapse-next-action-title" style="text-transform:none; letter-spacing:0.02em;">Start Small</h2>
+                        <p id="collapse-next-action-copy" class="text-secondary" style="font-size:0.95rem; margin:0.5rem 0 1.25rem;">Pick one tiny move. Full Main Frame stays available when you want it.</p>
+                        <div class="next-action-buttons">
+                            <button type="button" class="btn btn-primary" id="btn-collapse-primary-action">Start Small</button>
+                            <button type="button" class="btn btn-danger" id="btn-collapse-emergency">Emergency Floor</button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary" id="btn-show-full-main-frame" style="width:100%; margin-top:1rem;">Show full Main Frame</button>
+                </div>
+
+                <div id="full-main-frame">
                 
                 <!-- Polaris Upgrade Activation Banner -->
                 <div id="polaris-activation-banner" class="glass-card hidden snf-ui-39" >
                     <div class="snf-ui-40">
-                        <h3 class="snf-ui-41">🜁 Upgrade to Polaris 2.0 System</h3>
+                        <h3 class="snf-ui-41"><span class="polaris-glyph" aria-hidden="true"></span> Upgrade to Polaris 2.0 System</h3>
                         <p class="text-secondary snf-ui-42" >Unlock the Momentum Tab, Adaptive Year Simulator, and auto-generated proof logs. Your current local data will be migrated safely.</p>
                     </div>
                     <button class="btn btn-primary snf-ui-43" onclick="activatePolarisUpgrade()" >
-                        ⚡ Activate Polaris
+                        Activate Polaris
                     </button>
                 </div>
                 
@@ -867,6 +926,7 @@
 
                     </div>
                 </div>
+                </div><!-- /#full-main-frame -->
             </div>
 <!-- TAB: POLARIS -->
 <div id="tab-polaris" class="tab-content hidden">
@@ -874,7 +934,7 @@
         <!-- Header: Polaris + Day N + Toggle -->
         <div class="polaris-header-row">
             <div>
-                <h2 class="polaris-title">🜁 Polaris <span id="polaris-day-counter" class="polaris-day-counter"></span></h2>
+                <h2 class="polaris-title"><span class="polaris-glyph" aria-hidden="true"></span> Polaris <span id="polaris-day-counter" class="polaris-day-counter"></span></h2>
             </div>
             <div class="snf-ui-62">
                 <button class="btn btn-secondary snf-ui-63" onclick="openPolarisSettingsModal()"  title="Settings & Archive">⚙️</button>
@@ -1139,7 +1199,7 @@
             <div id="polaris-chat-container" class="polaris-chat-container">
                 <div class="polaris-chat-scanlines"></div>
                 <div class="polaris-chat-header">
-                    <span>🜁 Polaris Co-Pilot Sync</span>
+                    <span><span class="polaris-glyph" aria-hidden="true"></span> Polaris Co-Pilot Sync</span>
                 </div>
                 <div id="polaris-chat-messages" class="polaris-chat-messages">
                     <!-- Loaded dynamically -->
@@ -1160,7 +1220,7 @@
                 </div>
                 <!-- Quick suggestions helper -->
                 <div id="polaris-chat-quick-actions" class="snf-ui-123">
-                    <button class="btn btn-secondary snf-ui-124" onclick="sendQuickPolarisPrompt('Suggest next move')" >🜁 Suggest Next Move</button>
+                    <button class="btn btn-secondary snf-ui-124" onclick="sendQuickPolarisPrompt('Suggest next move')" ><span class="polaris-glyph" aria-hidden="true"></span> Suggest Next Move</button>
                     <button class="btn btn-secondary snf-ui-125" onclick="sendQuickPolarisPrompt('Check biological floor')" >🔒 Check Biological Floor</button>
                     <button class="btn btn-secondary snf-ui-126" onclick="sendQuickPolarisPrompt('Decompress shame spiral')" >🔥 Decompress Shame Spiral</button>
                 </div>
@@ -3023,7 +3083,7 @@
                     <!-- POLARIS AI CONFIGURATION PANEL -->
                     <div class="glass-card snf-ui-475" >
                         <div class="safebox-header snf-ui-456" >
-                            <h3 class="text-teal snf-ui-457" >🜁 Polaris AI Sync Settings</h3>
+                            <h3 class="text-teal snf-ui-457" ><span class="polaris-glyph" aria-hidden="true"></span> Polaris AI Sync Settings</h3>
                             <span class="badge snf-ui-476" >AI Co-Pilot</span>
                         </div>
                         <p class="text-muted mb-3 snf-ui-459" >
@@ -3121,6 +3181,42 @@
                             </div>
                         </div>
 
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: SETTINGS / DANGER ZONE -->
+            <div id="tab-settings" class="tab-content hidden">
+                <div class="glass-card">
+                    <div class="safebox-header">
+                        <h2 class="text-teal">Settings</h2>
+                        <span class="badge snf-ui-482">Local only</span>
+                    </div>
+                    <p class="text-secondary mb-3 mt-1 snf-ui-1">
+                        App controls stay here so the primary rail stays focused on recovery actions and crisis exits.
+                    </p>
+                    <div class="crisis-exits-strip" aria-label="Crisis exits always available" style="margin-bottom:1.25rem;">
+                        <span class="crisis-exits-label">Help is never locked</span>
+                        <a href="tel:988">988</a>
+                        <a href="sms:741741?body=HOME">HOME → 741741</a>
+                        <a href="tel:911">911</a>
+                        <button type="button" class="linkish" data-tab-jump="safebox">Safe Box</button>
+                    </div>
+                </div>
+
+                <div class="glass-card danger-zone-card mt-3" id="settings-danger-zone">
+                    <div class="safebox-header">
+                        <h3 class="text-red" style="margin:0;">Danger zone</h3>
+                        <span class="badge" style="background: rgba(230,40,60,0.2); color: var(--accent-red);">Confirm required</span>
+                    </div>
+                    <p class="text-muted mb-3" style="font-size:0.85rem;">These actions are intentional. Each asks for confirmation before running.</p>
+                    <div class="danger-zone-actions">
+                        <button type="button" class="btn btn-secondary" id="btn-settings-lock">
+                            🔒 Lock App
+                        </button>
+                        <button type="button" class="btn btn-danger" id="btn-settings-reset">
+                            Reset Intake
+                        </button>
                     </div>
                 </div>
             </div>
@@ -3586,6 +3682,24 @@
         </div>
 
         <!-- ========================================== -->
+        <!-- DANGER ZONE CONFIRM MODAL                  -->
+        <!-- ========================================== -->
+        <div id="danger-confirm-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="danger-confirm-title">
+            <div class="modal-content safety-modal" style="max-width: 440px;">
+                <div class="modal-title" id="danger-confirm-title" style="color: var(--accent-red); font-size: 1.15rem; font-weight: bold; margin-bottom: 0.75rem;">
+                    Confirm action
+                </div>
+                <div class="modal-desc" id="danger-confirm-message" style="line-height: 1.5; font-size: 0.9rem; color: var(--text-primary); margin-bottom: 1.5rem;">
+                    Are you sure?
+                </div>
+                <div class="modal-footer" style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+                    <button class="btn btn-secondary" id="btn-danger-confirm-cancel" type="button">Cancel</button>
+                    <button class="btn btn-danger" id="btn-danger-confirm-ok" type="button">Confirm</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
         <!-- CARING CONTACT MODAL                       -->
         <!-- ========================================== -->
         <div id="caring-contact-modal" class="modal-overlay">
@@ -3627,6 +3741,6 @@
     <!-- Toast Notification Container -->
     <div id="toast-container" class="snf-ui-588"></div>
 
-    <script src="app.js?v=2.7"></script>
+    <script src="app.js?v=2.8"></script>
 </body>
 </html>
