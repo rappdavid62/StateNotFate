@@ -1,0 +1,39 @@
+name: Hourly public production smoke
+
+on:
+  schedule:
+    # Off the top of the hour; schedules run only from the default branch.
+    - cron: '23 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: public-production-smoke-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  production-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Read-only public production checks
+        run: npx playwright test tests/public/production-smoke.spec.ts --config=playwright.production.config.ts --workers=1
+        env:
+          PLAYWRIGHT_BASE_URL: https://statenotfate.netlify.app
+      - name: Preserve failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-smoke-failure
+          path: test-results/
+          retention-days: 7
+          if-no-files-found: ignore

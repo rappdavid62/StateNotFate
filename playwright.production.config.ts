@@ -12,7 +12,8 @@ export default defineConfig({
   },
   use: {
     baseURL: process.env.PLAYWRIGHT_BASE_URL ?? 'https://statenotfate.netlify.app',
-    trace: 'on-first-retry'
+    trace: 'on-first-retry',
+    screenshot: 'only-on-failure'
   },
   projects: [
     {
