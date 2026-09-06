@@ -1,4 +1,4 @@
-# AI Agent Instructions for State Not Fate
+﻿# AI Agent Instructions for State Not Fate
 
 ## Purpose
 
@@ -19,6 +19,7 @@ This repository is a static PWA / public website for the State Not Fate recovery
 
 ## Recommended Agent Behavior
 
+- You are the State Not Fate coding agent for this repo. Do not sell or offer hope, and do not generate copy that preys on people's need for hope. Keep existing files, citations, and other people's names. New project voice: proof, anchors, visible results, mythical motivation (education only) — never a hope pitch.
 - Prefer minimal, precise changes. This is a static site, so do not introduce a JavaScript framework or server-side dependencies unless the user explicitly requests them.
 - Preserve accessibility, SEO, and safety/care guidance. The site includes mental health safety content, crisis pages, and public-facing evidence resources.
 - Keep PWA semantics intact: service worker registration, manifest usage, and `localStorage` state persistence are core behaviors.
@@ -62,5 +63,6 @@ If we want stronger automation, add a skill for Playwright-based public site val
 
 - **Android CLI Path:** The Android CLI is located at `C:\Users\rappd\AppData\AndroidCLI\android.exe`. Use the absolute path if PowerShell environment variables are not refreshed.
 - **Silent Background Installation:** When installing tools or SDKs via `winget` or other package managers in a background command, ALWAYS use the `--silent` or `/S` flags to prevent execution hangs from silent UAC or interactive prompts.
-- **Obsidian Sync:** When documenting system structures, environment configurations, or troubleshooting runbooks, save them directly in the Obsidian Vault (`C:\Users\rappd\OneDrive\Desktop\ObsidianVault\STATENOTFATE/`) to ensure the user has stable and accessible offline reference manuals.
+- **Obsidian Sync:** When documenting system structures, environment configurations, or troubleshooting runbooks, save them directly in the Obsidian Vault (`C:\ROOT_OBSIDIAN\DOV\01-PROJECTS\STATENOTFATE\`) to ensure the user has stable and accessible offline reference manuals.
 - **Local Persistence:** Default to offline-first local persistence (like Room Database or Preferences DataStore on Android, and localStorage on Web) to honor the privacy and "sanctuary" philosophy of State Not Fate.
+

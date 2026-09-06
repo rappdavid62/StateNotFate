@@ -3387,6 +3387,46 @@ backdrop-filter: blur(8px);
     transform: scale(1.1) rotate(5deg);
 }
 
+.polaris-presence-stage {
+    width: 5.5rem;
+    height: 5.5rem;
+    flex-shrink: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1.25rem;
+    background: rgba(20, 200, 175, 0.08);
+    border: 1px solid rgba(20, 200, 175, 0.22);
+}
+
+#polaris-content[data-companion-theme] .polaris-presence-stage {
+    display: flex;
+}
+
+#polaris-content[data-companion-theme] #polaris-companion-avatar.snf-ui-68 {
+    display: block;
+    font-size: 3.4rem;
+}
+
+#polaris-content[data-energy="collapse"] .polaris-presence-card {
+    opacity: 0.86;
+    filter: saturate(0.72);
+}
+
+#polaris-content[data-energy="low"] .polaris-presence-card {
+    opacity: 0.94;
+}
+
+#polaris-content[data-proof-today="1"] .polaris-presence-stage {
+    background: rgba(240, 180, 70, 0.12);
+    border-color: rgba(240, 180, 70, 0.35);
+}
+
+#polaris-content[data-energy="collapse"] .polaris-presence-stage {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
 .polaris-companion-text {
     font-size: 1.05rem;
     line-height: 1.6;

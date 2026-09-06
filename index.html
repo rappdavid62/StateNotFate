@@ -907,9 +907,11 @@
             </div>
 
             <!-- Day Message with Companion -->
-            <div id="polaris-day-message" class="polaris-module-card polaris-module-teal">
+            <div id="polaris-day-message" class="polaris-module-card polaris-module-teal polaris-presence-card">
                 <div class="polaris-companion-message">
-                    <div id="polaris-companion-avatar" class="polaris-companion-avatar snf-ui-68" ></div>
+                    <div id="polaris-presence-stage" class="polaris-presence-stage">
+                        <div id="polaris-companion-avatar" class="polaris-companion-avatar snf-ui-68" ></div>
+                    </div>
                     <div class="snf-ui-33">
                         <div class="polaris-section-title polaris-section-title-teal snf-ui-69" >Today</div>
                         <div id="polaris-message-text" class="polaris-companion-text">Loading...</div>
@@ -1082,7 +1084,7 @@
             <!-- Companion Settings -->
             <div id="polaris-companion-settings" class="glass-card snf-ui-109" >
                 <h3 class="snf-ui-110">Companion Presence</h3>
-                <p class="text-muted snf-ui-111" >Select a calm, slightly mythic presence to accompany you.</p>
+                <p class="text-muted snf-ui-111" >Pick a presence. It changes how Polaris talks — local voice first, optional model overlay second.</p>
                 <div id="companion-selector-list" class="snf-ui-112">
                     <!-- Control Option -->
                     <div class="snf-ui-113">
@@ -1145,7 +1147,7 @@
             <div id="polaris-chat-container" class="polaris-chat-container">
                 <div class="polaris-chat-scanlines"></div>
                 <div class="polaris-chat-header">
-                    <span>🜁 Polaris Co-Pilot Sync</span>
+                    <span>🜁 Polaris</span>
                 </div>
                 <div id="polaris-chat-messages" class="polaris-chat-messages">
                     <!-- Loaded dynamically -->
@@ -1154,12 +1156,12 @@
                             <span>Polaris</span>
                             <span class="chat-time">--:--</span>
                         </div>
-                        Secure channel established. Ready to check functional alignment. Say anything to begin.
+                        You're here. No catch-up. Say what's actually going on.
                     </div>
                 </div>
                 <!-- Typing Indicator -->
                 <div id="polaris-chat-typing" class="polaris-chat-typing hidden">
-                    <span>Syncing neural firmware</span>
+                    <span>Polaris is thinking</span>
                     <div class="polaris-chat-dot"></div>
                     <div class="polaris-chat-dot"></div>
                     <div class="polaris-chat-dot"></div>
@@ -1171,7 +1173,7 @@
                     <button class="btn btn-secondary snf-ui-126" onclick="sendQuickPolarisPrompt('Decompress shame spiral')" >🔥 Decompress Shame Spiral</button>
                 </div>
                 <div class="polaris-chat-input-area">
-                    <input type="text" id="polaris-chat-input" class="polaris-chat-input" placeholder="Type functional telemetry..." onkeydown="if(event.key==='Enter') sendPolarisChatMessage()">
+                    <input type="text" id="polaris-chat-input" class="polaris-chat-input" placeholder="Say what's actually going on..." onkeydown="if(event.key==='Enter') sendPolarisChatMessage()">
                     <button class="polaris-chat-send" onclick="sendPolarisChatMessage()">SEND</button>
                 </div>
             </div>
@@ -3622,8 +3624,6 @@
         <div id="screen-smart-welcome" class="screen hidden">
             <!-- Smart welcome content populated by showSmartWelcomeScreen() -->
         </div>
-
-    </div>
     
     <!-- Testing/Prototype Build Footer -->
     <div class="snf-ui-587">
@@ -3633,6 +3633,7 @@
     <!-- Toast Notification Container -->
     <div id="toast-container" class="snf-ui-588"></div>
 
-    <script src="app.js?v=2.7"></script>
+    <script src="src/polaris-presence.js?v=1"></script>
+    <script src="app.js?v=2.8"></script>
 </body>
 </html>

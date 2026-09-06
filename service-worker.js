@@ -1,4 +1,4 @@
-const CACHE_NAME = 'state-not-fate-cache-v12';
+const CACHE_NAME = 'state-not-fate-cache-v13';
 const ASSETS_TO_CACHE = [
   './index.html',
   './evidence.html',
@@ -9,6 +9,7 @@ const ASSETS_TO_CACHE = [
   './essays.html',
   './index.css',
   './app.js',
+  './src/polaris-presence.js',
   './manifest.json',
   './robots.txt',
   './sitemap.xml'

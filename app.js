@@ -4553,6 +4553,35 @@ const COMPANION_QUESTION_TREE = {
             return map[dayState] || map.medium;
         }
 
+        function polarisPresenceApi() {
+            return (typeof window !== 'undefined' && window.PolarisPresence) ? window.PolarisPresence : null;
+        }
+
+        function polarisLocalLine(mode) {
+            ensurePolarisState();
+            const api = polarisPresenceApi();
+            const energy = (state.todayEnergy || 'medium').toLowerCase();
+            const proofToday = state.polaris.proof && state.polaris.proof.today ? state.polaris.proof.today : 0;
+            const skin = state.polaris.profile.companionSkin || '';
+            if (api && typeof api.getPolarisLocalLine === 'function') {
+                return api.getPolarisLocalLine({ energy: energy, proofToday: proofToday, skin: skin, mode: mode || 'presence' });
+            }
+            if (energy === 'collapse') {
+                return 'Floor Wins Mode. No performance standard. Stay safe. One smallest viable action, then rest.';
+            }
+            return defaultMsgFallback(energy);
+        }
+
+        function defaultMsgFallback(energy) {
+            const map = {
+                high: 'Capacity is up. Run the anchors, then stop before it becomes punishment.',
+                medium: 'Core anchors first. One extra task if it is small. No heroic plan.',
+                low: 'Low day. The floor is still here. Pick the cheapest visible action.',
+                collapse: 'Floor Wins Mode. No performance standard. Stay safe. One smallest viable action, then rest.'
+            };
+            return map[energy] || map.medium;
+        }
+
         function getCompanionMessage(dayState, defaultMsg) {
             if (state.reEntry && state.reEntry.lastMessageType === 'missed-yesterday') {
                 return "You missed. That is data, not a verdict. Restart with one floor anchor.";
@@ -4560,34 +4589,8 @@ const COMPANION_QUESTION_TREE = {
             if (state.futureNarrowing === "none") {
                 return "If no future feels believable, lower the task. The goal is not hope. The goal is one proof action.";
             }
-            if (dayState === 'collapse') {
-                return "Floor Wins Mode. No performance standard today. Stay safe, reduce damage, complete the smallest viable anchor.";
-            }
-            // Give the companion a slightly mythic/calm voice if enabled, overriding the default message
             if (!state.polaris.profile.companionSkin) return defaultMsg;
-            
-            const PSYCHOED_TENETS = [
-                "Momentum creates motivation, not the other way around.",
-                "Avoidance reduces anxiety for 10 minutes, but deepens the depressive state for 10 hours.",
-                "Shame is the heaviest cognitive drag. You are allowed to restart your day without moral punishment.",
-                "Depression is a physical drag, not a moral failing. Protect your biological core.",
-                "Disrupted sleep is one of the main engines of depression. Defend your wind-down window.",
-                "The goal is not a perfect day. The goal is one piece of proof.",
-                "Small setbacks hit harder than they should. This is a temporary condition of the nervous system."
-            ];
-            
-            // Randomly select one if high or medium, otherwise use fallback
-            // Seed randomness based on date so it's consistent for the day
-            const daySeed = new Date().getDate();
-            const tenet = PSYCHOED_TENETS[daySeed % PSYCHOED_TENETS.length];
-            
-            const map = {
-                high: tenet,
-                medium: tenet,
-                low: 'I am here. The floor remains. Do what you can.',
-                collapse: 'Rest. There is no failure on the floor.'
-            };
-            return map[dayState] || defaultMsg;
+            return polarisLocalLine('presence');
         }
 
         function getAnchorsForToday(dayState) {
@@ -4780,6 +4783,8 @@ const COMPANION_QUESTION_TREE = {
                 avatarEl.style.display = 'none';
                 delete contentEl.dataset.companionTheme;
             }
+            contentEl.dataset.energy = dayState;
+            contentEl.dataset.proofToday = (state.polaris.proof && state.polaris.proof.today > 0) ? '1' : '0';
 
             // Highlight active companion selector button
             const activeSkin = state.polaris.profile.companionSkin || '';
@@ -5946,7 +5951,7 @@ const COMPANION_QUESTION_TREE = {
                             <span>Polaris (${state.polaris.profile.companionSkin})</span>
                             <span class="chat-time">${getFormattedTime()}</span>
                         </div>
-                        Secure channel established. Ready to check functional alignment. Say anything to begin.
+                        ${escapeHTML(polarisLocalLine('greeting'))}
                     </div>
                 `;
             } else {
@@ -5996,7 +6001,7 @@ const COMPANION_QUESTION_TREE = {
 
             const apiKey = getOpenAIKey();
             if (!apiKey) {
-                await addPolarisChatMessage('system', "ERROR: OpenAI API Key not configured. Go to Settings (⚙) to configure a key, or add openai-api-key.txt to your local workspace knowledge folder.");
+                await addPolarisChatMessage('system', polarisLocalLine('nokey'));
                 return;
             }
 
@@ -6036,11 +6041,11 @@ const COMPANION_QUESTION_TREE = {
         async function sendQuickPolarisPrompt(promptLabel) {
             let userPromptText = "";
             if (promptLabel === 'Suggest next move') {
-                userPromptText = "Analyze my current parameters and suggest the next minimum viable action block.";
+                userPromptText = "I'm here. What's the smallest useful next move given my current state?";
             } else if (promptLabel === 'Check biological floor') {
-                userPromptText = "Verify if my biological core is defended. Run diagnostic checklist.";
+                userPromptText = "Check my floor: wake time, light, water, meds. Keep it concrete. Don't lecture.";
             } else if (promptLabel === 'Decompress shame spiral') {
-                userPromptText = "Cognitive overload. Help me separate state from identity and decompress functional drag.";
+                userPromptText = "Shame is high. Separate state from identity. Keep the next move small.";
             } else {
                 userPromptText = promptLabel;
             }
@@ -6050,7 +6055,7 @@ const COMPANION_QUESTION_TREE = {
 
             const apiKey = getOpenAIKey();
             if (!apiKey) {
-                await addPolarisChatMessage('system', "ERROR: OpenAI API Key not configured.");
+                await addPolarisChatMessage('system', polarisLocalLine('nokey'));
                 return;
             }
 
@@ -6070,48 +6075,23 @@ const COMPANION_QUESTION_TREE = {
         }
 
         async function callPolarisLLM(userText, apiKey) {
-            const skin = state.polaris.profile.companionSkin || 'None';
-            let personaGuideline = "";
-            
-            if (['🦇', '💀', '👻', '🧛', '🕷️', '🧟', '🐦‍⬛'].includes(skin)) {
-                personaGuideline = "\n- COMPANION PERSONA: Adopt a dry, slightly gothic, dark humor, blunt but supportive tone. Embrace the dark mode and shadow aesthetic. Treat energy depletion with dark pragmatism.";
-            } else if (['🦊', '🤖', '🛸', '👾'].includes(skin)) {
-                personaGuideline = "\n- COMPANION PERSONA: Adopt a highly precise, technical, diagnostic terminal console tone. Refer to functions, states, and telemetry. You are a diagnostic supervisor checking the user's biological hardware.";
-            } else if (['🦉', '🌲', '🐺'].includes(skin)) {
-                personaGuideline = "\n- COMPANION PERSONA: Adopt a calm, grounded, organic wilderness guide tone. Refer to natural cycles, clean biological rhythms, daylight signals, and organic baselines.";
-            } else if (['🐉', '🧙‍♂️', '🦄'].includes(skin)) {
-                personaGuideline = "\n- COMPANION PERSONA: Adopt a sage-like, epic quest, mythic advisor tone. Frame the recovery process as an epic journey of incremental actions (runes/spells) to bypass dark magic (avoidance).";
-            } else if (['🐈', '🧸', '☕'].includes(skin)) {
-                personaGuideline = "\n- COMPANION PERSONA: Adopt a warm, comforting, hearth-like, low-friction gentle tone. Emphasize resting without self-punishment, cozy baseline safety, and slow soft transitions.";
-            }
+            ensurePolarisState();
+            const api = polarisPresenceApi();
+            const skin = state.polaris.profile.companionSkin || '';
+            const anchorsToday = (state.polaris.anchors && state.polaris.anchors.today) ? state.polaris.anchors.today : {};
+            const telemetry = {
+                skin: skin,
+                energy: state.todayEnergy || 'medium',
+                pattern: state.dominantPattern || 'Rhythm Collapse',
+                hopeLevel: state.currentHopeLevel || 1,
+                proofTotal: (state.polaris.proof && state.polaris.proof.total) || 0,
+                proofToday: (state.polaris.proof && state.polaris.proof.today) || 0,
+                anchorsToday: anchorsToday
+            };
 
-            const systemPrompt = `You are Polaris, a systems AI companion inside the "State Not Fate" depression recovery operating system. 
-The user is interacting with you via a secure terminal. You are a calm, intelligent operating system, NOT a therapist, friend, or motivational coach.
-Write in a blunt, precise, objective tone. Avoid positive fluff, sentimentality, or moralizing. Frame depression as a temporary systems failure and energy deconditioning, not a permanent identity.${personaGuideline}
-
-CORE VOICE & COPY RULES:
-- Use phrases like: "You're here.", "No catch-up.", "Pick the current state.", "We'll keep this small.", "Nothing reset.", "Start with the floor.", "Make it smaller.", "State, not fate.", "Action happened.", "Proof logged."
-- AVOID these forbidden words/concepts: "journey", "empower", "thrive", "crush your goals", "be your best self", "try harder", "you should", "just", "back on track", "failed", "streak broken", "lost progress", "start over", "what's your why", "unlock your potential", "forced positivity", "therapy clichés".
-
-SYSTEM PERSPECTIVE (From Docs):
-- "Hope" is the brain's prediction of whether effort will lead to improvement. It is a system signal, not a mood.
-- Defend the biological core first (sleep wake time, light, water, medications). Do not recommend complex scheduling or social exposure if the biological floor is unstable.
-- Avoidance reduces anxiety for 10 minutes but deepens the depressive state for 10 hours. Act before you feel ready; momentum creates motivation.
-- Progress pauses; it never resets. A gap day is data, not a verdict. Restart without punishment.
-
-USER CURRENT TELEMETRY:
-- Companion Selected: \${state.polaris.profile.companionSkin || 'None'}
-- Current Energy State: \${(state.todayEnergy || 'medium').toUpperCase()}
-- Dominant Functional Pattern: \${state.dominantPattern || 'Rhythm Collapse'}
-- Current Hope Level: Level \${state.currentHopeLevel || 1}
-- Total Proof Points: \${state.polaris.proof.total} pts
-- Today's completed anchors: \${JSON.stringify(Object.keys(state.polaris.anchors.today || {}).filter(k => state.polaris.anchors.today[k]))}
-- Today's incomplete anchors: \${JSON.stringify(Object.keys(state.polaris.anchors.today || {}).filter(k => !state.polaris.anchors.today[k]))}
-
-CRITICAL CRISIS ROUTING:
-If the user expresses immediate self-harm, suicidal ideation, or crisis: immediately output: "ALERT: This query resides outside the functional self-management layer. Please transition to emergency resources immediately. Call or text 988 (Crisis Lifeline) or go to the nearest emergency facility."
-
-Your response should be under 100 words. Stick to objective mechanics, pattern diagnostics, or micro-action calibration. No fluff.`;
+            const systemPrompt = (api && typeof api.buildPolarisSystemPrompt === 'function')
+                ? api.buildPolarisSystemPrompt(telemetry)
+                : 'You are Polaris. Speak bluntly. Use the user\'s energy state. One small next move. Call or text 988 for crisis.';
 
             const chatHistory = state.polaris.chatHistory || [];
             const apiMessages = [
@@ -6136,8 +6116,8 @@ Your response should be under 100 words. Stick to objective mechanics, pattern d
                 body: JSON.stringify({
                     model: "gpt-4o-mini",
                     messages: apiMessages,
-                    max_tokens: 180,
-                    temperature: 0.5
+                    max_tokens: 280,
+                    temperature: 0.8
                 })
             });
 
@@ -6340,6 +6320,7 @@ Your response should be under 100 words. Stick to objective mechanics, pattern d
         window.saveOpenAIKey = saveOpenAIKey;
         window.sendPolarisChatMessage = sendPolarisChatMessage;
         window.sendQuickPolarisPrompt = sendQuickPolarisPrompt;
+        window.polarisLocalLine = polarisLocalLine;
         window.toggleFutureNarrowing = toggleFutureNarrowing;
         window.openPossibilityCollapseModal = openPossibilityCollapseModal;
         window.closePossibilityCollapseModal = closePossibilityCollapseModal;
