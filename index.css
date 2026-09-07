@@ -210,7 +210,7 @@
         /* Glassmorphic Utilities -> HUD Cards */
         .glass-card {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--card-border);
             border-left: 2px solid var(--accent-teal-dim);
@@ -1402,7 +1402,7 @@
             bottom: 0;
             background: rgba(7, 9, 12, 0.85);
             -webkit-backdrop-filter: blur(8px);
-            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
             display: none;
             align-items: center;
             justify-content: center;
@@ -1632,7 +1632,7 @@
             letter-spacing: 0.1em;
             text-transform: uppercase;
             margin-bottom: 1.25rem;
-            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
             box-shadow: 0 0 16px rgba(20, 200, 175, 0.1);
         }
 
@@ -1645,6 +1645,7 @@
             margin-bottom: 1.25rem;
             background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -1690,7 +1691,7 @@
             color: var(--text-primary);
             border-radius: var(--radius-md);
             padding: 0.85rem 1.5rem;
-            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
             transition: all 0.25s ease;
         }
 
@@ -1714,7 +1715,7 @@
             border-top: 2px solid rgba(20, 200, 175, 0.3);
             border-radius: var(--radius-md);
             padding: 1.5rem;
-            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
@@ -3137,9 +3138,9 @@ body.future-narrowing-active #polaris-growth-layer {
     margin-bottom: 1.25rem;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
     -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
     -webkit--webkit-backdrop-filter: blur(8px);
-backdrop-filter: blur(8px);
+-webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
     transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -4376,5 +4377,5 @@ backdrop-filter: blur(8px);
 .snf-ui-584 { color: var(--accent-orange); font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
 .snf-ui-585 { line-height: 1.5; font-size: 0.9rem; color: var(--text-primary); margin-bottom: 1.5rem; }
 .snf-ui-586 { display: flex; justify-content: flex-end; }
-.snf-ui-587 { position:fixed; bottom:0; pointer-events:none; left:0; right:0; background:rgba(240,115,30,0.12); border-top:1px solid rgba(240,115,30,0.25); padding:0.4rem 1rem; text-align:center; font-size:0.75rem; color:#e8a050; z-index:9999; backdrop-filter:blur(8px); font-family:'Outfit','Inter',sans-serif; }
+.snf-ui-587 { position:fixed; bottom:0; pointer-events:none; left:0; right:0; background:rgba(240,115,30,0.12); border-top:1px solid rgba(240,115,30,0.25); padding:0.4rem 1rem; text-align:center; font-size:0.75rem; color:#e8a050; z-index:9999; -webkit-backdrop-filter:blur(8px); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); font-family:'Outfit','Inter',sans-serif; }
 .snf-ui-588 { position: fixed; top: 1rem; right: 1rem; z-index: 10000; display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none; max-width: 380px; }
