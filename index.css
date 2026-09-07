@@ -210,8 +210,8 @@
         /* Glassmorphic Utilities -> HUD Cards */
         .glass-card {
             background: var(--card-bg);
-            -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
             border: 1px solid var(--card-border);
             border-left: 2px solid var(--accent-teal-dim);
             border-radius: var(--radius-md);
@@ -1401,7 +1401,6 @@
             right: 0;
             bottom: 0;
             background: rgba(7, 9, 12, 0.85);
-            -webkit-backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
             display: none;
             align-items: center;
@@ -3138,9 +3137,7 @@ body.future-narrowing-active #polaris-growth-layer {
     margin-bottom: 1.25rem;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
     -webkit-backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-    -webkit--webkit-backdrop-filter: blur(8px);
--webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
     transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -4377,5 +4374,5 @@ body.future-narrowing-active #polaris-growth-layer {
 .snf-ui-584 { color: var(--accent-orange); font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
 .snf-ui-585 { line-height: 1.5; font-size: 0.9rem; color: var(--text-primary); margin-bottom: 1.5rem; }
 .snf-ui-586 { display: flex; justify-content: flex-end; }
-.snf-ui-587 { position:fixed; bottom:0; pointer-events:none; left:0; right:0; background:rgba(240,115,30,0.12); border-top:1px solid rgba(240,115,30,0.25); padding:0.4rem 1rem; text-align:center; font-size:0.75rem; color:#e8a050; z-index:9999; -webkit-backdrop-filter:blur(8px); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); font-family:'Outfit','Inter',sans-serif; }
+.snf-ui-587 { position:fixed; bottom:0; pointer-events:none; left:0; right:0; background:rgba(240,115,30,0.12); border-top:1px solid rgba(240,115,30,0.25); padding:0.4rem 1rem; text-align:center; font-size:0.75rem; color:#e8a050; z-index:9999; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); font-family:'Outfit','Inter',sans-serif; }
 .snf-ui-588 { position: fixed; top: 1rem; right: 1rem; z-index: 10000; display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none; max-width: 380px; }
