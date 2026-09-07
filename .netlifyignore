@@ -11,7 +11,6 @@ playwright-report/
 .tmp(1).drivedownload/
 .netlify/
 .git/
-src/
 
 # Test and config files
 tests/

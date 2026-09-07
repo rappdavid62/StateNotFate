@@ -1,0 +1,339 @@
+{
+  "contract_version": "2026-08-30-v1",
+  "as_of": "2026-08-30T21:30:00-04:00",
+  "purpose": "Canonical read-only routing contract for David Rapp's second brain and AI inbox. It classifies inbound job events, selects the correct resume family, prepares drafts when appropriate, and blocks any outbound send, apply, or scheduling action until David explicitly approves the exact action.",
+  "approval_boundary": {
+    "explicit_approval_required_for": [
+      "reply",
+      "send",
+      "apply",
+      "schedule",
+      "upload_to_google_drive",
+      "upload_to_ai_wisebase"
+    ],
+    "safe_without_outbound_approval": [
+      "read",
+      "classify",
+      "deduplicate",
+      "rank",
+      "select_resume_family",
+      "prepare_draft",
+      "log_locally"
+    ],
+    "rule": "A draft is proposed text only. No outbound action is authorized until David approves the exact company or thread, role, proposed action, and evidence event."
+  },
+  "account_state_registry": {
+    "default_path": "docs/job-platform-account-state-2026-08-31.json",
+    "purpose": "Tracks repeated platform and company state so the inbox can avoid duplicate applications and can route pending assessments or existing threads correctly."
+  },
+  "source_status": {
+    "google_drive": "available_and_checked_2026-08-30",
+    "gmail": "available_and_checked_2026-08-30",
+    "github": "available_and_checked_2026-08-30",
+    "public_web": "available_and_checked_2026-08-30",
+    "ai_wisebase": "knowledge_retrieval_available_but_file_listing_empty_2026-08-30",
+    "workspace_job_folder": "not_present_in_active_snf_deploy_workspace",
+    "limitations": [
+      "DataAnnotation authenticated dashboard state was not available.",
+      "TELUS authenticated account and assessment state were not available.",
+      "The remote AI and remote SaaS support resume variants were confirmed as local artifacts, but not re-confirmed in Google Drive during this run.",
+      "LinkedIn and Indeed digests were available in Gmail, but most were noisy lead alerts rather than decision-grade direct outreach."
+    ]
+  },
+  "candidate_profile": {
+    "confirmed_evidence": [
+      "David Rapp baseline profile is directly confirmed from Google Drive file David Rapp Comprehensive Handoff Profile and Base Assessment.pdf.",
+      "State of Ohio Certified Peer Recovery Supporter license APS.006470 is confirmed from Drive resume evidence.",
+      "OhioMHAS 40-hour Peer Recovery Supporter training completion is confirmed from Drive resume evidence.",
+      "Recent work evidence includes Eleeo operations work and Clark And Sons Moving driver or mover work from Drive resumes.",
+      "Recent public technical evidence includes StateNotFate GitHub commits on 2026-08-27 and 2026-08-28."
+    ],
+    "inferred_strengths": [
+      "Strongest remote lane is AI evaluation, prompt QA, search-quality, and documentation-minded workflow work.",
+      "Second-strongest remote lane is customer support, product support, and support operations with knowledge-base or process-improvement framing."
+    ],
+    "unresolved_facts": [
+      "Current DataAnnotation account status",
+      "Current TELUS account and assessment status",
+      "Exact Eleeo end date if a form requires it",
+      "Exact Clark And Sons date wording if a form requires it",
+      "Whether David wants the remote AI and remote SaaS support resume families promoted into Drive or Wisebase"
+    ]
+  },
+  "resume_registry": [
+    {
+      "resume_family": "remote_ai_search_quality",
+      "status": "local_artifact_confirmed",
+      "primary_artifact": "C:\\Users\\rappd\\Documents\\Codex\\2026-06-18\\goal-search-the-internet-as-well\\outputs\\remote-ai-search-quality-resume-v1.md",
+      "supporting_evidence": [
+        "Google Drive baseline profile PDF",
+        "GitHub StateNotFate public project evidence"
+      ],
+      "use_for": [
+        "DataAnnotation",
+        "TELUS Online Data Analyst",
+        "TELUS Media Search Analyst",
+        "Welo Data evaluator roles",
+        "prompt QA",
+        "search quality",
+        "AI workflow review",
+        "documentation assistant"
+      ],
+      "do_not_exaggerate": [
+        "formal software engineering employment",
+        "advanced data science credentials",
+        "direct enterprise SaaS support tenure"
+      ]
+    },
+    {
+      "resume_family": "remote_saas_product_support",
+      "status": "local_artifact_confirmed_with_drive_supporting_resume",
+      "primary_artifact": "C:\\Users\\rappd\\Documents\\Codex\\2026-06-18\\goal-search-the-internet-as-well\\outputs\\remote-saas-product-support-resume-v1.md",
+      "supporting_evidence": [
+        "https://drive.google.com/file/d/1ad1S7YTW8OJbhoQPPRyOZwfW4PfakTBW/view?usp=drivesdk",
+        "GitHub StateNotFate public project evidence"
+      ],
+      "use_for": [
+        "TeamSnap",
+        "Everway",
+        "customer support specialist",
+        "product support specialist",
+        "support operations",
+        "knowledge-base support",
+        "AI tool support"
+      ],
+      "do_not_exaggerate": [
+        "deep CRM administration experience",
+        "multi-year SaaS support tenure",
+        "formal Zendesk or Salesforce ownership unless verified"
+      ]
+    },
+    {
+      "resume_family": "low_voltage_field_tech",
+      "status": "drive_and_local_artifacts_confirmed",
+      "primary_artifact": "https://drive.google.com/file/d/1coQ6egcNIAq7v-YyWp5GGIr_yYBNZcq6/view?usp=drivesdk",
+      "secondary_artifact": "C:\\Users\\rappd\\Documents\\Codex\\2026-06-18\\goal-search-the-internet-as-well\\outputs\\low-voltage-field-tech-resume-v1.md",
+      "use_for": [
+        "low-voltage technician",
+        "security systems installer",
+        "field technician",
+        "access control",
+        "alarm technician"
+      ],
+      "do_not_exaggerate": [
+        "continuous W-2 employment at Pro-Techs Security",
+        "licenses or certifications not directly documented"
+      ]
+    },
+    {
+      "resume_family": "prs_care",
+      "status": "drive_artifact_confirmed",
+      "primary_artifact": "https://docs.google.com/document/d/1Kyn5Q4m6OeJFJz8uGKMkKFHBh2lHJDZy/edit?usp=drivesdk&ouid=103719185395746002128&rtpof=true&sd=true",
+      "secondary_artifact": "https://drive.google.com/file/d/1XmQhY1HfnxUtIBOy3wzXNkLag2jmFLB1/view?usp=drivesdk",
+      "use_for": [
+        "peer recovery support",
+        "recovery support specialist",
+        "behavioral health support"
+      ],
+      "do_not_exaggerate": [
+        "clinical licensure",
+        "medication administration",
+        "formal therapist or counselor role"
+      ]
+    }
+  ],
+  "routing_rules": {
+    "classification": {
+      "reply_now": "A human recruiter, hiring manager, or interviewer requests a reply, asks a direct question, or offers scheduling. Prepare a draft and attach the mapped resume family, but do not send without explicit approval.",
+      "wait": "Application confirmation or automated receipt that explicitly does not require a reply. Log only.",
+      "lead_review": "A public role, digest, or recruiter-style message that still requires fit review, account-state checks, or approval before action.",
+      "save": "Worth keeping, but a key fact is missing or the fit is weaker than today's top actions.",
+      "backup": "Real but lower-yield, lower-pay, higher-friction, or privacy-heavier than the stronger leads.",
+      "closed": "Rejected, withdrawn, stale, duplicate, or explicitly not worth advancing."
+    },
+    "default_resume_mapping": {
+      "AI evaluation or search quality": "remote_ai_search_quality",
+      "remote SaaS or product support": "remote_saas_product_support",
+      "low-voltage or field technician": "low_voltage_field_tech",
+      "peer recovery or behavioral health support": "prs_care"
+    },
+    "reply_rules": [
+      "If the event is reply_now, create a draft using the matching resume family and surface it for approval.",
+      "If the event is wait, do not draft a reply.",
+      "If the event is lead_review, do not draft a reply unless the message explicitly asks a question or requires acknowledgement.",
+      "If the event is backup, do not spend effort on tailoring until the top queue is exhausted or David explicitly chooses it."
+    ]
+  },
+  "reply_templates": [
+    {
+      "template_id": "human_schedule_acknowledgement",
+      "use_when": "Human recruiter or hiring manager asks David to schedule or confirm interest.",
+      "body": "Hi [Name],\n\nThank you for reaching out. I am still interested in the [Role] opportunity and would be glad to continue the process. I can use the scheduling link you sent, or I am happy to coordinate by email if that is easier.\n\nBest,\nDavid Rapp"
+    },
+    {
+      "template_id": "human_followup_after_delay",
+      "use_when": "A real callback was missed and the thread still appears active.",
+      "body": "Hi [Name],\n\nI apologize for the delay getting back to you. I am still interested in the [Role] position and would be glad to continue the process if the opening is still active.\n\nBest,\nDavid Rapp"
+    },
+    {
+      "template_id": "application_form_short_summary_remote_ai",
+      "use_when": "A form asks for a short professional summary for an AI evaluation or search-quality role.",
+      "body": "Operations and documentation-minded AI workflow builder with hands-on experience in prompt systems, web QA, evidence checks, and practical written judgment. Strong fit for rubric-based evaluation, search quality, content review, and documentation-heavy support work."
+    },
+    {
+      "template_id": "application_form_short_summary_support_ops",
+      "use_when": "A form asks for a short professional summary for remote support or support-ops work.",
+      "body": "Customer-facing operations and support candidate with experience resolving issues under pressure, improving broken workflows, writing clearly, and turning unclear situations into usable next steps. Strong fit for remote customer or product support where documentation and calm troubleshooting matter."
+    }
+  ],
+  "current_queue": [
+    {
+      "priority": 1,
+      "lead_key": "welo-data|maps-visual-design-relevance-evaluator|gmail-and-public-web",
+      "company": "Welo Data",
+      "role": "Maps Visual Design Relevance Evaluator - English (US)",
+      "queue": "lead_review",
+      "contact_state": "direct_outreach_received",
+      "resume_family": "remote_ai_search_quality",
+      "proposed_action": "review_then_apply_if_approved",
+      "authorized_action": "none",
+      "why_it_fits": "Direct outreach plus a live official role page. The work is rubric-heavy, relevance-based, remote, and close to search-quality and QA judgment.",
+      "blockers": [
+        "Consent-based access to limited Google Maps activity history is required.",
+        "Role is freelance rather than W-2."
+      ],
+      "next_action": "Review the privacy and consent requirements first. If acceptable, use the remote AI resume family and prepare an approval-ready application packet.",
+      "evidence": [
+        "Gmail subject: Welo Data | Exciting New Opportunity: Maps Visual Design Relevance Evaluator on 2026-08-28",
+        "https://jobs.lever.co/weloglobal/cafd4b51-61bd-4b57-a6b2-49c8d08c05e2"
+      ]
+    },
+    {
+      "priority": 2,
+      "lead_key": "dataannotation|generalist|public-web",
+      "company": "DataAnnotation",
+      "role": "Generalist",
+      "queue": "lead_review",
+      "contact_state": "discovered",
+      "resume_family": "remote_ai_search_quality",
+      "proposed_action": "review_existing_account_state",
+      "authorized_action": "none",
+      "why_it_fits": "Strong match for careful reading, clear writing, and rubric-based judgment. Official listing remains live and flexible.",
+      "blockers": [
+        "Authenticated DataAnnotation dashboard or assessment state is unknown.",
+        "This is contractor platform work rather than a stable employer role."
+      ],
+      "next_action": "Check whether the existing account or qualification flow is already in progress before treating this as a new application.",
+      "evidence": [
+        "https://www.dataannotation.tech/job-board/generalist"
+      ]
+    },
+    {
+      "priority": 3,
+      "lead_key": "telus|online-data-analyst-us|public-web",
+      "company": "TELUS Digital",
+      "role": "Online Data Analyst - United States of America",
+      "queue": "lead_review",
+      "contact_state": "discovered",
+      "resume_family": "remote_ai_search_quality",
+      "proposed_action": "review_then_apply_if_account_is_clear",
+      "authorized_action": "none",
+      "why_it_fits": "Official role remains live and closely matches online research, data verification, guideline-following, and relevance evaluation.",
+      "blockers": [
+        "Authenticated TELUS account, prior application, and assessment state are unknown.",
+        "Compensation depends on task volume and quality."
+      ],
+      "next_action": "Use the remote AI resume family, but first verify whether David already applied, started the exam, or has an existing active account state.",
+      "evidence": [
+        "https://jobs.telusdigital.com/jobs/17271736-online-data-analyst-united-states-of-america"
+      ]
+    },
+    {
+      "priority": 4,
+      "lead_key": "teamsnap|customer-support-specialist|public-web",
+      "company": "TeamSnap",
+      "role": "Customer Support Specialist",
+      "queue": "lead_review",
+      "contact_state": "discovered",
+      "resume_family": "remote_saas_product_support",
+      "proposed_action": "stretch_apply_if_approved",
+      "authorized_action": "none",
+      "why_it_fits": "Clean full-time remote support role with emphasis on email, chat, test-environment troubleshooting, and written communication.",
+      "blockers": [
+        "Role asks for a proven track record in customer or technical support.",
+        "SaaS or startup experience is only partially supported by current evidence."
+      ],
+      "next_action": "If David wants one W-2 stretch apply, tailor the remote SaaS support resume toward workflow improvement, customer issue ownership, and clear writing.",
+      "evidence": [
+        "https://jobs.lever.co/teamsnap/ecd55682-f67b-4a0e-916d-1e9c6344cbaf"
+      ]
+    },
+    {
+      "priority": 5,
+      "lead_key": "everway|customer-support-specialist|public-web",
+      "company": "Everway",
+      "role": "Customer Support Specialist",
+      "queue": "save",
+      "contact_state": "discovered",
+      "resume_family": "remote_saas_product_support",
+      "proposed_action": "deadline_based_stretch_apply",
+      "authorized_action": "none",
+      "why_it_fits": "Knowledge-base work, accessible explanation, AI-tool use, and support process improvement all fit the evidence reasonably well.",
+      "blockers": [
+        "Role explicitly asks for 2+ years of customer support or related experience.",
+        "CRM and ticketing-platform experience is not strongly verified.",
+        "Application deadline is 2026-09-03."
+      ],
+      "next_action": "Keep it as a deadline-based stretch role. Only prepare an application if one stronger lead is already handled first.",
+      "evidence": [
+        "https://job-boards.greenhouse.io/everway/jobs/4700475006"
+      ]
+    },
+    {
+      "priority": 6,
+      "lead_key": "telus|media-search-analyst-english-us|public-web",
+      "company": "TELUS Digital",
+      "role": "Media Search Analyst - English (United States)",
+      "queue": "backup",
+      "contact_state": "discovered",
+      "resume_family": "remote_ai_search_quality",
+      "proposed_action": "hold_unless_device_requirement_is_met",
+      "authorized_action": "none",
+      "why_it_fits": "Relevant AI-eval style work, but the device requirement is a concrete extra barrier.",
+      "blockers": [
+        "Requires an active Apple account and Apple device.",
+        "Authenticated TELUS account state is still unknown."
+      ],
+      "next_action": "Do not spend time on this unless the Apple-device requirement is already satisfied.",
+      "evidence": [
+        "https://jobs.telusdigital.com/jobs/18119785-media-search-analyst-english-united-states"
+      ]
+    },
+    {
+      "priority": 7,
+      "lead_key": "telus|face-deduplication-project|gmail",
+      "company": "TELUS Digital",
+      "role": "Face Deduplication Project",
+      "queue": "backup",
+      "contact_state": "direct_outreach_received",
+      "resume_family": "none",
+      "proposed_action": "ignore_unless_cash_urgency_overrides_quality",
+      "authorized_action": "none",
+      "why_it_fits": "It is real direct outreach, but it is a low-value one-off task with privacy tradeoffs and weak strategic value.",
+      "blockers": [
+        "Low pay per image and one-off task structure.",
+        "Requires uploading personal face images, including older photos."
+      ],
+      "next_action": "Ignore unless David explicitly chooses low-value cash work despite the privacy tradeoff.",
+      "evidence": [
+        "Gmail subject: Remote Freelance Opportunity – Face Deduplication Project with TELUS Digital on 2026-08-17"
+      ]
+    }
+  ],
+  "current_reply_now_count": 0,
+  "operator_notes": [
+    "As of 2026-08-30, no verified human callback thread requires an immediate reply.",
+    "When a real callback arrives, prefer a short acknowledgement and the mapped resume family, then wait for David's explicit approval before sending.",
+    "Do not resurface stale July 2026 leads as top actions unless their public role pages or inbox evidence changed materially."
+  ]
+}

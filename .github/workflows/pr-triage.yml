@@ -1,0 +1,100 @@
+name: PR Triage & Stale Cleanup
+
+# Automatically labels and closes stale bot-created draft PRs.
+# Runs daily and on every new/reopened PR.
+
+on:
+  schedule:
+    - cron: '0 6 * * *'   # 06:00 UTC daily (02:00 ET)
+  pull_request_target:
+    types: [opened, reopened]
+  workflow_dispatch:
+
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Label bot-created PRs
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const pulls = await github.rest.pulls.list({ owner, repo, state: 'open', per_page: 30 });
+
+            const BOT_AUTHORS = ['Copilot', 'github-actions[bot]'];
+            const AGENT_BRANCH_PREFIXES = ['copilot/', 'CursAge/', 'grok/', 'codex/'];
+            const STALE_DAYS = 14;
+            const now = Date.now();
+
+            for (const pr of pulls.data) {
+              const authorIsBot = BOT_AUTHORS.includes(pr.user.login) || pr.user.type === 'Bot';
+              const branchIsAgent = AGENT_BRANCH_PREFIXES.some(p => pr.head.ref.startsWith(p));
+              const isAgentPR = authorIsBot || branchIsAgent;
+
+              const labels = pr.labels.map(l => l.name);
+              const daysSinceUpdate = (now - new Date(pr.updated_at).getTime()) / (1000 * 60 * 60 * 24);
+
+              // Label agent PRs
+              if (isAgentPR && !labels.includes('agent-pr')) {
+                try {
+                  await github.rest.issues.addLabels({
+                    owner, repo, issue_number: pr.number, labels: ['agent-pr']
+                  });
+                } catch (e) {
+                  // Label may not exist yet — create it
+                  try {
+                    await github.rest.issues.createLabel({
+                      owner, repo, name: 'agent-pr',
+                      color: '7057ff', description: 'PR created by an AI agent or bot'
+                    });
+                    await github.rest.issues.addLabels({
+                      owner, repo, issue_number: pr.number, labels: ['agent-pr']
+                    });
+                  } catch (e2) { console.log(`Could not label PR #${pr.number}: ${e2.message}`); }
+                }
+              }
+
+              // Mark stale
+              if (daysSinceUpdate > STALE_DAYS && !labels.includes('stale')) {
+                try {
+                  await github.rest.issues.createLabel({
+                    owner, repo, name: 'stale',
+                    color: 'ededed', description: 'No activity for 14+ days'
+                  }).catch(() => {});
+                  await github.rest.issues.addLabels({
+                    owner, repo, issue_number: pr.number, labels: ['stale']
+                  });
+                  await github.rest.issues.createComment({
+                    owner, repo, issue_number: pr.number,
+                    body: `⏰ **Stale PR detected.** This PR has had no activity for ${Math.floor(daysSinceUpdate)} days.\n\n` +
+                          `If this work is still needed, please update the branch or leave a comment.\n` +
+                          `Bot/agent draft PRs will be **auto-closed after 21 days** of inactivity.`
+                  });
+                } catch (e) { console.log(`Could not mark PR #${pr.number} stale: ${e.message}`); }
+              }
+
+              // Auto-close stale agent drafts after 21 days
+              if (isAgentPR && pr.draft && daysSinceUpdate > 21) {
+                try {
+                  await github.rest.issues.createComment({
+                    owner, repo, issue_number: pr.number,
+                    body: `🧹 **Auto-closing stale agent draft.** This bot/agent PR has been inactive for ${Math.floor(daysSinceUpdate)} days.\n\n` +
+                          `The branch \`${pr.head.ref}\` is preserved. Reopen if needed.`
+                  });
+                  await github.rest.pulls.update({
+                    owner, repo, pull_number: pr.number, state: 'closed'
+                  });
+                  console.log(`Closed stale agent draft PR #${pr.number}`);
+                } catch (e) { console.log(`Could not close PR #${pr.number}: ${e.message}`); }
+              }
+            }
+
+            // Summary
+            const openPRs = pulls.data.filter(p => p.state === 'open');
+            console.log(`\nTriage complete. ${openPRs.length} open PRs reviewed.`);
