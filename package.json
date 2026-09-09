@@ -13,6 +13,7 @@
     "test:integration": "node --test tests/integration/*.test.mjs",
     "check:links": "node scripts/check-links.mjs",
     "audit:privacy": "node scripts/privacy-audit.mjs",
+    "build:static": "node scripts/build-static.mjs",
     "ci": "npm run test:unit && npm run test:integration && npm test",
     "health": "node scripts/local-health-check.mjs"
   },
