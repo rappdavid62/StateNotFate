@@ -1087,6 +1087,10 @@ const COMPANION_QUESTION_TREE = {
 
             document.getElementById("btn-add-file-link").addEventListener("click", addFileLink);
 
+            // Morning Gratitude Journal (First Daily Action)
+            document.getElementById("btn-save-morning-gratitude").addEventListener("click", saveMorningGratitudeEntry);
+            document.getElementById("btn-edit-morning-gratitude").addEventListener("click", editMorningGratitude);
+
             // Cognitive Lab saves
             document.getElementById("btn-save-gratitude").addEventListener("click", saveGratitudeEntry);
             document.getElementById("btn-save-thought").addEventListener("click", saveThoughtCorrection);
@@ -1134,7 +1138,7 @@ const COMPANION_QUESTION_TREE = {
 
             document.querySelectorAll(".keypad-btn").forEach(btn => {
                 btn.addEventListener("click", (e) => {
-                    const val = e.target.getAttribute("data-val");
+                    const val = btn.getAttribute("data-val") || (e.currentTarget && e.currentTarget.getAttribute("data-val"));
                     if (!val) return; 
                     handleKeypadInput(val);
                 });
@@ -1469,6 +1473,7 @@ const COMPANION_QUESTION_TREE = {
                 }
             });
             
+            renderMorningGratitudeWidget();
             renderDailyChecklist();
             updateDashboardMetrics();
             renderReEntryCard();
@@ -3437,11 +3442,108 @@ const COMPANION_QUESTION_TREE = {
             renderCustomizer();
         }
 
+        // MORNING GRATITUDE WIDGET (FIRST ACTION OF THE DAY)
+        function renderMorningGratitudeWidget() {
+            const card = document.getElementById("morning-gratitude-card");
+            if (!card) return;
+
+            const inputSection = document.getElementById("morning-gratitude-input-section");
+            const completedSection = document.getElementById("morning-gratitude-completed-section");
+            const badge = document.getElementById("morning-gratitude-status-badge");
+            const reliefDisplay = document.getElementById("morning-completed-relief");
+            const possibilityDisplay = document.getElementById("morning-completed-possibility");
+            const dateDisplay = document.getElementById("morning-completed-date");
+
+            if (!inputSection || !completedSection) return;
+
+            const today = getTodayString();
+            const todayEntries = (state.gratitudeJournal || []).filter(item => item.date === today);
+
+            if (todayEntries.length > 0) {
+                const latest = todayEntries[todayEntries.length - 1];
+                inputSection.classList.add("hidden");
+                completedSection.classList.remove("hidden");
+                if (badge) {
+                    badge.className = "badge badge-completed";
+                    badge.textContent = "✓ Anchored Today";
+                }
+                if (dateDisplay) {
+                    dateDisplay.textContent = today;
+                }
+                if (reliefDisplay) {
+                    reliefDisplay.innerHTML = `<strong>Relief Win:</strong> ${escapeHtml(latest.relief || "")}`;
+                }
+                if (possibilityDisplay) {
+                    possibilityDisplay.innerHTML = `<strong>Today's Anchor:</strong> ${escapeHtml(latest.possibility || "")}`;
+                }
+            } else {
+                inputSection.classList.remove("hidden");
+                completedSection.classList.add("hidden");
+                if (badge) {
+                    badge.className = "badge badge-optional";
+                    badge.textContent = "Recommended • Optional";
+                }
+            }
+        }
+
+        function saveMorningGratitudeEntry() {
+            const reliefInput = document.getElementById("morning-input-relief");
+            const possibilityInput = document.getElementById("morning-input-possibility");
+            if (!reliefInput || !possibilityInput) return;
+
+            const relief = reliefInput.value.trim();
+            const possibility = possibilityInput.value.trim();
+
+            if (!relief && !possibility) {
+                showToast("Write a note whenever you feel up to it — totally optional.", "info");
+                return;
+            }
+
+            const today = getTodayString();
+            if (!state.gratitudeJournal) state.gratitudeJournal = [];
+            state.gratitudeJournal.push({
+                date: today,
+                relief: relief,
+                possibility: possibility,
+                timestamp: new Date().toISOString()
+            });
+
+            logActionCompletion("Morning Gratitude Anchor Completed");
+            saveState();
+            renderMorningGratitudeWidget();
+            renderGratitudeJournalList();
+            updateDashboardMetrics();
+
+            reliefInput.value = "";
+            possibilityInput.value = "";
+            showToast("Morning anchor saved.", "success");
+        }
+
+        function editMorningGratitude() {
+            const inputSection = document.getElementById("morning-gratitude-input-section");
+            const completedSection = document.getElementById("morning-gratitude-completed-section");
+            const reliefInput = document.getElementById("morning-input-relief");
+            const possibilityInput = document.getElementById("morning-input-possibility");
+
+            const today = getTodayString();
+            const todayEntries = (state.gratitudeJournal || []).filter(item => item.date === today);
+            if (todayEntries.length > 0) {
+                const latest = todayEntries[todayEntries.length - 1];
+                if (reliefInput && !reliefInput.value) reliefInput.value = latest.relief || "";
+                if (possibilityInput && !possibilityInput.value) possibilityInput.value = latest.possibility || "";
+            }
+
+            if (inputSection) inputSection.classList.remove("hidden");
+            if (completedSection) completedSection.classList.add("hidden");
+            if (reliefInput) reliefInput.focus();
+        }
+
         function renderGratitudeJournalList() {
             const container = document.getElementById("gratitude-history-container");
+            if (!container) return;
             container.innerHTML = "";
             
-            if (state.gratitudeJournal.length === 0) {
+            if (!state.gratitudeJournal || state.gratitudeJournal.length === 0) {
                 container.innerHTML = `<div class="text-muted center-text py-2" style="font-size:0.85rem;">No gratitude entries recorded yet. Write your first entry above.</div>`;
                 return;
             }
@@ -3461,10 +3563,10 @@ const COMPANION_QUESTION_TREE = {
                         <button class="linked-file-remove" onclick="removeGratitudeEntry(${realIdx})" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-size:1.1rem; line-height:1;">×</button>
                     </div>
                     <div style="font-size: 0.85rem; margin-top: 0.25rem; color: var(--text-primary); line-height: 1.4;">
-                        <strong>Moments of Relief:</strong> ${item.relief}
+                        <strong>Moments of Relief:</strong> ${escapeHtml(item.relief || "")}
                     </div>
                     <div style="font-size: 0.85rem; color: var(--text-secondary); border-top: 1px dashed rgba(255,255,255,0.05); padding-top: 0.25rem; margin-top: 0.25rem; line-height: 1.4;">
-                        <strong>Possibility for Tomorrow:</strong> ${item.possibility}
+                        <strong>Possibility for Tomorrow:</strong> ${escapeHtml(item.possibility || "")}
                     </div>
                 `;
                 container.appendChild(entryCard);
@@ -3483,6 +3585,7 @@ const COMPANION_QUESTION_TREE = {
             }
             
             const today = getTodayString();
+            if (!state.gratitudeJournal) state.gratitudeJournal = [];
             state.gratitudeJournal.push({
                 date: today,
                 relief: relief,
@@ -3492,6 +3595,8 @@ const COMPANION_QUESTION_TREE = {
             logActionCompletion("Gratitude / Possibility Note Written");
             saveState();
             renderGratitudeJournalList();
+            renderMorningGratitudeWidget();
+            updateDashboardMetrics();
             
             reliefInput.value = "";
             possibilityInput.value = "";
@@ -3502,6 +3607,8 @@ const COMPANION_QUESTION_TREE = {
                 state.gratitudeJournal.splice(index, 1);
                 saveState();
                 renderGratitudeJournalList();
+                renderMorningGratitudeWidget();
+                updateDashboardMetrics();
             }
         }
 
@@ -6345,6 +6452,9 @@ const COMPANION_QUESTION_TREE = {
         window.togglePolaris = togglePolaris;
         window.exportAnonymizedAudit = exportAnonymizedAudit;
         window.resetChecklistToDefaults = resetChecklistToDefaults;
+        window.renderMorningGratitudeWidget = renderMorningGratitudeWidget;
+        window.saveMorningGratitudeEntry = saveMorningGratitudeEntry;
+        window.editMorningGratitude = editMorningGratitude;
         window.filterDocumentExplorer = filterDocumentExplorer;
 
         // ==========================================================

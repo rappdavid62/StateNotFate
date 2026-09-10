@@ -683,6 +683,53 @@
                     <!-- Left: Daily Checklist -->
                     <div class="checklist-column">
                         
+                        <!-- Morning Gratitude Journal (First Action Every Day - Optional & Recommended) -->
+                        <div id="morning-gratitude-card" class="morning-gratitude-card glass-card mb-3">
+                            <div class="morning-gratitude-header">
+                                <div class="morning-gratitude-title-wrap">
+                                    <span class="morning-step-badge">Recommended First Action • Optional</span>
+                                    <h3 class="text-lavender">🌅 Morning Gratitude Journal</h3>
+                                </div>
+                                <span id="morning-gratitude-status-badge" class="badge badge-optional">Recommended • Optional</span>
+                            </div>
+                            <p class="text-muted morning-gratitude-subtitle">Recommended starting anchor: record a quick micro-moment or relief win whenever you want. Completely optional — never mandatory.</p>
+
+                            <!-- Active Input Section -->
+                            <div id="morning-gratitude-input-section">
+                                <div class="form-group mb-2">
+                                    <label for="morning-input-relief" class="gratitude-field-label">1. Micro-Moment / Relief Win (optional):</label>
+                                    <textarea id="morning-input-relief" rows="2" placeholder="e.g. Hot coffee tasted good, wrapped in warm blanket, morning daylight..."></textarea>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="morning-input-possibility" class="gratitude-field-label">2. Realistic Possibility / Anchor (optional):</label>
+                                    <input type="text" id="morning-input-possibility" placeholder="e.g. Will step outside for 5 minutes after breakfast.">
+                                </div>
+                                <button class="btn btn-primary w-full" id="btn-save-morning-gratitude">
+                                    ✓ Save Morning Anchor
+                                </button>
+                            </div>
+
+                            <!-- Completed Anchor Section -->
+                            <div id="morning-gratitude-completed-section" class="hidden">
+                                <div class="morning-gratitude-completed-box">
+                                    <div class="completed-check-icon">✓</div>
+                                    <div class="completed-details">
+                                        <div class="completed-meta">
+                                            <span class="completed-date" id="morning-completed-date">Today</span>
+                                            <span class="completed-tag">Morning Anchor Locked</span>
+                                        </div>
+                                        <div class="completed-entry-text" id="morning-completed-relief"></div>
+                                        <div class="completed-possibility-text" id="morning-completed-possibility"></div>
+                                    </div>
+                                </div>
+                                <div class="morning-gratitude-actions mt-2">
+                                    <button class="btn btn-secondary btn-small" id="btn-edit-morning-gratitude">
+                                        ✎ Add Another / Update Entry
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Morning Energy Check-in Widget -->
                         <div class="energy-check-card glass-card">
                             <div class="energy-check-header">Morning Energy Check-in</div>
