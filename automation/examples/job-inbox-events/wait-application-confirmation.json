@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0.0",
+  "source_type": "gmail",
+  "source_label": "Application confirmation",
+  "observed_at": "2026-08-30T18:20:00-04:00",
+  "event_type": "application_confirmation",
+  "sender_type": "automation",
+  "company": "TeamSnap",
+  "role": "Customer Support Specialist",
+  "subject": "Thank you for applying",
+  "body": "Thank you for applying to the Customer Support Specialist role. This is an automated message. Please do not reply.",
+  "currentness": "current",
+  "status": "active",
+  "contact_history_state": "applied"
+}

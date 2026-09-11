@@ -4,6 +4,7 @@ const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 
 export default defineConfig({
   testDir: './tests',
+  testMatch: '**/*.spec.ts',
   timeout: 30000,
   expect: {
     timeout: 5000

@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0.0",
+  "source_type": "gmail",
+  "source_label": "Welo Data direct outreach email",
+  "observed_at": "2026-08-28T09:49:43Z",
+  "event_type": "recruiter_blast",
+  "sender_type": "automation",
+  "company": "Welo Data",
+  "role": "Maps Visual Design Relevance Evaluator - English (US)",
+  "subject": "Welo Data | Exciting New Opportunity: Maps Visual Design Relevance Evaluator",
+  "snippet": "Remote freelance evaluator role focused on map design, relevance, and user-focused rating work.",
+  "body": "Remote freelance evaluator role at $20.30 per hour. Review map designs, assess relevance, and follow detailed rating guidelines.",
+  "currentness": "current",
+  "status": "active",
+  "contact_history_state": "no_prior_action"
+}
