@@ -4,6 +4,13 @@
         let CrisisProtocol = null;
         let safetyDetection = null;
         let polarisEnhanced = null;
+        let AdaptivePersonalization = null;
+        let PredictiveDeterioration = null;
+        let AdvancedAnalytics = null;
+        let polaris3Adapter = null;
+        let polarisPersonalization = null;
+        let polarisDeterioration = null;
+        let polarisAnalytics = null;
 
         async function loadSafetyModules() {
             try {
@@ -22,6 +29,26 @@
                 console.log("Polaris Enhanced Safety modules loaded successfully.");
             } catch (err) {
                 console.error("Failed to load Polaris Enhanced Safety modules:", err);
+            }
+
+            try {
+                const [personalizationMod, deteriorationMod, analyticsMod, adapterMod] = await Promise.all([
+                    import('./src/adaptive-personalization.js'),
+                    import('./src/predictive-deterioration.js'),
+                    import('./src/advanced-analytics.js'),
+                    import('./src/polaris-3-adapter.js')
+                ]);
+                AdaptivePersonalization = personalizationMod.default || personalizationMod.AdaptivePersonalization;
+                PredictiveDeterioration = deteriorationMod.default || deteriorationMod.PredictiveDeterioration;
+                AdvancedAnalytics = analyticsMod.default || analyticsMod.AdvancedAnalytics;
+                polaris3Adapter = adapterMod;
+                ensurePolaris3Engines();
+                if (typeof getActiveTabId === 'function' && getActiveTabId() === 'momentum') {
+                    renderPolaris3Cards();
+                }
+                console.log("Polaris 3.0 modules loaded successfully.");
+            } catch (err) {
+                console.error("Failed to load Polaris 3.0 modules:", err);
             }
         }
 
@@ -79,6 +106,7 @@
             polarisUpgrade: false,
             polarisHistory: [],
             polarisRestartLogs: [],
+            polaris3: { anchorMetrics: {}, learningHistory: [] },
             lastVisitDate: '',
             reEntry: {
                 lastSeenDate: null,
@@ -615,6 +643,7 @@ const COMPANION_QUESTION_TREE = {
                     if (state.polarisUpgrade === undefined) state.polarisUpgrade = false;
                     if (state.polarisHistory === undefined) state.polarisHistory = [];
                     if (state.polarisRestartLogs === undefined) state.polarisRestartLogs = [];
+                    if (state.polaris3 === undefined) state.polaris3 = { anchorMetrics: {}, learningHistory: [] };
                     if (state.lastVisitDate === undefined) state.lastVisitDate = '';
                     if (state.reEntry === undefined) {
                         state.reEntry = {
@@ -1633,9 +1662,11 @@ const COMPANION_QUESTION_TREE = {
             if (index === -1) {
                 todayLog.completed.push(label);
                 element.classList.add("checked");
+                recordPolaris3AnchorOutcome(label, true);
             } else {
                 todayLog.completed.splice(index, 1);
                 element.classList.remove("checked");
+                recordPolaris3AnchorOutcome(label, false);
             }
             
             evaluateDaySuccess(todayLog);
@@ -5539,6 +5570,8 @@ const COMPANION_QUESTION_TREE = {
             if (banner) banner.classList.add("hidden");
             
             showToast("⚡ Polaris 2.0 Activated! Core assets and ledger records successfully migrated.", "success", 5000);
+            ensurePolaris3Engines();
+            saveState();
             renderDashboard();
             // Switch to momentum tab to show it off!
             window.location.hash = "#/momentum";
@@ -5699,6 +5732,114 @@ const COMPANION_QUESTION_TREE = {
             
             // Render 28-Day Momentum Grid
             renderMomentumGrid();
+            renderPolaris3Cards();
+        }
+
+        function ensurePolaris3Engines() {
+            if (!state.polarisUpgrade || !polaris3Adapter || !AdaptivePersonalization) return false;
+            polaris3Adapter.ensurePolaris3State(state);
+            const adaptedHistory = polaris3Adapter.adaptHistory(state);
+            const adaptedState = polaris3Adapter.adaptCurrentState(state);
+            if (!polarisPersonalization) {
+                polarisPersonalization = new AdaptivePersonalization(adaptedState);
+            }
+            if (!polarisDeterioration) {
+                polarisDeterioration = new PredictiveDeterioration(adaptedHistory);
+            }
+            if (!polarisAnalytics) {
+                polarisAnalytics = new AdvancedAnalytics(adaptedHistory);
+            }
+            polaris3Adapter.restorePolaris3Learning(polarisPersonalization, state);
+            polarisDeterioration.history = adaptedHistory;
+            polarisAnalytics.history = adaptedHistory;
+            return true;
+        }
+
+        function recordPolaris3AnchorOutcome(label, completed) {
+            if (!state.polarisUpgrade || !polaris3Adapter) return;
+            ensurePolaris3Engines();
+            polaris3Adapter.recordLiveAnchorOutcome(polarisPersonalization, state, label, completed);
+        }
+
+        function renderPolaris3Cards() {
+            const panel = document.getElementById("polaris-3-panel");
+            if (!panel) return;
+            if (!state.polarisUpgrade) {
+                panel.classList.add("hidden");
+                return;
+            }
+            panel.classList.remove("hidden");
+
+            const nextEl = document.getElementById("polaris3-next-anchor");
+            const reasonEl = document.getElementById("polaris3-next-reason");
+            const labelEl = document.getElementById("polaris3-floor-label");
+            const notesEl = document.getElementById("polaris3-floor-notes");
+            const resilienceEl = document.getElementById("polaris3-resilience");
+            const trendEl = document.getElementById("polaris3-trend");
+            const barsEl = document.getElementById("polaris3-energy-bars");
+            const disclaimerEl = document.getElementById("polaris3-disclaimer");
+
+            const fallback = {
+                personalization: {
+                    title: "Need a few more logged days.",
+                    reason: "Complete one floor action to teach Polaris what works for you."
+                },
+                deterioration: {
+                    label: "need more days",
+                    notes: ["Need a few more logged days."]
+                },
+                analytics: {
+                    score: "—",
+                    level: "need more days",
+                    trend: "waiting",
+                    bars: [],
+                    disclaimer: "Personal reflection from your local logs. Not a clinical instrument."
+                }
+            };
+
+            let view = fallback;
+            if (polaris3Adapter) {
+                try {
+                    ensurePolaris3Engines();
+                    view = polaris3Adapter.buildPolaris3View({
+                        personalization: polarisPersonalization,
+                        deterioration: polarisDeterioration,
+                        analytics: polarisAnalytics
+                    }, state) || fallback;
+                } catch (err) {
+                    console.error("Polaris 3.0 view failed:", err);
+                    view = fallback;
+                }
+            }
+
+            if (nextEl) nextEl.textContent = view.personalization.title;
+            if (reasonEl) reasonEl.textContent = view.personalization.reason;
+            if (labelEl) labelEl.textContent = view.deterioration.label;
+            if (notesEl) {
+                notesEl.innerHTML = "";
+                (view.deterioration.notes || []).forEach((note) => {
+                    const item = document.createElement("li");
+                    item.textContent = note;
+                    notesEl.appendChild(item);
+                });
+            }
+            if (resilienceEl) {
+                const score = view.analytics.score;
+                const level = view.analytics.level;
+                resilienceEl.textContent = score === "—" ? level : `${score} · ${level}`;
+            }
+            if (trendEl) trendEl.textContent = view.analytics.trend;
+            if (disclaimerEl) disclaimerEl.textContent = view.analytics.disclaimer;
+            if (barsEl) {
+                barsEl.innerHTML = "";
+                (view.analytics.bars || []).forEach((bar) => {
+                    const stem = document.createElement("div");
+                    stem.className = "polaris3-bar";
+                    stem.style.height = `${Math.max(8, (Number(bar.value) || 1) / 4 * 48)}px`;
+                    stem.title = bar.label || "";
+                    barsEl.appendChild(stem);
+                });
+            }
         }
 
         function renderMomentumGrid() {

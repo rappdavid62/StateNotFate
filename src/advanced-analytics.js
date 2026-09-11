@@ -142,14 +142,18 @@ export class AdvancedAnalytics {
   calculateScoreTrajectory(history) {
     if (history.length < 7) return 'insufficient-data';
 
-    const early = this.calculateResilienceScore({ userAnchors: [] }, history.slice(0, 7));
-    const recent = this.calculateResilienceScore({ userAnchors: [] }, history.slice(-7));
+    // Compare early vs recent energy only. Do not call calculateResilienceScore
+    // here — that method includes trajectory and would recurse forever.
+    const energyMap = { collapse: 1, low: 2, medium: 3, high: 4 };
+    const avg = (rows) => {
+      const values = rows.map(d => energyMap[d.todayEnergy] || 2);
+      return values.reduce((a, b) => a + b, 0) / values.length;
+    };
+    const earlyAvg = avg(history.slice(0, 7));
+    const recentAvg = avg(history.slice(-7));
 
-    const early_score = parseFloat(early.score);
-    const recent_score = parseFloat(recent.score);
-
-    if (recent_score > early_score + 5) return 'improving';
-    if (recent_score < early_score - 5) return 'declining';
+    if (recentAvg > earlyAvg + 0.3) return 'improving';
+    if (recentAvg < earlyAvg - 0.3) return 'declining';
     return 'stable';
   }
 

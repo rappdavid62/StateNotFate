@@ -1762,6 +1762,60 @@ backdrop-filter: blur(4px);
             box-shadow: 0 0 6px rgba(230, 40, 60, 0.3);
         }
 
+        .polaris3-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .polaris3-card h3 {
+            margin-bottom: 0.75rem;
+            color: var(--accent-lavender);
+        }
+
+        .polaris3-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            text-transform: none;
+            letter-spacing: 0.01em;
+        }
+
+        .polaris3-notes {
+            margin: 0;
+            padding-left: 1.1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .polaris3-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 0.35rem;
+            height: 48px;
+            margin: 0.75rem 0;
+        }
+
+        .polaris3-bar {
+            flex: 1;
+            min-height: 6px;
+            border-radius: 3px;
+            background: var(--accent-teal-dim);
+        }
+
+        .polaris3-disclaimer {
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .polaris3-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         /* ==========================================================
          * SMART RE-ENTRY CARD STYLES
          * ========================================================== */
