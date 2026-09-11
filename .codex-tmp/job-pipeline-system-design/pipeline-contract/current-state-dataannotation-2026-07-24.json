@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0.0",
+  "policy_version": "2026-07-24-v1",
+  "generated_at": "2026-07-24T04:40:35-04:00",
+  "source_status": {
+    "state": "partial",
+    "checked_at": "2026-07-24T04:40:35-04:00",
+    "limitations": [
+      "The official public opportunity surface was current.",
+      "No matching Gmail messages were found.",
+      "The authenticated DataAnnotation account, dashboard, assessment, application, and project state were unavailable."
+    ]
+  },
+  "records": [
+    {
+      "lead_key": "dataannotation|generalist-professional-writer|public-web",
+      "event_id": "2026-07-24|public-web|dataannotation-generalist",
+      "material_fingerprint": "3e63dfcf2dce30b7aeae70b9288b106b4ba5b32ef0b1afcab2fa5d76a27743e5",
+      "lane": "remote_ai_search_quality",
+      "contact_state": "discovered",
+      "contact_history_state": "unknown",
+      "evidence": [
+        {
+          "source_type": "public_web",
+          "source_label": "DataAnnotation official Generalist opportunity surface",
+          "observed_at": "2026-07-24T04:40:35-04:00",
+          "currentness": "current",
+          "confidence": "high",
+          "inference": false
+        },
+        {
+          "source_type": "gmail",
+          "source_label": "No Gmail matches for in:anywhere DataAnnotation -in:spam -in:trash",
+          "observed_at": "2026-07-24T04:40:35-04:00",
+          "currentness": "current",
+          "confidence": "medium",
+          "inference": false
+        }
+      ],
+      "execution": {
+        "queue": "lead_review",
+        "resume_family": "remote_ai_search_quality",
+        "proposed_action": "review",
+        "authorized_action": "none",
+        "next_action": "Open the existing DataAnnotation account and verify dashboard, assessment, application, and project state before any new application attempt.",
+        "approval": {
+          "state": "not_required"
+        }
+      },
+      "policy_version": "2026-07-24-v1",
+      "updated_at": "2026-07-24T04:40:35-04:00"
+    }
+  ]
+}

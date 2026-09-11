@@ -1,0 +1,320 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://state-not-fate.local/schemas/job-pipeline-schema-v1.json",
+  "title": "David Rapp Canonical Job Pipeline State",
+  "description": "Dry-run contract for deduplicated job discovery, contact state, resume selection, approval, and audited writeback.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "policy_version",
+    "generated_at",
+    "source_status",
+    "records"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source_status": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "checked_at",
+        "limitations"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "complete",
+            "partial",
+            "blocked"
+          ]
+        },
+        "checked_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/job_record"
+      }
+    }
+  },
+  "$defs": {
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_type",
+        "source_label",
+        "observed_at",
+        "currentness",
+        "confidence"
+      ],
+      "properties": {
+        "source_type": {
+          "enum": [
+            "gmail",
+            "public_web",
+            "google_drive",
+            "wisebase",
+            "github",
+            "local_artifact",
+            "user_report"
+          ]
+        },
+        "source_label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "currentness": {
+          "enum": [
+            "current",
+            "snapshot",
+            "stale",
+            "unavailable"
+          ]
+        },
+        "confidence": {
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "unknown"
+          ]
+        },
+        "inference": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "not_required",
+            "pending",
+            "approved",
+            "declined",
+            "expired"
+          ]
+        },
+        "approved_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_event_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "queue",
+        "resume_family",
+        "proposed_action",
+        "authorized_action",
+        "next_action",
+        "approval"
+      ],
+      "properties": {
+        "queue": {
+          "enum": [
+            "reply_now",
+            "wait",
+            "lead_review",
+            "apply_today",
+            "save",
+            "backup",
+            "closed"
+          ]
+        },
+        "resume_family": {
+          "enum": [
+            "remote_ai_search_quality",
+            "remote_saas_product_support",
+            "low_voltage_field_tech",
+            "prs_care",
+            "none"
+          ]
+        },
+        "proposed_action": {
+          "enum": [
+            "none",
+            "log_only",
+            "review",
+            "apply",
+            "reply",
+            "schedule"
+          ]
+        },
+        "authorized_action": {
+          "enum": [
+            "none",
+            "apply",
+            "reply",
+            "schedule"
+          ]
+        },
+        "next_action": {
+          "type": "string",
+          "minLength": 1
+        },
+        "approval": {
+          "$ref": "#/$defs/approval"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "authorized_action": {
+                "not": {
+                  "const": "none"
+                }
+              }
+            },
+            "required": [
+              "authorized_action"
+            ]
+          },
+          "then": {
+            "properties": {
+              "approval": {
+                "required": [
+                  "state",
+                  "approved_at",
+                  "scope",
+                  "evidence_event_id"
+                ],
+                "properties": {
+                  "state": {
+                    "const": "approved"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "job_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lead_key",
+        "event_id",
+        "material_fingerprint",
+        "lane",
+        "contact_state",
+        "contact_history_state",
+        "evidence",
+        "execution",
+        "policy_version",
+        "updated_at"
+      ],
+      "properties": {
+        "lead_key": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._|-]{5,199}$"
+        },
+        "event_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._|-]{5,199}$"
+        },
+        "material_fingerprint": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "lane": {
+          "enum": [
+            "remote_ai_search_quality",
+            "remote_saas_support",
+            "remote_ops_trust_safety",
+            "field_runway",
+            "prs_care"
+          ]
+        },
+        "contact_state": {
+          "enum": [
+            "discovered",
+            "saved",
+            "applied",
+            "reply_now",
+            "waiting",
+            "interview",
+            "rejected",
+            "offer",
+            "stale",
+            "closed"
+          ]
+        },
+        "contact_history_state": {
+          "enum": [
+            "unknown",
+            "no_prior_action",
+            "saved",
+            "applied",
+            "contacted",
+            "rejected",
+            "closed"
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        },
+        "execution": {
+          "$ref": "#/$defs/execution"
+        },
+        "policy_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

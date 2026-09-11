@@ -1,0 +1,20 @@
+# SNF Cursor context exclusions: generated/cache/local-only noise
+.git/
+node_modules/
+dist/
+coverage/
+playwright-report/
+playwright-results/
+test-results/
+.codex-tmp/
+.npm-cache/
+.npm-cache-netlify-2/
+.tmp.driveupload/
+.netlify/
+outputs/
+knowledge/
+.env
+.env.*
+*.log
+*.zip
+__pycache__/

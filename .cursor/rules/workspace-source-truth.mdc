@@ -1,0 +1,15 @@
+---
+description: State Not Fate workspace identity, source-truth, and production boundary
+alwaysApply: true
+---
+
+# Workspace Source Truth
+
+- Verify root, Git root, branch, remote, and dirty state before consequential work.
+- Canonical local project root: `C:\Users\rappd\OneDrive\Desktop\SNF_DEPLOY`.
+- Remote repository: `rappdavid62/StateNotFate`.
+- Production-source branch: `SNF` unless current GitHub/Netlify evidence proves a deliberate change.
+- The current development branch may be edited when the task belongs there, but do not call it production merely because it is open locally.
+- `beta`, `main`, worktrees, ZIPs, DOV notes, screenshots, downloaded HTML, and exports are not production source by default.
+- Do not commit, push, merge, rebase, switch branches, reset, clean, delete, or deploy without explicit authorization.
+- Preserve unrelated dirty/untracked work.

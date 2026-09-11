@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "command": "C:\\\\Python314\\\\python.exe .cursor/hooks/snf-workspace-guard.py",
+        "failClosed": false
+      }
+    ],
+    "beforeShellExecution": [
+      {
+        "command": "C:\\\\Python314\\\\python.exe .cursor/hooks/snf-workspace-guard.py",
+        "failClosed": true
+      }
+    ]
+  }
+}

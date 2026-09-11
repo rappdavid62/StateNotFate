@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0.0",
+  "policy_version": "2026-07-24-v1",
+  "generated_at": "2026-07-24T04:40:35-04:00",
+  "source_status": {
+    "state": "complete",
+    "checked_at": "2026-07-24T04:40:35-04:00",
+    "limitations": [
+      "This is a narrow company-and-role reconciliation, not a comprehensive mailbox scan.",
+      "No Gmail drafts were changed or deleted."
+    ]
+  },
+  "records": [
+    {
+      "lead_key": "acme-lock-and-door|access-control-technician|gmail",
+      "event_id": "2026-07-20|gmail|19f803f75118d49b",
+      "material_fingerprint": "d07d6bf2d88ecab2b779222929e955d6e1df7e75e8d2766af48bea9a983df4c7",
+      "lane": "field_runway",
+      "contact_state": "rejected",
+      "contact_history_state": "rejected",
+      "evidence": [
+        {
+          "source_type": "gmail",
+          "source_label": "Application update message 19f803f75118d49b",
+          "observed_at": "2026-07-20T15:57:49+00:00",
+          "currentness": "current",
+          "confidence": "high",
+          "inference": false
+        }
+      ],
+      "execution": {
+        "queue": "closed",
+        "resume_family": "low_voltage_field_tech",
+        "proposed_action": "none",
+        "authorized_action": "none",
+        "next_action": "Do not send either draft; close the stale reply-now queue item.",
+        "approval": {
+          "state": "not_required"
+        }
+      },
+      "policy_version": "2026-07-24-v1",
+      "updated_at": "2026-07-24T04:40:35-04:00"
+    }
+  ]
+}

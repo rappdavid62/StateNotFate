@@ -59,9 +59,33 @@ const server = createServer(async (req, res) => {
     'content-type': types[extname(filePath)] || 'application/octet-stream',
     'cache-control': 'no-store'
   });
-  createReadStream(filePath).pipe(res);
+  
+  const stream = createReadStream(filePath);
+  stream.on('error', (err) => {
+    if (!res.headersSent) {
+      res.writeHead(500, { 'content-type': 'text/plain; charset=utf-8' });
+      res.end('Server stream error');
+    }
+  });
+  res.on('close', () => {
+    stream.destroy();
+  });
+  stream.pipe(res);
+});
+
+server.on('error', (err) => {
+  console.error('[Static Server] Network error:', err.message);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('[Static Server] Suppressed uncaught exception:', err.message);
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error('[Static Server] Suppressed unhandled rejection:', reason);
 });
 
 server.listen(port, '127.0.0.1', () => {
   console.log(`State Not Fate public test server running at http://127.0.0.1:${port}`);
 });
+
