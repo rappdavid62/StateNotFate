@@ -12,7 +12,8 @@ test-results/
 Thumbs.db
 *.log
 
-knowledge/
+# Exclude secrets inside knowledge/ but allow the curated corpus files
+knowledge/openai-api-key.txt
 *.env
 .env
 openai-api-key.txt
