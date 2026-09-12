@@ -17,6 +17,19 @@ See smart-welcome-integration.html for standalone test.
 
 This is 5-year systems work. Daily deposits. Restarts are data.
 
+## Maintenance Automation
+
+- `Daily Repository Health` runs once per day (`.github/workflows/daily-repo-health.yml`).
+- It uses the repository Node version from `.node-version`, runs `npm ci`, then runs `npm run health`.
+- It does **not** install Playwright browsers and does **not** deploy production.
+- If health fails, automation opens or updates one deduplicated issue labeled `maintenance-health-failure`.
+- When health recovers, automation automatically closes that issue.
+
+### Owner action when health fails
+1. Open the linked GitHub Actions run from the issue.
+2. Fix the failing health check(s) in the repository.
+3. Re-run the workflow (or wait for the next daily run) and confirm the issue auto-closes.
+
 ## Phone / Mobile Access (Obsidian + App)
 
 The Obsidian vault (notes) and the PWA (the recovery app) are set up for cross-device use, but mobile sync requires correct platform-specific configuration.
