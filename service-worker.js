@@ -1,4 +1,4 @@
-const CACHE_NAME = 'state-not-fate-cache-v13';
+const CACHE_NAME = 'state-not-fate-cache-v14';
 const ASSETS_TO_CACHE = [
   './index.html',
   './evidence.html',
@@ -7,9 +7,14 @@ const ASSETS_TO_CACHE = [
   './404.html',
   './suicide-prevention.html',
   './essays.html',
+  './education-reader.html',
   './index.css',
   './app.js',
   './src/polaris-presence.js',
+  './polaris/index.html',
+  './polaris/index.css',
+  './polaris/app.js',
+  './polaris/manifest.json',
   './manifest.json',
   './robots.txt',
   './sitemap.xml'
@@ -24,6 +29,7 @@ function isCoreShellRequest(request) {
     const path = url.pathname;
     if (path === '/' || path.endsWith('.html')) return true;
     if (path.endsWith('/app.js') || path.endsWith('/index.css')) return true;
+    if (path.includes('/polaris/')) return true;
     return false;
   } catch {
     return false;
