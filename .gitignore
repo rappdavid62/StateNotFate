@@ -29,3 +29,9 @@ openai-api-key.txt
 ingestion_inbox/
 outputs/
 __pycache__/
+
+# Local preview / agent leftovers (not product source)
+playwright-results/
+local-preview.png
+beta-stress-test.png
+AGENTS.md.bak-*
