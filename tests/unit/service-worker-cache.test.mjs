@@ -9,7 +9,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '../..');
 test('service worker is network-first for HTML, app.js, and index.css, with offline fallback', () => {
   const sw = readFileSync(join(root, 'service-worker.js'), 'utf8');
 
-  assert.match(sw, /state-not-fate-cache-v11/);
+  assert.match(sw, /state-not-fate-cache-v13/);
   assert.match(sw, /function isCoreShellRequest/);
   assert.match(sw, /request\.mode === 'navigate'/);
   assert.match(sw, /path\.endsWith\('\/app\.js'\)/);

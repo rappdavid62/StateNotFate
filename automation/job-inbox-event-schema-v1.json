@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://statenotfate.local/schemas/job-inbox-event-v1.json",
+  "title": "Job Inbox Event",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "source_type": {
+      "type": "string",
+      "enum": ["gmail", "public_web", "google_drive", "wisebase", "github", "local_artifact", "user_report"]
+    },
+    "source_label": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": ["job_listing", "recruiter_blast", "human_outreach", "application_confirmation", "status_update", "manual_note"]
+    },
+    "sender_type": {
+      "type": "string",
+      "enum": ["human", "automation", "unknown"]
+    },
+    "company": {
+      "type": "string",
+      "minLength": 1
+    },
+    "role": {
+      "type": "string",
+      "minLength": 1
+    },
+    "subject": {
+      "type": "string",
+      "minLength": 1
+    },
+    "body": {
+      "type": "string",
+      "minLength": 1
+    },
+    "snippet": {
+      "type": "string",
+      "minLength": 1
+    },
+    "contact_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "requires_response": {
+      "type": "boolean"
+    },
+    "scheduling_link": {
+      "type": "string",
+      "minLength": 1
+    },
+    "currentness": {
+      "type": "string",
+      "enum": ["current", "snapshot", "stale", "unavailable"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "rejected", "closed", "unknown"]
+    },
+    "contact_history_state": {
+      "type": "string",
+      "enum": ["unknown", "no_prior_action", "saved", "applied", "contacted", "rejected", "closed"]
+    }
+  },
+  "required": ["source_type", "source_label", "observed_at", "company"],
+  "anyOf": [
+    { "required": ["role"] },
+    { "required": ["subject"] }
+  ]
+}

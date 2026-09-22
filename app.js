@@ -414,6 +414,26 @@ const COMPANION_QUESTION_TREE = {
     "q149_a": { text: "What specific experiences contribute to your belief that change is impossible?", next: {'default': 'q150'} },
     "q150": { text: "I struggle to keep testing small repeated changes when immediate payoff is low.", next: {'0': 'done', '1': 'done', '2': 'q150_a', '3': 'q150_a', '4': 'q150_a', 'default': 'done'} },
     "q150_a": { text: "What obstacles prevent sustained effort when rewards are not immediately apparent?", next: {'default': 'done'} },
+    "q_v4_single": {
+        text: "When energy is low, what should Polaris emphasize today?",
+        inputType: "single_choice",
+        options: [
+            { id: "floor", label: "Floor anchors only" },
+            { id: "normal", label: "Normal daily mix" },
+            { id: "expand", label: "One extra stretch" }
+        ],
+        next: { default: "q_v4_multi" }
+    },
+    "q_v4_multi": {
+        text: "Which floor supports are available right now?",
+        inputType: "multi_select",
+        options: [
+            { id: "water", label: "Water" },
+            { id: "light", label: "Light" },
+            { id: "food", label: "Food" }
+        ],
+        next: { default: "q21_a" }
+    },
 };
 
         const PHQ9_QUESTIONS = [
@@ -468,6 +488,9 @@ const COMPANION_QUESTION_TREE = {
 
         function init() {
             loadState();
+            if (state.securityPin) {
+                state.isLocked = true;
+            }
             loadSafetyModules();
             setupEventListeners();
             
@@ -490,8 +513,7 @@ const COMPANION_QUESTION_TREE = {
 
         function handleRouting() {
             const hash = window.location.hash;
-            if (state.securityPin) {
-                state.isLocked = true;
+            if (state.securityPin && state.isLocked) {
                 showScreen("lock");
                 resetPinDots();
                 return;
@@ -587,6 +609,90 @@ const COMPANION_QUESTION_TREE = {
             return text.split("").map(c => String.fromCharCode(c.charCodeAt(0) - key)).join("");
         }
 
+        function isSensitiveIntakeAnswer(answer) {
+            if (typeof answer === 'string') return true;
+            if (!answer || typeof answer !== 'object') return false;
+            if (answer.sensitive === true) return true;
+            return answer.inputType === 'text';
+        }
+
+        function transformIntakeValues(intake, transform) {
+            if (!intake || !intake.answers) return intake;
+            Object.keys(intake.answers).forEach((day) => {
+                const dayAnswers = intake.answers[day];
+                if (!dayAnswers || typeof dayAnswers !== 'object') return;
+                Object.keys(dayAnswers).forEach((qId) => {
+                    const answer = dayAnswers[qId];
+                    if (typeof answer === 'string') {
+                        dayAnswers[qId] = transform(answer);
+                        return;
+                    }
+                    if (isSensitiveIntakeAnswer(answer) && answer.value !== undefined) {
+                        answer.value = transform(String(answer.value));
+                    }
+                });
+            });
+            return intake;
+        }
+
+        function encryptIntakeForDisk(intake, pin) {
+            const copy = JSON.parse(JSON.stringify(intake || {}));
+            if (!copy.answersEncrypted) {
+                transformIntakeValues(copy, (text) => scramble(text, pin));
+                copy.answersEncrypted = true;
+            }
+            return copy;
+        }
+
+        function decryptIntakeInPlace(intake, pin) {
+            if (!intake || !intake.answersEncrypted) return;
+            transformIntakeValues(intake, (text) => descramble(text, pin));
+            intake.answersEncrypted = false;
+        }
+
+        function getQuestionInputType(question, qId) {
+            if (question && question.inputType) return question.inputType;
+            if (qId && String(qId).endsWith('_a')) return 'text';
+            if (question && question.next && question.next['0'] === undefined && question.next['default'] !== undefined) {
+                return 'text';
+            }
+            return 'scale_0_4';
+        }
+
+        function intakeAnswerDisplay(answer) {
+            if (answer && typeof answer === 'object') {
+                if (Array.isArray(answer.labels) && answer.labels.length) return answer.labels.join(', ');
+                if (Array.isArray(answer.value)) return answer.value.join(', ');
+                if (answer.value !== undefined && answer.value !== null) return String(answer.value);
+            }
+            return answer === undefined || answer === null ? '' : String(answer);
+        }
+
+        function toTypedIntakeAnswer(qId, question, raw) {
+            if (raw && typeof raw === 'object' && !Array.isArray(raw) && raw.inputType) {
+                return {
+                    schemaVersion: 4,
+                    questionId: qId,
+                    answeredAt: new Date().toISOString(),
+                    source: 'polaris-evolving-intake',
+                    ...raw
+                };
+            }
+            const inputType = getQuestionInputType(question, qId);
+            const scaleLabels = ['Not at all', 'Rare / Mild', 'Sometimes', 'Often', 'Almost Always'];
+            const labels = (inputType === 'scale_0_4' && scaleLabels[raw]) ? [scaleLabels[raw]] : [];
+            return {
+                schemaVersion: 4,
+                questionId: qId,
+                inputType,
+                value: raw,
+                labels,
+                answeredAt: new Date().toISOString(),
+                source: 'polaris-evolving-intake',
+                sensitive: inputType === 'text'
+            };
+        }
+
         function loadState() {
             const saved = localStorage.getItem("state_not_fate_state");
             if (saved) {
@@ -653,26 +759,26 @@ const COMPANION_QUESTION_TREE = {
                 stateToSave.safeContacts = scramble(state.safeContacts, state.securityPin);
                 stateToSave.distractions = scramble(state.distractions, state.securityPin);
                 
-                stateToSave.linkedFiles = state.linkedFiles.map(file => ({
+                stateToSave.linkedFiles = (state.linkedFiles || []).map(file => ({
                     name: scramble(file.name, state.securityPin),
                     path: scramble(file.path, state.securityPin)
                 }));
 
-                stateToSave.gratitudeJournal = state.gratitudeJournal.map(item => ({
+                stateToSave.gratitudeJournal = (state.gratitudeJournal || []).map(item => ({
                     date: item.date,
                     relief: scramble(item.relief, state.securityPin),
                     possibility: scramble(item.possibility, state.securityPin)
                 }));
 
-                stateToSave.thoughtCorrections = state.thoughtCorrections.map(item => ({
+                stateToSave.thoughtCorrections = (state.thoughtCorrections || []).map(item => ({
                     date: item.date,
                     ant: scramble(item.ant, state.securityPin),
                     challenge: scramble(item.challenge, state.securityPin),
                     rewrite: scramble(item.rewrite, state.securityPin)
                 }));
 
-                stateToSave.customTasks = state.customTasks.map(task => scramble(task, state.securityPin));
-                stateToSave.safetyJournal = state.safetyJournal.map(item => ({
+                stateToSave.customTasks = (state.customTasks || []).map(task => scramble(task, state.securityPin));
+                stateToSave.safetyJournal = (state.safetyJournal || []).map(item => ({
                     id: item.id,
                     timestamp: item.timestamp,
                     rawThoughts: scramble(item.rawThoughts, state.securityPin),
@@ -680,6 +786,10 @@ const COMPANION_QUESTION_TREE = {
                     distressLevel: item.distressLevel,
                     parableRef: item.parableRef
                 }));
+                if (state.polaris && state.polaris.profile && state.polaris.profile.evolvingIntake) {
+                    stateToSave.polaris = JSON.parse(JSON.stringify(state.polaris));
+                    scrambleIntakeAnswers(stateToSave.polaris.profile.evolvingIntake, state.securityPin);
+                }
             }
             /*
              * SECURITY NOTE — POLARIS ENCRYPTION
@@ -706,26 +816,26 @@ const COMPANION_QUESTION_TREE = {
             state.safeContacts = descramble(state.safeContacts, pin);
             state.distractions = descramble(state.distractions, pin);
             
-            state.linkedFiles = state.linkedFiles.map(file => ({
+            state.linkedFiles = (state.linkedFiles || []).map(file => ({
                 name: descramble(file.name, pin),
                 path: descramble(file.path, pin)
             }));
 
-            state.gratitudeJournal = state.gratitudeJournal.map(item => ({
+            state.gratitudeJournal = (state.gratitudeJournal || []).map(item => ({
                 date: item.date,
                 relief: descramble(item.relief, pin),
                 possibility: descramble(item.possibility, pin)
             }));
 
-            state.thoughtCorrections = state.thoughtCorrections.map(item => ({
+            state.thoughtCorrections = (state.thoughtCorrections || []).map(item => ({
                 date: item.date,
                 ant: descramble(item.ant, pin),
                 challenge: descramble(item.challenge, pin),
                 rewrite: descramble(item.rewrite, pin)
             }));
 
-            state.customTasks = state.customTasks.map(task => descramble(task, pin));
-            state.safetyJournal = state.safetyJournal.map(item => ({
+            state.customTasks = (state.customTasks || []).map(task => descramble(task, pin));
+            state.safetyJournal = (state.safetyJournal || []).map(item => ({
                 id: item.id,
                 timestamp: item.timestamp,
                 rawThoughts: descramble(item.rawThoughts, pin),
@@ -733,6 +843,39 @@ const COMPANION_QUESTION_TREE = {
                 distressLevel: item.distressLevel,
                 parableRef: item.parableRef
             }));
+            if (state.polaris && state.polaris.profile && state.polaris.profile.evolvingIntake) {
+                descrambleIntakeAnswers(state.polaris.profile.evolvingIntake, pin);
+            }
+        }
+
+        function scrambleIntakeAnswers(intake, pin) {
+            if (!intake || !intake.answers) return;
+            Object.keys(intake.answers).forEach((date) => {
+                const day = intake.answers[date] || {};
+                Object.keys(day).forEach((qId) => {
+                    day[qId] = scrambleIntakeValue(day[qId], pin, scramble);
+                });
+            });
+            intake.answersEncrypted = true;
+        }
+
+        function descrambleIntakeAnswers(intake, pin) {
+            if (!intake || !intake.answers || !intake.answersEncrypted) return;
+            Object.keys(intake.answers).forEach((date) => {
+                const day = intake.answers[date] || {};
+                Object.keys(day).forEach((qId) => {
+                    day[qId] = scrambleIntakeValue(day[qId], pin, descramble);
+                });
+            });
+            intake.answersEncrypted = false;
+        }
+
+        function scrambleIntakeValue(ans, pin, transform) {
+            if (typeof ans === 'string') return transform(ans, pin);
+            if (ans && typeof ans === 'object' && typeof ans.value === 'string') {
+                return { ...ans, value: transform(ans.value, pin) };
+            }
+            return ans;
         }
 
         function toggleAppView(showApp) {
@@ -1087,6 +1230,10 @@ const COMPANION_QUESTION_TREE = {
 
             document.getElementById("btn-add-file-link").addEventListener("click", addFileLink);
 
+            // Morning Gratitude Journal (First Daily Action)
+            document.getElementById("btn-save-morning-gratitude").addEventListener("click", saveMorningGratitudeEntry);
+            document.getElementById("btn-edit-morning-gratitude").addEventListener("click", editMorningGratitude);
+
             // Cognitive Lab saves
             document.getElementById("btn-save-gratitude").addEventListener("click", saveGratitudeEntry);
             document.getElementById("btn-save-thought").addEventListener("click", saveThoughtCorrection);
@@ -1134,7 +1281,7 @@ const COMPANION_QUESTION_TREE = {
 
             document.querySelectorAll(".keypad-btn").forEach(btn => {
                 btn.addEventListener("click", (e) => {
-                    const val = e.target.getAttribute("data-val");
+                    const val = btn.getAttribute("data-val") || (e.currentTarget && e.currentTarget.getAttribute("data-val"));
                     if (!val) return; 
                     handleKeypadInput(val);
                 });
@@ -1282,9 +1429,13 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function validateEnteredPin() {
-            if (tempPinInput === state.securityPin) {
+            if (String(tempPinInput) === String(state.securityPin || '')) {
                 state.isLocked = false;
-                decryptStateData(state.securityPin);
+                try {
+                    decryptStateData(state.securityPin);
+                } catch (err) {
+                    console.error('PIN unlock decrypt failed:', err);
+                }
                 handleRouting();
             } else {
                 const keypadCard = document.querySelector("#screen-lock .glass-card");
@@ -1469,6 +1620,7 @@ const COMPANION_QUESTION_TREE = {
                 }
             });
             
+            renderMorningGratitudeWidget();
             renderDailyChecklist();
             updateDashboardMetrics();
             renderReEntryCard();
@@ -3437,11 +3589,108 @@ const COMPANION_QUESTION_TREE = {
             renderCustomizer();
         }
 
+        // MORNING GRATITUDE WIDGET (FIRST ACTION OF THE DAY)
+        function renderMorningGratitudeWidget() {
+            const card = document.getElementById("morning-gratitude-card");
+            if (!card) return;
+
+            const inputSection = document.getElementById("morning-gratitude-input-section");
+            const completedSection = document.getElementById("morning-gratitude-completed-section");
+            const badge = document.getElementById("morning-gratitude-status-badge");
+            const reliefDisplay = document.getElementById("morning-completed-relief");
+            const possibilityDisplay = document.getElementById("morning-completed-possibility");
+            const dateDisplay = document.getElementById("morning-completed-date");
+
+            if (!inputSection || !completedSection) return;
+
+            const today = getTodayString();
+            const todayEntries = (state.gratitudeJournal || []).filter(item => item.date === today);
+
+            if (todayEntries.length > 0) {
+                const latest = todayEntries[todayEntries.length - 1];
+                inputSection.classList.add("hidden");
+                completedSection.classList.remove("hidden");
+                if (badge) {
+                    badge.className = "badge badge-completed";
+                    badge.textContent = "✓ Anchored Today";
+                }
+                if (dateDisplay) {
+                    dateDisplay.textContent = today;
+                }
+                if (reliefDisplay) {
+                    reliefDisplay.innerHTML = `<strong>Relief Win:</strong> ${escapeHtml(latest.relief || "")}`;
+                }
+                if (possibilityDisplay) {
+                    possibilityDisplay.innerHTML = `<strong>Today's Anchor:</strong> ${escapeHtml(latest.possibility || "")}`;
+                }
+            } else {
+                inputSection.classList.remove("hidden");
+                completedSection.classList.add("hidden");
+                if (badge) {
+                    badge.className = "badge badge-optional";
+                    badge.textContent = "Recommended • Optional";
+                }
+            }
+        }
+
+        function saveMorningGratitudeEntry() {
+            const reliefInput = document.getElementById("morning-input-relief");
+            const possibilityInput = document.getElementById("morning-input-possibility");
+            if (!reliefInput || !possibilityInput) return;
+
+            const relief = reliefInput.value.trim();
+            const possibility = possibilityInput.value.trim();
+
+            if (!relief && !possibility) {
+                showToast("Write a note whenever you feel up to it — totally optional.", "info");
+                return;
+            }
+
+            const today = getTodayString();
+            if (!state.gratitudeJournal) state.gratitudeJournal = [];
+            state.gratitudeJournal.push({
+                date: today,
+                relief: relief,
+                possibility: possibility,
+                timestamp: new Date().toISOString()
+            });
+
+            logActionCompletion("Morning Gratitude Anchor Completed");
+            saveState();
+            renderMorningGratitudeWidget();
+            renderGratitudeJournalList();
+            updateDashboardMetrics();
+
+            reliefInput.value = "";
+            possibilityInput.value = "";
+            showToast("Morning anchor saved.", "success");
+        }
+
+        function editMorningGratitude() {
+            const inputSection = document.getElementById("morning-gratitude-input-section");
+            const completedSection = document.getElementById("morning-gratitude-completed-section");
+            const reliefInput = document.getElementById("morning-input-relief");
+            const possibilityInput = document.getElementById("morning-input-possibility");
+
+            const today = getTodayString();
+            const todayEntries = (state.gratitudeJournal || []).filter(item => item.date === today);
+            if (todayEntries.length > 0) {
+                const latest = todayEntries[todayEntries.length - 1];
+                if (reliefInput && !reliefInput.value) reliefInput.value = latest.relief || "";
+                if (possibilityInput && !possibilityInput.value) possibilityInput.value = latest.possibility || "";
+            }
+
+            if (inputSection) inputSection.classList.remove("hidden");
+            if (completedSection) completedSection.classList.add("hidden");
+            if (reliefInput) reliefInput.focus();
+        }
+
         function renderGratitudeJournalList() {
             const container = document.getElementById("gratitude-history-container");
+            if (!container) return;
             container.innerHTML = "";
             
-            if (state.gratitudeJournal.length === 0) {
+            if (!state.gratitudeJournal || state.gratitudeJournal.length === 0) {
                 container.innerHTML = `<div class="text-muted center-text py-2" style="font-size:0.85rem;">No gratitude entries recorded yet. Write your first entry above.</div>`;
                 return;
             }
@@ -3461,10 +3710,10 @@ const COMPANION_QUESTION_TREE = {
                         <button class="linked-file-remove" onclick="removeGratitudeEntry(${realIdx})" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-size:1.1rem; line-height:1;">×</button>
                     </div>
                     <div style="font-size: 0.85rem; margin-top: 0.25rem; color: var(--text-primary); line-height: 1.4;">
-                        <strong>Moments of Relief:</strong> ${item.relief}
+                        <strong>Moments of Relief:</strong> ${escapeHtml(item.relief || "")}
                     </div>
                     <div style="font-size: 0.85rem; color: var(--text-secondary); border-top: 1px dashed rgba(255,255,255,0.05); padding-top: 0.25rem; margin-top: 0.25rem; line-height: 1.4;">
-                        <strong>Possibility for Tomorrow:</strong> ${item.possibility}
+                        <strong>Possibility for Tomorrow:</strong> ${escapeHtml(item.possibility || "")}
                     </div>
                 `;
                 container.appendChild(entryCard);
@@ -3483,6 +3732,7 @@ const COMPANION_QUESTION_TREE = {
             }
             
             const today = getTodayString();
+            if (!state.gratitudeJournal) state.gratitudeJournal = [];
             state.gratitudeJournal.push({
                 date: today,
                 relief: relief,
@@ -3492,6 +3742,8 @@ const COMPANION_QUESTION_TREE = {
             logActionCompletion("Gratitude / Possibility Note Written");
             saveState();
             renderGratitudeJournalList();
+            renderMorningGratitudeWidget();
+            updateDashboardMetrics();
             
             reliefInput.value = "";
             possibilityInput.value = "";
@@ -3502,6 +3754,8 @@ const COMPANION_QUESTION_TREE = {
                 state.gratitudeJournal.splice(index, 1);
                 saveState();
                 renderGratitudeJournalList();
+                renderMorningGratitudeWidget();
+                updateDashboardMetrics();
             }
         }
 
@@ -4553,6 +4807,35 @@ const COMPANION_QUESTION_TREE = {
             return map[dayState] || map.medium;
         }
 
+        function polarisPresenceApi() {
+            return (typeof window !== 'undefined' && window.PolarisPresence) ? window.PolarisPresence : null;
+        }
+
+        function polarisLocalLine(mode) {
+            ensurePolarisState();
+            const api = polarisPresenceApi();
+            const energy = (state.todayEnergy || 'medium').toLowerCase();
+            const proofToday = state.polaris.proof && state.polaris.proof.today ? state.polaris.proof.today : 0;
+            const skin = state.polaris.profile.companionSkin || '';
+            if (api && typeof api.getPolarisLocalLine === 'function') {
+                return api.getPolarisLocalLine({ energy: energy, proofToday: proofToday, skin: skin, mode: mode || 'presence' });
+            }
+            if (energy === 'collapse') {
+                return 'Floor Wins Mode. No performance standard. Stay safe. One smallest viable action, then rest.';
+            }
+            return defaultMsgFallback(energy);
+        }
+
+        function defaultMsgFallback(energy) {
+            const map = {
+                high: 'Capacity is up. Run the anchors, then stop before it becomes punishment.',
+                medium: 'Core anchors first. One extra task if it is small. No heroic plan.',
+                low: 'Low day. The floor is still here. Pick the cheapest visible action.',
+                collapse: 'Floor Wins Mode. No performance standard. Stay safe. One smallest viable action, then rest.'
+            };
+            return map[energy] || map.medium;
+        }
+
         function getCompanionMessage(dayState, defaultMsg) {
             if (state.reEntry && state.reEntry.lastMessageType === 'missed-yesterday') {
                 return "You missed. That is data, not a verdict. Restart with one floor anchor.";
@@ -4560,34 +4843,8 @@ const COMPANION_QUESTION_TREE = {
             if (state.futureNarrowing === "none") {
                 return "If no future feels believable, lower the task. The goal is not hope. The goal is one proof action.";
             }
-            if (dayState === 'collapse') {
-                return "Floor Wins Mode. No performance standard today. Stay safe, reduce damage, complete the smallest viable anchor.";
-            }
-            // Give the companion a slightly mythic/calm voice if enabled, overriding the default message
             if (!state.polaris.profile.companionSkin) return defaultMsg;
-            
-            const PSYCHOED_TENETS = [
-                "Momentum creates motivation, not the other way around.",
-                "Avoidance reduces anxiety for 10 minutes, but deepens the depressive state for 10 hours.",
-                "Shame is the heaviest cognitive drag. You are allowed to restart your day without moral punishment.",
-                "Depression is a physical drag, not a moral failing. Protect your biological core.",
-                "Disrupted sleep is one of the main engines of depression. Defend your wind-down window.",
-                "The goal is not a perfect day. The goal is one piece of proof.",
-                "Small setbacks hit harder than they should. This is a temporary condition of the nervous system."
-            ];
-            
-            // Randomly select one if high or medium, otherwise use fallback
-            // Seed randomness based on date so it's consistent for the day
-            const daySeed = new Date().getDate();
-            const tenet = PSYCHOED_TENETS[daySeed % PSYCHOED_TENETS.length];
-            
-            const map = {
-                high: tenet,
-                medium: tenet,
-                low: 'I am here. The floor remains. Do what you can.',
-                collapse: 'Rest. There is no failure on the floor.'
-            };
-            return map[dayState] || defaultMsg;
+            return polarisLocalLine('presence');
         }
 
         function getAnchorsForToday(dayState) {
@@ -4656,31 +4913,111 @@ const COMPANION_QUESTION_TREE = {
             }
         }
 
+        function companionInputType(question, qId) {
+            if (question && question.inputType) return question.inputType;
+            if (qId && String(qId).endsWith('_a')) return 'text';
+            if (question && question.next && question.next['0'] === undefined && question.next['default'] !== undefined) {
+                return 'text';
+            }
+            return 'scale_0_4';
+        }
+
+        function companionAnswerDisplay(ans) {
+            if (ans === undefined || ans === null) return '';
+            if (typeof ans === 'string' || typeof ans === 'number') return String(ans);
+            if (Array.isArray(ans)) return ans.join(', ');
+            if (typeof ans === 'object') {
+                if (Array.isArray(ans.labels) && ans.labels.length) return ans.labels.join(', ');
+                if (Array.isArray(ans.value)) return ans.value.join(', ');
+                if (ans.value !== undefined && ans.value !== null) return String(ans.value);
+            }
+            return String(ans);
+        }
+
+        function buildCompanionAnswerRecord(qId, rawValue) {
+            const question = COMPANION_QUESTION_TREE[qId] || {};
+            const inputType = companionInputType(question, qId);
+            const stamp = new Date().toISOString();
+            const base = {
+                schemaVersion: 4,
+                questionId: qId,
+                inputType,
+                answeredAt: stamp,
+                source: 'polaris-evolving-intake',
+                sensitive: inputType === 'text'
+            };
+            const scaleLabels = {
+                0: 'Not at all',
+                1: 'Rare / Mild',
+                2: 'Sometimes',
+                3: 'Often',
+                4: 'Almost Always'
+            };
+            if (inputType === 'scale_0_4') {
+                const value = Number(rawValue);
+                return { ...base, value, labels: [scaleLabels[value] || String(rawValue)] };
+            }
+            if (inputType === 'single_choice') {
+                const opt = (question.options || []).find(o => o.id === rawValue || o.label === rawValue);
+                return { ...base, value: opt ? opt.id : rawValue, labels: [opt ? opt.label : String(rawValue)] };
+            }
+            if (inputType === 'multi_select') {
+                const ids = Array.isArray(rawValue) ? rawValue : [rawValue];
+                const labels = ids.map((id) => {
+                    const opt = (question.options || []).find(o => o.id === id || o.label === id);
+                    return opt ? opt.label : String(id);
+                });
+                return { ...base, value: ids, labels };
+            }
+            return { ...base, value: String(rawValue) };
+        }
+
+        function nextCompanionQuestionId(question, rawValue) {
+            if (!question || !question.next) return 'done';
+            if (question.next[rawValue] !== undefined) return question.next[rawValue];
+            if (question.next[String(rawValue)] !== undefined) return question.next[String(rawValue)];
+            if (question.next.default !== undefined) return question.next.default;
+            return 'done';
+        }
+
+        function toggleCompanionMultiOption(optionId) {
+            const btn = document.querySelector(`#companion-question-controls [data-multi-option="${optionId}"]`);
+            if (!btn) return;
+            btn.classList.toggle('selected');
+            if (btn.classList.contains('selected')) {
+                btn.style.borderColor = 'var(--accent-lavender)';
+                btn.style.background = 'rgba(165, 120, 240, 0.2)';
+            } else {
+                btn.style.borderColor = '';
+                btn.style.background = '';
+            }
+        }
+
+        function submitCompanionMultiAnswer() {
+            const selected = Array.from(document.querySelectorAll('#companion-question-controls [data-multi-option].selected'))
+                .map((el) => el.getAttribute('data-multi-option'));
+            if (!selected.length) {
+                showToast("Pick at least one floor support.", "warning");
+                return;
+            }
+            answerCompanionQuestion(selected);
+        }
+
         function answerCompanionQuestion(score) {
             ensurePolarisState();
             const intake = state.polaris.profile.evolvingIntake;
             const qId = intake.currentQuestionId;
             if (qId === "done") return;
-            
-            // Record answer
+
             const today = getTodayString();
             if (!intake.answers[today]) intake.answers[today] = {};
-            intake.answers[today][qId] = score;
+            intake.answers[today][qId] = buildCompanionAnswerRecord(qId, score);
             intake.lastQuestionDate = getTodayString();
-            
+            intake.schemaVersion = 4;
+
             const currentQ = COMPANION_QUESTION_TREE[qId];
-            if (currentQ && currentQ.next) {
-                if (currentQ.next[score] !== undefined) {
-                    intake.currentQuestionId = currentQ.next[score];
-                } else if (currentQ.next["default"] !== undefined) {
-                    intake.currentQuestionId = currentQ.next["default"];
-                } else {
-                    intake.currentQuestionId = "done";
-                }
-            } else {
-                intake.currentQuestionId = "done";
-            }
-            
+            intake.currentQuestionId = nextCompanionQuestionId(currentQ, score);
+
             saveState();
             renderPolarisTab();
             showToast("Companion noted your answer.", "success");
@@ -4725,19 +5062,19 @@ const COMPANION_QUESTION_TREE = {
             const toggleLabel = document.getElementById('polaris-toggle-label');
 
             if (!state.polaris.enabled) {
-                contentEl.classList.add('hidden');
-                disabledEl.classList.remove('hidden');
-                toggleEl.style.background = 'rgba(255,255,255,0.1)';
-                toggleKnob.style.left = '2px';
-                toggleLabel.textContent = 'Disabled';
+                if (contentEl) contentEl.classList.add('hidden');
+                if (disabledEl) disabledEl.classList.remove('hidden');
+                if (toggleEl) toggleEl.style.background = 'rgba(255,255,255,0.1)';
+                if (toggleKnob) toggleKnob.style.left = '2px';
+                if (toggleLabel) toggleLabel.textContent = 'Disabled';
                 return;
             }
 
-            contentEl.classList.remove('hidden');
-            disabledEl.classList.add('hidden');
-            toggleEl.style.background = 'var(--accent-teal)';
-            toggleKnob.style.left = '22px';
-            toggleLabel.textContent = 'Enabled';
+            if (contentEl) contentEl.classList.remove('hidden');
+            if (disabledEl) disabledEl.classList.add('hidden');
+            if (toggleEl) toggleEl.style.background = 'var(--accent-teal)';
+            if (toggleKnob) toggleKnob.style.left = '22px';
+            if (toggleLabel) toggleLabel.textContent = 'Enabled';
 
             // Day rollover: reset today's completions and proof when date changes
             const today = getTodayString();
@@ -4755,30 +5092,47 @@ const COMPANION_QUESTION_TREE = {
 
             const dayState = (state.todayEnergy || 'medium').toLowerCase();
             let message = getPolarisMessage(dayState);
-            message = getCompanionMessage(dayState, message);
+            try {
+                message = getCompanionMessage(dayState, message);
+            } catch (err) {
+                console.error('Polaris companion message failed:', err);
+            }
 
             // B2: Day counter
             const dayCounterEl = document.getElementById('polaris-day-counter');
             if (dayCounterEl) dayCounterEl.textContent = 'Day ' + getDayNumber();
 
             // B5: Hope level
-            renderPolarisHopeLevel();
+            try {
+                renderPolarisHopeLevel();
+            } catch (err) {
+                console.error('Polaris hope level failed:', err);
+            }
 
             // Day message and Companion Avatar
-            document.getElementById('polaris-message-text').textContent = message;
+            const messageEl = document.getElementById('polaris-message-text');
+            if (messageEl) messageEl.textContent = message;
             const energyBadge = document.getElementById('polaris-energy-badge');
-            energyBadge.textContent = dayState.toUpperCase();
-            energyBadge.className = 'badge badge-' + dayState;
-            energyBadge.style.cssText = 'font-size: 0.65rem; padding: 0.1rem 0.4rem;';
-            
+            if (energyBadge) {
+                energyBadge.textContent = dayState.toUpperCase();
+                energyBadge.className = 'badge badge-' + dayState;
+                energyBadge.style.cssText = 'font-size: 0.65rem; padding: 0.1rem 0.4rem;';
+            }
+
             const avatarEl = document.getElementById('polaris-companion-avatar');
             if (state.polaris.profile.companionSkin) {
-                avatarEl.textContent = state.polaris.profile.companionSkin;
-                avatarEl.style.display = 'block';
-                contentEl.dataset.companionTheme = state.polaris.profile.companionSkin;
+                if (avatarEl) {
+                    avatarEl.textContent = state.polaris.profile.companionSkin;
+                    avatarEl.style.display = 'block';
+                }
+                if (contentEl) contentEl.dataset.companionTheme = state.polaris.profile.companionSkin;
             } else {
-                avatarEl.style.display = 'none';
-                delete contentEl.dataset.companionTheme;
+                if (avatarEl) avatarEl.style.display = 'none';
+                if (contentEl) delete contentEl.dataset.companionTheme;
+            }
+            if (contentEl) {
+                contentEl.dataset.energy = dayState;
+                contentEl.dataset.proofToday = (state.polaris.proof && state.polaris.proof.today > 0) ? '1' : '0';
             }
 
             // Highlight active companion selector button
@@ -4830,15 +5184,34 @@ const COMPANION_QUESTION_TREE = {
                     
                     // Render dynamic inputs based on question type
                     if (qControls) {
-                        const isTextQuestion = currentQ.next && currentQ.next['0'] === undefined && currentQ.next['default'] !== undefined;
+                        const inputType = companionInputType(currentQ, intake.currentQuestionId);
                         
-                        if (isTextQuestion) {
+                        if (inputType === 'text') {
                             qControls.innerHTML = `
                                 <textarea id="companion-question-text-input" rows="3" placeholder="Type your reflection here..." class="polaris-input polaris-input-lavender" style="resize: vertical; margin-bottom: 0.75rem;" autofocus></textarea>
                                 <button class="polaris-btn polaris-btn-lavender" id="btn-submit-companion-text" style="background: rgba(165,120,240,0.1); border: 1px solid var(--accent-lavender); font-weight: 600;">Save Reflection</button>
                             `;
-                            // Attach click listener directly
                             document.getElementById('btn-submit-companion-text').addEventListener('click', submitCompanionTextAnswer);
+                        } else if (inputType === 'single_choice') {
+                            qControls.innerHTML = (currentQ.options || []).map((opt) => `
+                                <button class="polaris-btn polaris-btn-lavender" type="button" data-single-option="${opt.id}" style="padding: 0.6rem; width: 100%; margin-bottom: 0.5rem;">${opt.label}</button>
+                            `).join('');
+                            qControls.querySelectorAll('[data-single-option]').forEach((btn) => {
+                                btn.addEventListener('click', () => answerCompanionQuestion(btn.getAttribute('data-single-option')));
+                            });
+                        } else if (inputType === 'multi_select') {
+                            qControls.innerHTML = `
+                                <div style="display: flex; gap: 0.5rem; flex-direction: column; margin-bottom: 0.75rem;">
+                                    ${(currentQ.options || []).map((opt) => `
+                                        <button class="polaris-btn polaris-btn-lavender" type="button" data-multi-option="${opt.id}" style="padding: 0.6rem;">${opt.label}</button>
+                                    `).join('')}
+                                </div>
+                                <button class="polaris-btn polaris-btn-lavender" id="btn-submit-companion-multi" type="button" style="background: rgba(165,120,240,0.1); border: 1px solid var(--accent-lavender); font-weight: 600;">Save selection</button>
+                            `;
+                            qControls.querySelectorAll('[data-multi-option]').forEach((btn) => {
+                                btn.addEventListener('click', () => toggleCompanionMultiOption(btn.getAttribute('data-multi-option')));
+                            });
+                            document.getElementById('btn-submit-companion-multi').addEventListener('click', submitCompanionMultiAnswer);
                         } else {
                             qControls.innerHTML = `
                                 <div style="display: flex; gap: 0.5rem; flex-direction: column; margin-bottom: 0.75rem;">
@@ -4865,11 +5238,11 @@ const COMPANION_QUESTION_TREE = {
             }
 
             // B3: Gap notice
-            renderGapNotice();
+            try { renderGapNotice(); } catch (err) { console.error('Polaris gap notice failed:', err); }
 
             // B4: Program Insights
-            renderPolarisInsights();
-            renderPolarisIntakeHistory();
+            try { renderPolarisInsights(); } catch (err) { console.error('Polaris insights failed:', err); }
+            try { renderPolarisIntakeHistory(); } catch (err) { console.error('Polaris intake history failed:', err); }
 
             // B8: Yesterday incomplete
             renderYesterdayIncomplete();
@@ -5047,8 +5420,9 @@ const COMPANION_QUESTION_TREE = {
                 const ans = item.answer;
                 const currentQ = COMPANION_QUESTION_TREE[qId];
                 if (!currentQ) return '';
+                const display = companionAnswerDisplay(ans);
 
-                if (qId.endsWith('_a')) {
+                if (qId.endsWith('_a') || (ans && typeof ans === 'object' && ans.inputType === 'text')) {
                     const parentQId = qId.replace('_a', '');
                     const parentQ = COMPANION_QUESTION_TREE[parentQId];
                     const parentText = parentQ ? parentQ.text : 'Previous Question';
@@ -5056,17 +5430,17 @@ const COMPANION_QUESTION_TREE = {
                         <div class="polaris-tool-card" style="border-left: 2px solid var(--accent-lavender); padding: 0.6rem; margin-bottom: 0.5rem; background: rgba(165, 120, 240, 0.05);">
                             <div class="text-muted" style="font-size: 0.75rem; margin-bottom: 0.2rem;">Reflection on: ${escapeHtml(parentText)}</div>
                             <div class="text-lavender" style="font-size: 0.8rem; font-style: italic; margin-bottom: 0.3rem;">"${escapeHtml(currentQ.text)}"</div>
-                            <div style="color: var(--text-primary); white-space: pre-wrap; line-height: 1.4; font-size: 0.85rem;">${escapeHtml(ans.toString())}</div>
+                            <div style="color: var(--text-primary); white-space: pre-wrap; line-height: 1.4; font-size: 0.85rem;">${escapeHtml(display)}</div>
                             <div class="text-muted" style="font-size: 0.7rem; text-align: right; margin-top: 0.25rem;">${item.date}</div>
                         </div>
                     `;
                 } else {
-                    const label = scoreLabels[ans] || ans;
+                    const label = scoreLabels[ans] || display;
                     const qNum = qId.replace('q', '');
                     return `
                         <div class="polaris-tool-card" style="border-left: 2px solid rgba(255,255,255,0.15); padding: 0.6rem; margin-bottom: 0.5rem;">
                             <div class="text-muted" style="font-size: 0.75rem; margin-bottom: 0.2rem;">Question ${qNum}: ${escapeHtml(currentQ.text)}</div>
-                            <div style="color: var(--text-primary); font-weight: 500; font-size: 0.85rem;">Answer: ${escapeHtml(label.toString())}</div>
+                            <div style="color: var(--text-primary); font-weight: 500; font-size: 0.85rem;">Answer: ${escapeHtml(String(label))}</div>
                             <div class="text-muted" style="font-size: 0.7rem; text-align: right; margin-top: 0.25rem;">${item.date}</div>
                         </div>
                     `;
@@ -5946,7 +6320,7 @@ const COMPANION_QUESTION_TREE = {
                             <span>Polaris (${state.polaris.profile.companionSkin})</span>
                             <span class="chat-time">${getFormattedTime()}</span>
                         </div>
-                        Secure channel established. Ready to check functional alignment. Say anything to begin.
+                        ${escapeHTML(polarisLocalLine('greeting'))}
                     </div>
                 `;
             } else {
@@ -5996,7 +6370,7 @@ const COMPANION_QUESTION_TREE = {
 
             const apiKey = getOpenAIKey();
             if (!apiKey) {
-                await addPolarisChatMessage('system', "ERROR: OpenAI API Key not configured. Go to Settings (⚙) to configure a key, or add openai-api-key.txt to your local workspace knowledge folder.");
+                await addPolarisChatMessage('system', polarisLocalLine('nokey'));
                 return;
             }
 
@@ -6036,11 +6410,11 @@ const COMPANION_QUESTION_TREE = {
         async function sendQuickPolarisPrompt(promptLabel) {
             let userPromptText = "";
             if (promptLabel === 'Suggest next move') {
-                userPromptText = "Analyze my current parameters and suggest the next minimum viable action block.";
+                userPromptText = "I'm here. What's the smallest useful next move given my current state?";
             } else if (promptLabel === 'Check biological floor') {
-                userPromptText = "Verify if my biological core is defended. Run diagnostic checklist.";
+                userPromptText = "Check my floor: wake time, light, water, meds. Keep it concrete. Don't lecture.";
             } else if (promptLabel === 'Decompress shame spiral') {
-                userPromptText = "Cognitive overload. Help me separate state from identity and decompress functional drag.";
+                userPromptText = "Shame is high. Separate state from identity. Keep the next move small.";
             } else {
                 userPromptText = promptLabel;
             }
@@ -6050,7 +6424,7 @@ const COMPANION_QUESTION_TREE = {
 
             const apiKey = getOpenAIKey();
             if (!apiKey) {
-                await addPolarisChatMessage('system', "ERROR: OpenAI API Key not configured.");
+                await addPolarisChatMessage('system', polarisLocalLine('nokey'));
                 return;
             }
 
@@ -6070,48 +6444,23 @@ const COMPANION_QUESTION_TREE = {
         }
 
         async function callPolarisLLM(userText, apiKey) {
-            const skin = state.polaris.profile.companionSkin || 'None';
-            let personaGuideline = "";
-            
-            if (['🦇', '💀', '👻', '🧛', '🕷️', '🧟', '🐦‍⬛'].includes(skin)) {
-                personaGuideline = "\n- COMPANION PERSONA: Adopt a dry, slightly gothic, dark humor, blunt but supportive tone. Embrace the dark mode and shadow aesthetic. Treat energy depletion with dark pragmatism.";
-            } else if (['🦊', '🤖', '🛸', '👾'].includes(skin)) {
-                personaGuideline = "\n- COMPANION PERSONA: Adopt a highly precise, technical, diagnostic terminal console tone. Refer to functions, states, and telemetry. You are a diagnostic supervisor checking the user's biological hardware.";
-            } else if (['🦉', '🌲', '🐺'].includes(skin)) {
-                personaGuideline = "\n- COMPANION PERSONA: Adopt a calm, grounded, organic wilderness guide tone. Refer to natural cycles, clean biological rhythms, daylight signals, and organic baselines.";
-            } else if (['🐉', '🧙‍♂️', '🦄'].includes(skin)) {
-                personaGuideline = "\n- COMPANION PERSONA: Adopt a sage-like, epic quest, mythic advisor tone. Frame the recovery process as an epic journey of incremental actions (runes/spells) to bypass dark magic (avoidance).";
-            } else if (['🐈', '🧸', '☕'].includes(skin)) {
-                personaGuideline = "\n- COMPANION PERSONA: Adopt a warm, comforting, hearth-like, low-friction gentle tone. Emphasize resting without self-punishment, cozy baseline safety, and slow soft transitions.";
-            }
+            ensurePolarisState();
+            const api = polarisPresenceApi();
+            const skin = state.polaris.profile.companionSkin || '';
+            const anchorsToday = (state.polaris.anchors && state.polaris.anchors.today) ? state.polaris.anchors.today : {};
+            const telemetry = {
+                skin: skin,
+                energy: state.todayEnergy || 'medium',
+                pattern: state.dominantPattern || 'Rhythm Collapse',
+                hopeLevel: state.currentHopeLevel || 1,
+                proofTotal: (state.polaris.proof && state.polaris.proof.total) || 0,
+                proofToday: (state.polaris.proof && state.polaris.proof.today) || 0,
+                anchorsToday: anchorsToday
+            };
 
-            const systemPrompt = `You are Polaris, a systems AI companion inside the "State Not Fate" depression recovery operating system. 
-The user is interacting with you via a secure terminal. You are a calm, intelligent operating system, NOT a therapist, friend, or motivational coach.
-Write in a blunt, precise, objective tone. Avoid positive fluff, sentimentality, or moralizing. Frame depression as a temporary systems failure and energy deconditioning, not a permanent identity.${personaGuideline}
-
-CORE VOICE & COPY RULES:
-- Use phrases like: "You're here.", "No catch-up.", "Pick the current state.", "We'll keep this small.", "Nothing reset.", "Start with the floor.", "Make it smaller.", "State, not fate.", "Action happened.", "Proof logged."
-- AVOID these forbidden words/concepts: "journey", "empower", "thrive", "crush your goals", "be your best self", "try harder", "you should", "just", "back on track", "failed", "streak broken", "lost progress", "start over", "what's your why", "unlock your potential", "forced positivity", "therapy clichés".
-
-SYSTEM PERSPECTIVE (From Docs):
-- "Hope" is the brain's prediction of whether effort will lead to improvement. It is a system signal, not a mood.
-- Defend the biological core first (sleep wake time, light, water, medications). Do not recommend complex scheduling or social exposure if the biological floor is unstable.
-- Avoidance reduces anxiety for 10 minutes but deepens the depressive state for 10 hours. Act before you feel ready; momentum creates motivation.
-- Progress pauses; it never resets. A gap day is data, not a verdict. Restart without punishment.
-
-USER CURRENT TELEMETRY:
-- Companion Selected: \${state.polaris.profile.companionSkin || 'None'}
-- Current Energy State: \${(state.todayEnergy || 'medium').toUpperCase()}
-- Dominant Functional Pattern: \${state.dominantPattern || 'Rhythm Collapse'}
-- Current Hope Level: Level \${state.currentHopeLevel || 1}
-- Total Proof Points: \${state.polaris.proof.total} pts
-- Today's completed anchors: \${JSON.stringify(Object.keys(state.polaris.anchors.today || {}).filter(k => state.polaris.anchors.today[k]))}
-- Today's incomplete anchors: \${JSON.stringify(Object.keys(state.polaris.anchors.today || {}).filter(k => !state.polaris.anchors.today[k]))}
-
-CRITICAL CRISIS ROUTING:
-If the user expresses immediate self-harm, suicidal ideation, or crisis: immediately output: "ALERT: This query resides outside the functional self-management layer. Please transition to emergency resources immediately. Call or text 988 (Crisis Lifeline) or go to the nearest emergency facility."
-
-Your response should be under 100 words. Stick to objective mechanics, pattern diagnostics, or micro-action calibration. No fluff.`;
+            const systemPrompt = (api && typeof api.buildPolarisSystemPrompt === 'function')
+                ? api.buildPolarisSystemPrompt(telemetry)
+                : 'You are Polaris. Speak bluntly. Use the user\'s energy state. One small next move. Call or text 988 for crisis.';
 
             const chatHistory = state.polaris.chatHistory || [];
             const apiMessages = [
@@ -6136,8 +6485,8 @@ Your response should be under 100 words. Stick to objective mechanics, pattern d
                 body: JSON.stringify({
                     model: "gpt-4o-mini",
                     messages: apiMessages,
-                    max_tokens: 180,
-                    temperature: 0.5
+                    max_tokens: 280,
+                    temperature: 0.8
                 })
             });
 
@@ -6340,6 +6689,7 @@ Your response should be under 100 words. Stick to objective mechanics, pattern d
         window.saveOpenAIKey = saveOpenAIKey;
         window.sendPolarisChatMessage = sendPolarisChatMessage;
         window.sendQuickPolarisPrompt = sendQuickPolarisPrompt;
+        window.polarisLocalLine = polarisLocalLine;
         window.toggleFutureNarrowing = toggleFutureNarrowing;
         window.openPossibilityCollapseModal = openPossibilityCollapseModal;
         window.closePossibilityCollapseModal = closePossibilityCollapseModal;
@@ -6355,6 +6705,8 @@ Your response should be under 100 words. Stick to objective mechanics, pattern d
         window.showTab = showTab;
         window.showScreen = showScreen;
         window.answerCompanionQuestion = answerCompanionQuestion;
+        window.toggleCompanionMultiOption = toggleCompanionMultiOption;
+        window.submitCompanionMultiAnswer = submitCompanionMultiAnswer;
         window.removeGratitudeEntry = removeGratitudeEntry;
         window.removeThoughtCorrection = removeThoughtCorrection;
         window.deleteDocPhqEntry = deleteDocPhqEntry;
@@ -6364,6 +6716,9 @@ Your response should be under 100 words. Stick to objective mechanics, pattern d
         window.togglePolaris = togglePolaris;
         window.exportAnonymizedAudit = exportAnonymizedAudit;
         window.resetChecklistToDefaults = resetChecklistToDefaults;
+        window.renderMorningGratitudeWidget = renderMorningGratitudeWidget;
+        window.saveMorningGratitudeEntry = saveMorningGratitudeEntry;
+        window.editMorningGratitude = editMorningGratitude;
         window.filterDocumentExplorer = filterDocumentExplorer;
 
         // ==========================================================

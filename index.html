@@ -12,7 +12,13 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="/favicon.svg">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="index.css?v=2.6">
+    
+    <!-- Google Fonts for Systematic Clarity signature style -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="index.css?v=3.0-clarity">
 </head>
 <body>
     <a class="skip-link" href="#public-main">Skip to public project information</a>
@@ -33,7 +39,7 @@
 
     <main id="public-main" class="public-site" data-public-site>
         <section class="public-hero" aria-labelledby="public-title">
-            <p class="public-kicker">Depression Project</p>
+            <p class="public-kicker"><span>✦</span> Depression Recovery Framework</p>
             <h1 id="public-title">State Not Fate</h1>
             <p class="public-summary">State Not Fate is proof-based depression support that treats depression as functional system disruption, not moral failure.</p>
             <div class="public-actions" id="program">
@@ -677,6 +683,53 @@
                     <!-- Left: Daily Checklist -->
                     <div class="checklist-column">
                         
+                        <!-- Morning Gratitude Journal (First Action Every Day - Optional & Recommended) -->
+                        <div id="morning-gratitude-card" class="morning-gratitude-card glass-card mb-3">
+                            <div class="morning-gratitude-header">
+                                <div class="morning-gratitude-title-wrap">
+                                    <span class="morning-step-badge">Recommended First Action • Optional</span>
+                                    <h3 class="text-lavender">🌅 Morning Gratitude Journal</h3>
+                                </div>
+                                <span id="morning-gratitude-status-badge" class="badge badge-optional">Recommended • Optional</span>
+                            </div>
+                            <p class="text-muted morning-gratitude-subtitle">Recommended starting anchor: record a quick micro-moment or relief win whenever you want. Completely optional — never mandatory.</p>
+
+                            <!-- Active Input Section -->
+                            <div id="morning-gratitude-input-section">
+                                <div class="form-group mb-2">
+                                    <label for="morning-input-relief" class="gratitude-field-label">1. Micro-Moment / Relief Win (optional):</label>
+                                    <textarea id="morning-input-relief" rows="2" placeholder="e.g. Hot coffee tasted good, wrapped in warm blanket, morning daylight..."></textarea>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="morning-input-possibility" class="gratitude-field-label">2. Realistic Possibility / Anchor (optional):</label>
+                                    <input type="text" id="morning-input-possibility" placeholder="e.g. Will step outside for 5 minutes after breakfast.">
+                                </div>
+                                <button class="btn btn-primary w-full" id="btn-save-morning-gratitude">
+                                    ✓ Save Morning Anchor
+                                </button>
+                            </div>
+
+                            <!-- Completed Anchor Section -->
+                            <div id="morning-gratitude-completed-section" class="hidden">
+                                <div class="morning-gratitude-completed-box">
+                                    <div class="completed-check-icon">✓</div>
+                                    <div class="completed-details">
+                                        <div class="completed-meta">
+                                            <span class="completed-date" id="morning-completed-date">Today</span>
+                                            <span class="completed-tag">Morning Anchor Locked</span>
+                                        </div>
+                                        <div class="completed-entry-text" id="morning-completed-relief"></div>
+                                        <div class="completed-possibility-text" id="morning-completed-possibility"></div>
+                                    </div>
+                                </div>
+                                <div class="morning-gratitude-actions mt-2">
+                                    <button class="btn btn-secondary btn-small" id="btn-edit-morning-gratitude">
+                                        ✎ Add Another / Update Entry
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Morning Energy Check-in Widget -->
                         <div class="energy-check-card glass-card">
                             <div class="energy-check-header">Morning Energy Check-in</div>
@@ -901,9 +954,11 @@
             </div>
 
             <!-- Day Message with Companion -->
-            <div id="polaris-day-message" class="polaris-module-card polaris-module-teal">
+            <div id="polaris-day-message" class="polaris-module-card polaris-module-teal polaris-presence-card">
                 <div class="polaris-companion-message">
-                    <div id="polaris-companion-avatar" class="polaris-companion-avatar snf-ui-68" ></div>
+                    <div id="polaris-presence-stage" class="polaris-presence-stage">
+                        <div id="polaris-companion-avatar" class="polaris-companion-avatar snf-ui-68" ></div>
+                    </div>
                     <div class="snf-ui-33">
                         <div class="polaris-section-title polaris-section-title-teal snf-ui-69" >Today</div>
                         <div id="polaris-message-text" class="polaris-companion-text">Loading...</div>
@@ -1076,7 +1131,7 @@
             <!-- Companion Settings -->
             <div id="polaris-companion-settings" class="glass-card snf-ui-109" >
                 <h3 class="snf-ui-110">Companion Presence</h3>
-                <p class="text-muted snf-ui-111" >Select a calm, slightly mythic presence to accompany you.</p>
+                <p class="text-muted snf-ui-111" >Pick a presence. It changes how Polaris talks — local voice first, optional model overlay second.</p>
                 <div id="companion-selector-list" class="snf-ui-112">
                     <!-- Control Option -->
                     <div class="snf-ui-113">
@@ -1139,7 +1194,7 @@
             <div id="polaris-chat-container" class="polaris-chat-container">
                 <div class="polaris-chat-scanlines"></div>
                 <div class="polaris-chat-header">
-                    <span>🜁 Polaris Co-Pilot Sync</span>
+                    <span>🜁 Polaris</span>
                 </div>
                 <div id="polaris-chat-messages" class="polaris-chat-messages">
                     <!-- Loaded dynamically -->
@@ -1148,12 +1203,12 @@
                             <span>Polaris</span>
                             <span class="chat-time">--:--</span>
                         </div>
-                        Secure channel established. Ready to check functional alignment. Say anything to begin.
+                        You're here. No catch-up. Say what's actually going on.
                     </div>
                 </div>
                 <!-- Typing Indicator -->
                 <div id="polaris-chat-typing" class="polaris-chat-typing hidden">
-                    <span>Syncing neural firmware</span>
+                    <span>Polaris is thinking</span>
                     <div class="polaris-chat-dot"></div>
                     <div class="polaris-chat-dot"></div>
                     <div class="polaris-chat-dot"></div>
@@ -1165,7 +1220,7 @@
                     <button class="btn btn-secondary snf-ui-126" onclick="sendQuickPolarisPrompt('Decompress shame spiral')" >🔥 Decompress Shame Spiral</button>
                 </div>
                 <div class="polaris-chat-input-area">
-                    <input type="text" id="polaris-chat-input" class="polaris-chat-input" placeholder="Type functional telemetry..." onkeydown="if(event.key==='Enter') sendPolarisChatMessage()">
+                    <input type="text" id="polaris-chat-input" class="polaris-chat-input" placeholder="Say what's actually going on..." onkeydown="if(event.key==='Enter') sendPolarisChatMessage()">
                     <button class="polaris-chat-send" onclick="sendPolarisChatMessage()">SEND</button>
                 </div>
             </div>
@@ -3616,8 +3671,6 @@
         <div id="screen-smart-welcome" class="screen hidden">
             <!-- Smart welcome content populated by showSmartWelcomeScreen() -->
         </div>
-
-    </div>
     
     <!-- Testing/Prototype Build Footer -->
     <div class="snf-ui-587">
@@ -3627,6 +3680,7 @@
     <!-- Toast Notification Container -->
     <div id="toast-container" class="snf-ui-588"></div>
 
-    <script src="app.js?v=2.7"></script>
+    <script src="src/polaris-presence.js?v=1"></script>
+    <script src="app.js?v=2.8"></script>
 </body>
 </html>
