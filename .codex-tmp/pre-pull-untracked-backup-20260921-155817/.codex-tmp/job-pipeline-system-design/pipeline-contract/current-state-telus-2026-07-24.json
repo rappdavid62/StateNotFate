@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0.0",
+  "policy_version": "2026-07-24-v1",
+  "generated_at": "2026-07-24T04:50:58-04:00",
+  "source_status": {
+    "state": "partial",
+    "checked_at": "2026-07-24T04:50:58-04:00",
+    "limitations": [
+      "Both official public role surfaces were current.",
+      "No exact Gmail matches established application or contact history for either role.",
+      "The authenticated TELUS AI Community account, application, assessment, and eligibility state were unavailable."
+    ]
+  },
+  "records": [
+    {
+      "lead_key": "telus-digital|us-raters|public-web",
+      "event_id": "2026-07-24|public-web|telus-us-raters",
+      "material_fingerprint": "557e8eace1a92ed8ad74bcf703e4d1811f46dc3ab4d9daffc0cbe7149ec011a1",
+      "lane": "remote_ai_search_quality",
+      "contact_state": "discovered",
+      "contact_history_state": "unknown",
+      "evidence": [
+        {
+          "source_type": "public_web",
+          "source_label": "TELUS Digital official US Raters role",
+          "observed_at": "2026-07-24T04:50:58-04:00",
+          "currentness": "current",
+          "confidence": "high",
+          "inference": false
+        },
+        {
+          "source_type": "gmail",
+          "source_label": "No exact Gmail match for US Raters",
+          "observed_at": "2026-07-24T04:50:58-04:00",
+          "currentness": "current",
+          "confidence": "medium",
+          "inference": false
+        }
+      ],
+      "execution": {
+        "queue": "lead_review",
+        "resume_family": "remote_ai_search_quality",
+        "proposed_action": "review",
+        "authorized_action": "none",
+        "next_action": "Open the existing TELUS Digital AI Community account and verify application, assessment, and eligibility state for US Raters before any application attempt.",
+        "approval": {
+          "state": "not_required"
+        }
+      },
+      "policy_version": "2026-07-24-v1",
+      "updated_at": "2026-07-24T04:50:58-04:00"
+    },
+    {
+      "lead_key": "telus-digital|online-data-analyst-usa|public-web",
+      "event_id": "2026-07-24|public-web|telus-online-data-analyst-21404",
+      "material_fingerprint": "2e44c1282023eb83742cc81bacc5f4801c3359c9ebda4531d5e2ebb046845a50",
+      "lane": "remote_ai_search_quality",
+      "contact_state": "discovered",
+      "contact_history_state": "unknown",
+      "evidence": [
+        {
+          "source_type": "public_web",
+          "source_label": "TELUS Digital official Online Data Analyst United States role",
+          "observed_at": "2026-07-24T04:50:58-04:00",
+          "currentness": "current",
+          "confidence": "high",
+          "inference": false
+        },
+        {
+          "source_type": "gmail",
+          "source_label": "No exact Gmail match for Online Data Analyst",
+          "observed_at": "2026-07-24T04:50:58-04:00",
+          "currentness": "current",
+          "confidence": "medium",
+          "inference": false
+        }
+      ],
+      "execution": {
+        "queue": "lead_review",
+        "resume_family": "remote_ai_search_quality",
+        "proposed_action": "review",
+        "authorized_action": "none",
+        "next_action": "Open the existing TELUS Digital AI Community account and verify application, assessment, and eligibility state for Online Data Analyst before any application attempt.",
+        "approval": {
+          "state": "not_required"
+        }
+      },
+      "policy_version": "2026-07-24-v1",
+      "updated_at": "2026-07-24T04:50:58-04:00"
+    }
+  ]
+}
+

@@ -1,0 +1,142 @@
+{
+  "policy_version": "2026-07-24-v1",
+  "mode": "dry_run",
+  "objective": "Move one verified job event at a time toward a useful state transition while suppressing stale repetition and requiring explicit approval for every outbound action.",
+  "automation_state": {
+    "canonical_automation_id": "daily-remote-job-opportunity-scan",
+    "canonical_status": "paused",
+    "legacy_automation_id": "daily-remote-job-scan",
+    "legacy_status": "paused",
+    "activation_rule": "Keep both paused until one canonical state package passes a dry run and David approves one bounded cadence, source set, token ceiling, writeback target, and stop rule."
+  },
+  "source_precedence": [
+    "fresh_human_contact_or_application_event",
+    "fresh_employer_role_page",
+    "canonical_local_job_ledger",
+    "current_candidate_profile_and_resume_registry",
+    "dated_local_scan_or_queue",
+    "google_drive_projection",
+    "wisebase_projection",
+    "memory_or_prior_report"
+  ],
+  "event_reconciliation": {
+    "scope": "Before reply-now, apply-today, or any outbound authorization, search the same company and role across current human threads, application-platform updates, sent mail, and drafts.",
+    "terminal_precedence": "A newer verified rejection, withdrawal, filled-role notice, or closed application outranks an older invitation, alert, queue row, or draft.",
+    "draft_rule": "A draft is proposed text only. It is not evidence that contact occurred, it cannot override a newer terminal event, and malformed or no-reply drafts must never be surfaced as send-ready.",
+    "current_evidence_requirement": "The selected action must cite the newest decision-relevant source event and state why older contradictory events are superseded."
+  },
+  "source_truth": {
+    "transaction_store": "One proposed local state package in the existing job-search workspace.",
+    "evidence_inputs": [
+      "Gmail job threads",
+      "public employer and job-board pages",
+      "Google Drive resumes and profile evidence",
+      "AI Wisebase knowledge",
+      "GitHub portfolio proof",
+      "local dated artifacts"
+    ],
+    "derived_projections": [
+      "reply-now queue",
+      "wait queue",
+      "lead-review queue",
+      "dated scan report",
+      "Google Doc design",
+      "AI Wisebase handoff"
+    ]
+  },
+  "stable_key": {
+    "fields": [
+      "normalized_company_or_thread",
+      "normalized_role",
+      "source_family"
+    ],
+    "ambiguous_merge_behavior": "Keep records separate and surface one evidence conflict."
+  },
+  "material_fingerprint": {
+    "fields": [
+      "source_status",
+      "contact_state",
+      "role_or_thread",
+      "resume_family",
+      "proposed_action",
+      "next_action"
+    ],
+    "unchanged_behavior": "Do not resurface as net-new and do not create a duplicate queue or tracker row."
+  },
+  "lanes": [
+    "remote_ai_search_quality",
+    "remote_saas_support",
+    "remote_ops_trust_safety",
+    "field_runway",
+    "prs_care"
+  ],
+  "resume_registry": {
+    "remote_ai_search_quality": "remote-ai-search-quality-resume-v1.md",
+    "remote_saas_product_support": "remote-saas-product-support-resume-v1.md",
+    "low_voltage_field_tech": "low-voltage-field-tech-resume-v1.md",
+    "prs_care": "David_Rapp_PRS_Resume.docx"
+  },
+  "queue_rules": {
+    "reply_now": "Fresh human outreach, interview setup, scheduling request, or direct question.",
+    "wait": "Application confirmation or automated receipt that requires no reply.",
+    "lead_review": "Alert, digest, or public lead that requires fit and contact-history review.",
+    "apply_today": "Verified current role with reconciled prior-contact state, score at least 12, complete packet, and pending approval.",
+    "save": "Score 9 through 11 or missing one non-critical fact.",
+    "backup": "Score 6 through 8 or runway-only role.",
+    "closed": "Rejected, withdrawn, filled, duplicate, or explicitly declined."
+  },
+  "freshness_windows": {
+    "reply_or_schedule_hours": 24,
+    "apply_hours": 48,
+    "wait_log_days": 14,
+    "rule": "A stale proposal may remain in history but cannot authorize an outbound action."
+  },
+  "prior_action_rule": "Before recommending or applying to any company, reconcile current account, application, contact, rejection, and assessment history. Unknown history blocks outbound authorization.",
+  "approval_boundary": {
+    "requires_explicit_approval": [
+      "apply",
+      "reply",
+      "schedule"
+    ],
+    "safe_without_outbound_approval": [
+      "read",
+      "normalize",
+      "deduplicate",
+      "rank",
+      "select_resume",
+      "draft",
+      "log_locally"
+    ],
+    "approval_scope": "Approval must identify the exact company or thread, role, proposed action, and evidence event."
+  },
+  "token_yield": {
+    "primary_metric": "verified_state_transitions_or_completed_approved_actions_per_run",
+    "secondary_metrics": [
+      "unchanged_repeat_rate",
+      "reply_now_detection_latency",
+      "packet_completeness",
+      "unknown_contact_history_count"
+    ],
+    "do_not_optimize": [
+      "raw_sources_scanned",
+      "total_leads_named",
+      "full_profile_words_repeated"
+    ],
+    "stop_rules": [
+      "No materially changed source event.",
+      "Canonical state write would fail.",
+      "Source required for an outbound action is stale or unavailable.",
+      "Contact history is unknown.",
+      "Explicit approval is missing."
+    ]
+  },
+  "low_energy_floor": "Complete one verified local state transition or prepare one approval-ready action card; zero new leads is an acceptable result.",
+  "rollout_gates": [
+    "Schema, policy, and resume registry pass validation.",
+    "July 22 snapshot dry run produces no duplicate stable keys or unsafe authorized actions.",
+    "One current inbox or role event is re-read and normalized.",
+    "David approves the exact first outbound action, if any.",
+    "A single bounded automation proposal replaces duplicate scheduled scans.",
+    "Drive and Wisebase projections pass readback without becoming transaction stores."
+  ]
+}

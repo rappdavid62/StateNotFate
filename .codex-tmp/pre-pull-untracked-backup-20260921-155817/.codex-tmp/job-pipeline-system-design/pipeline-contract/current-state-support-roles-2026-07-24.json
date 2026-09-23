@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0.0",
+  "policy_version": "2026-07-24-v1",
+  "generated_at": "2026-07-24T04:50:58-04:00",
+  "source_status": {
+    "state": "partial",
+    "checked_at": "2026-07-24T04:50:58-04:00",
+    "limitations": [
+      "Both official public role surfaces were current.",
+      "No exact Gmail matches established prior application or contact history.",
+      "Authenticated employer application state and user-confirmed application-answer facts were unavailable."
+    ]
+  },
+  "records": [
+    {
+      "lead_key": "aircall|customer-support-specialist-usa|public-web",
+      "event_id": "2026-07-24|public-web|aircall-e16bcdf6",
+      "material_fingerprint": "65156c5cd9a7ee1d6d28ebdcf571e510442ff6266af05c6b751244996b10ecab",
+      "lane": "remote_saas_support",
+      "contact_state": "discovered",
+      "contact_history_state": "unknown",
+      "evidence": [
+        {
+          "source_type": "public_web",
+          "source_label": "Aircall official Customer Support Specialist Remote USA Select States role",
+          "observed_at": "2026-07-24T04:50:58-04:00",
+          "currentness": "current",
+          "confidence": "high",
+          "inference": false
+        },
+        {
+          "source_type": "gmail",
+          "source_label": "No exact Gmail match for Aircall",
+          "observed_at": "2026-07-24T04:50:58-04:00",
+          "currentness": "current",
+          "confidence": "medium",
+          "inference": false
+        }
+      ],
+      "execution": {
+        "queue": "lead_review",
+        "resume_family": "remote_saas_product_support",
+        "proposed_action": "review",
+        "authorized_action": "none",
+        "next_action": "Confirm no prior Aircall application, 9-6 PM EST availability, and the application-answer facts before preparing one approval card.",
+        "approval": {
+          "state": "not_required"
+        }
+      },
+      "policy_version": "2026-07-24-v1",
+      "updated_at": "2026-07-24T04:50:58-04:00"
+    },
+    {
+      "lead_key": "element451|product-support-specialist|public-web",
+      "event_id": "2026-07-24|public-web|element451-7db89039",
+      "material_fingerprint": "77ff70c7283eea73037306fe0c5d7e12f2d8ee6a66bb50ec51ec4cea842ea975",
+      "lane": "remote_saas_support",
+      "contact_state": "discovered",
+      "contact_history_state": "unknown",
+      "evidence": [
+        {
+          "source_type": "public_web",
+          "source_label": "Element451 official Product Support Specialist role",
+          "observed_at": "2026-07-24T04:50:58-04:00",
+          "currentness": "current",
+          "confidence": "high",
+          "inference": false
+        },
+        {
+          "source_type": "gmail",
+          "source_label": "No exact Gmail match for Element451",
+          "observed_at": "2026-07-24T04:50:58-04:00",
+          "currentness": "current",
+          "confidence": "medium",
+          "inference": false
+        }
+      ],
+      "execution": {
+        "queue": "backup",
+        "resume_family": "remote_saas_product_support",
+        "proposed_action": "review",
+        "authorized_action": "none",
+        "next_action": "Keep as backup unless David can document three or more years of SaaS or technical support; confirm no prior application before any action.",
+        "approval": {
+          "state": "not_required"
+        }
+      },
+      "policy_version": "2026-07-24-v1",
+      "updated_at": "2026-07-24T04:50:58-04:00"
+    }
+  ]
+}
+

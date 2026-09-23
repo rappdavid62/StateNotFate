@@ -1,0 +1,47 @@
+name: Hourly Synthetic Monitor
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+
+jobs:
+  synthetic-monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build:static
+      - name: Run critical public checks
+        run: npm run test:public -- --grep @critical
+      - name: Run advisory public checks
+        continue-on-error: true
+        run: npm run test:public -- --grep @advisory
+  production-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Run read-only production smoke checks
+        run: npx playwright test production-smoke.spec.ts --config=playwright.production.config.ts
+      - name: Upload production smoke artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-smoke-artifacts
+          path: test-results/
+          if-no-files-found: ignore

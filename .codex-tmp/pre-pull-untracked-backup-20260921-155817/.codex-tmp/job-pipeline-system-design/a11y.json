@@ -1,0 +1,28 @@
+{
+  "file": "C:\\Users\\rappd\\OneDrive\\Desktop\\SNF_Deploy\\.codex-tmp\\job-pipeline-system-design\\working.docx",
+  "counts": {
+    "high": 0,
+    "medium": 2,
+    "low": 0
+  },
+  "findings": [
+    {
+      "severity": "medium",
+      "kind": "heading_skip",
+      "message": "Heading level jumped from 1 to 3",
+      "context": {
+        "part": "word/document.xml",
+        "text": "Core components"
+      }
+    },
+    {
+      "severity": "medium",
+      "kind": "heading_skip",
+      "message": "Heading level jumped from 1 to 3",
+      "context": {
+        "part": "word/document.xml",
+        "text": "Primary data contract"
+      }
+    }
+  ]
+}

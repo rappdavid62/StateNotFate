@@ -1,0 +1,92 @@
+{
+  "registry_version": "2026-08-31-v1",
+  "as_of": "2026-08-31T09:00:00-04:00",
+  "purpose": "Local account and workflow state for repeated remote job platforms and target companies. This lets the inbox distinguish new opportunities from already-started applications, pending assessments, prior outreach, and closed lanes.",
+  "entries": [
+    {
+      "platform": "Welo Data",
+      "company": "Welo Data",
+      "company_aliases": ["Welocalize"],
+      "role_keywords": ["maps visual design relevance evaluator"],
+      "resume_family": "remote_ai_search_quality",
+      "access_state": "gmail_confirmed",
+      "workflow_state": "not_started",
+      "contact_history_state": "saved",
+      "last_confirmed_at": "2026-08-30T21:30:00-04:00",
+      "notes": [
+        "Direct outreach confirmed in Gmail on 2026-08-28.",
+        "No approved application or reply has been recorded yet."
+      ],
+      "blockers": [
+        "Privacy and consent review is still required before any application."
+      ],
+      "next_action": "If the privacy requirement is acceptable, prepare the remote AI resume packet and stop for approval before applying or replying."
+    },
+    {
+      "platform": "DataAnnotation",
+      "company": "DataAnnotation",
+      "resume_family": "remote_ai_search_quality",
+      "access_state": "inaccessible",
+      "workflow_state": "unknown",
+      "contact_history_state": "unknown",
+      "last_confirmed_at": "2026-08-30T21:30:00-04:00",
+      "notes": [
+        "Public role page was live on 2026-08-30.",
+        "Authenticated dashboard state was not available in the current run."
+      ],
+      "blockers": [
+        "Unknown account and qualification status."
+      ],
+      "next_action": "Check the existing account state in DataAnnotation before treating a listing email or job page as a fresh application."
+    },
+    {
+      "platform": "TELUS Digital",
+      "company": "TELUS Digital",
+      "company_aliases": ["TELUS", "Telus International"],
+      "resume_family": "remote_ai_search_quality",
+      "access_state": "google_sign_in_confirmed",
+      "workflow_state": "assessment_pending",
+      "contact_history_state": "saved",
+      "last_confirmed_at": "2026-08-30T21:30:00-04:00",
+      "notes": [
+        "Google account sharing email confirms a TELUS sign-in on 2026-07-31.",
+        "Exact exam or application progress is still not visible in the current run."
+      ],
+      "blockers": [
+        "Authenticated TELUS dashboard state remains unavailable."
+      ],
+      "next_action": "Resume or verify the existing TELUS assessment or account flow before starting any new TELUS application."
+    },
+    {
+      "platform": "TeamSnap",
+      "company": "TeamSnap",
+      "resume_family": "remote_saas_product_support",
+      "access_state": "accessible",
+      "workflow_state": "not_started",
+      "contact_history_state": "no_prior_action",
+      "last_confirmed_at": "2026-08-30T21:30:00-04:00",
+      "notes": [
+        "Role was live on 2026-08-30.",
+        "No prior TeamSnap reply or application was confirmed."
+      ],
+      "blockers": [],
+      "next_action": "Use the support-ops resume and tailor one honest W-2 stretch application if David wants a remote support target."
+    },
+    {
+      "platform": "Everway",
+      "company": "Everway",
+      "resume_family": "remote_saas_product_support",
+      "access_state": "accessible",
+      "workflow_state": "not_started",
+      "contact_history_state": "saved",
+      "last_confirmed_at": "2026-08-30T21:30:00-04:00",
+      "notes": [
+        "Public role page was live on 2026-08-30."
+      ],
+      "blockers": [
+        "Higher support-experience bar than the currently verified evidence."
+      ],
+      "next_action": "Keep as a lower-priority stretch apply after TeamSnap or a stronger AI-eval lead."
+    }
+  ]
+}
