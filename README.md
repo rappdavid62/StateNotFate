@@ -67,9 +67,55 @@ If you want zero configuration:
 - **To use on phone**:
   - Visit the deployed HTTPS version (Netlify or your domain from the SNF branch deploy – check your Netlify dashboard for the live URL).
   - Add to home screen (install as PWA) for standalone mode.
-  - The service worker (cache v5) handles offline after first load. If it says "not connected", ensure you have internet for the initial load from the deployed URL (localhost testing won't work on phone).
+  - The service worker (cache v11) handles offline after first load. It refreshes navigations, HTML, `app.js`, and `index.css` from the network when available, then falls back to the cache. If it says "not connected", ensure you have internet for the initial load from the deployed URL (localhost testing won't work on phone).
   - Manifest is set for portrait, theme teal, etc.
 - If issues: Clear browser cache / reinstall PWA. The app is local-first (state in browser storage), no server "connection" beyond initial load.
+
+## Developer Quick Reference
+
+This is a no-framework static site. The local server is the canonical browser test path:
+
+```bash
+npm install
+npm run serve          # http://127.0.0.1:4173
+npm run health         # routing, cache, and repository checks
+npm run test:public    # public-site Playwright checks
+npm test               # full Playwright suite
+```
+
+### Public routes and aliases
+
+Netlify and `scripts/static-server.mjs` keep these pretty URLs aligned with their
+HTML files:
+
+| URL | HTML file | Purpose |
+| --- | --- | --- |
+| `/` | `index.html` | Public landing page and local recovery app shell |
+| `/evidence` or `/sources` | `evidence.html` | Evidence and source index |
+| `/suicide-prevention` | `suicide-prevention.html` | Public safety and prevention appendix |
+| `/education-reader` or `/reader` | `education-reader.html` | 18-unit Suicide Compendium Education Reader v3.0 |
+| `/essays` | `essays.html` | Essays and core philosophy |
+| `/contact` or `/join` | `contact.html` | Contact and participation |
+| `/crisis` or `/help` | `crisis.html` | Immediate support routing |
+
+The Education Reader is research-literacy content only: it does not provide
+clinical care, diagnosis, therapy, or personalized risk calculation. Its 988 and
+911 links must remain immediately available.
+
+### PWA and responsive-shell constraints
+
+`service-worker.js` precaches the core landing, evidence, contact, crisis,
+404, prevention, and essays HTML pages plus shell assets under
+`state-not-fate-cache-v11`. The Education Reader is network-first when visited
+and is cached after a successful load. Core-shell requests are network-first with
+offline fallback; other same-origin GETs remain cache-first. When adding a
+precached page or changing the cache contract, update `ASSETS_TO_CACHE`, bump
+`CACHE_NAME`, and extend the service-worker tests.
+
+The private dashboard is a full-width application shell. At tablet widths
+(769–1100px), its dashboard cards use one column; at mobile widths (768px and
+below), the sidebar is hidden and the bottom navigation is shown. Validate shell
+changes at both a tablet viewport (for example, 960px) and a mobile viewport.
 
 ### GitHub Connection Notes
 - Repo is primarily the PWA code + some synced notes/MOCs in /docs/.
