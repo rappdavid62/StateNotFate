@@ -1,4 +1,4 @@
-﻿# AI Agent Instructions for State Not Fate
+# AI Agent Instructions for State Not Fate
 
 ## Purpose
 
@@ -19,8 +19,12 @@ This repository is a static PWA / public website for the State Not Fate recovery
 
 ## Recommended Agent Behavior
 
-- You are the State Not Fate coding agent for this repo. Do not sell or offer hope, and do not generate copy that preys on people's need for hope. Keep existing files, citations, and other people's names. New project voice: proof, anchors, visible results, mythical motivation (education only) — never a hope pitch.
-- Prefer minimal, precise changes. This is a static site, so do not introduce a JavaScript framework or server-side dependencies unless the user explicitly requests them.
+- General technical execution is governed by David's canonical AI Constitution at `C:\ROOT_OBSIDIAN\DOV\_Meta\DAVID_AI_CONSTITUTION.md` and the applicable sources under `C:\ROOT_OBSIDIAN\DOV\08-TECH-AND-AI`. State Not Fate philosophy, recovery language, and content voice are project material; they do not govern unrelated programming, AI infrastructure, connector configuration, or general technical decisions.
+- `snf-project-steward` is the user-facing State Not Fate project bot. It helps David develop and organize SNF content, improve and check the website, keep project files and source states straight, and support NotebookLM/video intake and production. David may describe the desired result normally; he does not need to choose a specialist.
+- The SNF project steward may delegate bounded HTML, CSS, JavaScript, PWA, accessibility, routing, or Playwright implementation to `snf-implementation`. It may delegate consequential source, branch, release, deployment, Netlify, or production claims to `snf-release-verifier` for independent read-only verification.
+- Delegation transfers a bounded task, not ownership of David's intent. Give specialists an explicit objective, source packet, write scope, fences, acceptance criteria, and required receipt. Do not duplicate work across agents unless the second pass is an intentional independent review.
+- For SNF-authored public content only: do not sell or offer hope, and do not generate copy that preys on people's need for hope. Keep existing filenames, citations, source titles, legal names, and other people's names. This content preference does not become a general technical or programming rule.
+- Prefer minimal, precise, dependency-complete changes. Do not omit a required test, route, cache update, or safety-preservation step merely to reduce the diff. This is a static site, so do not introduce a JavaScript framework or server-side dependencies unless the user explicitly requests them.
 - Preserve accessibility, SEO, and safety/care guidance. The site includes mental health safety content, crisis pages, and public-facing evidence resources.
 - Keep PWA semantics intact: service worker registration, manifest usage, and `localStorage` state persistence are core behaviors.
 - Use `npm test` and `npm run test:public` to validate changes with Playwright. On Windows PowerShell, prefer `npm.cmd test` and `npm.cmd run test:public`.
@@ -65,4 +69,25 @@ If we want stronger automation, add a skill for Playwright-based public site val
 - **Silent Background Installation:** When installing tools or SDKs via `winget` or other package managers in a background command, ALWAYS use the `--silent` or `/S` flags to prevent execution hangs from silent UAC or interactive prompts.
 - **Obsidian Sync:** When documenting system structures, environment configurations, or troubleshooting runbooks, save them directly in the Obsidian Vault (`C:\ROOT_OBSIDIAN\DOV\01-PROJECTS\STATENOTFATE\`) to ensure the user has stable and accessible offline reference manuals.
 - **Local Persistence:** Default to offline-first local persistence (like Room Database or Preferences DataStore on Android, and localStorage on Web) to honor the privacy and "sanctuary" philosophy of State Not Fate.
+
+### State Not Fate Multi-Silo Reservoir & Educational Video Production
+
+- **Unified Knowledge Reservoir:** The project maintains a 993-asset 4-silo unified reservoir index at `C:\ROOT_OBSIDIAN\DOV\01-PROJECTS\STATENOTFATE\video-pipeline\snf_reservoir_engine.py` connecting NotebookLM videos, DOV notes (including physical health, compounds, circadian clocks, suicide prevention), website modules, and internet video streams.
+- **Master Behavioral Tools & 10 Silos:** Catalogued in `knowledge/master_behavioral_tools.json` across 10 functional clinical/somatic silos with 32 granular levers (v2.1.0).
+- **Reservoir Commands:**
+  - `npm.cmd run reservoir:index` — Re-index all 4 silos into `snf_unified_reservoir.json`.
+  - `npm.cmd run reservoir:query -- "<query>"` — Discover cross-silo correlations.
+  - `npm.cmd run reservoir:stack -- "<context>"` — Synthesize a composite 3-part behavioral stack (Primary Anchor + 2 Micro-Adjuncts) paired with biological floor substrate notes.
+  - `npm.cmd run reservoir:synthesize -- "<topic>"` — Generate broadcast educational video packages.
+- **Antigravity Customizations:**
+  - Agent: `snf-reservoir-steward` (`.agents/agents/snf-reservoir-steward.toml`)
+  - Skill: `snf-protocol-synthesizer` (`.agents/skills/snf-protocol-synthesizer/SKILL.md`)
+  - Rule: `snf-mvd-and-reservoir-invariants` (`.agents/rules/snf-mvd-and-reservoir-invariants.md`)
+- **Educational Video Standard:** Every video package must adhere to Polaris 25.x:
+  1. Destigmatize: frame depression/crisis as an acute biological state shift / system crash, not character weakness.
+  2. Concrete Action: provide a 30-second Minimum Viable Dose (MVD) physical anchor.
+  3. Visuals: include 9:16 vertical storyboard and Omni Flash generation prompts.
+  4. Biological Floor: frame medications and biochemicals as stabilizing the physiological substrate baseline.
+  5. Mandatory Safety Gate: every release must include the 988 Lifeline and Crisis Text Line 741741 disclosures.
+
 

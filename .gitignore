@@ -35,3 +35,6 @@ playwright-results/
 local-preview.png
 beta-stress-test.png
 AGENTS.md.bak-*
+
+# Local OpenAI Agents API runtime state
+scripts/openai-agents/.state/

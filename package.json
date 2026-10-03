@@ -14,7 +14,13 @@
     "check:links": "node scripts/check-links.mjs",
     "audit:privacy": "node scripts/privacy-audit.mjs",
     "ci": "npm run test:unit && npm run test:integration && npm test",
-    "health": "node scripts/local-health-check.mjs"
+    "health": "node scripts/local-health-check.mjs",
+    "reservoir:index": "uv run C:/ROOT_OBSIDIAN/DOV/01-PROJECTS/STATENOTFATE/video-pipeline/snf_reservoir_engine.py --index",
+    "reservoir:sync": "uv run C:/ROOT_OBSIDIAN/DOV/01-PROJECTS/STATENOTFATE/video-pipeline/snf_reservoir_engine.py --sync",
+    "reservoir:query": "uv run C:/ROOT_OBSIDIAN/DOV/01-PROJECTS/STATENOTFATE/video-pipeline/snf_reservoir_engine.py --query",
+    "reservoir:synthesize": "uv run C:/ROOT_OBSIDIAN/DOV/01-PROJECTS/STATENOTFATE/video-pipeline/snf_reservoir_engine.py --synthesize",
+    "reservoir:stack": "uv run C:/ROOT_OBSIDIAN/DOV/01-PROJECTS/STATENOTFATE/video-pipeline/snf_reservoir_engine.py --stack",
+    "reservoir:stats": "uv run C:/ROOT_OBSIDIAN/DOV/01-PROJECTS/STATENOTFATE/video-pipeline/snf_reservoir_engine.py --stats"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.2",
