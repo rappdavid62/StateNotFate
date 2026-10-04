@@ -128,6 +128,8 @@ test('Polaris v4 PIN privacy keeps sensitive intake text unreadable in localStor
   });
 
   expect(diskMeta.answersEncrypted).toBe(true);
+  // The reflection must actually be persisted (scrambled); an empty value means the save never happened.
+  expect(String(diskMeta.value || '')).not.toBe('');
   expect(String(diskMeta.value || '')).not.toContain(secret);
 
   // In-memory state after unlock/save should still be readable via history UI
