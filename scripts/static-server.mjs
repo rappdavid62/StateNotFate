@@ -60,7 +60,7 @@ const server = createServer(async (req, res) => {
     'content-type': types[extname(filePath)] || 'application/octet-stream',
     'cache-control': 'no-store'
   });
-  
+
   const stream = createReadStream(filePath);
   stream.on('error', (err) => {
     if (!res.headersSent) {

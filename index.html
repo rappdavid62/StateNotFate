@@ -12,12 +12,12 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="/favicon.svg">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    
+
     <!-- Google Fonts for Systematic Clarity signature style -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-    
+
     <link rel="stylesheet" href="index.css?v=3.1-notice">
 </head>
 <body class="has-site-notice">
@@ -66,7 +66,7 @@
     </main>
 
     <div class="app-container">
-        
+
         <!-- ========================================== -->
         <!-- SECURITY LOCK SCREEN (PIN KEYPAD GATING)   -->
         <!-- ========================================== -->
@@ -74,7 +74,7 @@
             <h1 class="logo-header">STATE, NOT FATE</h1>
             <h3 class="text-lavender mb-2">Security Locked</h3>
             <p class="text-secondary mb-3 snf-ui-1" >Enter your 4-digit PIN to unlock your private recovery dashboard and Crisis Safe Box.</p>
-            
+
             <div class="glass-card snf-ui-2" >
                 <div class="snf-ui-3">
                     <div class="pin-dot" id="dot-1"></div>
@@ -154,7 +154,7 @@
                     <li><strong>Structured Progression tracking:</strong> Standardized PHQ-9 assessments and 10-Layer progression metrics built-in.</li>
                 </ul>
             </div>
-            
+
             <div class="flex-between w-full">
                 <button class="btn btn-secondary" onclick="window.location.href='/crisis'">Exit to Safety</button>
                 <button class="btn btn-primary" id="btn-start-intake">Begin Assessment <span class="icon">➔</span></button>
@@ -166,7 +166,7 @@
             <div class="glass-card snf-ui-17" >
                 <h2 class="snf-ui-18">What is blocking action right now?</h2>
                 <p class="text-muted snf-ui-19" >No analysis needed. Just pick the floor.</p>
-                
+
                 <div class="snf-ui-14">
                     <button class="btn btn-secondary w-full snf-ui-20" onclick="executeTinyAnchor('initiation')" >
                         <span class="snf-ui-21">🧱</span> I can't start
@@ -217,9 +217,9 @@
         <div id="screen-intake" class="intake-screen hidden">
             <h2 class="mb-1 text-lavender">Main Frame Onboarding & Reality Mapping</h2>
             <p class="mb-3 text-muted">Complete these progressive sections to build your custom, low-friction recovery dashboard. Go at your own pace.</p>
-            
+
             <div class="accordion-container">
-                
+
                 <!-- SECTION 1: SAFETY SCREENING -->
                 <div class="accordion-section active" data-section="safety">
                     <button class="accordion-header">
@@ -235,7 +235,7 @@
                         </div>
 
                         <p class="mb-2 text-muted">Because depression can affect safety and functional risks, we check these first. Your data remains fully private in your browser.</p>
-                        
+
                         <div class="safety-row" data-safety-type="suicide">
                             <span class="question-header">Are you currently experiencing thoughts of hurting yourself or ending your life?</span>
                             <div class="safety-options">
@@ -280,7 +280,7 @@
                         <div class="wizard-step-title">2. Function Burden (0-4 Severity Grid)</div>
                         <p class="text-muted mb-2">Rate how hard depression is hitting each area right now under real daily conditions.</p>
                         <p class="text-muted snf-ui-29" >0 = Not a problem | 1 = Mild | 2 = Moderate | 3 = Serious | 4 = Severe / Disabling</p>
-                        
+
                         <div class="rating-grid">
                             <div class="rating-row" data-metric="sleep">
                                 <label>Sleep Timing & Regularity</label>
@@ -378,7 +378,7 @@
                     <div class="accordion-content">
                         <div class="wizard-step-title">3. Custom Counter-Script Mantra</div>
                         <p class="text-muted mb-2">Depression repeats negative programming. We combat it with a custom identity statement that represents the exact opposite of what your depression tries to make you believe.</p>
-                        
+
                         <div class="form-group">
                             <label>What automatic negative beliefs does your depression tell you most often?</label>
                             <input type="text" id="input-negative-beliefs" placeholder="e.g. I am sad, sick, ugly, indecisive, oddball, and everyone hates me.">
@@ -491,7 +491,7 @@
                     <div class="accordion-content">
                         <div class="wizard-step-title">5. Your Minimum Viable Day (MVD) Floor</div>
                         <p class="text-muted mb-2">When energy collapses, we abandon the big goals and focus entirely on protecting the absolute biological floor. Define your MVD actions below:</p>
-                        
+
                         <div class="form-group">
                             <label>MVD Task 1 (Biological Core - Wake / Meds / Water)</label>
                             <input type="text" id="input-mvd-1" value="Wake on workdays by 7:30am, drink water, take morning medication.">
@@ -521,7 +521,7 @@
                     <div class="accordion-content">
                         <div class="wizard-step-title">6. Crisis Safety Plan & Contacts</div>
                         <p class="text-muted mb-2">If you experience active suicidal thoughts or severe functioning collapse, this safety plan will be available side-by-side with your writings in the Crisis Safe Box.</p>
-                        
+
                         <div class="form-group">
                             <label>Write down 2-3 reasons to preserve your life (no matter how small, e.g. pets, parents, future plans):</label>
                             <textarea id="input-reasons-live" rows="2" placeholder="e.g. 1. My cat relies on me. 2. Rebuilding my health. 3. Seeing the beach again."></textarea>
@@ -551,11 +551,11 @@
         <!-- SCREEN 2: MAIN DASHBOARD                   -->
         <!-- ========================================== -->
         <div id="screen-dashboard" class="hidden snf-ui-30" >
-            
+
             <!-- Sidebar Navigation (Desktop) -->
             <nav class="sidebar-nav">
                 <div class="sidebar-brand">STATE NOT FATE</div>
-                
+
                 <div class="sidebar-group">
                     <div class="sidebar-group-title">Home</div>
                     <button class="nav-item active" data-tab="dashboard">
@@ -565,7 +565,7 @@
                         <span class="snf-ui-31">🜁</span> Polaris
                     </button>
                 </div>
-                
+
                 <div class="sidebar-group">
                     <div class="sidebar-group-title">Momentum</div>
                     <button class="nav-item" data-tab="momentum">
@@ -575,7 +575,7 @@
                         <span class="snf-ui-31">📈</span> Progression
                     </button>
                 </div>
-                
+
                 <div class="sidebar-group">
                     <div class="sidebar-group-title">Library</div>
                     <button class="nav-item" data-tab="cognitivelab">
@@ -591,7 +591,7 @@
                         <span class="snf-ui-31">🔍</span> Explorer
                     </button>
                 </div>
-                
+
                 <div class="sidebar-group">
                     <div class="sidebar-group-title text-red">Crisis & Safety</div>
                     <button class="nav-item snf-ui-32" data-tab="safebox" id="btn-tab-safebox" >
@@ -601,9 +601,9 @@
                         <span class="snf-ui-31">🎗️</span> Suicide Prevention
                     </button>
                 </div>
-                
+
                 <div class="snf-ui-33"></div>
-                
+
                 <div class="sidebar-group snf-ui-34" >
                     <button class="nav-item" id="btn-tab-lock">
                         <span class="snf-ui-31">🔒</span> Lock App
@@ -648,7 +648,7 @@
 
             <!-- TAB 1: MAIN DASHBOARD VIEW -->
             <div id="tab-dashboard" class="tab-content">
-                
+
                 <!-- Polaris Upgrade Activation Banner -->
                 <div id="polaris-activation-banner" class="glass-card hidden snf-ui-39" >
                     <div class="snf-ui-40">
@@ -659,7 +659,7 @@
                         ⚡ Activate Polaris
                     </button>
                 </div>
-                
+
                 <!-- Smart Re-Entry Card Placeholder -->
                 <div id="reentry-card-container"></div>
 
@@ -679,10 +679,10 @@
 
                 <!-- Dashboard Grid -->
                 <div class="dashboard-grid">
-                    
+
                     <!-- Left: Daily Checklist -->
                     <div class="checklist-column">
-                        
+
                         <!-- Morning Gratitude Journal (First Action Every Day - Optional & Recommended) -->
                         <div id="morning-gratitude-card" class="morning-gratitude-card glass-card mb-3">
                             <div class="morning-gratitude-header">
@@ -757,7 +757,7 @@
                         <!-- SAFETY CHECK-IN (Integrated Naturally) -->
                         <div id="safety-checkin-card" class="glass-card safety-gradient mb-3 snf-ui-47" >
                             <h3 class="card-title snf-ui-48" >Quick Safety Check</h3>
-                            
+
                             <div class="safety-question">
                                 <p class="question-text">
                                     In the last 24 hours, have you had any thoughts that life might be better if you weren't here?
@@ -765,7 +765,7 @@
                                 <p class="question-subtext">
                                     This might feel like wanting to disappear, wishing you weren't alive, or a general sense of hopelessness.
                                 </p>
-                                
+
                                 <div class="response-scale" id="ideation-scale">
                                     <label class="scale-option">
                                         <input type="radio" name="ideation-24h" value="0" checked>
@@ -792,7 +792,7 @@
 
                             <div class="safety-question snf-ui-49" >
                                 <p class="question-text">Do you feel safe right now?</p>
-                                
+
                                 <div class="response-buttons" id="safety-buttons-container">
                                     <button class="btn btn-secondary btn-small active" data-safety="yes">Yes, I feel safe</button>
                                     <button class="btn btn-secondary btn-small" data-safety="no">No, I don't feel safe</button>
@@ -811,7 +811,7 @@
                                 <h3>Today's Actions</h3>
                                 <span class="badge badge-high" id="active-energy-badge">High Energy</span>
                             </div>
-                            
+
                             <!-- MVD / Collapse Warning banner -->
                             <div id="collapse-warning-banner" class="mvd-warning-banner hidden">
                                 <strong>Protect the Floor:</strong> You are in collapse mode. Standard goals are disabled to eliminate shame. Complete only these three floor anchors to protect your self-trust.
@@ -866,7 +866,7 @@
 
                     <!-- Right: Analytics, Hope Meter, Reminders -->
                     <div class="sidebar-analytics">
-                        
+
                         <div class="resilience-widget glass-card">
                             <h3>Resilience Dashboard</h3>
                             <div class="stats-grid">
@@ -971,10 +971,10 @@
             <div id="polaris-companion-question" class="polaris-module-card polaris-module-lavender hidden snf-ui-72" >
                 <div class="polaris-section-title polaris-section-title-lavender snf-ui-73" >Companion Question</div>
                 <div id="companion-question-text" class="polaris-companion-text snf-ui-74" >Loading...</div>
-                
+
                 <!-- Dynamic Response Controls Container -->
                 <div id="companion-question-controls" class="snf-ui-74"></div>
-                
+
                 <button class="polaris-btn snf-ui-75" onclick="skipCompanionQuestion()" >Skip for now</button>
             </div>
 
@@ -1036,7 +1036,7 @@
                 </div>
                 <p class="polaris-tool-desc snf-ui-88" >Completed anchors are logged.</p>
                 <div id="polaris-proof-today" class="text-teal snf-ui-90" >Today: 0 points earned</div>
-                
+
                 <div class="snf-ui-91">
                     <div class="snf-ui-92">
                         <span id="polaris-proof-milestone-text">Level 1 • 50 pts to Level 2</span>
@@ -1071,7 +1071,7 @@
                     🎛️ Recovery Engine Controllers
                 </h3>
                 <p class="text-muted snf-ui-100" >Actionable tools to bypass cognitive deconditioning, limit rumination, and log proof.</p>
-                
+
                 <div class="polaris-engine-grid">
                     <!-- Future Narrowing Card -->
                     <div class="polaris-tool-card" id="card-future-narrowing">
@@ -1179,7 +1179,7 @@
                         <button class="btn btn-secondary snf-ui-115" onclick="setPolarisCompanion('☕')"  title="Warm Brew">☕</button>
                     </div>
                 </div>
-                
+
                 <div class="snf-ui-118">
                     <div class="snf-ui-119">Allow companion to ask questions to personalize your recovery plan over time.</div>
                     <label class="snf-ui-120">
@@ -1279,7 +1279,7 @@
                     <div id="adaptive-year-simulator" class="glass-card mb-3 snf-ui-144" >
                         <h3 class="snf-ui-145">Adaptive Year Simulator (Five-Year Manual)</h3>
                         <p class="text-muted snf-ui-146" >Simulate how small daily anchors scale over 1, 3, and 5 years. Move the slider to set your projected daily completion rate.</p>
-                        
+
                         <div class="snf-ui-147">
                             <div class="snf-ui-148">
                                 <span>Projected Daily Anchors Completed: <strong id="sim-slider-val" class="text-teal">2.0</strong></span>
@@ -1373,9 +1373,9 @@
                         </div>
 
                         <div class="safebox-grid">
-                            
+
                             <div class="safety-plan-block">
-                                
+
                                 <div>
                                     <div class="safebox-field-label">My Reasons to Live</div>
                                     <div class="safebox-display-box" id="display-reasons-live">Reasons list...</div>
@@ -1397,7 +1397,7 @@
                                         <div class="safebox-field-label snf-ui-179" >Linked Writings & Private Logs</div>
                                     </div>
                                     <p class="text-muted snf-ui-180" >Log file paths of your local notes/writings so you can quickly recall them in crisis states.</p>
-                                    
+
                                     <div class="flex-between gap-1 mt-1">
                                         <input type="text" id="input-link-filename" placeholder="File Name (e.g. My Suicide Note / Raw Thoughts)" class="snf-ui-181">
                                         <input type="text" id="input-link-path" placeholder="File Path (e.g. C:/Users/rappd/thoughts.txt)" class="snf-ui-181">
@@ -1412,7 +1412,7 @@
 
                             <!-- Right: Standard support resources -->
                             <div class="safety-plan-block">
-                                
+
                                 <div class="hotline-card glass-card">
                                     <h3 class="text-red">🚨 Immediate Crisis support</h3>
                                     <p class="text-secondary mt-1 snf-ui-183" >If your thoughts turn to direct intent, please call or text these numbers immediately. It is anonymous, confidential, and safe.</p>
@@ -1435,9 +1435,9 @@
                                 <div class="glass-card">
                                     <h3>The Suicide Note Paradigm</h3>
                                     <p class="text-secondary mt-1 snf-ui-184" >
-                                        Your linked crisis notes represent raw, intense feelings from previous severe states. 
-                                        By placing them here side-by-side with your <strong>Reasons to Live</strong> and <strong>Structured Safety Plan</strong>, 
-                                        we integrate those feelings into a survival architecture. 
+                                        Your linked crisis notes represent raw, intense feelings from previous severe states.
+                                        By placing them here side-by-side with your <strong>Reasons to Live</strong> and <strong>Structured Safety Plan</strong>,
+                                        we integrate those feelings into a survival architecture.
                                         <br><br>
                                         Read your safety plan first. Reach out to a trusted person you named in your plan. Call 988. The state is temporary; it is not your fate.
                                     </p>
@@ -1507,21 +1507,21 @@
                 <div class="glass-card">
                     <h2 class="mb-1 text-teal">Interactive Media Console</h2>
                     <p class="text-secondary mb-3">Absorb your recovery guides, talks, and program outreach briefs locally and privately.</p>
-                    
+
                     <div class="safebox-grid">
-                        
+
                         <div class="safety-plan-block">
                             <div class="glass-card snf-ui-196" >
                                 <div class="safebox-field-label snf-ui-197" >Now Playing</div>
                                 <h3 id="media-playing-title" class="mb-2">No Track Selected</h3>
                                 <div class="text-muted mb-3" id="media-playing-type">Select a track from your playlist to begin.</div>
-                                
+
                                 <audio id="audio-player" class="w-full mb-3 snf-ui-198" controls ></audio>
-                                
+
                                 <div id="video-container" class="hidden mb-3 snf-ui-199" >
                                     <video id="video-player" class="w-full snf-ui-200" controls ></video>
                                 </div>
-                                
+
                                 <div id="media-error-fallback" class="hidden mb-3 text-left snf-ui-201" ></div>
 
                                 <div class="flex-between mt-2 snf-ui-202" >
@@ -1538,8 +1538,8 @@
                             <div class="glass-card">
                                 <h3>The Mechanical System Premise</h3>
                                 <p class="text-secondary snf-ui-184" >
-                                    Depression acts like broken firmware in a machine. 
-                                    Listening to these guides is designed to disrupt the negative self-talk stream and remind your brain of simple circadian, biological, and behavioral mechanics. 
+                                    Depression acts like broken firmware in a machine.
+                                    Listening to these guides is designed to disrupt the negative self-talk stream and remind your brain of simple circadian, biological, and behavioral mechanics.
                                     Adjust the playback speed down to <strong>0.75x</strong> if you are experiencing severe brain fog or attention fatigue.
                                 </p>
                             </div>
@@ -1565,7 +1565,7 @@
                     <div id="polaris-growth-layer" aria-label="Polaris Growth Layer — recovery labor made visible" role="region"></div>
 
                     <div class="safebox-grid">
-                        
+
                         <div>
                             <div class="safebox-field-label mb-2">My Recovery Roadmap (Layers 0 - 9)</div>
                             <div class="timeline" id="progression-timeline-container">
@@ -1573,7 +1573,7 @@
                         </div>
 
                         <div class="safety-plan-block">
-                            
+
                             <div class="glass-card snf-ui-206" >
                                 <h3>Depression Severity (PHQ-9)</h3>
                                 <div class="flex-between mt-2 mb-2">
@@ -1612,7 +1612,7 @@
             <!-- TAB 5: CONCEPT EXPLORER VIEW -->
             <div id="tab-explorer" class="tab-content hidden">
                 <div class="concept-explorer">
-                    
+
                     <div class="glass-card">
                         <h2>The State, Not Fate Concept Reference</h2>
                         <p class="text-secondary mt-1">Access the underlying philosophy and evidence base of this operating system at any time.</p>
@@ -1690,14 +1690,14 @@
                     <p class="text-secondary snf-ui-217" >
                         Your active risk level is calculated dynamically based on your check-in ratings and behavioral patterns.
                     </p>
-                    
+
                     <div class="snf-ui-218">
                         <!-- Active Risk Badge -->
                         <div class="snf-ui-219">
                             <div class="snf-ui-220">Risk Level</div>
                             <div id="safety-sp-risk-badge" class="snf-ui-221">LOW</div>
                         </div>
-                        
+
                         <!-- Next Check-in -->
                         <div class="snf-ui-222">
                             <div class="snf-ui-220">Next Safety Screening</div>
@@ -1713,7 +1713,7 @@
                         <ul id="safety-sp-warnings-list" class="snf-ui-226">
                         </ul>
                     </div>
-                    
+
                     <div class="snf-ui-227">
                         <button class="btn btn-primary snf-ui-228" id="btn-sp-trigger-assessment" >
                             📋 Complete Safety Assessment
@@ -1732,11 +1732,11 @@
                             <h3 class="snf-ui-230">
                                 🛠️ Collaborative Safety Plan
                             </h3>
-                            
+
                             <p class="text-secondary snf-ui-231" >
                                 Build this while relatively steady so it is easier to use when your thinking narrows. These notes stay in your local browser storage.
                             </p>
-                            
+
                             <div class="snf-ui-232">
                                 <div>
                                     <label for="input-sp-reasons" class="safebox-field-label snf-ui-233" >
@@ -1788,17 +1788,17 @@
                                 <div id="sp-grounding-default-msg" class="text-muted snf-ui-240" >
                                     Select a grounding technique above to begin.
                                 </div>
-                                
+
                                 <!-- 5-4-3-2-1 Tool -->
                                 <div id="sp-grounding-54321-tool" class="hidden">
                                     <h4 class="snf-ui-241">5-4-3-2-1 Sensory Grounding</h4>
                                     <p class="text-secondary snf-ui-111" >Acknowledge your surroundings to interrupt recursive negative cognitive cycles.</p>
-                                    
+
                                     <div id="sp-54321-step-container" class="snf-ui-242">
                                         <div id="sp-54321-step-title" class="snf-ui-243">Step 1</div>
                                         <div id="sp-54321-step-instruction" class="snf-ui-244">Name 5 things you can SEE around you right now.</div>
                                     </div>
-                                    
+
                                     <div class="snf-ui-245">
                                         <button class="btn btn-secondary btn-small" id="btn-sp-54321-prev" disabled>Previous</button>
                                         <span id="sp-54321-progress" class="snf-ui-54">Step 1 of 5</span>
@@ -1810,12 +1810,12 @@
                                 <div id="sp-grounding-breathing-tool" class="hidden snf-ui-72" >
                                     <h4 class="snf-ui-241">Somatic Box Breathing Pacer</h4>
                                     <p class="text-secondary snf-ui-111" >Synchronize your breathing with the pacer to calm your nervous system.</p>
-                                    
+
                                     <div class="snf-ui-247">
                                         <div id="sp-breathing-circle" class="snf-ui-248"></div>
                                         <div id="sp-breathing-action-text" class="snf-ui-249">Breath Pacer</div>
                                     </div>
-                                    
+
                                     <div class="snf-ui-250">
                                         <button class="btn btn-secondary btn-small" id="btn-sp-breathing-toggle">Start Pacer</button>
                                     </div>
@@ -1995,7 +1995,7 @@
                         <p class="text-secondary snf-ui-287" >
                             Fill this out before a bad night. Names and safe places are synced from your **Support Map**.
                         </p>
-                        
+
                         <table class="snf-ui-288">
                             <thead>
                                 <tr class="snf-ui-289">
@@ -2210,7 +2210,7 @@
                         <div class="safety-plan-block">
                             <div class="glass-card snf-ui-229" >
                                 <h3 class="snf-ui-330">New Journal Check-in</h3>
-                                
+
                                 <div class="snf-ui-331">
                                     <div>
                                         <label for="input-sp-journal-thoughts" class="safebox-field-label snf-ui-332" >
@@ -2256,7 +2256,7 @@
                         <div class="safety-plan-block">
                             <div class="glass-card snf-ui-340" >
                                 <h3 class="snf-ui-341">Support Timeline</h3>
-                                
+
                                 <div class="snf-ui-342">
                                     <input type="text" id="input-sp-journal-search" placeholder="🔍 Search timeline entries..." class="snf-ui-343">
                                 </div>
@@ -2273,7 +2273,7 @@
                         <h3 class="snf-ui-346">
                             <span>🗺️ Interactive Support Map & Script Library</span>
                         </h3>
-                        
+
                         <div class="safebox-grid snf-ui-347" >
                             <!-- Left: Support Map Editor -->
                             <div>
@@ -2281,7 +2281,7 @@
                                 <p class="text-secondary snf-ui-281" >
                                     Identify the specific nodes in your support network. Keep this practical.
                                 </p>
-                                
+
                                 <div class="snf-ui-349">
                                     <div>
                                         <label for="input-sp-anchor-person" class="safebox-field-label snf-ui-350" >
@@ -2306,21 +2306,21 @@
                                     </button>
                                 </div>
                             </div>
-                            
+
                             <!-- Right: Crisis & Supporter Script Library -->
                             <div class="snf-ui-353">
                                 <h4 class="snf-ui-348">Supporter Script Library</h4>
                                 <p class="text-secondary snf-ui-281" >
                                     People freeze when worried or in distress. Use these pre-framed texts or talk scripts to bypass friction.
                                 </p>
-                                
+
                                 <!-- Script Tabs -->
                                 <div class="snf-ui-354">
                                     <button class="btn btn-secondary btn-small script-category-btn active snf-ui-355" id="btn-script-cat-help" >Asking For Help</button>
                                     <button class="btn btn-secondary btn-small script-category-btn snf-ui-355" id="btn-script-cat-helper" >Helping Someone</button>
                                     <button class="btn btn-secondary btn-small script-category-btn snf-ui-355" id="btn-script-cat-visit" >Preparing for Visit</button>
                                 </div>
-                                
+
                                 <div id="script-display-area" class="snf-ui-356">
                                     <!-- Populated dynamically by JS -->
                                 </div>
@@ -2338,7 +2338,7 @@
                         <p class="text-secondary snf-ui-360" >
                             Immediate safety tools stay available at all times. The deeper guide unlocks after you have logged some basic proof of routine and self-observation so the material lands in a steadier state.
                         </p>
-                        
+
                         <div class="snf-ui-361">
                             <div class="snf-ui-362">
                                 <span class="text-muted">Unlocking Progress</span>
@@ -2373,7 +2373,7 @@
                                             <span>🎓 Guided Learning Modules</span>
                                             <span id="course-progress-badge" class="badge snf-ui-372" >0 / 10 Complete</span>
                                         </h3>
-                                        
+
                                         <!-- Course navigation button buttons -->
                                         <div class="snf-ui-373">
                                             <button class="btn btn-secondary btn-small course-module-nav active snf-ui-374" id="btn-module-1" >M1: Systems</button>
@@ -2666,7 +2666,7 @@
 
                     <!-- Main Grid: Left is Sources Directory, Right is Ranked Core Ideas -->
                     <div class="safebox-grid snf-ui-369" >
-                        
+
                         <!-- Left Column: Source-Disposition Directory -->
                         <div class="safety-plan-block">
                             <div class="glass-card snf-ui-407" >
@@ -2674,7 +2674,7 @@
                                     <span>📚 Source-Disposition Map</span>
                                     <span id="evidence-source-count" class="badge snf-ui-372" >22 Sources</span>
                                 </h3>
-                                
+
                                 <!-- Source Category Filters -->
                                 <div class="snf-ui-409">
                                     <button class="btn btn-secondary btn-small source-filter-btn active snf-ui-355" id="btn-source-filter-all" >All</button>
@@ -2683,7 +2683,7 @@
                                     <button class="btn btn-secondary btn-small source-filter-btn snf-ui-355" id="btn-source-filter-research" >Research Anchor</button>
                                     <button class="btn btn-secondary btn-small source-filter-btn snf-ui-355" id="btn-source-filter-watchlist" >Watchlist / Loose Ends</button>
                                 </div>
-                                
+
                                 <!-- Sources List Container -->
                                 <div id="evidence-sources-list" class="snf-ui-410">
                                     <!-- Injected dynamically by JS -->
@@ -2700,14 +2700,14 @@
                                 <p class="text-secondary snf-ui-281" >
                                     The architectural principles of State Not Fate ranked by their importance to safety and product design boundaries.
                                 </p>
-                                
+
                                 <!-- Ideas List Container -->
                                 <div id="evidence-ideas-list" class="snf-ui-410">
                                     <!-- Injected dynamically by JS -->
                                 </div>
                             </div>
                         </div>
-                        
+
                     </div>
                 </div>
 
@@ -2734,7 +2734,7 @@
                                 <p class="text-secondary snf-ui-388" >
                                     When energy crashes, the perceived cost of action rises. Avoidance kicks in, narrowing life range, which signals the brain that tomorrow is closed. This causes a possibility collapse and intrusive suicidal thoughts.
                                 </p>
-                                
+
                                 <!-- Visual SVG Feedback Loop Diagram -->
                                 <div class="snf-ui-415">
                                     <svg viewBox="0 0 420 120" class="snf-ui-416">
@@ -2781,7 +2781,7 @@
                                 <p class="text-secondary snf-ui-418" >
                                     When hope is zero, effort feels pointless. We repair the brain's prediction algorithm by registering small, repeated, undeniable actions. Check your anchors to simulate hope repair:
                                 </p>
-                                
+
                                 <div class="snf-ui-419">
                                     <label class="snf-ui-420">
                                         <input type="checkbox" class="hope-sim-check snf-ui-421" data-val="25" >
@@ -2845,7 +2845,7 @@
                                 <p class="text-secondary snf-ui-431" >
                                     Self-management is not enough when certain complexity triggers occur. Review the triage red flags:
                                 </p>
-                                
+
                                 <div class="snf-ui-432">
                                     <label class="snf-ui-433">
                                         <input type="checkbox" class="triage-exclusion-check snf-ui-284" >
@@ -2883,7 +2883,7 @@
                     <p class="text-secondary mb-3 mt-1 snf-ui-1" >Protect the cognitive floor: challenge unhelpful programming and record positive daily possibilities.</p>
 
                     <div class="safebox-grid">
-                        
+
                         <!-- Left Panel: Daily Gratitude & Possibility Journal -->
                         <div class="safety-plan-block">
                             <div class="glass-card snf-ui-436" >
@@ -3018,7 +3018,7 @@
                             <span class="badge snf-ui-458" >Adaptive Customizer</span>
                         </div>
                         <p class="text-muted mb-3 snf-ui-459" >
-                            Work with your therapist or peer leader to adapt your recovery checklist. 
+                            Work with your therapist or peer leader to adapt your recovery checklist.
                             Choose a pre-configured recovery template, or customize your MVD Floor and active checklist actions directly.
                         </p>
 
@@ -3055,7 +3055,7 @@
                             <div class="safety-plan-block snf-ui-181" >
                                 <h4 class="text-teal mb-2 snf-ui-465" >2. Add Custom Active Checklist Tasks</h4>
                                 <p class="text-muted mb-2 snf-ui-213" >Add highly specific, low-friction recovery tasks to your daily active lists (will be visible on high/medium energy days):</p>
-                                
+
                                 <div class="flex-between gap-1 mb-2">
                                     <input type="text" id="input-custom-task" placeholder="e.g. Read 5 pages, stretching routine, feed the cat" class="snf-ui-468">
                                     <button class="btn btn-primary snf-ui-469" id="btn-add-custom-task" >Add Task</button>
@@ -3112,17 +3112,17 @@
                     </p>
 
                     <div class="safebox-grid">
-                        
+
                         <!-- Left Panel: Database Registry Tracker (PHQ-9 & Worksheets) -->
                         <div class="safety-plan-block snf-ui-483" >
-                            
+
                             <!-- PHQ-9 History Table Card -->
                             <div class="glass-card snf-ui-484" >
                                 <h3 class="text-lavender mb-2 snf-ui-485" >
                                     📊 PHQ-9 Outcome History Log
                                 </h3>
                                 <p class="text-muted mb-2 snf-ui-213" >Logs of all DSM-5 symptom assessments registered locally.</p>
-                                
+
                                 <div class="snf-ui-486">
                                     <table class="snf-ui-487">
                                         <thead>
@@ -3146,7 +3146,7 @@
                                     📝 Completed Cognitive Worksheets Log
                                 </h3>
                                 <p class="text-muted mb-2 snf-ui-213" >Logs of all restructured thoughts and gratitude logs.</p>
-                                
+
                                 <div class="snf-ui-491" id="doc-worksheets-list-container">
                                     <!-- Dynamically rendered -->
                                 </div>
@@ -3263,7 +3263,7 @@
                     <span>⚠</span> HIGH SAFETY ALERT
                 </div>
                 <div class="modal-desc">
-                    Your recent inputs indicate a high level of active distress, suicidal intent, or extreme functioning collapse. 
+                    Your recent inputs indicate a high level of active distress, suicidal intent, or extreme functioning collapse.
                     <br><br>
                     <strong>State, Not Fate is an adjunctive recovery framework, but in active crisis, professional medical or crisis support is required.</strong>
                     <br><br>
@@ -3303,12 +3303,12 @@
                 <div class="modal-desc snf-ui-519" >
                     This questionnaire helps evaluate your current risk level and establish protective anchors. It takes about 2-3 minutes.
                 </div>
-                
+
                 <div id="safety-assessment-form-content">
                     <!-- Step 1: Tier 2 (Intent & Timeline) -->
                     <div id="sa-step-1" class="sa-step">
                         <h4 class="snf-ui-520">Section 1: Intent & Timeline</h4>
-                        
+
                         <!-- Question 1: Conviction -->
                         <div class="mb-3">
                             <label class="safebox-field-label snf-ui-521" >
@@ -3384,7 +3384,7 @@
                     <!-- Step 2: Tier 3 (Behavior & Deterrents) -->
                     <div id="sa-step-2" class="sa-step hidden">
                         <h4 class="snf-ui-520">Section 2: Behaviors & Deterrents</h4>
-                        
+
                         <!-- Question 4: Protective Deterrents -->
                         <div class="mb-3">
                             <label class="safebox-field-label snf-ui-521" >
@@ -3460,7 +3460,7 @@
                 <button class="modal-close-btn" id="btn-close-breath-modal">×</button>
                 <h3 class="text-lavender mb-2">Breathing Mantra Guide</h3>
                 <p class="text-muted mb-3 snf-ui-1" >Observe the pulsing circle. Synchronize your breath. Speak your counter-script aloud.</p>
-                
+
                 <div class="snf-ui-533">
                     <!-- Pulse breathe circle (central pulse background) -->
                     <div id="pacer-circle" class="snf-ui-534"></div>
@@ -3499,7 +3499,7 @@
                 <button class="modal-close-btn" id="btn-close-quick-safety-modal">×</button>
                 <h3 class="text-red mb-2">🚨 Quick Safety Plan</h3>
                 <p class="text-muted mb-3 snf-ui-255" >Zero-friction access to your emergency anchors and resources.</p>
-                
+
                 <div class="safety-grid snf-ui-540" >
                     <div class="glass-card snf-ui-541" >
                         <h4 class="text-teal mb-1 snf-ui-542" >❤️ Reasons to Live</h4>
@@ -3510,7 +3510,7 @@
                         <div id="quick-safe-contacts" class="snf-ui-543">None recorded.</div>
                     </div>
                 </div>
-                
+
                 <div class="glass-card snf-ui-544" >
                     <h4 class="text-red mb-1 snf-ui-545" >🆘 24/7 Professional Support</h4>
                     <p class="snf-ui-546">If you are in distress, professional support is always here.</p>
@@ -3559,7 +3559,7 @@
                 <div class="modal-desc snf-ui-551" >
                     Bypass initiation friction. Don't think about the whole task. Commit to ONLY the first 10 seconds.
                 </div>
-                
+
                 <div id="startup-drag-setup">
                     <div class="snf-ui-558">
                         <label class="snf-ui-559">What task is blocked?</label>
@@ -3594,7 +3594,7 @@
                 <div class="modal-desc snf-ui-570" >
                     Recursive over-thinking detected. Activating mental breaker switch. Follow these grounding telemetry directives.
                 </div>
-                
+
                 <div id="stop-loss-step-1">
                     <div class="snf-ui-571">
                         <span class="text-red snf-ui-572" >Directive 1: Physical Grounding</span>
@@ -3630,9 +3630,9 @@
                 <button class="modal-close-btn" id="btn-close-export-modal">×</button>
                 <h3 class="text-teal mb-2">📋 Export Progress Share Briefing</h3>
                 <p class="text-muted mb-3 snf-ui-255" >This briefing summarizes your progress data locally, fully anonymized. Share this with your therapist to optimize your recovery templates.</p>
-                
+
                 <textarea id="textarea-export-briefing" readonly class="snf-ui-580"></textarea>
-                
+
                 <div class="snf-ui-581">
                     <button class="btn btn-secondary" id="btn-copy-export-briefing">Copy to Clipboard</button>
                     <button class="btn btn-primary snf-ui-582" id="btn-download-export-briefing" >Download Briefing (.md)</button>
@@ -3649,7 +3649,7 @@
                     <span>💌</span> 24-Hour Caring Contact check-in
                 </div>
                 <div class="modal-desc snf-ui-585" >
-                    Hi David, it has been 24 hours since your last severe distress or crisis event. We are checking in because the days following a crisis can be particularly challenging. 
+                    Hi David, it has been 24 hours since your last severe distress or crisis event. We are checking in because the days following a crisis can be particularly challenging.
                     <br><br>
                     Remember, you are not alone, your progress is real, and support is always available. Keep taking small steps. Your state is temporary; it is not your fate.
                 </div>
@@ -3671,12 +3671,12 @@
         <div id="screen-smart-welcome" class="screen hidden">
             <!-- Smart welcome content populated by showSmartWelcomeScreen() -->
         </div>
-    
+
     <!-- Testing/Prototype Build Footer -->
     <div class="snf-ui-587" role="note">
         <p>Early access. Not a medical service. Adjunctive support only, not a substitute for professional care. In crisis, call or text <a href="tel:988">988</a>.</p>
     </div>
-    
+
     <!-- Toast Notification Container -->
     <div id="toast-container" class="snf-ui-588"></div>
 
