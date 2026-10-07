@@ -55,6 +55,7 @@ console.log('\n📋  Workflow Node version checks');
 
 const DEPRECATED_NODE = ['16.x', '18.x', '20.x'];
 const workflows = [
+  'daily-repo-health.yml',
   'layered-ci.yml',
   'node.js.yml',
   'weekly-evidence-watch.yml',
@@ -71,6 +72,12 @@ for (const wf of workflows) {
     }
   });
 }
+
+check('hourly synthetic monitor workflow is not present', () => {
+  if (existsSync(join(root, '.github/workflows/hourly-synthetic-monitor.yml'))) {
+    throw new Error('hourly-synthetic-monitor.yml should stay removed');
+  }
+});
 
 // ─── Section 2: Dependabot config exists ─────────────────────────────────────
 console.log('\n📋  Dependency update automation');
