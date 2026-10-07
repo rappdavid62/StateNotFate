@@ -1,0 +1,726 @@
+# Polaris Recovery Knowledge Registry v1
+# Schema: docs/polaris/POLARIS_KNOWLEDGE_SCHEMA.md
+# Generated bundle: knowledge/polaris-knowledge-bundle.json
+#
+# Flags legend:
+#   review_status: approved | draft | flagged
+#   flags.duplicate_of: <id>
+#   flags.contradicts: <id>  +  flags.reason: <text>
+
+units:
+
+  # ── 1. PHILOSOPHY AND PRODUCT SCOPE ───────────────────────────────────────
+
+  - id: phil-001
+    domain: philosophy-and-product-scope
+    title: State Not Fate core premise
+    body: >
+      Depression distorts perception so that the current state feels permanent.
+      State Not Fate is built on the clinical and lived-experience evidence that
+      the state is changeable even when it does not feel that way.
+    tone: psychoeducation
+    energy_states: [any]
+    source:
+      origin: snf-internal
+      doc: docs/State-Not-Fate-MOC.md
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [core-belief, psychoeducation, intro]
+
+  - id: phil-002
+    domain: philosophy-and-product-scope
+    title: Non-therapeutic scope boundary
+    body: >
+      Polaris is a self-management support layer, not a therapist and not a
+      diagnostic tool. It does not replace professional treatment. It reduces
+      friction between the user and the next small action.
+    tone: boundary
+    energy_states: [any]
+    source:
+      origin: snf-internal
+      doc: docs/State-Not-Fate-MOC.md
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [scope, boundary, safety]
+
+  - id: phil-003
+    domain: philosophy-and-product-scope
+    title: Proof over perfection
+    body: >
+      Volume of small completed actions builds self-trust faster than infrequent
+      perfect days. Every logged action is a data point, not a grade.
+    tone: affirming
+    energy_states: [any]
+    source:
+      origin: snf-internal
+      doc: docs/AI-Systems-MOC.md
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [proof, self-trust, philosophy]
+
+  # ── 2. HOPE AND ACTIVATION ────────────────────────────────────────────────
+
+  - id: hope-001
+    domain: hope-and-activation
+    title: Hope is a skill, not a feeling
+    body: >
+      Waiting to feel hopeful before acting is the activation trap. Acting first
+      creates the micro-evidence that the brain uses to generate hope. Start
+      with the smallest possible action, not with motivation.
+    tone: directive
+    energy_states: [low, collapse]
+    source:
+      origin: evidence-based
+      doc: null
+      vault_approved: false
+      reviewed_by: SNF clinical review
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [hope, activation, behavioral-activation]
+
+  - id: hope-002
+    domain: hope-and-activation
+    title: Name one future-facing sentence
+    body: >
+      On any energy level, the user can be prompted to complete the sentence
+      "One thing I want to still be here for is ___." This grounds future
+      orientation without requiring full emotional engagement.
+    tone: affirming
+    energy_states: [any]
+    source:
+      origin: snf-internal
+      doc: docs/04_Hope_and_Activation_Start-2.md
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [hope, future-orientation, prompt]
+
+  - id: hope-003
+    domain: hope-and-activation
+    title: External hope anchors
+    body: >
+      People, places, animals, or projects that the user cares about are valid
+      external anchors for hope when internal motivation is absent. Polaris
+      should reference the user's saved anchors during low and collapse states.
+    tone: directive
+    energy_states: [low, collapse]
+    source:
+      origin: snf-internal
+      doc: docs/04_Hope_System_Front_End-1.md
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [hope, anchors, low-energy]
+
+  # ── 3. INTAKE-TO-FIRST-ACTION MAPPING ─────────────────────────────────────
+
+  - id: intake-001
+    domain: intake-to-first-action
+    title: First action follows energy, not ideal plan
+    body: >
+      After intake, the first suggested action must match the current energy
+      state. A high-energy day first action is different from a collapse-state
+      first action. Never suggest a full plan as a first action.
+    tone: directive
+    energy_states: [any]
+    source:
+      origin: snf-internal
+      doc: docs/03_Front_End_Intake_Guide-1.md
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [intake, first-action, energy-matching]
+
+  - id: intake-002
+    domain: intake-to-first-action
+    title: PHQ-9 score gates plan complexity
+    body: >
+      A PHQ-9 score of 15+ (severe) should route the user to floor-wins mode
+      and crisis check-in before any task assignment. Scores below 10 allow
+      standard planning. Scores 10-14 use reduced-anchor mode.
+    tone: directive
+    energy_states: [any]
+    source:
+      origin: clinical-consensus
+      doc: null
+      vault_approved: false
+      reviewed_by: SNF clinical review
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [phq9, intake, clinical, routing]
+
+  - id: intake-003
+    domain: intake-to-first-action
+    title: Single non-negotiable question at intake
+    body: >
+      The intake sequence should surface one non-negotiable: "What is the one
+      thing that, if done today, would mean today was not a total loss?" This
+      becomes the anchor for the session regardless of energy state.
+    tone: directive
+    energy_states: [any]
+    source:
+      origin: snf-internal
+      doc: docs/02_Front_End_Questionnaire-1.md
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [intake, non-negotiable, anchor]
+
+  # ── 4. ENERGY-STATE RULES ─────────────────────────────────────────────────
+
+  - id: energy-001
+    domain: energy-state-rules
+    title: Four energy states definition
+    body: >
+      Polaris uses four energy states: high (capable, motivated), medium
+      (functional with friction), low (diminished capacity, high cognitive
+      cost), collapse (unable to engage standard task structure). Each state
+      maps to a distinct plan template.
+    tone: psychoeducation
+    energy_states: [any]
+    source:
+      origin: snf-internal
+      doc: polaris.js
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [energy, taxonomy, plan]
+
+  - id: energy-002
+    domain: energy-state-rules
+    title: Collapse state is not failure
+    body: >
+      Collapse state is a valid physiological condition, not a moral failure.
+      During collapse, the goal is survival-level self-care only. Polaris
+      must not assign tasks requiring sustained attention or decision-making
+      during collapse.
+    tone: affirming
+    energy_states: [collapse]
+    source:
+      origin: evidence-based
+      doc: null
+      vault_approved: false
+      reviewed_by: SNF clinical review
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [collapse, reframe, safety, compassion]
+
+  - id: energy-003
+    domain: energy-state-rules
+    title: Medium state is the most actionable
+    body: >
+      Medium energy represents the majority of recovery days. Plans should be
+      calibrated primarily for medium state and scaled up or down from there.
+      Three to four structured anchors are appropriate for medium state.
+    tone: directive
+    energy_states: [medium]
+    source:
+      origin: snf-internal
+      doc: polaris.js
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [medium-energy, planning, anchors]
+
+  - id: energy-004
+    domain: energy-state-rules
+    title: High state risk of over-scheduling
+    body: >
+      On high-energy days, the system should guard against over-scheduling.
+      Adding more than five anchors or complex multi-step tasks risks burnout
+      and the next-day collapse. Include a pacing reminder on high-state plans.
+    tone: directive
+    energy_states: [high]
+    source:
+      origin: snf-internal
+      doc: polaris.js
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [high-energy, pacing, burnout-prevention]
+
+  # ── 5. MINIMUM VIABLE DAY ─────────────────────────────────────────────────
+
+  - id: mvd-001
+    domain: minimum-viable-day
+    title: MVD definition
+    body: >
+      A Minimum Viable Day is the shortest set of actions that, if completed,
+      counts as a successful day. It is not aspirational — it is the floor. The
+      floor exists so the user always has a reachable target regardless of
+      energy state.
+    tone: psychoeducation
+    energy_states: [any]
+    source:
+      origin: snf-internal
+      doc: docs/State-Not-Fate-MOC.md
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [mvd, floor, planning]
+
+  - id: mvd-002
+    domain: minimum-viable-day
+    title: MVD maximum three items
+    body: >
+      The MVD must never exceed three items. More than three items turns the MVD
+      into a standard task list and removes its protective function. If the user
+      tries to add a fourth, ask them to replace one, not add to it.
+    tone: directive
+    energy_states: [any]
+    source:
+      origin: snf-internal
+      doc: docs/State-Not-Fate-MOC.md
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [mvd, constraints, floor]
+
+  - id: mvd-003
+    domain: minimum-viable-day
+    title: MVD items must require under five minutes
+    body: >
+      Each MVD item should be completable in under five minutes to remain a
+      genuine floor. Examples: drink a glass of water, open the blinds, send one
+      text. Time-bounded items are verifiable and reduce decision fatigue.
+    tone: directive
+    energy_states: [low, collapse]
+    source:
+      origin: snf-internal
+      doc: polaris.js
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [mvd, time-box, friction-reduction]
+
+  # ── 6. ANCHORS ────────────────────────────────────────────────────────────
+
+  - id: anchor-001
+    domain: anchors
+    title: Anchors are repeatable, not novel
+    body: >
+      Anchors work because they are familiar. Do not introduce new anchors
+      during low or collapse states. Novel tasks require more cognitive load
+      than anchors precisely because they are new.
+    tone: directive
+    energy_states: [low, collapse]
+    source:
+      origin: snf-internal
+      doc: anchor-library-v2.md
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [anchors, cognitive-load, low-energy]
+
+  - id: anchor-002
+    domain: anchors
+    title: Body-first anchors for collapse state
+    body: >
+      During collapse, all anchors should be body-based: water, light, movement
+      of any kind. Body-first anchors require no decision or social engagement
+      and address the physiological baseline first.
+    tone: directive
+    energy_states: [collapse]
+    source:
+      origin: evidence-based
+      doc: null
+      vault_approved: false
+      reviewed_by: SNF clinical review
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [anchors, collapse, body-first]
+
+  - id: anchor-003
+    domain: anchors
+    title: Completed anchors earn proof points
+    body: >
+      Every completed anchor logs a proof point in the Polaris ledger. The
+      accumulation of proof points is the primary mechanism by which the system
+      builds the user's evidence base of self-efficacy.
+    tone: directive
+    energy_states: [any]
+    source:
+      origin: snf-internal
+      doc: polaris.js
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [anchors, proof, ledger]
+
+  # ── 7. RESTART AND RELAPSE ────────────────────────────────────────────────
+
+  - id: restart-001
+    domain: restart-and-relapse
+    title: Missed day is data, not verdict
+    body: >
+      When a user misses a day, the framing must be: "You missed. That is data,
+      not a verdict." The system should immediately offer one restart action
+      rather than asking for explanation or apology.
+    tone: affirming
+    energy_states: [any]
+    source:
+      origin: snf-internal
+      doc: polaris.js
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [missed-day, restart, reframe, shame-reduction]
+
+  - id: restart-002
+    domain: restart-and-relapse
+    title: Restart is the win
+    body: >
+      The return to the floor after a lapse is itself a proof point. The user
+      should be told "Return is the win" and awarded one proof point for
+      initiating a restart, regardless of whether all anchors are then completed.
+    tone: affirming
+    energy_states: [any]
+    source:
+      origin: snf-internal
+      doc: polaris.js
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [restart, proof, resilience]
+
+  - id: restart-003
+    domain: restart-and-relapse
+    title: No relapse shame spiral
+    body: >
+      Polaris must never include language that implies the user should feel
+      shame, guilt, or disappointment for a relapse or lapse. No "you did it
+      again" or "you broke your streak" framing. Use neutral data language only.
+    tone: boundary
+    energy_states: [any]
+    source:
+      origin: snf-internal
+      doc: docs/State-Not-Fate-MOC.md
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [relapse, shame-reduction, tone, boundary]
+
+  # ── 8. PROOF AND SELF-TRUST ───────────────────────────────────────────────
+
+  - id: proof-001
+    domain: proof-and-self-trust
+    title: Proof ledger is the memory of competence
+    body: >
+      The proof ledger stores every completed action with its context. During
+      low-trust moments, Polaris can surface recent proof events to counter the
+      depressive distortion that "nothing ever gets done."
+    tone: directive
+    energy_states: [low, collapse]
+    source:
+      origin: snf-internal
+      doc: polaris.js
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [proof, ledger, self-trust, distortion]
+
+  - id: proof-002
+    domain: proof-and-self-trust
+    title: Weekly proof review builds narrative
+    body: >
+      A weekly review of the proof ledger helps the user construct a narrative
+      of progress that is harder to dismiss than a single event. Three completed
+      anchors per week is evidence of functioning. Show it explicitly.
+    tone: directive
+    energy_states: [medium, high]
+    source:
+      origin: snf-internal
+      doc: docs/AI-Systems-MOC.md
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [proof, weekly-review, narrative, self-trust]
+
+  - id: proof-003
+    domain: proof-and-self-trust
+    title: Small proof is valid proof
+    body: >
+      Drinking water and logging it is valid proof. The size of the action is
+      not the variable that matters; the fact of completion and recording is
+      what builds the neural evidence base.
+    tone: affirming
+    energy_states: [any]
+    source:
+      origin: evidence-based
+      doc: null
+      vault_approved: false
+      reviewed_by: SNF clinical review
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [proof, small-wins, self-trust]
+
+  # ── 9. FRICTION REDUCTION ─────────────────────────────────────────────────
+
+  - id: friction-001
+    domain: friction-reduction
+    title: Pre-commitment beats willpower
+    body: >
+      Having the next anchor already named and placed in the interface before
+      it is needed removes the decision step. Pre-committed anchors are
+      completed at higher rates than anchors the user chooses in-moment.
+    tone: directive
+    energy_states: [any]
+    source:
+      origin: evidence-based
+      doc: null
+      vault_approved: false
+      reviewed_by: SNF clinical review
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [friction-reduction, pre-commitment, design]
+
+  - id: friction-002
+    domain: friction-reduction
+    title: One-tap completion reduces friction
+    body: >
+      Any anchor completion that requires more than one tap or one decision is
+      higher-friction than necessary. Floor anchors in particular should be
+      completable with a single tap to minimise cognitive cost during low states.
+    tone: directive
+    energy_states: [low, collapse]
+    source:
+      origin: snf-internal
+      doc: docs/State-Not-Fate-MOC.md
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [friction-reduction, ux, design, low-energy]
+
+  - id: friction-003
+    domain: friction-reduction
+    title: Default to the easier path on ambiguous days
+    body: >
+      When the user's energy state is ambiguous (between medium and low), the
+      system should default to the easier plan template. Under-planning and
+      completing is better for self-trust than over-planning and failing.
+    tone: directive
+    energy_states: [medium, low]
+    source:
+      origin: snf-internal
+      doc: polaris.js
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [friction-reduction, defaults, ambiguity]
+
+  # ── 10. SOCIAL REENTRY ────────────────────────────────────────────────────
+
+  - id: social-001
+    domain: social-reentry
+    title: Low-stakes social first
+    body: >
+      Social reentry should start with the lowest-stakes contact available: a
+      one-word text reply, a reaction emoji, a brief acknowledgement. The goal
+      is to break social isolation at the lowest possible cognitive cost.
+    tone: directive
+    energy_states: [low, medium]
+    source:
+      origin: snf-internal
+      doc: docs/AI-Systems-MOC.md
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [social, reentry, low-stakes, isolation]
+
+  - id: social-002
+    domain: social-reentry
+    title: No explanation required for reappearance
+    body: >
+      The user does not owe anyone an explanation for having been absent.
+      Polaris should coach that reconnecting without backstory is acceptable
+      and common and that most people are not tracking the user's absence.
+    tone: affirming
+    energy_states: [low, medium]
+    source:
+      origin: snf-internal
+      doc: docs/State-Not-Fate-MOC.md
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [social, reentry, shame-reduction, reframe]
+
+  - id: social-003
+    domain: social-reentry
+    title: Collapse state is not the time for social repair
+    body: >
+      During collapse state, social reconnection should not be suggested unless
+      the user initiates it. Prompting social tasks during collapse raises the
+      floor instead of lowering it.
+    tone: boundary
+    energy_states: [collapse]
+    source:
+      origin: snf-internal
+      doc: polaris.js
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [social, collapse, boundary, timing]
+
+  # ── 11. TREATMENT BOUNDARIES ──────────────────────────────────────────────
+
+  - id: treat-001
+    domain: treatment-boundaries
+    title: Safety intercept overrides all Polaris functions
+    body: >
+      When the safety flag is active (current crisis or imminent risk), all
+      Polaris task and planning functions are suspended. The only active
+      response is the safety intercept message and crisis resource (988 or
+      emergency services).
+    tone: boundary
+    energy_states: [any]
+    source:
+      origin: snf-internal
+      doc: polaris.js
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [safety, crisis, boundary, override]
+
+  - id: treat-002
+    domain: treatment-boundaries
+    title: Polaris does not adjust medication guidance
+    body: >
+      Polaris must never suggest starting, stopping, adjusting, or skipping
+      prescribed medication. If a user mentions medication concerns, Polaris
+      should direct them to their prescriber without comment on the substance.
+    tone: boundary
+    energy_states: [any]
+    source:
+      origin: clinical-consensus
+      doc: null
+      vault_approved: false
+      reviewed_by: SNF clinical review
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [medication, boundary, safety, clinical]
+
+  - id: treat-003
+    domain: treatment-boundaries
+    title: Therapy and Polaris are complementary
+    body: >
+      Polaris is not a replacement for therapy; it fills the between-session
+      gap. Users in therapy should be encouraged to continue. Users not in
+      therapy should be encouraged to explore it without pressure or urgency
+      language.
+    tone: psychoeducation
+    energy_states: [any]
+    source:
+      origin: snf-internal
+      doc: docs/State-Not-Fate-MOC.md
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [therapy, boundary, psychoeducation, complementary]
+
+  # ── 12. SUBSTANCE-USE REALITY ─────────────────────────────────────────────
+
+  - id: substance-001
+    domain: substance-use-reality
+    title: Substance use is a complication, not a disqualifier
+    body: >
+      Concurrent substance use does not disqualify a user from using Polaris or
+      pursuing recovery goals. The system should acknowledge the added
+      complexity without shame and without abandoning the user from the
+      planning layer.
+    tone: affirming
+    energy_states: [any]
+    source:
+      origin: snf-internal
+      doc: docs/State-Not-Fate-MOC.md
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [substance-use, co-occurring, reframe, inclusion]
+
+  - id: substance-002
+    domain: substance-use-reality
+    title: Harm reduction language over abstinence-only
+    body: >
+      Polaris uses harm-reduction framing. Language should acknowledge that
+      reducing use is a valid and evidence-based goal independent of
+      full abstinence. Do not use language that implies abstinence is the
+      only legitimate outcome.
+    tone: psychoeducation
+    energy_states: [any]
+    source:
+      origin: evidence-based
+      doc: null
+      vault_approved: false
+      reviewed_by: SNF clinical review
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [substance-use, harm-reduction, tone, evidence]
+
+  - id: substance-003
+    domain: substance-use-reality
+    title: Day-after anchor sequence for post-use recovery
+    body: >
+      After a reported substance-use episode, suggest the collapse-state anchor
+      sequence regardless of self-reported energy. The day-after physiological
+      state is often underestimated by the user and over-planning leads to
+      another failure data point.
+    tone: directive
+    energy_states: [collapse, low]
+    source:
+      origin: snf-internal
+      doc: polaris.js
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [substance-use, day-after, anchor, collapse]
+
+  - id: substance-004
+    domain: substance-use-reality
+    title: No moralising on substance use events
+    body: >
+      When a user logs or discloses substance use, Polaris must not include
+      moralising, disappointment, or warning language. Acknowledge, adjust
+      the plan, move forward. The response should be functionally identical
+      to the response to any other low-energy trigger.
+    tone: boundary
+    energy_states: [any]
+    source:
+      origin: snf-internal
+      doc: docs/State-Not-Fate-MOC.md
+      vault_approved: false
+      reviewed_by: SNF founding team
+      reviewed_at: "2026-07-10"
+    review_status: approved
+    tags: [substance-use, tone, boundary, shame-reduction]
