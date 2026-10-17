@@ -66,3 +66,11 @@ If we want stronger automation, add a skill for Playwright-based public site val
 - **Obsidian Sync:** When documenting system structures, environment configurations, or troubleshooting runbooks, save them directly in the Obsidian Vault (`C:\ROOT_OBSIDIAN\DOV\01-PROJECTS\STATENOTFATE\`) to ensure the user has stable and accessible offline reference manuals.
 - **Local Persistence:** Default to offline-first local persistence (like Room Database or Preferences DataStore on Android, and localStorage on Web) to honor the privacy and "sanctuary" philosophy of State Not Fate.
 
+## Cursor Cloud specific instructions
+
+- Install is the committed environment.json command. Do not invent another.
+- Serve with npm run serve. Test with npm run health and npm run test:public.
+- This VM cannot write C:\ROOT_OBSIDIAN\DOV or any local vault path.
+- No secrets are required for public Playwright tests.
+- Do not add an SPA fallback to index.html.
+

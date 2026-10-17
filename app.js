@@ -485,6 +485,9 @@ const COMPANION_QUESTION_TREE = {
 
         let tempPhqAnswers = new Array(9).fill(null);
         let tempPinInput = ""; 
+        // Hash most recently routed by handleRouting(). Nav clicks route synchronously,
+        // so the hashchange event they queue must not route (re-render + re-save) again.
+        let lastRoutedHash = null;
 
         function init() {
             loadState();
@@ -508,11 +511,15 @@ const COMPANION_QUESTION_TREE = {
             }, 1000);
 
             handleRouting();
-            window.addEventListener("hashchange", handleRouting);
+            window.addEventListener("hashchange", () => {
+                if (window.location.hash === lastRoutedHash) return;
+                handleRouting();
+            });
         }
 
         function handleRouting() {
             const hash = window.location.hash;
+            lastRoutedHash = hash;
             if (state.securityPin && state.isLocked) {
                 showScreen("lock");
                 resetPinDots();
@@ -1106,14 +1113,12 @@ const COMPANION_QUESTION_TREE = {
                     } else if (buttonId === "btn-tab-lock") {
                         lockApplication();
                     } else {
-                        showTab(tabId);
-                        if (tabId === "safebox") {
-                            renderSafeBox();
-                            if (isHighRiskActive()) {
-                                triggerCrisisOverlay();
-                            }
-                        }
+                        // Route once, synchronously. Previously this rendered the tab here AND
+                        // set the hash, whose async hashchange re-rendered the tab a beat later,
+                        // wiping in-progress input (e.g. a Polaris reflection) and re-saving
+                        // stale in-memory state over localStorage.
                         window.location.hash = `#/${tabId}`;
+                        handleRouting();
                     }
                 });
             });
