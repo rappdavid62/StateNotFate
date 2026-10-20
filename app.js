@@ -1,28 +1,12 @@
 // INJECTED JAVASCRIPT Logic Engine
-        let PolarisEnhancedSafety = null;
-        let SafetyDetectionModule = null;
-        let CrisisProtocol = null;
-        let safetyDetection = null;
-        let polarisEnhanced = null;
+        // The routing script loads synchronously before app.js, including offline.
+        function supportRoutingActive() {
+            return window.SNFSafety ? window.SNFSafety.isActive() : true;
+        }
 
-        async function loadSafetyModules() {
-            try {
-                const detectionMod = await import('./src/safety-detection.js');
-                const protocolMod = await import('./src/crisis-protocol.js');
-                const integrationMod = await import('./src/polaris-safety-integration.js');
-                
-                SafetyDetectionModule = detectionMod.default || detectionMod.SafetyDetectionModule;
-                CrisisProtocol = protocolMod.default || protocolMod.CrisisProtocol;
-                PolarisEnhancedSafety = integrationMod.default || integrationMod.PolarisEnhancedSafety;
-                
-                // Initialize safety modules
-                safetyDetection = new SafetyDetectionModule(state);
-                polarisEnhanced = new PolarisEnhancedSafety(state);
-                
-                console.log("Polaris Enhanced Safety modules loaded successfully.");
-            } catch (err) {
-                console.error("Failed to load Polaris Enhanced Safety modules:", err);
-            }
+        function routeSupportMessage(text) {
+            if (!window.SNFSafety) { window.location.href = '/crisis'; return true; }
+            return window.SNFSafety.routeMessage(text);
         }
 
         const DEFAULT_STATE = {
@@ -40,7 +24,6 @@
                 meaning: 0
             },
             safety: {
-                suicide: 0,
                 psychosis: 0,
                 mania: 0
             },
@@ -494,7 +477,10 @@ const COMPANION_QUESTION_TREE = {
             if (state.securityPin) {
                 state.isLocked = true;
             }
-            loadSafetyModules();
+            window.SNFSafety?.setContactsProvider(() => state.securityPin && state.isLocked ? '' : state.safeContacts);
+            window.addEventListener('snf:support-closed', () => {
+                if (!state.isLocked) handleRouting();
+            });
             setupEventListeners();
             
             // Register PWA Service Worker for Mobile Offline Standalone Installations
@@ -549,7 +535,7 @@ const COMPANION_QUESTION_TREE = {
 
                 if (targetTab === "safebox") {
                     renderSafeBox();
-                    if (isHighRiskActive()) {
+                    if (supportRoutingActive()) {
                         triggerCrisisOverlay();
                     }
                 }
@@ -759,6 +745,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function saveState() {
+            if (supportRoutingActive()) return;
             // If a security PIN is set, cryptographically obfuscate sensitive fields before saving
             let stateToSave = { ...state };
             if (state.securityPin) {
@@ -1094,7 +1081,7 @@ const COMPANION_QUESTION_TREE = {
                     
                     row.querySelectorAll(".safety-option-btn").forEach(b => b.classList.remove("selected"));
                     e.target.classList.add("selected");
-                    state.safety[safetyType] = val;
+                    if (safetyType !== 'suicide') state.safety[safetyType] = val;
                 });
             });
 
@@ -1125,6 +1112,7 @@ const COMPANION_QUESTION_TREE = {
 
             document.querySelectorAll(".energy-btn").forEach(btn => {
                 btn.addEventListener("click", (e) => {
+                    if (supportRoutingActive()) return;
                     const energyBtn = e.target.closest(".energy-btn");
                     const energyVal = energyBtn.getAttribute("data-energy");
                     
@@ -1138,93 +1126,13 @@ const COMPANION_QUESTION_TREE = {
                     
                     saveState();
                     
-                    const safetyCard = document.getElementById("safety-checkin-card");
-                    if (safetyCard) {
-                        safetyCard.style.display = "block";
-                    } else {
-                        renderDailyChecklist();
-                        updateDashboardMetrics();
-                    }
+                    renderDailyChecklist();
+                    updateDashboardMetrics();
                 });
-            });
-
-            // Toggle active state on safety buttons
-            const safetyButtons = document.querySelectorAll("#safety-buttons-container .btn");
-            safetyButtons.forEach(btn => {
-                btn.addEventListener("click", () => {
-                    safetyButtons.forEach(b => b.classList.remove("active"));
-                    btn.classList.add("active");
-                });
-            });
-
-            // Submit safety check-in responses
-            document.getElementById("submit-safety-check").addEventListener("click", () => {
-                const ideationVal = parseInt(document.querySelector('input[name="ideation-24h"]:checked')?.value || "0");
-                const safetyBtn = document.querySelector("#safety-buttons-container .btn.active");
-                const safetyVal = safetyBtn ? safetyBtn.getAttribute("data-safety") : "yes";
-                
-                const assessment = {
-                    id: "assessment-" + Date.now(),
-                    timestamp: new Date().toISOString(),
-                    type: "quick-screen",
-                    ideation: { value: ideationVal },
-                    safety: { value: safetyVal },
-                    responses: {
-                        ideationPresence: ideationVal,
-                        feeling_safe: safetyVal === "yes"
-                    }
-                };
-                
-                // Initialize safety tracking in state if needed
-                state.safetyAssessments = state.safetyAssessments || [];
-                state.safetyAssessments.push(assessment);
-                
-                // Calculate risk
-                let riskLevel = { level: 'low', score: 0 };
-                if (safetyDetection) {
-                    riskLevel = safetyDetection.calculateRiskLevel({
-                        quickScreen: assessment,
-                        patterns: safetyDetection.detectRiskPatterns ? safetyDetection.detectRiskPatterns(state) : []
-                    });
-                } else {
-                    let score = ideationVal;
-                    if (safetyVal === "no") score += 5;
-                    else if (safetyVal === "unsure") score += 2;
-                    let level = 'low';
-                    if (score >= 8) level = 'acute';
-                    else if (score >= 5) level = 'elevated';
-                    else if (score >= 3) level = 'moderate';
-                    else if (score >= 1) level = 'low-moderate';
-                    riskLevel = { level, score };
-                }
-                
-                // Hide card
-                document.getElementById("safety-checkin-card").style.display = "none";
-                
-                // Update safety state
-                state.safety = state.safety || {};
-                if (riskLevel.level === "acute" || riskLevel.level === "elevated" || safetyVal === "no") {
-                    state.safety.suicide = 2; // High alert
-                    triggerCrisisOverlay();
-                } else if (riskLevel.level === "moderate" || safetyVal === "unsure") {
-                    state.safety.suicide = 1;
-                } else {
-                    state.safety.suicide = 0;
-                }
-                
-                // Adapt anchors based on risk
-                if (polarisEnhanced && polarisEnhanced.generateAdaptiveAnchors) {
-                    state.polaris = polarisEnhanced.generateAdaptiveAnchors(riskLevel, state.polaris || {});
-                }
-                
-                saveState();
-                renderDailyChecklist();
-                updateDashboardMetrics();
-                
-                showToast("Safety check complete. Risk level: " + riskLevel.level.toUpperCase(), "success");
             });
 
             document.getElementById("btn-check-mantra").addEventListener("click", () => {
+                if (supportRoutingActive()) return;
                 state.mantraCompletedToday = true;
                 document.getElementById("btn-check-mantra").innerHTML = "✓ Active Identity Anchored";
                 document.getElementById("btn-check-mantra").disabled = true;
@@ -1244,17 +1152,6 @@ const COMPANION_QUESTION_TREE = {
             document.getElementById("btn-save-thought").addEventListener("click", saveThoughtCorrection);
             document.getElementById("btn-add-custom-task").addEventListener("click", addCustomTask);
             document.getElementById("btn-save-custom-treatment").addEventListener("click", saveCustomTreatment);
-
-            document.getElementById("btn-close-crisis-modal").addEventListener("click", () => {
-                document.getElementById("crisis-modal").classList.remove("active");
-            });
-            document.getElementById("btn-crisis-dismiss").addEventListener("click", () => {
-                document.getElementById("crisis-modal").classList.remove("active");
-            });
-            document.getElementById("btn-crisis-go-safebox").addEventListener("click", () => {
-                document.getElementById("crisis-modal").classList.remove("active");
-                window.location.hash = "#/safebox";
-            });
 
             document.getElementById("btn-trigger-breathe").addEventListener("click", triggerBreathingModal);
             document.getElementById("btn-close-breath-modal").addEventListener("click", closeBreathingModal);
@@ -1553,7 +1450,7 @@ const COMPANION_QUESTION_TREE = {
             showScreen("dashboard");
             window.location.hash = "#/dashboard";
             
-            if (isHighRiskActive()) {
+            if (supportRoutingActive()) {
                 triggerCrisisOverlay();
             }
         }
@@ -1581,12 +1478,9 @@ const COMPANION_QUESTION_TREE = {
             return bestPattern;
         }
 
-        function isHighRiskActive() {
-            return state.safety.suicide === 2 || state.safety.psychosis === 2 || state.safety.mania === 2;
-        }
-
         function triggerCrisisOverlay() {
-            document.getElementById("crisis-modal").classList.add("active");
+            if (window.SNFSafety) window.SNFSafety.open();
+            else window.location.href = '/crisis';
         }
 
         function resetToOnboarding() {
@@ -1657,6 +1551,10 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function renderDailyChecklist() {
+            if (supportRoutingActive()) {
+                document.getElementById('daily-checklist-items').textContent = 'Ordinary actions and rewards are paused. Crisis Help remains available.';
+                return;
+            }
             const container = document.getElementById("daily-checklist-items");
             container.innerHTML = "";
             
@@ -1771,6 +1669,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function toggleTask(label, element) {
+            if (supportRoutingActive()) return;
             const today = getTodayString();
             let todayLog = state.history.find(log => log.date === today);
             
@@ -1801,6 +1700,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function logActionCompletion(label) {
+            if (supportRoutingActive()) return;
             const today = getTodayString();
             let todayLog = state.history.find(log => log.date === today);
             
@@ -1823,6 +1723,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function logMissInHistory() {
+            if (supportRoutingActive()) return;
             const today = getTodayString();
             let todayLog = state.history.find(log => log.date === today);
             
@@ -1843,6 +1744,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function evaluateDaySuccess(todayLog) {
+            if (supportRoutingActive()) return;
             const mvdCompleted = state.mvd.every(task => todayLog.completed.includes(task));
             const energy = todayLog.energy;
             todayLog.mvdCompleted = mvdCompleted;
@@ -1891,6 +1793,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function updateHopeLevel(totalFloorDays) {
+            if (supportRoutingActive()) return;
             const fill = document.getElementById("hope-bar-fill");
             const lvlText = document.getElementById("label-hope-level");
             const lvlPercent = document.getElementById("label-hope-percent");
@@ -1938,6 +1841,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function calculateCurrentLayer(totalFloorDays) {
+            if (supportRoutingActive()) return;
             let layer = 0;
             ROADMAP_LAYERS.forEach(step => {
                 if (totalFloorDays >= step.req) {
@@ -2293,7 +2197,6 @@ const COMPANION_QUESTION_TREE = {
             
             const q9SuicidalityScore = tempPhqAnswers[8];
             if (q9SuicidalityScore >= 1) {
-                state.safety.suicide = 2;
                 triggerCrisisOverlay();
             }
             
@@ -2632,93 +2535,6 @@ const COMPANION_QUESTION_TREE = {
             if (anchorInput && state.supportMap) anchorInput.value = state.supportMap.anchorPerson || "";
             if (bufferInput && state.supportMap) bufferInput.value = state.supportMap.bufferContact || "";
             if (envInput && state.supportMap) envInput.value = state.supportMap.safeEnvironment || "";
-
-            // Calculate active risk level
-            let riskLevel = { level: 'low', score: 0 };
-            if (safetyDetection) {
-                const latestCheckin = state.safetyAssessments && state.safetyAssessments.length > 0
-                    ? state.safetyAssessments[state.safetyAssessments.length - 1]
-                    : null;
-                riskLevel = safetyDetection.calculateRiskLevel({
-                    quickScreen: latestCheckin,
-                    patterns: safetyDetection.detectRiskPatterns ? safetyDetection.detectRiskPatterns(state) : []
-                });
-            } else {
-                let score = 0;
-                if (state.safety && state.safety.suicide === 2) score = 8;
-                else if (state.safety && state.safety.suicide === 1) score = 4;
-                let level = 'low';
-                if (score >= 8) level = 'acute';
-                else if (score >= 5) level = 'elevated';
-                else if (score >= 3) level = 'moderate';
-                riskLevel = { level, score };
-            }
-
-            // Update active risk badge
-            const badge = document.getElementById("safety-sp-risk-badge");
-            if (badge) {
-                badge.innerText = riskLevel.level.toUpperCase();
-                
-                badge.className = ""; // clear all custom classes
-                if (riskLevel.level === "acute") {
-                    badge.style.color = "var(--accent-red)";
-                } else if (riskLevel.level === "elevated") {
-                    badge.style.color = "var(--accent-orange)";
-                } else if (riskLevel.level === "moderate") {
-                    badge.style.color = "var(--accent-lavender)";
-                } else {
-                    badge.style.color = "var(--accent-teal)";
-                }
-            }
-
-            // Show deterioration warnings if any
-            const warningsContainer = document.getElementById("safety-sp-warnings-container");
-            const warningsList = document.getElementById("safety-sp-warnings-list");
-            if (warningsContainer && warningsList) {
-                warningsList.innerHTML = "";
-                
-                let activeWarnings = [];
-                if (safetyDetection && safetyDetection.detectRiskPatterns) {
-                    const patterns = safetyDetection.detectRiskPatterns(state);
-                    patterns.forEach(p => activeWarnings.push(p.description));
-                }
-                
-                // If distress is very high on recent journal check-ins, add alert
-                const recentJournal = state.safetyJournal || [];
-                if (recentJournal.length > 0 && recentJournal[recentJournal.length - 1].distressLevel >= 8) {
-                    activeWarnings.push(`Recent acute distress check-in (Level ${recentJournal[recentJournal.length - 1].distressLevel}/10)`);
-                }
-
-                if (activeWarnings.length > 0) {
-                    warningsContainer.classList.remove("hidden");
-                    activeWarnings.forEach(w => {
-                        const li = document.createElement("li");
-                        li.innerText = w;
-                        warningsList.appendChild(li);
-                    });
-                } else {
-                    warningsContainer.classList.add("hidden");
-                }
-            }
-
-            // Next Safety Screening schedule
-            const checkinTime = document.getElementById("safety-sp-checkin-time");
-            if (checkinTime) {
-                if (state.safetyAssessments && state.safetyAssessments.length > 0) {
-                    const last = new Date(state.safetyAssessments[state.safetyAssessments.length - 1].timestamp);
-                    const diffDays = Math.ceil((new Date() - last) / (1000 * 60 * 60 * 24));
-                    if (diffDays >= 7) {
-                        checkinTime.innerText = "Overdue (Check-in Required)";
-                        checkinTime.style.color = "var(--accent-orange)";
-                    } else {
-                        checkinTime.innerText = `Completed (${diffDays}d ago)`;
-                        checkinTime.style.color = "var(--text-secondary)";
-                    }
-                } else {
-                    checkinTime.innerText = "Pending Initial Assessment";
-                    checkinTime.style.color = "var(--accent-orange)";
-                }
-            }
 
             // Populate regional hotlines based on country select
             const countrySelect = document.getElementById("select-sp-country");
@@ -3093,154 +2909,7 @@ const COMPANION_QUESTION_TREE = {
                 });
             });
 
-            // Full Safety Assessment trigger buttons
-            const triggerAssessmentBtn = document.getElementById("btn-sp-trigger-assessment");
-            if (triggerAssessmentBtn) {
-                triggerAssessmentBtn.addEventListener("click", openSafetyAssessmentModal);
-            }
-            
-            const closeAssessmentBtn = document.getElementById("btn-close-safety-assessment-modal");
-            if (closeAssessmentBtn) {
-                closeAssessmentBtn.addEventListener("click", closeSafetyAssessmentModal);
-            }
-            
-            const cancelAssessmentBtn = document.getElementById("btn-sa-cancel");
-            if (cancelAssessmentBtn) {
-                cancelAssessmentBtn.addEventListener("click", closeSafetyAssessmentModal);
-            }
-
-            // Safety Assessment navigation steps
-            let saCurrentStep = 1;
-            
-            function openSafetyAssessmentModal() {
-                saCurrentStep = 1;
-                document.getElementById("sa-step-1").classList.remove("hidden");
-                document.getElementById("sa-step-2").classList.add("hidden");
-                document.getElementById("btn-sa-prev").classList.add("hidden");
-                document.getElementById("btn-sa-next").classList.remove("hidden");
-                document.getElementById("btn-sa-submit").classList.add("hidden");
-                
-                // Set default inputs
-                document.getElementById("input-sa-conviction").value = 0;
-                document.getElementById("display-sa-conviction").innerText = 0;
-                
-                // Set radios to first option
-                document.querySelectorAll("input[name='sa-access']")[0].checked = true;
-                document.querySelectorAll("input[name='sa-timeline']")[0].checked = true;
-                
-                // Clear checkboxes
-                document.querySelectorAll("#sa-deterrents-container input").forEach(c => c.checked = false);
-                document.querySelectorAll("#sa-behaviors-container input").forEach(c => c.checked = false);
-
-                document.getElementById("safety-assessment-modal").classList.add("active");
-            }
-
-            function closeSafetyAssessmentModal() {
-                document.getElementById("safety-assessment-modal").classList.remove("active");
-            }
-
-            const saConvictionSlider = document.getElementById("input-sa-conviction");
-            if (saConvictionSlider) {
-                saConvictionSlider.addEventListener("input", (e) => {
-                    document.getElementById("display-sa-conviction").innerText = e.target.value;
-                });
-            }
-
-            const saNextBtn = document.getElementById("btn-sa-next");
-            if (saNextBtn) {
-                saNextBtn.addEventListener("click", () => {
-                    saCurrentStep = 2;
-                    document.getElementById("sa-step-1").classList.add("hidden");
-                    document.getElementById("sa-step-2").classList.remove("hidden");
-                    document.getElementById("btn-sa-prev").classList.remove("hidden");
-                    document.getElementById("btn-sa-next").classList.add("hidden");
-                    document.getElementById("btn-sa-submit").classList.remove("hidden");
-                });
-            }
-
-            const saPrevBtn = document.getElementById("btn-sa-prev");
-            if (saPrevBtn) {
-                saPrevBtn.addEventListener("click", () => {
-                    saCurrentStep = 1;
-                    document.getElementById("sa-step-1").classList.remove("hidden");
-                    document.getElementById("sa-step-2").classList.add("hidden");
-                    document.getElementById("btn-sa-prev").classList.add("hidden");
-                    document.getElementById("btn-sa-next").classList.remove("hidden");
-                    document.getElementById("btn-sa-submit").classList.add("hidden");
-                });
-            }
-
-            // Submit safety assessment
-            const saSubmitBtn = document.getElementById("btn-sa-submit");
-            if (saSubmitBtn) {
-                saSubmitBtn.addEventListener("click", () => {
-                    const convictionVal = parseInt(document.getElementById("input-sa-conviction").value, 10);
-                    const accessVal = parseInt(document.querySelector("input[name='sa-access']:checked").value, 10);
-                    const timelineVal = parseInt(document.querySelector("input[name='sa-timeline']:checked").value, 10);
-                    
-                    const selectedDeterrents = [];
-                    document.querySelectorAll("#sa-deterrents-container input:checked").forEach(c => {
-                        selectedDeterrents.push(c.value);
-                    });
-
-                    const selectedBehaviors = [];
-                    document.querySelectorAll("#sa-behaviors-container input:checked").forEach(c => {
-                        selectedBehaviors.push(c.value);
-                    });
-
-                    const assessment = {
-                        id: Date.now(),
-                        timestamp: new Date().toISOString(),
-                        ideation: { value: Math.ceil(convictionVal / 2.5) }, // normalize conviction 0-10 to 0-4
-                        intentAssessment: {
-                            intent: { value: convictionVal > 5 ? 3 : (convictionVal > 1 ? 1 : 0) },
-                            access: { value: accessVal },
-                            timeline: { value: timelineVal },
-                            protective: { selected: selectedDeterrents }
-                        }
-                    };
-
-                    state.safetyAssessments = state.safetyAssessments || [];
-                    state.safetyAssessments.push(assessment);
-
-                    // Run safety detection logic
-                    let riskLevel = { level: 'low', score: 0 };
-                    if (safetyDetection) {
-                        riskLevel = safetyDetection.calculateRiskLevel({
-                            quickScreen: assessment,
-                            intentAssessment: assessment.intentAssessment,
-                            patterns: safetyDetection.detectRiskPatterns ? safetyDetection.detectRiskPatterns(state) : []
-                        });
-                    } else {
-                        let score = convictionVal;
-                        if (accessVal >= 2) score += 3;
-                        if (timelineVal >= 2) score += 3;
-                        let level = 'low';
-                        if (score >= 12) level = 'acute';
-                        else if (score >= 8) level = 'elevated';
-                        else if (score >= 4) level = 'moderate';
-                        riskLevel = { level, score };
-                    }
-
-                    // Update safety state
-                    state.safety = state.safety || {};
-                    if (riskLevel.level === "acute" || riskLevel.level === "elevated") {
-                        state.safety.suicide = 2; // High alert
-                        triggerCrisisOverlay();
-                    } else if (riskLevel.level === "moderate") {
-                        state.safety.suicide = 1;
-                    } else {
-                        state.safety.suicide = 0;
-                    }
-
-                    saveState();
-                    closeSafetyAssessmentModal();
-                    renderSuicidePreventionTab();
-                    updateDashboardMetrics();
-                    
-                    showToast("Safety Assessment completed successfully. Risk status updated: " + riskLevel.level.toUpperCase(), "success");
-                });
-            }
+            document.getElementById('btn-sp-trigger-assessment')?.addEventListener('click', triggerCrisisOverlay);
 
             // Clinician Handoff Export
             const exportHandoffBtn = document.getElementById("btn-sp-export-handoff");
@@ -3254,6 +2923,7 @@ const COMPANION_QUESTION_TREE = {
                 const btn = document.getElementById(`btn-sp-reflect-${pid}`);
                 if (btn) {
                     btn.addEventListener("click", () => {
+                        if (supportRoutingActive()) return;
                         const text = document.getElementById(`reflect-${pid}`).value.trim();
                         if (!text) {
                             showToast("Please enter a brief reflection before logging.", "warning");
@@ -3513,9 +3183,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function renderQuickSafety() {
-            document.getElementById("quick-reasons-live").innerText = state.reasonsLive || "No custom reasons to live recorded. You can add them in settings or intake.";
-            document.getElementById("quick-safe-contacts").innerText = state.safeContacts || "No custom safe contacts recorded. You can add them in settings or intake.";
-            document.getElementById("quick-safety-modal").classList.add("active");
+            triggerCrisisOverlay();
         }
 
         function generateProgressBriefing() {
@@ -3899,6 +3567,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function completeRuminationStopLoss() {
+            if (supportRoutingActive()) return;
             if (ruminationInterval) {
                 clearInterval(ruminationInterval);
                 ruminationInterval = null;
@@ -4437,6 +4106,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function startSmallestAnchor() {
+            if (supportRoutingActive()) return;
             // Determine the first anchor label
             const label = (state.mvd && state.mvd[0]) || "Wake on workdays by 7:30am, drink water, take morning medication.";
             
@@ -4505,6 +4175,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function checkDragStep(stepNum) {
+            if (supportRoutingActive()) return;
             if (stepNum === 7) {
                 ensurePolarisState();
                 state.polaris.proof.today += 1;
@@ -4635,28 +4306,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function goToEmergencyFloor() {
-            // If onboarded, go to safebox tab. If not, do minimal onboard then safebox.
-            state.lastVisitDate = getTodayString();
-            if (state.isOnboarded) {
-                saveState();
-                showScreen('dashboard');
-                window.location.hash = "#/safebox";
-            } else {
-                // Minimal onboard to enable dashboard access
-                state.isOnboarded = true;
-                state.todayEnergy = 'collapse';
-                state.currentLayer = 0;
-                saveState();
-                showScreen('dashboard');
-                window.location.hash = "#/safebox";
-            }
-            // Emergency entry must reveal support immediately; logging can happen later.
-            sessionStorage.setItem('snfEmergencyFloor', '1');
-
-            // Also trigger crisis overlay if high risk
-            if (isHighRiskActive()) {
-                triggerCrisisOverlay();
-            }
+            triggerCrisisOverlay();
         }
 
         function selectState(selectedState) {
@@ -4797,6 +4447,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function getPolarisMessage(dayState) {
+            if (supportRoutingActive()) return;
             if (state.reEntry && state.reEntry.lastMessageType === 'missed-yesterday') {
                 return "You missed. That is data, not a verdict. Restart with one floor anchor.";
             }
@@ -4842,6 +4493,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function getCompanionMessage(dayState, defaultMsg) {
+            if (supportRoutingActive()) return;
             if (state.reEntry && state.reEntry.lastMessageType === 'missed-yesterday') {
                 return "You missed. That is data, not a verdict. Restart with one floor anchor.";
             }
@@ -5058,6 +4710,7 @@ const COMPANION_QUESTION_TREE = {
         // ---- RENDER: Main Polaris Tab ----
 
         function renderPolarisTab() {
+            if (supportRoutingActive()) return;
             ensurePolarisState();
 
             const contentEl = document.getElementById('polaris-content');
@@ -5793,6 +5446,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function togglePolarisAnchor(anchorId, anchorText) {
+            if (supportRoutingActive()) return;
             ensurePolarisState();
             var wasCompleted = state.polaris.anchors.today[anchorId] && state.polaris.anchors.today[anchorId].completed;
             state.polaris.anchors.today[anchorId] = { completed: !wasCompleted };
@@ -5819,6 +5473,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function polarisFloorWin() {
+            if (supportRoutingActive()) return;
             ensurePolarisState();
             state.polaris.proof.today += 1;
             state.polaris.proof.total += 1;
@@ -5837,6 +5492,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function polarisRestart() {
+            if (supportRoutingActive()) return;
             ensurePolarisState();
             state.polaris.resilience.current = 0;
             state.polaris.anchors.today = {};
@@ -5852,6 +5508,7 @@ const COMPANION_QUESTION_TREE = {
         // }
 
         function executeMatchedFirstMove() {
+            if (supportRoutingActive()) return;
             const energy = state.todayEnergy || "medium";
             if (energy === "collapse") {
                 goToEmergencyFloor();
@@ -6303,6 +5960,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function renderPolarisChat() {
+            if (supportRoutingActive()) return;
             const container = document.getElementById("polaris-chat-container");
             const messagesEl = document.getElementById("polaris-chat-messages");
             if (!container || !messagesEl) return;
@@ -6370,9 +6028,11 @@ const COMPANION_QUESTION_TREE = {
             if (!text) return;
 
             inputEl.value = "";
+            if (routeSupportMessage(text)) return;
             await addPolarisChatMessage('user', text);
             await ensurePolarisOpenAIKeyLoaded();
 
+            if (supportRoutingActive()) return;
             const apiKey = getOpenAIKey();
             if (!apiKey) {
                 await addPolarisChatMessage('system', polarisLocalLine('nokey'));
@@ -6387,7 +6047,7 @@ const COMPANION_QUESTION_TREE = {
             try {
                 const response = await callPolarisLLM(text, apiKey);
                 if (typingEl) typingEl.classList.add("hidden");
-                await addPolarisChatMessage('system', response);
+                if (response) await addPolarisChatMessage('system', response);
             } catch (error) {
                 if (typingEl) typingEl.classList.add("hidden");
                 console.error("Error communicating with Polaris companion:", error);
@@ -6396,6 +6056,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         async function addPolarisChatMessage(role, content) {
+            if (supportRoutingActive()) return;
             ensurePolarisState();
             if (!state.polaris.chatHistory) state.polaris.chatHistory = [];
             state.polaris.chatHistory.push({
@@ -6413,6 +6074,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         async function sendQuickPolarisPrompt(promptLabel) {
+            if (routeSupportMessage(promptLabel)) return;
             let userPromptText = "";
             if (promptLabel === 'Suggest next move') {
                 userPromptText = "I'm here. What's the smallest useful next move given my current state?";
@@ -6427,6 +6089,7 @@ const COMPANION_QUESTION_TREE = {
             await addPolarisChatMessage('user', userPromptText);
             await ensurePolarisOpenAIKeyLoaded();
 
+            if (supportRoutingActive()) return;
             const apiKey = getOpenAIKey();
             if (!apiKey) {
                 await addPolarisChatMessage('system', polarisLocalLine('nokey'));
@@ -6441,7 +6104,7 @@ const COMPANION_QUESTION_TREE = {
             try {
                 const response = await callPolarisLLM(userPromptText, apiKey);
                 if (typingEl) typingEl.classList.add("hidden");
-                await addPolarisChatMessage('system', response);
+                if (response) await addPolarisChatMessage('system', response);
             } catch (error) {
                 if (typingEl) typingEl.classList.add("hidden");
                 await addPolarisChatMessage('system', `SYSTEM FAILURE: Connection interrupted. ${error.message}`);
@@ -6449,6 +6112,8 @@ const COMPANION_QUESTION_TREE = {
         }
 
         async function callPolarisLLM(userText, apiKey) {
+            if (routeSupportMessage(userText)) return '';
+            const supportGeneration = window.SNFSafety.generation();
             ensurePolarisState();
             const api = polarisPresenceApi();
             const skin = state.polaris.profile.companionSkin || '';
@@ -6495,12 +6160,15 @@ const COMPANION_QUESTION_TREE = {
                 })
             });
 
+            if (supportRoutingActive() || supportGeneration !== window.SNFSafety.generation()) return '';
             if (!response.ok) {
                 const errData = await response.json().catch(() => ({}));
                 throw new Error(errData.error?.message || `HTTP error ${response.status}`);
             }
 
             const data = await response.json();
+            // Discard a reply even if the user already returned from support mode.
+            if (supportRoutingActive() || supportGeneration !== window.SNFSafety.generation()) return '';
             return data.choices[0].message.content.trim();
         }
 
@@ -6540,6 +6208,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function selectCollapseLane(lane) {
+            if (supportRoutingActive()) return;
             ensurePolarisState();
             const textMap = {
                 rhythm: "Circadian Lock (Wake window & light)",
@@ -6618,6 +6287,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function verifyStartupDrag(success) {
+            if (supportRoutingActive()) return;
             ensurePolarisState();
             if (success) {
                 const task = document.getElementById('input-startup-task').value.trim() || 'Blocked action';
@@ -6672,6 +6342,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function completeStopLoss() {
+            if (supportRoutingActive()) return;
             ensurePolarisState();
             state.polaris.ruminationStopLossCount = (state.polaris.ruminationStopLossCount || 0) + 1;
             
@@ -8011,6 +7682,7 @@ const COMPANION_QUESTION_TREE = {
         }
 
         function submitCurrentModule() {
+            if (supportRoutingActive()) return;
             ensurePolarisState();
             const idx = currentSelectedModuleId;
             const inputEl = document.getElementById("module-reflection-input");

@@ -1,3 +1,4 @@
+/** EXPERIMENTAL / QUARANTINED: prohibited in production. Use safety-routing.js. */
 /**
  * POLARIS DIRECT SAFETY ASSESSMENT MODULE
  *
