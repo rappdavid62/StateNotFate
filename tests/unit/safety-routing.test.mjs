@@ -67,3 +67,15 @@ test('older page instances reconcile the tab marker after Back/Forward restorati
   laterPage.close();
   assert.equal(earlierPage.isActive(), false);
 });
+
+test('Netlify force-blocks retired assessment modules before static-file shadowing', () => {
+  const config = readFileSync(new URL('../../netlify.toml', import.meta.url), 'utf8');
+  const rules = config.split('[[redirects]]').slice(1);
+  for (const path of ['/src/safety-detection.js', '/src/polaris-safety-integration.js', '/src/polaris-safety-routing.js']) {
+    const rule = rules.find(value => value.includes(`from = "${path}"`));
+    assert.ok(rule, `Missing explicit quarantine for ${path}`);
+    assert.match(rule, /to = "\/404\.html"/);
+    assert.match(rule, /status = 404/);
+    assert.match(rule, /force = true/);
+  }
+});

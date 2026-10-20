@@ -23,7 +23,7 @@ The tab's `sessionStorage` stores only:
 
 It stores no disclosure, inferred reason, score, category, timestamp, contact copy, or location. Existing saved history is preserved. Old numeric flags no longer determine the current interface mode. The session follows the browser tab: an independent new tab starts ordinary; reloads and same-tab navigation retain the marker. Back/Forward-restored pages reconcile it. When browser storage is unavailable, routing remains usable in memory; reload persistence cannot be guaranteed in that condition.
 
-The old assessment forms, risk badge, score fallbacks, and production imports are removed. `src/safety-detection.js` is marked experimental/quarantined. It and the old scoring integration/router are excluded from Netlify deployment. The new routing assets are precached and revalidated; offline `/crisis` falls back to the cached crisis page rather than the homepage. Service-worker cache: `v15`.
+The old assessment forms, risk badge, score fallbacks, and production imports are removed. `src/safety-detection.js` is marked experimental/quarantined. It and the old scoring integration/router are blocked by forced 404 rules in `netlify.toml`; the local server mirrors that boundary. The `.netlifyignore` list is additional CLI protection and is not relied upon for Git deploys. The new routing assets are precached and revalidated; offline `/crisis` falls back to the cached crisis page rather than the homepage. Service-worker cache: `v15`.
 
 ## Acceptance checks
 
@@ -40,7 +40,7 @@ The old assessment forms, risk badge, score fallbacks, and production imports ar
 
 Commands: `npm run test:unit`, `npm run test:integration`, `npm run health`, and `npm test`. The browser cases live in `tests/public/safety-integration.spec.ts`; module checks live in `tests/unit/safety-routing.test.mjs`.
 
-Baseline verification reproduced an unrelated ambiguous safety-copy selector and external Google Fonts loading failures. The selector is narrowed to the public-site container. Browser transport in this execution environment requires its outbound proxy and a test-only certificate exception for that proxy; the production configuration and HTTPS behavior are unchanged. Record final run counts in the PR verification section.
+Preview verification caught static-file shadowing despite the ignore list; forced 404 rules were added and tested. Baseline verification also reproduced an unrelated ambiguous safety-copy selector and external Google Fonts loading failures. The selector is narrowed to the public-site container. Browser transport in this execution environment requires its outbound proxy and a test-only certificate exception for that proxy; the production configuration and HTTPS behavior are unchanged. Record final run counts in the PR verification section.
 
 Two independent council review passes covered specification compliance and repository standards. Review found and prompted fixes for a reflection callback that could award progress in memory, the missing locked-screen opener, and missing support options on the public crisis page. Both reviewers subsequently reported no remaining reproduced #5 blocker.
 

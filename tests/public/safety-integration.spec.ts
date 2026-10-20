@@ -73,6 +73,9 @@ test('bad-day deterioration never creates a suicide assessment or risk band @cri
   await expect(page.locator('#safety-checkin-card, #ideation-scale, #safety-assessment-modal, #safety-sp-risk-badge')).toHaveCount(0);
   await expect(page.locator('#crisis-modal')).not.toBeVisible();
   expect(imported.filter(url => /safety-detection|polaris-safety-integration|polaris-safety-routing/.test(url))).toEqual([]);
+  for (const path of ['/src/safety-detection.js', '/src/polaris-safety-integration.js', '/src/polaris-safety-routing.js']) {
+    expect((await page.request.get(path)).status()).toBe(404);
+  }
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('state_not_fate_state')!).safetyAssessments)).toBeUndefined();
 });
 

@@ -67,7 +67,7 @@ git_diff_local.txt
 git_diff_local_utf8.txt
 git_diff_snf.txt
 
-# Experimental assessment code must never ship in the production UI.
+# Additional CLI exclusion; netlify.toml force-blocks these URLs on Git deploys.
 src/safety-detection.js
 src/polaris-safety-integration.js
 src/polaris-safety-routing.js
