@@ -1,3 +1,4 @@
+function supportRoutingActive() { return window.SNFSafety ? window.SNFSafety.isActive() : true; }
 // Polaris 25.x — State Not Fate PWA with Companion Evolution & Soothing Grounding
 // Source of Truth: 09-PROMPTS/Library
 // Premise: State is information. Depression is a temporary multi-system state. Proof is the corrective mechanism.
@@ -159,12 +160,14 @@ function loadState() {
 }
 
 function saveState() {
+  if (supportRoutingActive()) return;
   try {
     localStorage.setItem('snf_polaris_25', JSON.stringify(state));
   } catch (e) {}
 }
 
 function addXP(xpAmount, pointsAmount = 10, source = "Action") {
+  if (supportRoutingActive()) return;
   const g = state.gamification;
   const multiplier = g.tasksCompletedToday >= 3 ? 1.5 : 1.0;
   const gainedXP = Math.round(xpAmount * multiplier);
@@ -262,6 +265,7 @@ function renderCompanionWidget() {
 }
 
 function triggerMicroHabit(type) {
+  if (supportRoutingActive()) return;
   if (type === 'meditation') {
     addXP(15, 15, "1-Min Meditation");
     playSound('soothing');
@@ -381,6 +385,7 @@ function renderGamifiedTasks() {
 }
 
 function completeGamifiedTask(id, xp, points, title, skill, checkbox) {
+  if (supportRoutingActive()) return;
   if (checkbox.checked) {
     checkbox.disabled = true;
     const card = document.getElementById(`gt-card-${id}`);
@@ -411,6 +416,7 @@ function setEnergy(level) {
 }
 
 function renderPolarisPlan() {
+  if (supportRoutingActive()) return;
   const container = document.getElementById('polaris-plan');
   if (!container) return;
   const e = state.energy;
@@ -435,6 +441,7 @@ function getEnergyAnchors(energy) {
 }
 
 function renderAnchors() {
+  if (supportRoutingActive()) return;
   const container = document.getElementById('polaris-anchors');
   if (!container) return;
   const anchors = getEnergyAnchors(state.energy);
@@ -456,6 +463,7 @@ function renderAnchors() {
 }
 
 function toggleAnchor(index) {
+  if (supportRoutingActive()) return;
   const anchor = state.polaris.anchors.active[index];
   anchor.done = !anchor.done;
   if (anchor.done) {
@@ -473,6 +481,7 @@ function toggleAnchor(index) {
 }
 
 function logFloorWin() {
+  if (supportRoutingActive()) return;
   const win = prompt("What tiny thing happened (even 'I stood up')?") || "Floor presence";
   state.polaris.proof.today = (state.polaris.proof.today || 0) + 1;
   state.polaris.proof.total = (state.polaris.proof.total || 0) + 1;
@@ -511,6 +520,7 @@ function renderResilienceMeter() {
 }
 
 function renderQuests() {
+  if (supportRoutingActive()) return;
   const container = document.getElementById('polaris-quests');
   if (!container) return;
   const energy = state.energy;
@@ -530,6 +540,7 @@ function renderQuests() {
 }
 
 function generateAdaptiveQuests(energy) {
+  if (supportRoutingActive()) return;
   if (energy === "collapse" || energy === "low") {
     return [
       { id: "q1", text: "Feet on floor (MVD)", skill: "mvd-anchors", xp: 15 },
@@ -545,6 +556,7 @@ function generateAdaptiveQuests(energy) {
 }
 
 function toggleQuest(index) {
+  if (supportRoutingActive()) return;
   const q = state.polaris.quests.active[index];
   q.done = !q.done;
   if (q.done) {
@@ -561,6 +573,7 @@ function toggleQuest(index) {
 
 function openSystemsAudit() { saveSystemsAudit(); }
 function saveSystemsAudit() {
+  if (supportRoutingActive()) return;
   state.polaris.proof.ledger.push({ ts: Date.now(), text: "Substrate Systems Check", skill: "systems-audit", energy: state.energy });
   addXP(30, 25, "Systems Audit");
   updateProofDisplay();
@@ -686,10 +699,11 @@ function showToast(msg, type = "success") {
 
 function startSmall() { showTab('polaris'); setEnergy('low'); }
 function exploreFull() { showTab('skills'); }
-function emergencyFloor() { showTab('safebox'); setEnergy('collapse'); }
+function emergencyFloor() { if (window.SNFSafety) window.SNFSafety.open(); else location.href='/crisis'; }
 function quickRestart() { showTab('polaris'); setEnergy(state.energy || 'medium'); }
 
 function restartToday() {
+  if (supportRoutingActive()) return;
   state.polaris.proof.today = 0;
   saveState();
   updateProofDisplay();
@@ -723,6 +737,7 @@ function init() {
   console.log(`Polaris ${VERSION} initialized.`);
 }
 
+window.addEventListener('snf:support-closed', () => { renderPolarisPlan(); renderAnchors(); renderQuests(); });
 init();
 
 window.POLARIS_25 = { state, setEnergy, addXP, showTab, openPHQ9, openSoothingModal, openCompanionTreeModal, triggerMicroHabit, logFloorWin, syncToVaultTrackers };

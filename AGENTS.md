@@ -90,4 +90,11 @@ If we want stronger automation, add a skill for Playwright-based public site val
   4. Biological Floor: frame medications and biochemicals as stabilizing the physiological substrate baseline.
   5. Mandatory Safety Gate: every release must include the 988 Lifeline and Crisis Text Line 741741 disclosures.
 
+## Cursor Cloud specific instructions
+
+- Install is the committed environment.json command. Do not invent another.
+- Serve with npm run serve. Test with npm run health and npm run test:public.
+- This VM cannot write C:\ROOT_OBSIDIAN\DOV or any local vault path.
+- No secrets are required for public Playwright tests.
+- Do not add an SPA fallback to index.html.
 

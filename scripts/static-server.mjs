@@ -26,15 +26,23 @@ function resolveRequestPath(url) {
   if (pathname === '/crisis' || pathname === '/help') return join(root, 'crisis.html');
   if (pathname === '/suicide-prevention') return join(root, 'suicide-prevention.html');
   if (pathname === '/essays') return join(root, 'essays.html');
+  if (pathname === '/education-reader' || pathname === '/reader') return join(root, 'education-reader.html');
   if (pathname === '/favicon.ico') return join(root, 'favicon.svg');
 
   const normalized = normalize(pathname).replace(/^(\.\.[/\\])+/, '');
   return join(root, normalized);
 }
 
+const retiredSafetyPaths = new Set([
+  '/src/safety-detection.js',
+  '/src/polaris-safety-integration.js',
+  '/src/polaris-safety-routing.js'
+]);
+
 const server = createServer(async (req, res) => {
-  let filePath = resolveRequestPath(req.url || '/');
-  let statusCode = 200;
+  const pathname = decodeURIComponent(new URL(req.url || '/', `http://127.0.0.1:${port}`).pathname);
+  let statusCode = retiredSafetyPaths.has(pathname) ? 404 : 200;
+  let filePath = statusCode === 404 ? join(root, '404.html') : resolveRequestPath(req.url || '/');
 
   if (!filePath.startsWith(root)) {
     filePath = join(root, '404.html');
@@ -59,7 +67,7 @@ const server = createServer(async (req, res) => {
     'content-type': types[extname(filePath)] || 'application/octet-stream',
     'cache-control': 'no-store'
   });
-  
+
   const stream = createReadStream(filePath);
   stream.on('error', (err) => {
     if (!res.headersSent) {
