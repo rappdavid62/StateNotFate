@@ -4473,15 +4473,9 @@ body:has(.snf-ui-587) .flex-between {
         padding-bottom: calc(5rem + var(--early-access-bar-space));
     }
 }
-/* SNF additions: link/paragraph styling + has-site-notice markup support */
+/* SNF additions: link/paragraph styling (bar layout/spacing governed by body:has(.snf-ui-587) rules above, which cover the has-site-notice markup too) */
 .snf-ui-587 p { margin:0; }
 .snf-ui-587 a { color:var(--accent-teal); font-weight:700; text-decoration:none; pointer-events:auto; }
-body.has-site-notice .public-site,
-body.has-site-notice .public-page { padding-bottom: calc(5.75rem + env(safe-area-inset-bottom)); }
-@media (max-width: 768px) {
-    body.has-site-notice:has(.app-container:not(.hidden)) .snf-ui-587 { bottom: calc(4.6rem + env(safe-area-inset-bottom)); }
-    body.has-site-notice:has(.app-container:not(.hidden)) .app-container { padding-bottom: 8.5rem; }
-}
 .snf-ui-588 { position: fixed; top: 1rem; right: 1rem; z-index: 10000; display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none; max-width: 380px; }
 
 /* ==========================================================
