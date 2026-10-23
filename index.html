@@ -19,6 +19,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="index.css?v=3.1-notice">
+    <link rel="stylesheet" href="/src/safety-routing.css">
 </head>
 <body class="has-site-notice">
     <a class="skip-link" href="#public-main">Skip to public project information</a>
@@ -73,6 +74,7 @@
         <div id="screen-lock" class="welcome-screen hidden">
             <h1 class="logo-header">STATE, NOT FATE</h1>
             <h3 class="text-lavender mb-2">Security Locked</h3>
+            <p><a href="/crisis" data-open-support>Crisis Help — no PIN required</a></p>
             <p class="text-secondary mb-3 snf-ui-1" >Enter your 4-digit PIN to unlock your private recovery dashboard and Crisis Safe Box.</p>
 
             <div class="glass-card snf-ui-2" >
@@ -236,14 +238,7 @@
 
                         <p class="mb-2 text-muted">Because depression can affect safety and functional risks, we check these first. Your data remains fully private in your browser.</p>
 
-                        <div class="safety-row" data-safety-type="suicide">
-                            <span class="question-header">Are you currently experiencing thoughts of hurting yourself or ending your life?</span>
-                            <div class="safety-options">
-                                <button class="safety-option-btn" data-val="0">No, none</button>
-                                <button class="safety-option-btn" data-val="1">Passive thoughts (no plan)</button>
-                                <button class="safety-option-btn" data-val="2">Active thoughts (with plans/intent)</button>
-                            </div>
-                        </div>
+                        <p><a href="/crisis" data-open-support>Crisis Help — available without intake or PIN</a></p>
 
                         <div class="safety-row" data-safety-type="psychosis">
                             <span class="question-header">Are you experiencing things that feel unreal, hearing voices, or feeling extremely disconnected?</span>
@@ -751,58 +746,7 @@
                                     <span class="label">Collapse</span>
                                 </button>
                             </div>
-                            <button class="btn btn-secondary text-red snf-ui-46" id="btn-quick-safety" >🚨 Quick Safety Plan</button>
-                        </div>
-
-                        <!-- SAFETY CHECK-IN (Integrated Naturally) -->
-                        <div id="safety-checkin-card" class="glass-card safety-gradient mb-3 snf-ui-47" >
-                            <h3 class="card-title snf-ui-48" >Quick Safety Check</h3>
-
-                            <div class="safety-question">
-                                <p class="question-text">
-                                    In the last 24 hours, have you had any thoughts that life might be better if you weren't here?
-                                </p>
-                                <p class="question-subtext">
-                                    This might feel like wanting to disappear, wishing you weren't alive, or a general sense of hopelessness.
-                                </p>
-
-                                <div class="response-scale" id="ideation-scale">
-                                    <label class="scale-option">
-                                        <input type="radio" name="ideation-24h" value="0" checked>
-                                        <span class="scale-label">Not at all</span>
-                                    </label>
-                                    <label class="scale-option">
-                                        <input type="radio" name="ideation-24h" value="1">
-                                        <span class="scale-label">Briefly</span>
-                                    </label>
-                                    <label class="scale-option">
-                                        <input type="radio" name="ideation-24h" value="2">
-                                        <span class="scale-label">Off and on</span>
-                                    </label>
-                                    <label class="scale-option">
-                                        <input type="radio" name="ideation-24h" value="3">
-                                        <span class="scale-label">Most of day</span>
-                                    </label>
-                                    <label class="scale-option">
-                                        <input type="radio" name="ideation-24h" value="4">
-                                        <span class="scale-label">Almost always</span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="safety-question snf-ui-49" >
-                                <p class="question-text">Do you feel safe right now?</p>
-
-                                <div class="response-buttons" id="safety-buttons-container">
-                                    <button class="btn btn-secondary btn-small active" data-safety="yes">Yes, I feel safe</button>
-                                    <button class="btn btn-secondary btn-small" data-safety="no">No, I don't feel safe</button>
-                                    <button class="btn btn-secondary btn-small" data-safety="unsure">I'm not sure</button>
-                                </div>
-                            </div>
-
-                            <button class="btn btn-primary mt-2 snf-ui-50" id="submit-safety-check" >
-                                Continue
-                            </button>
+                            <button data-open-support class="btn btn-secondary text-red snf-ui-46" id="btn-quick-safety" >🚨 Quick Safety Plan</button>
                         </div>
 
                         <!-- Daily Tasks Checkbox Area -->
@@ -1682,47 +1626,12 @@
                 </div>
 
                 <div id="sp-panel-crisis" class="sp-subpanel">
-                    <!-- Safety Status & Risk Profile Dashboard -->
-                <div class="glass-card mb-3 snf-ui-185" >
-                    <h2 class="snf-ui-216">
-                        🎗️ Safety Status & Risk Profile
-                    </h2>
-                    <p class="text-secondary snf-ui-217" >
-                        Your active risk level is calculated dynamically based on your check-in ratings and behavioral patterns.
-                    </p>
-
-                    <div class="snf-ui-218">
-                        <!-- Active Risk Badge -->
-                        <div class="snf-ui-219">
-                            <div class="snf-ui-220">Risk Level</div>
-                            <div id="safety-sp-risk-badge" class="snf-ui-221">LOW</div>
-                        </div>
-
-                        <!-- Next Check-in -->
-                        <div class="snf-ui-222">
-                            <div class="snf-ui-220">Next Safety Screening</div>
-                            <div id="safety-sp-checkin-time" class="snf-ui-223">In 7 Days</div>
-                        </div>
+                    <div class="glass-card mb-3">
+                        <h2>Support routing</h2>
+                        <p>Reach human support without an assessment. Coaching, quests, and rewards pause while support routing is open.</p>
+                        <button class="btn btn-primary" id="btn-sp-trigger-assessment">Open support routing</button>
+                        <button class="btn btn-secondary" id="btn-sp-export-handoff">Export Clinician Handoff</button>
                     </div>
-
-                    <!-- Active Warning Signs / Patterns -->
-                    <div id="safety-sp-warnings-container" class="hidden snf-ui-224" >
-                        <div class="snf-ui-225">
-                            <span>⚠️</span> Active Deterioration Warnings:
-                        </div>
-                        <ul id="safety-sp-warnings-list" class="snf-ui-226">
-                        </ul>
-                    </div>
-
-                    <div class="snf-ui-227">
-                        <button class="btn btn-primary snf-ui-228" id="btn-sp-trigger-assessment" >
-                            📋 Complete Safety Assessment
-                        </button>
-                        <button class="btn btn-secondary" id="btn-sp-export-handoff">
-                            📤 Export Clinician Handoff
-                        </button>
-                    </div>
-                </div>
 
                 <!-- Main Grid: Left is Personal Safety Plan / Grounding, Right is Crisis Directory & Info -->
                 <div class="safebox-grid">
@@ -3254,205 +3163,6 @@
         </div>
 
         <!-- ========================================== -->
-        <!-- CRISIS SUPPORT BRIDGE OVERLAY (MODAL)      -->
-        <!-- ========================================== -->
-        <div id="crisis-modal" class="modal-overlay">
-            <div class="modal-content safety-modal">
-                <button class="modal-close-btn" id="btn-close-crisis-modal">×</button>
-                <div class="modal-title">
-                    <span>⚠</span> HIGH SAFETY ALERT
-                </div>
-                <div class="modal-desc">
-                    Your recent inputs indicate a high level of active distress, suicidal intent, or extreme functioning collapse.
-                    <br><br>
-                    <strong>State, Not Fate is an adjunctive recovery framework, but in active crisis, professional medical or crisis support is required.</strong>
-                    <br><br>
-                    We want you to remain safe. Please review your <strong>Crisis Safety Plan</strong> inside the Safe Box, and immediately reach out to your support network or a professional.
-                </div>
-
-                <div class="hotline-card glass-card mb-2 snf-ui-516" >
-                    <h4 class="text-red">Confidential Support Resources</h4>
-                    <ul class="hotline-list mt-1">
-                        <li>
-                            <span>Suicide & Crisis Helpline</span>
-                            <span class="hotline-number">988 (Call or Text)</span>
-                        </li>
-                        <li>
-                            <span>Crisis Text Line</span>
-                            <span class="hotline-number">Text HOME to 741741</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" id="btn-crisis-go-safebox">Go to Crisis Safe Box</button>
-                    <button class="btn btn-danger" id="btn-crisis-dismiss">I've Contacted Someone</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ========================================== -->
-        <!-- FULL SAFETY ASSESSMENT MODAL               -->
-        <!-- ========================================== -->
-        <div id="safety-assessment-modal" class="modal-overlay">
-            <div class="modal-content safety-modal snf-ui-517" >
-                <button class="modal-close-btn" id="btn-close-safety-assessment-modal">×</button>
-                <div class="modal-title snf-ui-518" >
-                    <span>📋</span> Safety Assessment
-                </div>
-                <div class="modal-desc snf-ui-519" >
-                    This questionnaire helps evaluate your current risk level and establish protective anchors. It takes about 2-3 minutes.
-                </div>
-
-                <div id="safety-assessment-form-content">
-                    <!-- Step 1: Tier 2 (Intent & Timeline) -->
-                    <div id="sa-step-1" class="sa-step">
-                        <h4 class="snf-ui-520">Section 1: Intent & Timeline</h4>
-
-                        <!-- Question 1: Conviction -->
-                        <div class="mb-3">
-                            <label class="safebox-field-label snf-ui-521" >
-                                How certain do you feel that acting on thoughts of suicide is the right decision?
-                            </label>
-                            <div class="snf-ui-522">
-                                <span>0 - Not at all certain</span>
-                                <span>10 - Completely certain</span>
-                            </div>
-                            <input type="range" id="input-sa-conviction" min="0" max="10" value="0" class="snf-ui-523">
-                            <div class="snf-ui-524" id="display-sa-conviction">0</div>
-                        </div>
-
-                        <!-- Question 2: Access to Means -->
-                        <div class="mb-3 snf-ui-49" >
-                            <label class="safebox-field-label snf-ui-521" >
-                                Do you have ready access to means that could be lethal?
-                            </label>
-                            <div class="snf-ui-525">
-                                <label class="snf-ui-526">
-                                    <input type="radio" name="sa-access" value="0" checked>
-                                    <span class="snf-ui-183">No access or unclear methods</span>
-                                </label>
-                                <label class="snf-ui-526">
-                                    <input type="radio" name="sa-access" value="1">
-                                    <span class="snf-ui-183">Theoretical knowledge only</span>
-                                </label>
-                                <label class="snf-ui-526">
-                                    <input type="radio" name="sa-access" value="2">
-                                    <span class="snf-ui-183">Some access, but requires effort to obtain</span>
-                                </label>
-                                <label class="snf-ui-526">
-                                    <input type="radio" name="sa-access" value="3">
-                                    <span class="snf-ui-183">Ready access with minimal planning</span>
-                                </label>
-                                <label class="snf-ui-526">
-                                    <input type="radio" name="sa-access" value="4">
-                                    <span class="snf-ui-527">Immediate lethal access</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Question 3: Timeline -->
-                        <div class="mb-3 snf-ui-49" >
-                            <label class="safebox-field-label snf-ui-521" >
-                                When do you imagine this might happen?
-                            </label>
-                            <div class="snf-ui-525">
-                                <label class="snf-ui-526">
-                                    <input type="radio" name="sa-timeline" value="0" checked>
-                                    <span class="snf-ui-183">I do not imagine it happening</span>
-                                </label>
-                                <label class="snf-ui-526">
-                                    <input type="radio" name="sa-timeline" value="1">
-                                    <span class="snf-ui-183">Vague future (years away or if things get worse)</span>
-                                </label>
-                                <label class="snf-ui-526">
-                                    <input type="radio" name="sa-timeline" value="2">
-                                    <span class="snf-ui-183">Possible in coming months</span>
-                                </label>
-                                <label class="snf-ui-526">
-                                    <input type="radio" name="sa-timeline" value="3">
-                                    <span class="snf-ui-183">Specific timeframe (days/weeks)</span>
-                                </label>
-                                <label class="snf-ui-526">
-                                    <input type="radio" name="sa-timeline" value="4">
-                                    <span class="snf-ui-527">Imminent (today/tonight)</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Step 2: Tier 3 (Behavior & Deterrents) -->
-                    <div id="sa-step-2" class="sa-step hidden">
-                        <h4 class="snf-ui-520">Section 2: Behaviors & Deterrents</h4>
-
-                        <!-- Question 4: Protective Deterrents -->
-                        <div class="mb-3">
-                            <label class="safebox-field-label snf-ui-521" >
-                                What is keeping you from acting on these thoughts? (Select all that apply)
-                            </label>
-                            <div class="snf-ui-528" id="sa-deterrents-container">
-                                <label class="snf-ui-529">
-                                    <input type="checkbox" value="Worry about causing pain to others" checked>
-                                    <span>Worry about causing pain to others</span>
-                                </label>
-                                <label class="snf-ui-529">
-                                    <input type="checkbox" value="Uncertainty about whether I really want to die">
-                                    <span>Uncertainty about whether I really want to die</span>
-                                </label>
-                                <label class="snf-ui-529">
-                                    <input type="checkbox" value="Hope that things might improve">
-                                    <span>Hope that things might improve</span>
-                                </label>
-                                <label class="snf-ui-529">
-                                    <input type="checkbox" value="Responsibilities (children, others depend on me)" checked>
-                                    <span>Responsibilities (children, others depend on me)</span>
-                                </label>
-                                <label class="snf-ui-529">
-                                    <input type="checkbox" value="Religious/spiritual beliefs">
-                                    <span>Religious/spiritual beliefs</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Question 5: Recent Behavioral Changes -->
-                        <div class="mb-3 snf-ui-49" >
-                            <label class="safebox-field-label snf-ui-521" >
-                                Have you experienced any of the following recently? (Select all that apply)
-                            </label>
-                            <div class="snf-ui-528" id="sa-behaviors-container">
-                                <label class="snf-ui-529">
-                                    <input type="checkbox" value="Withdrawing from social contact completely">
-                                    <span>Withdrawing from social contact completely</span>
-                                </label>
-                                <label class="snf-ui-529">
-                                    <input type="checkbox" value="Giving away items, writing final letters/notes">
-                                    <span>Giving away items, writing final letters/notes</span>
-                                </label>
-                                <label class="snf-ui-529">
-                                    <input type="checkbox" value="Sudden reckless behaviors or self-harm spikes">
-                                    <span>Sudden reckless behaviors or self-harm spikes</span>
-                                </label>
-                                <label class="snf-ui-529">
-                                    <input type="checkbox" value="Severe insomnia or sleeping constantly">
-                                    <span>Severe insomnia or sleeping constantly (over 12h)</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer snf-ui-530" >
-                    <button class="btn btn-secondary" id="btn-sa-cancel">Cancel</button>
-                    <div>
-                        <button class="btn btn-secondary hidden snf-ui-531" id="btn-sa-prev" >Back</button>
-                        <button class="btn btn-primary snf-ui-228" id="btn-sa-next" >Next Section</button>
-                        <button class="btn btn-primary hidden snf-ui-228" id="btn-sa-submit" >✓ Submit Assessment</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ========================================== -->
         <!-- BREATH MANTRA PACING GUIDE (MODAL)         -->
         <!-- ========================================== -->
         <div id="breath-modal" class="modal-overlay">
@@ -3681,6 +3391,7 @@
     <div id="toast-container" class="snf-ui-588"></div>
 
     <script src="src/polaris-presence.js?v=1"></script>
+    <script src="/src/safety-routing.js"></script>
     <script src="app.js?v=2.8"></script>
 </body>
 </html>

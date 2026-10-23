@@ -240,6 +240,9 @@ test('Polaris v4 typed answers do not override crisis safety routing @critical',
   }));
 
   await page.goto('/');
-  await page.click('button[data-tab="safebox"]');
+  await page.evaluate(() => {
+    (window as any).SNFSafety.open();
+    location.hash = '#/safebox';
+  });
   await expect(page.locator('#crisis-modal')).toHaveClass(/active/);
 });

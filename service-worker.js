@@ -1,4 +1,4 @@
-const CACHE_NAME = 'state-not-fate-cache-v14';
+const CACHE_NAME = 'state-not-fate-cache-v15';
 const ASSETS_TO_CACHE = [
   './index.html',
   './evidence.html',
@@ -11,6 +11,8 @@ const ASSETS_TO_CACHE = [
   './index.css',
   './app.js',
   './src/polaris-presence.js',
+  './src/safety-routing.js',
+  './src/safety-routing.css',
   './polaris/index.html',
   './polaris/index.css',
   './polaris/app.js',
@@ -30,6 +32,7 @@ function isCoreShellRequest(request) {
     if (path === '/' || path.endsWith('.html')) return true;
     if (path.endsWith('/app.js') || path.endsWith('/index.css')) return true;
     if (path.includes('/polaris/')) return true;
+    if (path.includes('/src/safety-routing.')) return true;
     return false;
   } catch {
     return false;
@@ -84,6 +87,8 @@ self.addEventListener('fetch', event => {
         .then((networkResponse) => cacheIfValid(event.request, networkResponse))
         .catch(() => caches.match(event.request).then((cached) => {
           if (cached) return cached;
+          const path = new URL(event.request.url).pathname;
+          if (['/crisis', '/crisis/', '/help'].includes(path)) return caches.match('./crisis.html');
           if (event.request.mode === 'navigate') return caches.match('./index.html');
           return undefined;
         }))

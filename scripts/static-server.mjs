@@ -33,9 +33,16 @@ function resolveRequestPath(url) {
   return join(root, normalized);
 }
 
+const retiredSafetyPaths = new Set([
+  '/src/safety-detection.js',
+  '/src/polaris-safety-integration.js',
+  '/src/polaris-safety-routing.js'
+]);
+
 const server = createServer(async (req, res) => {
-  let filePath = resolveRequestPath(req.url || '/');
-  let statusCode = 200;
+  const pathname = decodeURIComponent(new URL(req.url || '/', `http://127.0.0.1:${port}`).pathname);
+  let statusCode = retiredSafetyPaths.has(pathname) ? 404 : 200;
+  let filePath = statusCode === 404 ? join(root, '404.html') : resolveRequestPath(req.url || '/');
 
   if (!filePath.startsWith(root)) {
     filePath = join(root, '404.html');

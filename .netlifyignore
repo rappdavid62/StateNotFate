@@ -66,3 +66,8 @@ app_diff_utf8.log
 git_diff_local.txt
 git_diff_local_utf8.txt
 git_diff_snf.txt
+
+# Additional CLI exclusion; netlify.toml force-blocks these URLs on Git deploys.
+src/safety-detection.js
+src/polaris-safety-integration.js
+src/polaris-safety-routing.js
