@@ -1,76 +1,130 @@
 {
   "Behavioral Activation": [
     {
-      "pmid": "42171809",
-      "title": "Moderators, mediators, and components of a standalone smartphone application for postpartum depression: secondary analysis of a randomized controlled trial.",
+      "pmid": "42929450",
+      "title": "Incorporating Objective Behavioral and Biological Measures in a Large-Scale Decentralized Mobile Health Trial for Depression: Randomized Controlled Trial.",
       "authors": [
-        "Borja T",
-        "Fonseca Zuccolo P",
-        "Seda L",
-        "Matijasevich A",
-        "Vanoni Polanczyk G",
-        "Fatori D"
+        "Lau WS",
+        "Swords CM",
+        "Thairu MW",
+        "Hidalgo N",
+        "Tatar R",
+        "Rahrig H",
+        "Wilson-Mendenhall CD",
+        "Grupe DW",
+        "Goldman RI",
+        "Vack NJ",
+        "Ferguson C",
+        "Valdivia G",
+        "Sankaran K",
+        "Frye C",
+        "Dahl CJ",
+        "Lewis R",
+        "Higgins ET",
+        "Garza M",
+        "Jiwani Z",
+        "Hirshberg MJ",
+        "Bernstein A",
+        "Converse E",
+        "Dimidjian S",
+        "Ward EC",
+        "Miller GE",
+        "McDade TW",
+        "Picard RW",
+        "Handelsman J",
+        "Rosenkranz MA",
+        "Abercrombie HC",
+        "Davidson RJ",
+        "Goldberg SB"
       ],
-      "journal": "Archives of women's mental health",
+      "journal": "JMIR mental health",
       "year": "2026",
-      "abstract": "PURPOSE: The purpose of this study was to identify potential moderators, mediators, and efficacious components of a standalone app intervention on postpartum depression symptoms and functional impairment.\nMETHODS: A total of 264 women were randomized to intervention (Motherly app) or to an active control group. We analyzed depressive symptoms assessed by the Edinburgh Postnatal Depression Scale and functional impairment by the Clinical Global Impression at post-treatment as outcomes. Various potential moderators were assessed at baseline. Potential mediation variables were the level of behavioral activation (BA) measured by the Behavioral Activation for Depression Scale - Short Form and the Response-contingent positive reinforcement (RCPR) by the Reward Probability Index, at post-treatment. Intervention component analysis was evaluated using app engagement data.\nRESULTS: The results indicate that intervention effects on depressive symptoms were moderated by the number of children and pediatric consultations, with stronger effects observed among mothers with fewer children and higher consultation frequency. Functional impairment was moderated by time spent with the child, with greater improvements among mothers with lower caregiving demands. Mediation analyses showed BA and RCPR mediated the effect of our intervention on depressive symptoms and functional impairment. Total and BA achievements were significantly associated with reduction in depressive symptoms.\nCONCLUSION: Our findings suggest that our app intervention efficacy is influenced by maternal characteristics and childcare responsibilities. BA and RCPR are key mechanisms, and higher engagement with app components produce greater symptom reduction."
+      "abstract": "BACKGROUND: Decentralized (ie, fully remote) clinical trials (DCTs) offer a scalable and ecologically valid approach to evaluating digital mental health interventions (DMHIs). Yet, incorporating objective measures of well-being within DCTs poses novel methodological and feasibility challenges that can limit the rigor and precision of data collection in the field.\nOBJECTIVE: We recently conducted the Behavior, Biology, and Well-being (BeWell) Study, a large-scale, 3-arm randomized DCT evaluating the Healthy Minds Program app (Humin)-a self-guided DMHI that includes didactic well-being information and meditation components. The current paper's objective is to describe the methodological approach to collecting and processing a multimodal battery of psychological (questionnaires and structured clinical interview), biological (blood and stool assays), and behavioral (stimulus-elicited affect [SEA] task, video log, and Mnemonic Similarity Task [MST]) measures, longitudinally across baseline, the 4-week intervention period, and 17-week follow-up. Secondarily, we evaluate its feasibility.\nMETHODS: The BeWell Study methodology is described. Descriptive statistics characterized recruitment and retention, as well as data completion and data quality. Binary logistic regressions evaluated whether recruitment sources, demographics, and depression severity predicted measure completion and data quality.\nRESULTS: From June 1, 2022, through July 15, 2024, 52,052 individuals started the screening questionnaire. Of these, 2.22% (n=1156 participants; mean age 38.69, SD 12.14 years; women=75.50%; non-Hispanic White=68.88%) completed the screener, met eligibility criteria (including elevated depressive symptoms [Patient Health Questionnaire-9 [PHQ-9] score≥5]), completed baseline measures, were enrolled, and were randomized. Participants were recruited from Craigslist (694/1154, 60.14%), a US-based advertisement website, and university email messages (107/1154, 9.27%); participants were enrolled from every US state. Across the study, 84% (971/1156) of participants were retained (completed ≥1 measure at 17-week follow-up). Across time points, ≥81.40% (941/1156) of participants completed questionnaires and ≥75.17% (869/1156) completed biological samples. Of those completing questionnaires, ≥84.14% (796/946) completed SEA and video log tasks and ≥91.75% (868/946) completed the MST. Of completed assessments, high-quality or analyzable data rates across all time points were ≥97.89% (926/946) for questionnaires, ≥90.20% (773/857) for SEA, ≥84.60% (725/857) for video logs, ≥94.20% (1056/1121) for the MST, ≥98.84% (849/859) for dried blood spots, and ≥99.43% (865/870) for microbiome samples. Greater depressive symptoms at screening, but not age, predicted completion of baseline measures (odds ratios 0.96-0.99; P<.001). For enrolled participants, recruitment sources and baseline depressive symptoms were not predictive of data completion or quality. Older age and having a college degree predicted significantly higher rates of data completion across all data types (questionnaire, behavioral, and biological) at week 4 or week 17 follow-ups.\nCONCLUSIONS: This methodological approach offers one model of incorporating objective measures of well-being into DCTs testing DMHIs. Implications and limitations of our approach are discussed."
     },
     {
-      "pmid": "42124392",
-      "title": "Smartphone CBT engagement and depressive symptoms: secondary analysis of the RESiLIENT trial using a time-varying exposure approach.",
+      "pmid": "42901187",
+      "title": "Outcomes of Mindful Mood Balance for Moms, online mindfulness-based cognitive therapy for perinatal depressive relapse prevention in the USA: a two-arm, single-blind, pragmatic randomised clinical trial.",
       "authors": [
-        "Luo Y",
-        "Inoue K",
-        "Tajika A",
-        "Toyomoto R",
-        "Sakata M",
-        "Akechi T",
-        "Horikoshi M",
-        "Noma H",
-        "Furukawa TA"
+        "Dimidjian S",
+        "Gallop R",
+        "Goodman SH",
+        "Segal Z",
+        "Freeman MP",
+        "Hicks LM",
+        "Mellinger C",
+        "Ellison K",
+        "Dunn KAY",
+        "Levy J",
+        "Kordyban LE",
+        "Fritzson A",
+        "Clifford C",
+        "Nolan E",
+        "Vanderkruik R",
+        "Wales R",
+        "Cohen L"
       ],
-      "journal": "Psychological medicine",
+      "journal": "The Lancet. Public health",
       "year": "2026",
-      "abstract": "BACKGROUND: Smartphone-based cognitive behavioral therapy (CBT) programs offer accessible interventions for subthreshold depression, yet engagement needed for meaningful benefit remains unclear. We examined how lesson and worksheet engagement relate to depressive symptom improvements in a behavioral activation (BA) intervention, accounting for time-varying confounders.\nMETHODS: This secondary analysis included 298 adults assigned to the BA arm of the RESiLIENT trial, a randomized controlled trial in Japan. Lesson and worksheet completion were treated as time-varying exposures, each yielding four engagement patterns: minimal (Few-Few), early (Many-Few), late (Few-Many), and consistently high (Many-Many). Outcomes were depressive symptom changes measured by the Patient Health Questionnaire-9 (PHQ-9) at weeks 6 and 26. We applied the parametric g-formula to estimate counterfactual PHQ-9 changes under each pattern, adjusting for baseline and time-varying confounders.\nRESULTS: Early lesson engagement during weeks 0-3 was associated with larger PHQ-9 reductions at both weeks 6 and 26, even when later engagement declined (Many-Few vs. Few-Few: week 6: -1.47 [95% CI -2.52 to -0.53]; week 26: -1.27 [-2.53 to -0.17]). In contrast, higher worksheet engagement was linked to improved PHQ-9 at week 6, with maximal benefit among consistently high engagers (Many-Many vs. Few-Few: -1.25 [-2.17 to -0.44]) and late engagers (Few-Many vs. Few-Few: -1.18 [-2.20 to -0.08]), but not persist to week 26.\nCONCLUSIONS: Greater engagement with smartphone-delivered BA is associated with larger symptom reductions. Early lesson engagement drives sustained benefit, whereas worksheet engagement did not persist. These findings may guide digital CBT design by emphasizing early lesson completion alongside concurrent skill practice."
+      "abstract": "BACKGROUND: Effective and accessible approaches to prevent depressive relapse and reduce symptoms are crucial for addressing the major public health problem of depression among perinatal women. We aimed to evaluate the effectiveness of Mindful Mood Balance (MMB) for Moms plus usual care (hereafter MMB for Moms)-a web-based mindfulness-based cognitive therapy programme customised for perinatal women-compared with usual care only, in reducing depressive relapse and symptoms.\nMETHODS: This single-blind, randomised clinical trial was done across the USA, in euthymic pregnant women with recurrent depression who were on recent or current antidepressant medication. Recruitment occurred from March 7, 2019, to July 8, 2020 (data collection was completed Sept 12, 2021). Participants were randomly assigned to MMB for Moms, or usual care. Primary outcomes were reduction in depressive relapse risk and symptom burden, assessed using the Mini International Neuropsychiatric Interview and Patient Health Questionaire-9, respectively, across the study period. Outcomes were assessed from baseline until 6-months postpartum in three phases (intervention, end of intervention to delivery, and postpartum). The trial was registered with ClinicalTrials.gov, NCT03623620, and is complete.\nFINDINGS: Participants were recruited between March 7, 2019, and July 8, 2020. Data from 500 randomly assigned participants (mean age 32 years [SD 4·5] and mean 11·5 [2·8] weeks gestation), were analysed as the intention-to-treat sample. Of the 500 participants (249 assigned to MMB for Moms and 251 assigned to usual care), 383 [77%] provided assessment data at 3 months and 389 [78%] at 6 months postpartum. MMB for Moms had significantly lower risk of depressive relapse compared with usual care during the full trial period (up to 6 months postpartum): 81 (33%) of 249 participants assigned to MMB for Moms and 111 (44%) of 251 participants in usual care had depressive relapse (hazard ratio 0·74 [95% CI 0·56-0·99]; p=0·045; adjusted false discovery rate p=0·045). MMB for Moms was also associated with a significant reduction in depression symptom burden during the 12 week intervention phase (average decrease of 0·75 [SE 0·13] in the MMB for Moms group and 0·31 [0·13] in the usual care group) but not during the full trial period (average decrease of 0·61 [SE 0·18] in the MMB for Moms group and 0·54 [0·17] in the usual care group).\nINTERPRETATION: MMB for Moms resulted in lower risk of relapse compared with usual care, and lower depression symptom burden during the intervention phase, potentially offering an effective non-pharmacological support option for depression relapse prevention during the perinatal period with positive implications for public health practice.\nFUNDING: US National Institutes of Health and US National Institute of Mental Health."
     },
     {
-      "pmid": "42025640",
-      "title": "Behavioral activation for smoking cessation may improve bodily pain in adults with lifetime major depressive disorder.",
+      "pmid": "42740577",
+      "title": "Behavioral Activation for Depression and Glycemic Control in Type 2 Diabetes: A Systematic Review and Meta-Analysis.",
       "authors": [
-        "Powers JM",
-        "Jao NC",
-        "Gollan JK",
-        "Fishel VY",
-        "Schnoll RA",
-        "Hitsman B"
+        "Lu X",
+        "Xia T",
+        "Wang Z",
+        "Cheng M",
+        "Xu R"
+      ],
+      "journal": "Brain and behavior",
+      "year": "2026",
+      "abstract": "INTRODUCTION: Depression in type 2 diabetes mellitus (T2DM) hinders self-management and glycemic control. Behavioral activation (BA), by increasing participation in positive activities, holds promise for simultaneously improving depressive symptoms and diabetes outcomes.\nOBJECTIVE: This study evaluated the effects of BA or BA-based interventions on depressive symptoms, glycated hemoglobin (HbA1c), diabetes self-efficacy, and self-management behaviors in adults with T2DM, and summarized their implementation characteristics.\nMETHODOLOGY: PubMed, Web of Science, Embase, Cochrane Library, PsycINFO, CNKI, VIP, and Wanfang Data were searched from inception to February 1, 2026. Interventional studies assessing BA or BA-based interventions in adults with T2DM and reporting at least one prespecified outcome were included. Quantitative meta-analyses were restricted to randomized controlled trials (RCTs) and conducted using random-effects models. Implementation characteristics from all included studies were narratively synthesized.\nRESULTS: Six studies involving 252 participants met the inclusion criteria, including five RCTs and one single-arm pre-post study. The meta-analysis suggested a reduction in depressive symptoms (SMD = -0.81, 95% CI: -1.22 to -0.41, p < 0.001), but no statistically significant effects on HbA1c (MD = -0.04%, 95% CI: -0.30 to 0.22, p = 0.76), diabetes self-efficacy (SMD = 0.03, 95% CI: -0.30 to 0.35, p = 0.87), or self-management behaviors (SMD = 0.04, 95% CI: -0.23 to 0.32, p = 0.77). Narrative synthesis indicated that BA interventions varied in delivery format, dosage, provider background, and integration with diabetes-specific content. Most interventions were delivered by non-mental health professionals and incorporated core BA components such as activity monitoring and goal setting.\nCONCLUSION: BA may reduce depressive symptoms in adults with T2DM, whereas its effects on glycemic control, diabetes self-efficacy, and self-management behaviors remain uncertain. BA has been delivered in flexible formats and may have potential for integration into diabetes care, but larger, well-powered RCTs with longer follow-up are needed to determine whether diabetes-specific BA can improve behavioral and physiological outcomes."
+    },
+    {
+      "pmid": "42532282",
+      "title": "Psychotherapy vs antidepressants in heart failure: Impact of adherence.",
+      "authors": [
+        "IsHak WW",
+        "Hamilton MA",
+        "Diniz MA",
+        "Mirocha J",
+        "Chernoff R",
+        "Hedrick R",
+        "Aronow H",
+        "Darwish T",
+        "Messineo G",
+        "Pasini M",
+        "Olanisa L",
+        "Tetrault E",
+        "Arun A",
+        "Tessema KK",
+        "Harold JG",
+        "Ong MK",
+        "Spiegel B",
+        "Wells K",
+        "Danovitch I"
       ],
       "journal": "Journal of affective disorders",
       "year": "2026",
-      "abstract": "SIGNIFICANCE: Pain and major depressive disorder (MDD) are common and frequently co-occur among people who smoke cigarettes. Behavioral activation (BA) is standard treatment in MDD that may also reduce pain. This secondary analysis tested whether the effects of Behavioral Activation Smoking Cessation (BASC) was more effective than standard behavioral treatment (ST) in reducing pain during and after tobacco treatment among adults who smoked daily and had a history of MDD.\nMETHODS: Participants (N = 244; 57% female; 53% Black; Mage = 50.1) received BASC or ST and varenicline or placebo, and reported on bodily pain at week 1 (baseline), 3 (target quit date, TQD), 7, 12 (end of treatment, EOT), and 27 (follow-up, FU) using the Short-Form Survey (SF-36). Repeated measures analyses examined changes in pain from baseline through FU by treatment condition.\nRESULTS: There was a significant effect of BASC on change in pain across treatment (F(2.75) = 4.38, p = .006), with almost a 10-point decrease in SF-36 score from week 3 to week 12/EOT (MBASC = 9.55 vs. MST = 0.86). While the BASC group reported significantly lower levels of pain at week 12/EOT compared to the ST group (MBASC = 19.05 vs. MST = 28.83; p < .001), there was no differences between treatment groups at week 27/FU (MBASC = 28.63 vs. MST = 31.14; p = .163).\nCONCLUSION: BASC produced a clinically meaningful reduction in pain compared to ST during the 12-week intervention. These findings suggest that BA may be useful for addressing the comorbidity of pain, depression, and smoking. Future studies designed to test this transdiagnostic application of BASC are needed."
+      "abstract": "BACKGROUND: Depression affects nearly half of patients with heart failure (HF), which is associated with increased morbidity and reduced health-related quality of life (HRQoL). This secondary per-protocol analysis of a previously published randomized trial evaluated the behavioral activation (BA) versus antidepressant medication (MEDS) among patients with depression and HF who adhered to study interventions.\nMETHODS: This analysis is based on a pragmatic randomized comparative-effectiveness trial conducted from 2018 to 2022, with a 1-year follow-up. 416 participants diagnosed with HF and a DSM-5 depressive disorder were randomized to BA or MEDS, and the current analysis examined outcomes according to treatment adherence.\nOUTCOMES: The primary outcome was depressive symptom severity (PHQ-9) at 6 months, and the secondary outcomes were physical and mental HRQoL (SF-12v2-PC and SF-12v2-MC, respectively) and HF-specific HRQoL (Kansas City Cardiomyopathy Questionnaire; KCCQ) overall and clinical scores (KCCQ-OS and KCCQ-CS), at 3, 6, and 12 months. High adherence was defined as completion of >75-100% of intervention components. Overall adherence rates were similar between BA and MEDS. At 6 months, among patients with >75-100% adherence who followed treatment as directed in both arms, BA was associated with higher Mental HRQoL (SF-12v2-MC: 5.22; 95% CI: 0.72 to 9.72; p = 0.023) and higher HF-specific HRQoL (KCCQ-OS: 16.08; 95% CI: 7.20 to 24.97; p < 0.001); (KCCQ-CS: 16.04; 95%CI: 7.05 to 25.02; p < 0.001) compared to MEDS. There were no significant differences in depressive symptoms or physical HRQoL at 6 months.\nINTERPRETATION: Both BA and MEDS were equally effective treatments for depression in HF. However, among highly adherent patients, BA was associated with greater improvements in mental and HF-specific HRQoL than MEDS.\nFUNDING/SUPPORT: The study was funded by PCORI Award Number: 2017C2-7716."
     },
     {
-      "pmid": "41985751",
-      "title": "Effects of an imagery-enhanced behavioral activation intervention on depressive symptoms and activation levels: Results from the WIMBA-trial.",
+      "pmid": "42492146",
+      "title": "Behavioral activation for depression: A comprehensive systematic review and meta-analysis.",
       "authors": [
-        "Heise M",
-        "Bruijniks SJE",
-        "Holmes EA",
-        "Renner F"
+        "Cuijpers P",
+        "Ciharova M",
+        "Tong L",
+        "Liu Y",
+        "Sprenger AA",
+        "Miguel C",
+        "Karyotaki E",
+        "Harrer M"
       ],
-      "journal": "Journal of affective disorders",
+      "journal": "Clinical psychology review",
       "year": "2026",
-      "abstract": "Psychological treatments for depression are effective but about half of the patients do not improve in treatment suggesting a need for treatment innovation. Evidence-based treatments, such as Behavioral Activation (BA), aim to increase rewarding activities in daily life. Lab-based research has shown that by generating mental imagery of potentially rewarding activities (rather than thinking about them verbally) individuals can alter their appraisals of these activities, increasing anticipated pleasure and motivation. However, BA does not explicitly encourage patients to use mental imagery when scheduling activities. The present randomized controlled parallel two-arm trial tested a novel imagery-enhanced BA intervention (Web-based Imagery Behavioral Activation or WIMBA) delivered online in a sample of N = 168 adults from Germany fulfilling diagnostic criteria for a major depressive episode. Participants were randomized 1:1 to four brief, unguided online WIMBA sessions or to a wait-list control condition (without active treatment components). WIMBA comprised four weekly sessions including psychoeducation, imagery-enhanced activity scheduling, and personalized feedback. Primary outcome measures were the Behavioral Activation for Depression Scale - Short Form and the Beck Depression Inventory-II. Intention-to-treat analyses showed significantly higher increases in behavioral activation for WIMBA compared to wait-list from session 3 which sustained through follow-up (baseline to follow-up increase of 9.4, d = 1.0). Depressive symptoms decreased significantly more after WIMBA (baseline to follow-up decrease of 9.3, d = 1.1). Dropout data and participant feedback support good acceptability and feasibility of WIMBA. Unguided web-delivered imagery-enhanced BA offers promise for scalability and further trials, including an active control, are warranted. Trial preregistration: https://osf.io/97wuf."
-    },
-    {
-      "pmid": "41951156",
-      "title": "Behavioral activation and prevention of depression in at-risk adults: A meta-analysis.",
-      "authors": [
-        "Rochelle NS",
-        "Hoyer J"
-      ],
-      "journal": "Journal of affective disorders",
-      "year": "2026",
-      "abstract": "OBJECTIVE: Cognitive-behavioral interventions are effective for depression prevention but face challenges with adherence and cost. This meta-analysis evaluated the effectiveness of behavioral activation (BA) in reducing depressive symptoms in selective and indicated prevention.\nMETHODS: We searched Scopus, PsycINFO, and MEDLINE, screening 2858 studies. RCTs applying core BA principles (activity scheduling and monitoring) in indicated or selective prevention were included. BA interventions were compared with active or passive controls. Random-effects meta-analysis was conducted, and subgroup analyses examined prevention indication, risk of bias, and number of sessions.\nRESULTS: By January 2025, 23 RCTs (N = 3213) met inclusion criteria. Studies targeted older adults (n = 9), caregivers (n = 6), adults (n = 2), stroke patients (n = 1), and students (n = 1). Post-intervention analysis (k = 19) showed a significant moderate effect favoring BA (g = -0.56; 95% CI [-0.78, -0.33]). Exploratory analysis at one-year follow-up (k = 7) yielded a small, non-significant effect (g = -0.31; 95% CI [-0.68, 0.07], p = .09). Heterogeneity was substantial (I2 = 79.7%), and publication bias was borderline significant. Limited evidence was found for differences in risk of bias or prevention indication. Delivery method significantly moderated effects, whereas session number did not. According to GRADE, evidence quality was low.\nCONCLUSIONS: BA appears to be an effective and lower-cost alternative for depression prevention, but the robustness of the findings is low. Hence, better quality studies are needed in other populations."
+      "abstract": "INTRODUCTION: No recent comprehensive meta-analysis has integrated the results of randomized controlled trials of Behavioral activation (BA), one of the most important treatments of depression.\nMETHODS: We used the data from our meta-analytic research domain of randomized controlled trials on the treatment of depression and selected all trials on BA in all age and target groups, settings and comparators.\nRESULTS: We included 105 trials (13,933 patients), including 40 with low risk of bias. The standardized mean difference (SMD) of BA for adult outpatients compared with control conditions was 0.67 (95% confidence interval [CI]: 0.54 to 0.80; k = 61) with high heterogeneity (I2 = 71%; 95% CI: 63% to 78%) and a broad 95% prediction interval (PI; -0.11 to 1.46). This remained significant in most sensitivity analyses, and at 12 months after randomization. We found no significant difference between BA and other therapies (k = 27; SMD = 0.04; 95% CI: -0.10 to 0.18). Self-guided BA was also effective (k = 15; SMD = 0.36; 95% CI: 0.20 to 0.51), as was BA in institutional settings (k = 10; SMD = 0.36; 95% CI: 0.17 to 0.55). Too few trials were available to estimate the effects of BA in children and adolescents (k = 4) and when compared to pharmacotherapy in adults (k = 4).\nCONCLUSION: BA is an efficacious treatment of depression in adults and its effect is significant up to 12 months after randomization. BA has smaller but significant effects in a self-guided format and in institutional settings."
     }
   ],
   "Circadian Synchronization": [
@@ -121,284 +175,303 @@
       "abstract": "BACKGROUND: Depressed patients with comorbid metabolic disorders have poorer quality of life and prognosis. Pharmacological interventions carries risks of liver and kidney toxicity, which highlights the need for safer non-pharmacological alternatives. Experimental data suggest that light exposure modulates cortisol secretion, thereby influencing metabolic outcomes in depression. We hypothesized that bright light therapy may ameliorate metabolic disturbances by modulating cortisol secretion.\nMETHODS: In this randomized controlled trial, hospitalized patients with depression were assigned to receive either bright light therapy (BLT) or dim-light control condition. The pre-specified primary endpoint was the change in fasting blood glucose (FBG) and cortisol rhythm indices from baseline to post-treatment. Secondary endpoints included changes in other glycolipid parameters, and scores on the Hamilton Depression (HAMD) and Anxiety (HAMA) scales. Treatment effects were evaluated using linear mixed-effects models with baseline adjustment.\nRESULTS: After the 2-week intervention, the BLT group showed a significant reduction in fasting blood glucose (95% CI: 0.280 to 0.600; p < 0.001) and cortisol mesor (95% CI: -2.677 to -0.064; p = 0.040) compared to the control group. Within the BLT group, the change in FBG was positively associated with the change in cortisol mesor after adjusting for covariates (β = 0.053, 95% CI: 0.016 to 0.122, p = 0.036).\nCONCLUSIONS: The findings of this study support a potential mechanism whereby BLT modulates cortisol rhythmicity, which in turn may contribute to improved glycemic control, pointing to its potential therapeutic benefit for addressing metabolic disturbances in depression.\nCLINICAL TRIAL REGISTRATION: https://www.chictr.org.cn/bin/project/edit?pid=260569, identifier ChiCTR2500097364."
     },
     {
-      "pmid": "41697175",
-      "title": "Toward Earlier Bedtimes: Randomized Trial of Multi-Method Interventions in a Community Cohort of Adolescents.",
+      "pmid": "41672157",
+      "title": "Bright light therapy influences glymphatic system function in individuals with subthreshold depression: a randomized clinical trial.",
       "authors": [
-        "Kuula L",
-        "Pesonen AK"
+        "Chen P",
+        "Chen G",
+        "Guo Z",
+        "Chen R",
+        "Tang X",
+        "Yang Z",
+        "Ma W",
+        "Chen C",
+        "Sun S",
+        "Zhang Y",
+        "Zhong H",
+        "Zhang S",
+        "Qi Z",
+        "Fang W",
+        "Jiang L",
+        "Yin Z",
+        "Huang L",
+        "Ma J",
+        "Tao Q",
+        "Wang Y"
       ],
-      "journal": "The Journal of adolescent health : official publication of the Society for Adolescent Medicine",
+      "journal": "Brain, behavior, and immunity",
       "year": "2026",
-      "abstract": "PURPOSE: Many adolescents develop very late circadian rhythms, indicating delayed sleep phase. Interventions are sparse, and the stability of any improvements is rarely reported. To evaluate how late sleep patterns can be improved, we performed a randomized control trial among adolescents. Overall, 4-6-week intervention modes included bright light therapy (BLT), personalized sleep coaching, or their combination (BLSC), and an active control group receiving information.\nMETHODS: We measured the sleep and circadian patterns of 288 adolescents (17 years) born in years 1999-2000. A sub-sample (n = 176) that weighted on late sleep rhythms participated in the randomized control trial. Sleep, circadian temperature patterns, depressive symptoms, anxiety, and sleep hygiene were measured at baseline (T1) after the intervention (T2) and after 1 year (T3) with GeneActiv Original actigraphy, ibutton 1922L thermologgers, and validated questionnaires.\nRESULTS: Participants in the SC group significantly increased their sleep duration compared to the control group, 23 minutes from T1 to T2 and 33 minutes from T1 to T3 (p < .03). They also improved their sleep hygiene from T1 to T2 (p = .019), but this did not persist to T3. Other groups did not improve their sleep patterns.\nDISCUSSION: Although personalized sleep coaching resulted in persistently longer sleep, none of the interventions were successful in overcoming late sleep rhythms among an adolescent sample derived from the population register. Delayed sleep phase is a persistent condition with biological components, and a 4-week intervention is presumably too short for changing sleep behavior and rhythms. Clinical Trials number 1287174/NCT02964598."
+      "abstract": "Glymphatic system dysfunction is a potential early biomarker for neuropsychiatric disorders. This study aimed to evaluate the effects of bright light therapy (BLT) on the glymphatic system in individuals with subthreshold depression (StD) and its connections to brain activity, inflammatory cytokines, and depressive symptoms. A randomized placebo-controlled trial assigned adults with StD (N = 110) to 8 weeks of morning BLT (5000 lx, 30 min/day; n = 57) or placebo (inactive device; n = 53). Depression severity (primary outcome, including anhedonia), glymphatic markers (diffusion tensor image analysis along the perivascular space [DTI-ALPS] index, free water [FW], perivascular space volume), regional homogeneity (ReHo; functional MRI), and serum pro-inflammatory cytokines were assessed at baseline and post-treatment. Compared to placebo, BLT significantly relieved depressive symptoms, increased DTI-ALPS index, and decreased FW from baseline to post-treatment. BLT also increased ReHo in the left superior frontal gyrus (SFG) and decreased levels of interleukin-9 and tumor necrosis factor-β. Changes in the DTI-ALPS index correlated with ameliorated depressive symptoms, increased ReHo in the SFG, and decreased inflammatory cytokine levels. Additionally, the pairwise interaction effects between glymphatic markers, ReHo values, and serum levels of pro-inflammatory cytokines were independent predictors of improvements in depressive symptoms, particularly anhedonia. BLT may influence glymphatic function in StD, with enhanced glymphatic function correlated with reduced inflammation, enhanced prefrontal cortex activity, and symptom amelioration."
     },
     {
-      "pmid": "41284534",
-      "title": "Establishing Triple Chronotherapy as a fast-acting add-on treatment for unipolar and bipolar depression: evidence from an open-label randomized controlled trial in a real-world inpatient setting.",
+      "pmid": "41628751",
+      "title": "Efficacy of a portable BLT device on sleep and depressive symptoms in major depressive disorder: A double-blind randomized study.",
       "authors": [
-        "Ferrara P",
-        "Broglia G",
-        "Carrara C",
-        "Cavallotti S",
-        "Giordano B",
-        "Ossola C",
-        "Stein HC",
-        "Terzoni S",
-        "Ostinelli EG",
-        "Masier S",
-        "Panarello R",
-        "D'Agostino A"
+        "de Deus M",
+        "Robbe L",
+        "Baumann C",
+        "Luc A",
+        "Laprévote V",
+        "Petit C",
+        "Cosker E"
       ],
       "journal": "Journal of affective disorders",
       "year": "2026",
-      "abstract": "BACKGROUND: Despite established treatments like cognitive-behavioral therapy and antidepressants, response rates remain suboptimal during depressive episodes, with delayed onset of action. Circadian rhythm disturbances are closely linked to mood disorders, and chronotherapeutic interventions, including Sleep Deprivation, Sleep Phase Advance, and Bright Light Therapy, have shown promise in rapidly alleviating depressive symptoms, though post-treatment relapse risks are notable.\nMETHODS: This Randomized Controlled Trial (EUPAS30637) evaluates Triple Chronotherapy (TCT) as an adjunctive treatment for Major Depressive Episodes (MDEs) in a real-world hospital setting, comparing it to Treatment-As-Usual (TAU). The primary outcome was the longitudinal trajectory of Hamilton Depression Rating Scale (HDRS) scores assessed at several other timepoints. Secondary outcomes included changes in depressive symptoms at these timepoints, reductions in suicidality, length of hospitalization, and readmissions within three months post-discharge.\nRESULTS: Twenty-four patients were enrolled in the TCT and 20 in the TAU groups. Only one TCT participant withdrew because they could not tolerate sleep deprivation. At baseline, groups showed similar demographics and symptom severity. Compared with TAU, add-on TCT produced greater and more rapid reductions in depression scores by day 5 that persisted through day 12 and at discharge. Suicidality also decreased to a greater extent in the TCT group. Length of stay was shorter with TCT, but readmission rates did not differ significantly in the long term.\nDISCUSSION: These findings suggest that add-on TCT can rapidly reduce depressive symptoms and improve associated outcomes in hospitalized patients with moderate MDEs. Future research with larger samples and longer follow-ups should further explore TCT's efficacy and safety, aiming to optimize treatment strategies for depressive episodes."
+      "abstract": "BACKGROUND: Major depressive disorder (MDD) is a leading cause of disability worldwide and is often associated with anxiety and sleep disturbances. About one-third of patients do not achieve adequate response to pharmacological treatments, underscoring the need for adjunctive non-pharmacological therapies. Bright light therapy (BLT) has shown efficacy in MDD, but conventional devices require patients to remain stationary, limiting adherence. Portable BLT devices may improve convenience and daily integration. This study assessed the efficacy of a portable BLT device on mood, anxiety, and sleep over 8 weeks.\nMETHODS: LUMIDEP was a double-blind, placebo-controlled trial. Adults with MDD were randomized to receive active portable BLT or a visually identical placebo. Final analyses included 18 patients (BLT n = 6; placebo n = 12). Patients underwent 30-min daily sessions for 8 weeks while continuing pharmacological treatments. Depressive symptoms were assessed using the Montgomery-Åsberg Depression Rating Scale (MADRS), anxiety with the Hamilton Anxiety Scale (HAM-A), and sleep with the Pittsburgh Sleep Quality Index (PSQI) and Epworth Sleepiness Scale (ESS).\nRESULTS: Baseline PSQI scores were higher in the BLT group. After 8 weeks, PSQI scores improved within the BLT group, while remaining stable in the placebo group, resulting in no significant between-group difference. No significant differences were observed between groups in HAM-A or MADRS.\nCONCLUSIONS: Portable BLT appeared to improve sleep quality but did not significantly reduce depressive or anxiety symptoms. Interpretation is limited by group differences, treatment heterogeneity, and small sample size. Larger, stratified trials are warranted to clarify the efficacy of portable BLT in MDD."
     }
   ],
   "Streak break shame vs Resilience": [
     {
-      "pmid": "42250412",
-      "title": "Psychological flexibility and pain catastrophizing in endometriosis: Incremental validity and interaction effects in predicting psychosocial outcomes.",
+      "pmid": "42999896",
+      "title": "A pilot feasibility randomised controlled trial of an online cancer bereavement group.",
       "authors": [
-        "Berrocal C",
-        "Fanciullacci L",
-        "Bernini O",
-        "Belviso C",
-        "Compare L",
-        "Tumminaro G",
-        "Bologna C",
-        "Baglietto L"
+        "King L",
+        "Smith KV",
+        "Cole CL",
+        "Thompson EH"
       ],
-      "journal": "Journal of psychosomatic research",
+      "journal": "Internet interventions",
       "year": "2026",
-      "abstract": "BACKGROUND: Psychological distress and reduced health-related quality of life are common among women with endometriosis, particularly when the condition is accompanied by chronic pain. Psychological flexibility (PF), a core process in Acceptance and Commitment Therapy, has emerged as protective in chronic pain, but it is unclear whether it adds explanatory power beyond pain intensity and pain catastrophizing or alters their impact in women with endometriosis. This study addressed these issues by (1) testing the incremental validity of PF in predicting psychological and functional outcomes after accounting for pain intensity and pain catastrophizing; and (2) examining whether PF moderates the association between catastrophizing and these outcomes.\nMETHODS: A sample of 516 women with endometriosis (mean age 34.6 years, SD 6.28) was recruited through the Associazione Progetto Endometriosi ODV (APE) in Italy. Participants completed self-report measures of pain intensity, pain catastrophizing, PF, anxiety, depression, psychological well-being, and disability.\nRESULTS: Hierarchical multiple regression analyses showed that pain catastrophizing explained an additional 14-18% of variance in outcomes beyond socio-demographic and pain variables, whereas PF accounted for further unique variance ranging from 3% for disability to 24-28% for anxiety, depression, and psychological well-being. Lower PF and higher catastrophizing were each independently associated with higher anxiety and depression, greater disability, and lower psychological well-being. There was no evidence for an interaction between catastrophizing and PF.\nCONCLUSIONS: Overall, PF showed incremental validity over pain intensity and catastrophizing, and both PF and catastrophizing emerged as complementary interventions targets in women with endometriosis."
+      "abstract": "BACKGROUND: Bereavement following the death of a loved one from cancer presents unique challenges related to anticipatory stressors, caregiving demands, and the illness trajectory. Although online bereavement interventions may improve access to support, evidence for therapist-led online groups remains limited. This pilot randomised controlled trial evaluated the feasibility, acceptability and preliminary effectiveness of an online therapeutic group intervention for adults bereaved by cancer.\nMETHODS: In this longitudinal pilot RCT, adults bereaved by cancer were randomised to receive the intervention immediately or following a three-month wait-list period. The intervention comprised eight online group sessions delivered over 12 weeks, integrating trauma-informed cognitive behavioural therapy, compassion-focused therapy and psychoeducation. Primary outcomes were feasibility and acceptability. Secondary outcomes included prolonged grief, depression, anxiety, post-traumatic stress, self-compassion, and social disconnection, assessed at baseline, post-intervention, and three-month follow-up.\nRESULTS: Of 124 randomised participants, 100 (80.6%) commenced the allocated intervention and 97 contributed sufficient data for primary analyses. The study met pre-specified feasibility and acceptability criteria, although patterns of attrition differed according to trial stage. Non-commencement following allocation was higher in the immediate intervention groups (27.0 vs 11.5%) whereas withdrawal after intervention commencement was higher in the waitlist group (24.1% vs 10.9%). Exploratory between-group analyses suggested greater improvements in prolonged grief (d = -1.87), post-traumatic stress (d = -1.55), depression (d = -1.03), anxiety (d = -0.71), and self-compassion (d = 1.15) in the immediate intervention group compared with waitlist controls. No statistically significant between-group difference was observed for social disconnection (d = -0.49).\nCONCLUSIONS: Therapist-led online bereavement groups appear feasible and acceptable for adults bereaved by cancer and show promise for improving psychological outcomes. A fully powered RCT is warranted to establish efficacy."
     },
     {
-      "pmid": "42234575",
-      "title": "Comparative Effectiveness of Resilience-Focused Psychological Interventions on Resilience, Anxiety, and Depression in Patients With Cancer: A Network Meta-Analysis of Randomized Controlled Trials.",
+      "pmid": "42992488",
+      "title": "Comorbidity of chronic musculoskeletal pain, depression, anxiety and sleep problems.",
       "authors": [
-        "Janitra FE",
-        "Sung CM",
-        "Chiang KJ",
-        "Chen R",
-        "Wibawa YA",
-        "Banda KJ",
-        "Arifin H",
-        "Chou KR"
+        "Krupa AJ",
+        "Zybała-Pawłowska M",
+        "Dom G",
+        "Siwek M"
       ],
-      "journal": "Psycho-oncology",
+      "journal": "Current opinion in psychiatry",
       "year": "2026",
-      "abstract": "BACKGROUND: Patients with cancer often experience psychological distress, which can reduce resilience, increase anxiety, and depression. Resilience-focused psychological interventions have been increasingly implemented; however, their comparative effectiveness remains unclear, as existing evidence is largely limited to pairwise comparisons. This study aimed to compare and rank the effectiveness of resilience-focused psychological interventions on resilience, anxiety, and depression among adults with cancer using a network meta analysis of randomized controlled trials.\nMETHODS: A systematic search of seven databases (CINAHL, Embase, MEDLINE Ovid, PubMed, Scopus, Web of Science, and Cochrane) was conducted from inception to December 2025. A frequentist random-effects network meta-analysis was performed using the netmeta package in R. Effectiveness was evaluated using standardized mean differences (SMDs) with 95% confidence intervals (CIs), prediction intervals, P-scores, and certainty of evidence.\nRESULTS: Twenty-six randomized controlled trials involving 2159 adults with cancer were included. Cognitive behavioral therapy (CBT) demonstrated the largest improvement in resilience (SMD = 1.14; 95% CI: 0.80, 1.48), followed by positive psychology interventions (SMD = 0.79; 95% CI: 0.56, 1.03) and Acceptance and Commitment Therapy (ACT) (SMD = 0.70; 95% CI: 0.04, 1.35). For anxiety, ACT (SMD = -0.97; 95% CI: -1.85, -0.10) and CBT (SMD = -0.73; 95% CI: -1.19, -0.27) showed the largest average reductions. For depression, CBT (SMD = -0.61; 95% CI: -0.97, -0.25) and positive psychology (SMD = -0.55; 95% CI: -0.89 to -0.20) were significant symptom reductions.\nCONCLUSION: Resilience-focused psychological interventions were effective, with CBT showing the most consistent benefits, followed by positive psychology interventions and ACT. These findings support integrating resilience-based interventions into oncology care to improve psychological well-being."
+      "abstract": "PURPOSE OF REVIEW: Individuals with chronic pain (CP) are at elevated risk of mental health problems, but the awareness of this issue among patients as well as medical personnel is limited. Chronic musculoskeletal pain (CMP) is the most common type of CP. This narrative review summarizes the latest literature on the comorbidity of CMP with depression, anxiety and sleep problems.\nRECENT FINDINGS: Around 40% of CP patients suffer from depression and/or anxiety of clinical severity. Sleep problems affect up to 75% of patients with CP. CMP. Depression, anxiety and impaired sleep are characterized by common underlying physiopathological mechanisms associated with serotonin and noradrenaline neurotransmission, glutamate/γ-aminobutyric acid signaling balance, low Brain-derived neurotrophic factor (BDNF) and altered immune system response. Comorbidity of depression, anxiety and sleep impairment is associated with decline in mental health, functioning and quality of life of the affected individuals, leading to a cumulative disability burden. Evidence supports cognitive behavioral therapy and acceptance and commitment therapy psychotherapies for CMP. Duloxetine is efficacious for pain relief, improvement of mood, anxiety, sleep and quality of life in CMP.\nSUMMARY: Comorbidity of psychiatric issues among CMP patients is an unmet need which should be addressed to improve patient outcomes. Mental healthcare specialists ought to be integrated into the teams managing CMP patients."
     },
     {
-      "pmid": "42229409",
-      "title": "\"A Better Way of Just Being Free\": Exploring How Stroke Survivors With Aphasia Experienced an Intervention Combining Communication Strategy Training With Acceptance and Commitment Therapy.",
+      "pmid": "42989455",
+      "title": "Understanding depression and anxiety symptoms in women with Mayer-Rokitansky‑Küster‑Hauser syndrome (MRKH): Exploring the influence of shame and psychological flexibility.",
       "authors": [
-        "Bracken J",
-        "Kelly A",
-        "Meyer EC",
-        "Hass R",
-        "Xiao E",
-        "Harmon TG",
-        "Skidmore ER",
-        "Pompon RH",
-        "Evans WS"
+        "Galhardo A",
+        "Carolino N",
+        "Bento-Nogueira F",
+        "Cunha M"
       ],
-      "journal": "American journal of speech-language pathology",
+      "journal": "Women & health",
       "year": "2026",
-      "abstract": "PURPOSE: Depression, anxiety, and social isolation are prevalent among stroke survivors with aphasia (SSwA). However, evidence-based mental health interventions for SSwA are limited. The Acceptance and Commitment Therapy (ACT) for Aphasia Phase I clinical trial (NCT04984239) sought to bridge this gap by adapting and piloting an intervention combining ACT with communication strategy training to improve mental health and functional communication in SSwA. Here, we present the qualitative findings of this study to characterize experiential outcomes and inform intervention refinement.\nMETHOD: Following a content analysis approach, we examined the posttreatment interviews of participants who received a refined version of the intervention (n = 14). Interviews were coded via an iterative consensus process. The final codebook included 190 unique codes and three main categories: (a) Positive Intervention Experiences, (b) Intervention Critiques, (c) Mechanisms of Change.\nRESULTS: Participants reported satisfaction with the intervention, positive changes in mood and behavior, and increased acceptance of their aphasia. Findings supported the utility of all core intervention components and highlighted the importance of mindfulness practice, forming a therapeutic alliance, and supporting patient autonomy. Findings were consistent with hypothesized mechanisms of change regarding psychological flexibility and treatment generalization.\nCONCLUSION: This study provides qualitative support for further evaluation of ACT for Aphasia and contributes to an emerging evidence base for adapted psychological interventions developed specifically for SSwA.\nSUPPLEMENTAL MATERIAL: https://doi.org/10.23641/asha.32316024."
+      "abstract": "Rokitansky-Küster-Hauser syndrome (MRKH) is a congenital condition warranting a biopsychosocial perspective and a multidisciplinary approach in research and clinical settings. Previous studies on psychopathological symptoms in women with MRKH have reported mixed results. This study aimed to (1) compare depressive and anxiety symptoms in women with MRKH with published summary statistics from a non-clinical sample, (2) compare chronic illness-related shame in women with MRKH with published statistics from samples with other chronic illnesses, (3) examine differences between women who had and had not completed medical treatment on the study variable, and (4) explore chronic illness-related shame, self-compassion, and psychological flexibility as predictors of depressive and anxiety symptoms. Eighty-one women with a self-reported MRKH diagnosis were recruited through patients' associations and completed online self-report measures assessing depressive and anxiety symptoms, chronic illness-related shame, self-compassion, and psychological flexibility. Women with MRKH revealed higher depression, anxiety, and chronic illness-related shame than reference samples. Participants who had previously undergone medical treatment showed lower levels of depression and anxiety. Chronic illness-related shame predicted both depressive and anxiety symptoms, while psychological flexibility predicted anxiety symptoms specifically. This study emphasizes the relevance of targeting chronic illness-related shame and psychological flexibility when designing psychological interventions for these women."
     },
     {
-      "pmid": "42227754",
-      "title": "Understanding the Influence of Experiential Psychotherapy Among Men Who Have Offended: A Systematic Review.",
+      "pmid": "42985265",
+      "title": "The relationship between self-compassion and depression in young adults: the mediating role of gratitude.",
       "authors": [
-        "Ayot HK"
+        "Nguyen VHA",
+        "Do-Nguyen NA",
+        "Le THD"
       ],
-      "journal": "International journal of offender therapy and comparative criminology",
+      "journal": "BJPsych international",
       "year": "2026",
-      "abstract": "High rates of recidivism persist among incarcerated men, particularly those with extensive trauma histories, while many rehabilitation programs remain primarily cognitively focused. This systematic review synthesizes evidence on experiential psychotherapies, including mindfulness-based interventions, Acceptance and Commitment Therapy (ACT), yoga, meditation, and creative arts therapies delivered in forensic settings to adult males. Twenty-four studies met inclusion criteria. Thematic synthesis identified three outcome domains: (1) psychological and emotional well-being, including reductions in stress, anxiety, depression, and trauma symptoms; (2) behavioral and cognitive regulation, including improved impulse control and prosocial identity shifts; and (3) recidivism and desistance, with several studies-particularly those examining Transcendental Meditation and structured mindfulness programs-reporting reduced reoffending. Evidence for Compassion Focused Therapy and most creative arts therapies was limited or absent. Overall, findings suggest experiential psychotherapies may support emotional regulation, identity change, and desistance, though heterogeneity in study design and outcomes limits generalizability and highlights the need for more rigorous longitudinal research.\nCan Mindfulness, Yoga, and Related Therapies Help Reduce Reoffending? A Review of the EvidenceMany people who go to prison return again after release. This is especially true for men who have lived through trauma, violence, or neglect and who struggle with strong emotions such as anger, fear, or shame. Most rehabilitation programs focus on changing how people think, but they often do not address how people feel in their bodies or how they experience their emotions. This review looked at whether therapies based on experience and awareness, such as mindfulness, meditation, yoga, Acceptance and Commitment Therapy (ACT), and creative activities, can help people in prison change in deeper and longer-lasting ways. We reviewed 24 studies from several countries that tested these approaches with men in prisons and other secure settings. We looked at three main outcomes: mental and emotional health, behavior and self-control, and whether people returned to crime after release. Many studies found that these therapies helped reduce stress, anxiety, depression, and trauma symptoms. People often reported better emotional control, greater self-awareness, and a more positive sense of who they are. Some programs, especially meditation-based approaches, were also linked to lower rates of reoffending. However, the studies used different methods and were not all high quality. There was also very little research on compassion-based therapy or creative arts programs. Overall, these approaches show promise as part of rehabilitation. They may help people heal from trauma, manage their emotions, and build a new sense of self. More long-term and carefully designed studies are still needed."
+      "abstract": "BACKGROUND: Previous studies have indicated that depression is common among young adults. However, these studies have mainly focused on risk factors rather than protective factors, especially in the context of Vietnam.\nAIMS: To explore protective factors such as self-compassion and the mediating role of gratitude, crucial for informing targeted interventions aimed at reducing depression in this population.\nMETHOD: A cross-sectional study was conducted in September 2023 using convenience sampling of individuals aged 18-25 years (n = 356, mean age 21.23 years) living in Ho Chi Minh City, Vietnam, recruited via online surveys distributed through social networks. The required sample size was determined using Monte Carlo power analysis to ensure adequate statistical power for mediation analysis. Data were analysed to examine the mediating role of gratitude (Gratitude Questionnaire - Six Item Form, GQ-6) in the relationship between self-compassion (Self-Compassion Scale - Short Form, VSCS-SF) and depression (Patient Health Questionnaire-9, PHQ-9).\nRESULTS: Self-compassion showed a significant negative association with depression (β = -0.50, t = -11.42, p < 0.001), accounting for 27% of the variance in depression scores. Gratitude significantly mediated this relationship, with an indirect effect of a × b = -0.07 (s.e. = 0.02, 95% CI -0.11 to -0.04]). Specifically, self-compassion positively predicted gratitude (β = 0.34, t = 6.80, p < 0.001), and gratitude, in turn, negatively predicted depression (β = -0.20, t = -4.42, p < 0.001). The direct effect of self-compassion on depression remained significant after controlling for gratitude (β = -0.43, t = -9.52, p < 0.001), indicating a complementary partial mediation. Bootstrap analysis with 5000 resamples further confirmed the robustness of the indirect effect.\nCONCLUSIONS: The pivotal roles of self-compassion and gratitude in mitigating depression among young adults were explored, informing tailored intervention strategies for mental health practitioners."
     },
     {
-      "pmid": "42220893",
-      "title": "Hemispheric dissociation of anxiety and autonomic arousal during lateral visual field viewing: a case report.",
+      "pmid": "42980875",
+      "title": "Effects of digital stress-management interventions in breast cancer patients 18 months after intervention access.",
       "authors": [
-        "Schiffer F"
+        "Svendsen K",
+        "Nes LS",
+        "Leithe S",
+        "Meland A",
+        "Gjelsvik YM",
+        "Børøsund E",
+        "Myklebust TÅ",
+        "Balto A",
+        "Rygg Hoksnes CM",
+        "Kiserud CE",
+        "Antoni MH",
+        "Chalder T",
+        "Mjaaland I",
+        "Carlson LE",
+        "Eriksen HR",
+        "Ursin G"
       ],
-      "journal": "Frontiers in human neuroscience",
+      "journal": "Breast cancer research and treatment",
       "year": "2026",
-      "abstract": "We report a clinical case illustrating rapid, reversible, and reproducible hemispheric differences in subjective experience and autonomic arousal during lateral visual field viewing. A man in his 40s with longstanding anxiety and depression showed repeatable shifts in affective state, self-appraisal, and appraisal of the clinician when alternately viewing through the right versus left lateral visual field while holding the same shame-evoking interpersonal scenario in mind. Pulse rate measured with a fingertip pulse oximeter was observed to co-occur with these shifts (anxious/shame state ≈105 bpm; calm/secure state ≈85-90 bpm; baseline ≈95 bpm). Across 72 consecutive patients entered into the author's practice, 89% showed a clinically useful between-field difference in momentary anxiety and 49% showed a marked difference of the type described in this case report. Together with prior findings from split-brain research, Wada studies, fMRI, repetitive transcranial magnetic stimulation (rTMS), and lateral visual field stimulation (LVFS) paradigms, this observation is consistent with the partial functional independence of two hemispheric experiential systems-one of which is more childlike and more affected by past trauma-and with history-dependent meaning as a driver of physiological response. We interpret the case within Dual-Brain Psychology (DBP) and relate the findings to the Emotion-Type Hypothesis (ETH), proposing a distinction between lateralized emotional functions (as characterized by ETH) and hemispheric experiential dominance (as characterized by DBP). On this account, a hemispheric experiential system may function as the dominant organizing self while recruiting emotional and cognitive capacities distributed across both hemispheres. This synthesis may help reconcile population-level associations between emotion type and hemispheric specialization with the within-individual variability in hemispheric emotional valence observed under lateral visual field viewing."
+      "abstract": "PURPOSE: Digital stress-management tools show promise, but their long-term impact remains unclear. In the Coping After Breast Cancer (CABC) trial, the app-based stress-management program StressProffen, with either cognitive behavioral therapy intervention (CBI) or a mindfulness-based intervention (MBI), showed no advantage over usual care after six months of access. However, benefits may emerge gradually, as users need time not only to become familiar with the content and techniques, but also to internalize, apply and automatize their use in response to real-life stressors. The a priori defined aims of the current study were to examine; 1) whether extended (18 months) access to the digital stress-management interventions CBI and MBI were associated with changes in perceived stress (stress) (primary outcome), measures of health-related quality of life, mindfulness, fatigue, coping, anxiety, depression, and sleep (secondary outcomes), 2) association between app use and changes in stress level and investigate baseline characteristics as moderators of change in stress in the intervention groups, and 3) identify predictors of change in stress among patients with breast cancer.\nMETHODS: Of 430 patients randomized to MBI, CBI, or usual care, 76% (n = 327) completed the 18-month survey. Linear mixed-effects models were used to assess between-group differences in primary and secondary outcomes. Moderator analyses were performed to examine whether specific baseline characteristics modified the intervention effects on stress levels. Predictor analysis of change in stress was performed for the total sample.\nRESULTS: At 18 months, all three groups showed stable trends over time, with no significant difference between either intervention group and controls. A larger stress reduction was observed among younger participants (≤50 years) in both CBI and MBI compared to controls. Higher baseline stress levels predicted significantly larger stress reductions in the total sample, but the moderator analysis showed that the effects were only significant in the CBI group.\nCONCLUSION: Neither CBI nor MBI showed statistically significant improvements at 18 months compared to controls. The results however suggest that long-term access to stress management interventions may help young women with breast cancer and those with high initial stress to reduce their stress levels.\nCLINICALTRIALS: ClinicalTrials.gov identifier NCT04480203."
     }
   ],
   "Digital Mental Health Feasibility": [
     {
-      "pmid": "42181584",
-      "title": "Mobile Health (",
+      "pmid": "42998313",
+      "title": "Feasibility and Preliminary Efficacy of a Digital Cognitive-Behavioral and Expressive Writing Intervention for Fear of Cancer Recurrence in Young Breast Cancer Survivors: A Quasi-Experimental Study.",
       "authors": [
-        "Hernawaty T",
-        "Suryani S",
-        "Maryati I",
-        "Susanti RD",
-        "Maharani AY",
-        "Syafaat FA",
-        "Sundari NF",
-        "Aisyah TS",
-        "Erlindasari S"
+        "An H",
+        "Kang SJ"
       ],
-      "journal": "Cancer management and research",
+      "journal": "Seminars in oncology nursing",
       "year": "2026",
-      "abstract": "BACKGROUND: Psychosocial screening is the systematic identification of psychological and social problems in cancer patients, including emotional distress, anxiety, and depression. Mobile health (mHealth) technology has the potential to assist in the continuous screening and monitoring of patients' psychosocial conditions. However, evidence of its effectiveness, integration, and feasibility remains varied.\nOBJECTIVE: To map the literature on the use of mHealth for psychosocial screening of cancer patients and to identify its potential, challenges, and future directions in nursing practice.\nMETHODS: A scoping review was conducted using three databases: PubMed, Scopus, and ScienceDirect.\nRESULTS: A total of seven studies (n=7, including feasibility, protocol, and qualitative co-design studies) were included. Findings indicate that mHealth is feasible and acceptable for identifying emotional distress, monitoring psychosocial conditions, and supporting patient-provider communication.\nCONCLUSION: mHealth shows promising feasibility and offers potential to enhance nursing triage, referral, and patient-centered psychosocial care, and potential utility for psychosocial screening in cancer patients. However, further research is needed on long-term implementation, tool validation, data security, and integration into healthcare systems, particularly in Indonesia."
+      "abstract": "OBJECTIVE: To examine the feasibility and preliminary efficacy of a 4-week digital intervention combining cognitive behavioral therapy (CBT) and expressive writing for reducing fear of cancer recurrence (FCR) among young breast cancer survivors (YBCSs).\nMETHODS: A quasi-experimental, two-group repeated-measures design was employed. The intervention group (n = 14) participated in a 4-week online program with weekly CBT-based group sessions and 20-minute expressive writing sessions on four consecutive days each week (16 sessions in total), whereas the control group (n = 16) received weekly educational materials. Outcomes, including FCR, anxiety, depression, cancer coping, and post-traumatic stress symptoms, were assessed at baseline, immediately postintervention, and 4 weeks postintervention. Data were analyzed using repeated-measures ANOVA.\nRESULTS: Feasibility was supported by a 100% recruitment rate and 100% retention after baseline, with group session attendance (90%), expressive writing completion (95.6%), and weekly telephone consultation completion (80%) all exceeding benchmarks. A significant group × time interaction was observed for FCR (F = 4.888, P = .011), with greater reductions in the intervention group than in the control group over time. Group × time interactions did not reach statistical significance for anxiety, depression, cancer coping, or post-traumatic stress symptoms.\nCONCLUSIONS: This study demonstrated high feasibility and provided preliminary evidence of a potential benefit of the intervention for reducing FCR among YBCSs. Future randomized controlled trials with larger samples are warranted to confirm these findings and further investigate the mechanisms underlying the intervention effects.\nIMPLICATION FOR NURSING PRACTICE: Oncology nurses may consider incorporating accessible, developmentally tailored digital interventions as a potential component of survivorship care for YBCSs."
     },
     {
-      "pmid": "42177443",
-      "title": "Comparison of mHealth-supported and centre-based cardiac rehabilitation in patients with stable coronary heart disease: a randomized controlled trial.",
+      "pmid": "42967167",
+      "title": "Longitudinal Mood Monitoring and Classification of Self-Reported Mental Health Status Using Feels.ai: Feasibility Study.",
       "authors": [
-        "Yang X",
-        "Liang J",
-        "Li Y",
-        "Miao J",
-        "Xu Y",
-        "Li W"
+        "Akpalu P"
       ],
-      "journal": "BMC cardiovascular disorders",
+      "journal": "Cureus",
       "year": "2026",
-      "abstract": "BACKGROUND: High-intensity interval training (HIIT) is an effective exercise modality in cardiac rehabilitation; however, participation in conventional centre-based programs remains suboptimal due to barriers such as limited accessibility and adherence. Mobile health (mHealth) technologies may improve accessibility and supervision of exercise training. While previous studies have primarily focused on training modality, evidence comparing different delivery models of HIIT-based cardiac rehabilitation remains limited. This study aimed to compare the effectiveness and safety of mHealth-supported versus centre-based delivery of a standardized HIIT cardiac rehabilitation program in patients with stable coronary heart disease (CHD).\nMETHODS: Between December 2024 and April 2025, 98 adults with stable CHD eligible for Phase II cardiac rehabilitation were enrolled and randomly assigned to either the control group (n = 49) or the intervention group (n = 49). Both groups performed the same standardized HIIT protocol; the control group received supervised centre-based rehabilitation, whereas the intervention group performed mHealth-supported home-based training with real-time monitoring and individualized feedback via the Xin'ankang mHealth platform. Primary outcomes included the six-minute walk distance (6MWD), cardiopulmonary exercise testing (CPET) parameters, and SF-36 quality of life scores. Secondary outcomes included anxiety, depression, and sleep quality.\nRESULTS: Baseline characteristics were generally comparable between groups, although minor differences were observed in certain SF-36 domains. After adjustment for baseline values, the intervention group demonstrated significant improvements compared to the control group in sleep quality scores (3.17 ± 2.09 vs. 4.83 ± 2.09), peak METs (5.83 ± 0.09 vs. 4.94 ± 0.09), anaerobic threshold METs (4.29 ± 0.07 vs. 3.53 ± 0.07), peak VO₂ (20.12 ± 0.30 vs. 16.70 ± 0.30 ml/kg/min), and 6MWD (563.83 ± 3.21 vs. 531.49 ± 3.21 m) (all P < 0.05). Improvements in SF-36 scores were observed in several domains, although no significant difference was found in vitality or mental health. Subgroup analyses revealed consistent improvements across age groups, while a sex-specific difference was observed for changes in VO₂ peak.\nCONCLUSION: Compared with centre-based delivery of the same HIIT program, mHealth-supported HIIT was associated with greater improvements in cardiopulmonary function, exercise capacity, and quality of life in patients with CHD. These findings suggest that delivery modality may influence the effectiveness of HIIT-based cardiac rehabilitation.\nTRIAL REGISTRATION: Clinical Trial Registration Number: ChiCTR2500104462, June 17, 2025."
+      "abstract": "Purpose This feasibility study evaluated the use of the Feels.ai (Chicago, Illinois) mobile app to collect longitudinal mood data and characterize emotional and behavioral patterns. A secondary objective was to explore whether app-derived behavioral features could distinguish participants with a self-reported mental health condition from those reporting none. Findings were intended to inform future validation studies focused on predictive modeling and clinical applicability. Design This retrospective observational study analyzed de-identified data from 61 college-aged adults who voluntarily enrolled in Feels.ai through social media outreach and recorded mood entries during routine app use. Mental health status was self-reported and was not independently verified through clinical assessment or standardized diagnostic instruments. Methods Participants recorded their mood by selecting from a series of emoji-based facial expressions that were internally mapped to a 0-10 distress scale for quantitative analysis. Numeric scores and descriptive labels were not displayed to participants. App-derived features included mood volatility, mean mood score, mood skewness, skipped days, and the day/night activity ratio. An exploratory random forest classifier was developed to distinguish participants reporting anxiety, depression, or both from those reporting none. Model training used repeated five-fold cross-validation with class upsampling. Missing predictor values were median-imputed within each cross-validation fold. Performance was evaluated using discrimination, classification, and calibration metrics. Logistic regression was evaluated as a conventional comparator using the same resampling and preprocessing approach. Results Across 61 participants, the average adherence rate was 69.7%, with a mean of 15.6 completed days. The random forest achieved an area under the curve (AUC) of 0.74 (95% CI, 0.62-0.86). At a screening-oriented cutoff of 0.30, sensitivity was 0.88 (95% CI, 0.73-0.97), specificity was 0.44 (95% CI, 0.25-0.65), and balanced accuracy was 0.66. The Brier score was 0.21, with a calibration intercept of 0.04 and a calibration slope of 0.59. Logistic regression achieved an AUC of 0.68, which was not significantly different from that of the random forest model (p = 0.27). Conclusions This study demonstrates the feasibility of using Feels.ai for longitudinal mood tracking and deriving behavioral features from routine app use. Exploratory modeling suggests that these features contain signals associated with self-reported mental health status. However, model performance and calibration should be interpreted cautiously given the small sample size, self-reported outcomes, missingness in some longitudinal features, and absence of external validation. Larger, more diverse prospective studies using validated clinical measures are needed to determine the reliability, generalizability, and potential clinical utility of these behavioral features."
     },
     {
-      "pmid": "42145919",
-      "title": "Pregnant Adults' Interest in Physical and Mental Health Behavior Change Interventions Using Mobile Technology.",
+      "pmid": "42929450",
+      "title": "Incorporating Objective Behavioral and Biological Measures in a Large-Scale Decentralized Mobile Health Trial for Depression: Randomized Controlled Trial.",
       "authors": [
-        "Yarish NM",
-        "Sandoval CM",
-        "Moulder A",
-        "Turner MI",
-        "Downs DS",
-        "Heron KE"
+        "Lau WS",
+        "Swords CM",
+        "Thairu MW",
+        "Hidalgo N",
+        "Tatar R",
+        "Rahrig H",
+        "Wilson-Mendenhall CD",
+        "Grupe DW",
+        "Goldman RI",
+        "Vack NJ",
+        "Ferguson C",
+        "Valdivia G",
+        "Sankaran K",
+        "Frye C",
+        "Dahl CJ",
+        "Lewis R",
+        "Higgins ET",
+        "Garza M",
+        "Jiwani Z",
+        "Hirshberg MJ",
+        "Bernstein A",
+        "Converse E",
+        "Dimidjian S",
+        "Ward EC",
+        "Miller GE",
+        "McDade TW",
+        "Picard RW",
+        "Handelsman J",
+        "Rosenkranz MA",
+        "Abercrombie HC",
+        "Davidson RJ",
+        "Goldberg SB"
       ],
-      "journal": "Journal of technology in behavioral science",
-      "year": "2025",
-      "abstract": "Improving the health and well-being of pregnant adults is an important public health priority in the USA, and mobile health (mHealth) interventions may provide a scalable strategy to disseminate behavior change programs to pregnant adults. This study assessed pregnant people's use of mobile technology, interest in making health behavior changes during and after pregnancy, and their willingness to use mHealth interventions. Participants were 133 pregnant adults (M age = 27.86; 81% White) living across the USA recruited from social media to complete an online survey. Measures assessed mobile technology use and beliefs about improving mental/physical health in pregnancy and postpartum and using mHealth technology to address such changes. Participants endorsed daily smartphone use, and most participants endorsed wanting to improve their physical and mental health during pregnancy and postpartum. Key areas that emerged from their responses were to improve physical (healthy eating, physical activity, weight control, sleep, hydration) and mental (stress management, reducing depression/anxiety) health. Participants generally thought mobile technology could be a helpful and feasible tool for improving their health. Overall, findings support and extend past research among preconception adults suggesting mobile technology may be a helpful tool for implementing pre- and postnatal health behavior change programs. These findings may also be useful for developing community-informed health behavior interventions for pregnant adults that utilize mHealth approaches. Though these results show promise for the use of mHealth interventions during the perinatal period, feasibility and effectiveness studies are needed to better understand the role of mobile technology in perinatal health promotion."
+      "journal": "JMIR mental health",
+      "year": "2026",
+      "abstract": "BACKGROUND: Decentralized (ie, fully remote) clinical trials (DCTs) offer a scalable and ecologically valid approach to evaluating digital mental health interventions (DMHIs). Yet, incorporating objective measures of well-being within DCTs poses novel methodological and feasibility challenges that can limit the rigor and precision of data collection in the field.\nOBJECTIVE: We recently conducted the Behavior, Biology, and Well-being (BeWell) Study, a large-scale, 3-arm randomized DCT evaluating the Healthy Minds Program app (Humin)-a self-guided DMHI that includes didactic well-being information and meditation components. The current paper's objective is to describe the methodological approach to collecting and processing a multimodal battery of psychological (questionnaires and structured clinical interview), biological (blood and stool assays), and behavioral (stimulus-elicited affect [SEA] task, video log, and Mnemonic Similarity Task [MST]) measures, longitudinally across baseline, the 4-week intervention period, and 17-week follow-up. Secondarily, we evaluate its feasibility.\nMETHODS: The BeWell Study methodology is described. Descriptive statistics characterized recruitment and retention, as well as data completion and data quality. Binary logistic regressions evaluated whether recruitment sources, demographics, and depression severity predicted measure completion and data quality.\nRESULTS: From June 1, 2022, through July 15, 2024, 52,052 individuals started the screening questionnaire. Of these, 2.22% (n=1156 participants; mean age 38.69, SD 12.14 years; women=75.50%; non-Hispanic White=68.88%) completed the screener, met eligibility criteria (including elevated depressive symptoms [Patient Health Questionnaire-9 [PHQ-9] score≥5]), completed baseline measures, were enrolled, and were randomized. Participants were recruited from Craigslist (694/1154, 60.14%), a US-based advertisement website, and university email messages (107/1154, 9.27%); participants were enrolled from every US state. Across the study, 84% (971/1156) of participants were retained (completed ≥1 measure at 17-week follow-up). Across time points, ≥81.40% (941/1156) of participants completed questionnaires and ≥75.17% (869/1156) completed biological samples. Of those completing questionnaires, ≥84.14% (796/946) completed SEA and video log tasks and ≥91.75% (868/946) completed the MST. Of completed assessments, high-quality or analyzable data rates across all time points were ≥97.89% (926/946) for questionnaires, ≥90.20% (773/857) for SEA, ≥84.60% (725/857) for video logs, ≥94.20% (1056/1121) for the MST, ≥98.84% (849/859) for dried blood spots, and ≥99.43% (865/870) for microbiome samples. Greater depressive symptoms at screening, but not age, predicted completion of baseline measures (odds ratios 0.96-0.99; P<.001). For enrolled participants, recruitment sources and baseline depressive symptoms were not predictive of data completion or quality. Older age and having a college degree predicted significantly higher rates of data completion across all data types (questionnaire, behavioral, and biological) at week 4 or week 17 follow-ups.\nCONCLUSIONS: This methodological approach offers one model of incorporating objective measures of well-being into DCTs testing DMHIs. Implications and limitations of our approach are discussed."
     },
     {
-      "pmid": "42131188",
-      "title": "Safety and preliminary efficacy of Aurora: a pilot, non-randomized clinical trial of a culturally adapted digital cognitive behavioral therapy intervention for anxiety and depression in Mexico.",
+      "pmid": "42847364",
+      "title": "Improving weight loss among young adults with excess body weight using a theory-driven digital self-regulation program: a randomized controlled trial.",
       "authors": [
-        "Zárate E",
-        "Velasco-Téllez AC",
-        "Sanchez-Reyes LA",
-        "Coll-Muñoz ÁM",
-        "Ramírez-Ramírez MÁ",
-        "López-Tello A",
-        "Toledo-Lozano CG",
-        "Moreno-Coutiño A",
-        "Callejas-Gómez MDP",
-        "Durón-Figueroa R",
-        "Flores-Plata LA",
-        "Ramirez-Treviño A",
-        "Nava-López S",
-        "Ocampo-Gutiérrez de Velasco DA",
-        "Arias-Carrión O"
+        "Chew HSJ",
+        "Ngooi JW",
+        "Ang WW",
+        "Du RC",
+        "Chan PZ",
+        "Jansson M",
+        "Zhu B",
+        "Cao Y",
+        "Ngo CW",
+        "Foo R",
+        "Shabbir A",
+        "Ho D",
+        "Sevdalis N",
+        "Ngiam KY"
       ],
-      "journal": "Frontiers in psychiatry",
+      "journal": "Annals of behavioral medicine : a publication of the Society of Behavioral Medicine",
       "year": "2026",
-      "abstract": "BACKGROUND/OBJECTIVE: Anxiety and depressive disorders are leading causes of disability worldwide, and access to evidence-based psychological treatment remains limited in many middle-income countries. Digital cognitive-behavioral therapy (CBT) interventions have emerged as scalable tools to address this treatment gap, yet few have undergone clinical evaluation in Latin American populations. This study aimed to assess the safety and preliminary efficacy of Aurora, a Spanish-language, culturally adapted digital CBT program, when used as an adjunct to pharmacotherapy in adults with generalized anxiety disorder.\nMETHODS: In a multicenter, open-label, non-randomized pilot study, 34 adults diagnosed with generalized anxiety disorder receiving stable pharmacological treatment were assigned through pragmatic, convenience-based allocation either to an experimental group (Aurora plus medication; n = 24) or to a control group receiving medication alone (n = 10). The sample had a mean age of 39.85 ± 12.88 years, with a predominance of women (22/34). Participants were followed for 12 weeks with assessments at baseline and weeks 4, 8, and 12. Clinical outcomes included anxiety severity measured by the Generalized Anxiety Disorder-7 (GAD-7), pathological worry assessed by the Penn State Worry Questionnaire (PSWQ), and depressive symptoms evaluated using the Patient Health Questionnaire-9 (PHQ-9). Safety was monitored through structured adverse-event reporting. Statistical analyses included linear mixed-effects models for longitudinal outcomes, ordinal logistic regression for severity transitions, and negative binomial regression and Fisher's exact test for adverse events, with false discovery rate correction applied where appropriate.\nRESULTS: Aurora demonstrated a favorable safety profile, with no serious adverse events and comparable adverse-event incidence between groups under structured clinical monitoring at weeks 4, 8, and 12. Anxiety symptoms (GAD-7) showed a significant effect of time (F3,96 = 169.65; p < 0.001), indicating reductions across both groups. Pathological worry (PSWQ) demonstrated significant group (F1,31.12 = 6.96; p = 0.013) and group × time interaction effects (F3,93.4 = 7.86; p < 0.001), with greater reductions in the Aurora group, particularly at weeks 8 and 12. At week 12, ordinal analyses indicated higher odds of lower worry severity in the intervention group (β = 2.53; p = 0.004; OR = 12.5). Depressive symptoms decreased similarly in both groups. Positive effect increased progressively across intervention modules, and module-embedded cognitive measures of anxiety and depression showed significant reductions over time.\nCONCLUSION: This pilot study provides preliminary, hypothesis-generating evidence that a culturally adapted digital CBT intervention can be safely integrated with pharmacotherapy and may be associated with enhanced improvements in anxiety-related outcomes, particularly pathological worry, in a Mexican clinical population. However, the non-randomized design, small sample size, and baseline imbalances limit causal inference and generalizability, and findings should be interpreted with caution. Larger randomized controlled trials are needed to confirm efficacy, determine long-term clinical impact, and guide the implementation of digital therapeutics in Latin American mental health systems."
+      "abstract": "BACKGROUND: Lifestyle modification is fundamental for obesity management but remains challenging.\nPURPOSE: To test the effectiveness of a 12-week digital self-regulation program on improving weight loss and self-regulation among young adults.\nMETHODS: A 2-arm parallel 1:1 randomized controlled trial was conducted. Participants were randomly assigned to either the intervention or the control group. The primary outcomes were weight and self-regulation, while the secondary outcomes were nutrition knowledge, eating phenotypes, overeating habits, anxiety, and depression. All data were collected at weeks 0, 12, and 24.\nRESULTS: We showed the effectiveness of a digital commitment device on body weight (-1.90 ± 6.4 kg, P = .002), body mass index (-0.45 ± 2.0 kg/m2, P = .002), waist circumference (-2.10 ± 12.1 cm, P = .01), basal metabolic rate (-20.30 ± 118.6 kcal, P = .04) and body roundness index (-0.17 ± 0.6, P = .014). Interventional effects were sustained for waist circumference (-0.8 ± 2.8 cm, P = .05) and body roundness index (-0.07 ± 0.36, P = .047) 3 months beyond removing access to the commitment device. General improvements in nutrition knowledge, psychological flexibility, uncontrolled eating, and anxiety were found among both groups, but differences were only significant for depression scores (-0.06 ± 1.5, P = .032) and eating self-regulation (0.16 ± 0.54, P = .003).\nCONCLUSION: This study showed the potential of a digital commitment device in improving eating self-regulation, anthropometry, and mental wellness for scalable implementation in the community setting.\nTRIAL REGISTRATION: Clinicaltrials.gov (NCT05969639).\nMany young adults struggle with weight management, even when they are motivated to eat healthily. One reason is that everyday stress, food temptations, and busy schedules make it hard to stick to good intentions. This study tested whether a smartphone app designed to strengthen self-regulation skills could help young adults with excess body weight manage their weight more effectively. We conducted a randomized controlled trial in which participants were assigned either to a 12-week digital self-regulation program or to a control group that did not receive the app. The app encouraged users to reflect on their eating habits, manage emotional triggers, and plan ahead for challenging situations, rather than focusing only on calorie counting. Participants who used the app lost more weight by the end of the 12-week program compared with those who did not use it. Interestingly, improvements in eating self-regulation appeared later, 3 months after the program ended, suggesting that these skills may take time to develop. The app also had a low dropout rate, indicating that it was acceptable and easy to use. Overall, this study suggests that digital programs focusing on self-regulation skills may offer a practical and scalable way to support healthy weight management in young adults."
     },
     {
-      "pmid": "42126919",
-      "title": "iCARE Self-Guided Digital Intervention for Postpartum Depression in Danish Mothers: Formative Research Using User-Centered Design.",
+      "pmid": "42832728",
+      "title": "Efficacy of a Prescription-Based Mobile Digital Therapeutic as an Adjunct to Pharmacotherapy for the Acute Phase of Panic Disorder: Multicenter Randomized Controlled Trial.",
       "authors": [
-        "Marti-Castaner M",
-        "Thomsen C",
-        "Friis Elliott A",
-        "Holt E",
-        "Husedzinovic S",
-        "Bang Madsen K",
-        "Munk-Olsen T"
+        "Ko Y",
+        "Kim J",
+        "Park S",
+        "Kim H",
+        "Seo JH",
+        "Park IH",
+        "Lee J",
+        "Kim JJ"
       ],
-      "journal": "JMIR formative research",
+      "journal": "Journal of medical Internet research",
       "year": "2026",
-      "abstract": "BACKGROUND: Postpartum depression (PPD) is a major public health concern. Despite advancements in treatment, many barriers to accessing care remain. There has been a growing interest in digital interventions for the prevention and treatment of PPD. However, for mothers with mild and moderate symptoms of depression, there is a limited offer of self-guided internet-based interventions developed with user input and with considerations on how to integrate the intervention into stepped care models for PPD.\nOBJECTIVE: The aim of this study was (1) to describe the process of the design and development of iCARE, a self-guided digital psychological intervention for mothers with mild and moderate symptoms of PPD in Denmark, (2) present the program's theory illustrated by a logic model, and (3) explore its initial usability and prospective acceptability.\nMETHODS: Applying user-centered design methods, the intervention development followed six steps: (1) a literature review to identify evidence‑based therapeutic components of self‑guided interventions for PPD, (2) interviews with women with lived experience of PPD and group discussions with mental health experts and home‑visiting providers to identify user needs, (3) iterative design and content development with stakeholder feedback in collaboration with the Department of Digital Psychiatry, (4) prototype testing using think‑aloud usability sessions and interviews with 5 mothers, (5) a group cognitive walkthrough with mental health experts, and (6) final refinement and implementation of the iCARE program with developers and designers.\nRESULTS: Initial interviews with mothers and maternal health care providers emphasized the importance of a digital intervention offering timely psychoeducation, coping strategies, and pathways to in-person care while addressing the diversity of expressions of PPD symptoms. Stakeholders recommended a flexible program, multimodal content, and integration into maternal care systems with community health nurses supporting engagement and participation. The prototype was designed to be user-centered, engaging, and with multiple interactive features. It included components on psychoeducation, cognitive exercises grounded in cognitive behavioral therapy, acceptance and commitment principles, and mood-monitoring. The prototype was designed to be user-centered and engaging, with interactive features and components on psychoeducation, cognitive exercises grounded in cognitive behavioral and acceptance and commitment principles, and mood-monitoring. Prototype testing indicated high prospective acceptability and led to refinements across 6 themes: appropriateness of content; motivation and engagement; inclusivity and gender representation; clarity of instructions and data use; understanding of therapeutic method; and usability, layout, and navigation.\nCONCLUSIONS: iCARE is a self-guided internet-based psychological intervention for mothers with mild and moderate symptoms of PPD in Denmark. It was developed with user input by using qualitative methods, user-centered design, and psychological theory. Further research is needed to evaluate the feasibility and effectiveness of the program in a randomized controlled trial and its integration into maternal health care models such as universal PPD screening and home-visiting."
+      "abstract": "BACKGROUND: Although pharmacotherapy is the primary treatment for patients with acute-phase panic disorder, its incomplete efficacy causes them to experience frequent panic attacks and severe anticipatory anxiety for a considerable period. A prescription-based mobile digital therapeutic (DTx) that integrates self-guided cognitive behavioral therapy (CBT), real-time symptom management, and lifestyle tracking can be used as an adjunct to pharmacotherapy for these patients, helping them achieve rapid symptom recovery.\nOBJECTIVE: This study aimed to evaluate the efficacy of this adjunctive DTx in alleviating symptoms in patients with acute-phase panic disorder.\nMETHODS: In total, 66 acute-phase patients experiencing frequent panic attacks were recruited from 6 institutions and randomly divided into a group receiving pharmacotherapy combined with DTx or pharmacotherapy alone, participating in an 8-week multicenter single-blind trial. The DTx app included 3 major services: training service consisting of structured CBT modules, companion service of just-in-time modules for coping with panic attacks, and care service providing daily self-management tracking tools. The self-report scales used as efficacy indicators were administered via paper questionnaires during a total of 4 visits at baseline, week 2, week 4, and week 8. The primary end point, the change in the Panic Disorder Severity Scale-Self Report (PDSS-SR) score, and the secondary end points, such as changes in overall anxiety, depression, panic-related catastrophic cognitions, and fear of bodily sensations, were compared between the 2 groups. Adherence to the DTx was objectively assessed using device use metrics.\nRESULTS: As 5 enrolled patients were excluded due to insufficient safety analysis or efficacy evaluation, the final analysis included 32 in the DTx group and 29 in the control group. The DTx group showed a significantly greater reduction in PDSS-SR scores at week 8 compared to the control group (mean 40.29%, SD 26.68% vs mean 17.61%, SD 30.37%; P=.007). This therapeutic benefit appeared rapidly by week 2 (mean 26.66%, SD 22.03% vs mean 11.05%, SD 21.73%; P=.02). The responder (≥40% PDSS-SR reduction) rate was also significantly higher in the DTx group (17/32, 53.12% vs 5/29, 17.24%; P=.007). While changes in depression and somatic fears were transient or similar between groups, the DTx group showed significantly greater sustained improvements in overall anxiety and catastrophic cognitions. The overall mean adherence rate was 78.12%, with no significant difference between responders and nonresponders.\nCONCLUSIONS: The adjunctive use of our prescription-based DTx resulted in early and sustained symptom reductions across panic severity, overall anxiety, and catastrophic cognitions, suggesting that this multifunctional and self-guided DTx including just-in-time management and lifestyle tracking can serve as a practical complement to routine psychiatric care for acute-phase patients experiencing frequent panic attacks. This app is expected to present a new framework for the treatment of acute-phase panic disorder by enabling the incorporation of various symptomatic aspects in patients' daily life into clinicians' evaluations and guidance in the clinic."
     }
   ],
   "Micro-Habits & Tiny Steps": [
     {
-      "pmid": "42163832",
-      "title": "There's an app for that: promoting independence in child and adolescent health.",
+      "pmid": "42961869",
+      "title": "Multidomain Outcomes of a Digital Self-Management Program in Rural Adults With Chronic Conditions: Single-Arm Prospective Interventional Study.",
       "authors": [
-        "Howard C",
-        "Kalash S",
-        "Sharma N",
-        "Milanaik R"
+        "Smith NK",
+        "Ilie G",
+        "MacDonald C",
+        "Langley JRB",
+        "Rutledge RDH"
       ],
-      "journal": "Current opinion in pediatrics",
+      "journal": "JMIR mHealth and uHealth",
       "year": "2026",
-      "abstract": "PURPOSE OF REVIEW: To provide pediatric clinicians with a list of mobile applications to recommend to patients to promote independence, healthy habits, and self-management skills in children or individuals who may benefit from extra support.\nRECENT FINDINGS: Technology has become deeply embedded in healthcare delivery. With 95% of 13-17-year-old teenagers having access to smartphones, mobile applications represent a natural extension of care that can be integrated into treatment plans. Structured routines and healthy habits are positively associated with life satisfaction and negatively associated with anxiety and depression, emphasizing the value of interventions that support self-management. Mobile applications span diverse functions to support adolescent development: health-tracking apps enable chronic disease management and mental health monitoring; habit-tracking tools reinforce positive routines; study platforms provide personalized learning; and focus apps strengthen attention and time management.\nSUMMARY: Mobile applications are low-cost, accessible tools that represent valuable adjuncts to traditional pediatric care. Apps spanning health tracking, habit formation, academic support, and focus enhancement provide frameworks for youth to develop autonomy. When integrated into care plans, these apps can reinforce positive behaviors, support chronic disease management, and promote lifelong healthy habits. Clinicians and caregivers should collaboratively explore which applications best meet each child's needs."
+      "abstract": "BACKGROUND: Chronic disease and comorbid mental health problems disproportionately affect rural and underserved populations. Digital self-management programs are potentially scalable, but evaluations often focus on narrow outcomes.\nOBJECTIVE: This study examined 12-month longitudinal changes in psychological and multidomain outcomes among Pictou County Patient Empowerment Program participants and explored co-occurring changes and psychological moderators.\nMETHODS: This single-arm prospective interventional study enrolled 182 community-dwelling adults with ≥1 chronic condition in Pictou County, Nova Scotia, between October 2023 and August 2025 through community-based outreach. Median age was 60 (IQR 51-68) years, 155 of 182 (85.2%) participants were women, and the median number of chronic conditions was 3 (IQR 1-3). The initial 6-month digital intervention delivered brief daily modules targeting physical activity, nutrition, stress regulation, sleep, habit formation, and social connection, followed by a 6-month lower-intensity maintenance period during which monthly group videoconference sessions continued to be offered. Outcomes were assessed at baseline, 6 months, and 12 months. Primary outcomes were illness perceptions (Brief Illness Perception Questionnaire), perceived stress (10-item Perceived Stress Scale [PSS-10]), disease-related worry (10-item Questionnaire on Distress in Cancer Patients), life satisfaction (Satisfaction With Life Scale), and mental well-being (World Health Organization-Five Well-Being Index [WHO-5]). Secondary outcomes assessed the physical, behavioral, and psychosocial domains. Generalized estimating equations estimated population-averaged longitudinal changes, adjusted for age, sex, relationship status, comorbidity burden, and baseline depression or anxiety medication use. Exploratory models examined co-occurring changes and moderation. Tests were 2-sided with α=.05.\nRESULTS: Across outcomes and follow-up assessments, completion ranged from 58.2% (95% CI 51.0%-65.2%; 106/182) to 65.4% (95% CI 58.2%-71.9%; 119/182). At 12 months, illness perceptions decreased (β=-7.3, 95% CI -9.7 to -4.9), perceived stress decreased (β=-2.4, 95% CI -3.5 to -1.3), disease-related worry decreased (β=-6.3, 95% CI -7.8 to -4.7), life satisfaction increased (β=2.5, 95% CI 1.4-3.5), and mental well-being increased (β=10.4, 95% CI 7.2-13.5; all P<.001). Secondary outcomes improved across fatigue, sleep, diet quality, sedentary behavior, spiritual well-being, mental health-related quality of life, weight, and BMI. Exploratory analyses showed that improvements in fatigue, sleep quality, and illness perceptions co-occurred with greater well-being and life satisfaction and lower perceived stress and disease-related worry at both follow-up assessment points. Clinically meaningful stress improvement (≥4-point PSS-10 reduction) was achieved by 36.4% (95% CI 27.3%-45.6%, 39/107) and 43.4% (95% CI 34.0%-52.8%, 46/106) participants at 6 and 12 months, respectively. At 12 months, 43.5% (95% CI 34.2%-52.9%, 47/108) participants reported clinically meaningful improvement in mental well-being (≥10-point WHO-5 increase).\nCONCLUSIONS: Participation in this low-bandwidth, home-based digital self-management program was associated with sustained psychological, physical, and behavioral improvements among rural adults with chronic conditions. These multidomain findings support randomized controlled evaluation of scalable digital self-management approaches as adjuncts to rural chronic disease care."
     },
     {
-      "pmid": "42148722",
-      "title": "Cognitive Stimulation Therapy in Menopause: Feasibility randomised controlled trial.",
+      "pmid": "42755550",
+      "title": "Pre-planned reappraisal via implementation intention down-regulates emotional experiences of youth with self-reported depressive symptoms.",
       "authors": [
-        "Aimee S",
-        "Faulkner A",
-        "Gilchrist H",
-        "Sethi S",
-        "He L",
-        "Gurvich C",
-        "Evans R"
+        "Chen S",
+        "Luo L",
+        "Zhang X",
+        "Yang J",
+        "Wang T",
+        "Yuan J"
       ],
-      "journal": "Reproduction & fertility",
+      "journal": "General psychiatry",
       "year": "2026",
-      "abstract": "AIM: To evaluate the feasibility, acceptability, and potential effects of a novel, group-based online intervention for cognition in menopause transition; 'CST-Meno', through a feasibility randomised controlled trial.\nMETHOD: 41 women were eligible to participate, with 33 randomised to CST-Meno (N=17) or treatment as usual (N=16). CST-Meno was delivered over six weeks within four, two-hour sessions. Feasibility and acceptability outcomes included recruitment, retention, attendance, and measure completion. Exploratory analysis examined changes in subjective and objective cognition, quality of life, vasomotor symptoms, anxiety and depression.\nRESULTS: CST-Meno demonstrated acceptability as an intervention; with strong retention, good attendance and no adverse effects related to content or delivery. With recruitment and retention targets exceeded, willingness to be randomised high and outcome measures well tolerated; feasibility and acceptability of the trial design was demonstrated. Exploratory analysis showed small changes in all outcomes, some favouring CST-Meno and others favouring treatment as usual. However, the trial was not powered to detect changes, so these findings were interpreted with extreme caution.\nCONCLUSIONS: CST-Meno is both feasible to conduct as a randomised controlled trial and an acceptable intervention to participants. This warrants further research with a larger, diverse sample; exploring both effectiveness and cost-effectiveness.\nLAY SUMMARY: Cognitive changes ('brain fog') are highly prevalent during menopause transition. However, there are no treatments shown to help. We developed an online, group intervention called 'CST-Meno' (four, two-hour sessions), which provides information and management strategies. Thirty-three women were randomly assigned to receive either CST-Meno or usual care. Everyone was given the same tests (including cognition, mood, quality of life) at the beginning and end of the study. CST-Meno appeared acceptable to participants, with easy recruitment, good attendance, no adverse effects, few dropouts and most completing outcome measures. There were no notable changes in outcomes between those attending CST-Meno and usual care, however our sample was too small to detect clinical changes. We concluded that a larger trial with a more diverse sample is needed. This would help us understand whether CST-Meno improves cognition and other outcomes, and if it leads to any economic benefits; such as reduced time off work."
+      "abstract": "BACKGROUND: Cognitive reappraisal is an emotion-regulation strategy that involves altering the emotional impact of a situation by changing its appraisal. However, individuals with depressive symptoms often struggle to deploy momentary cognitive reappraisal during emotional encounters due to impaired cognitive control. Pre-planned reappraisal formed through implementation intentions, that is, a strategy rehearsed in advance to activate automatically upon emotional triggers, may offer a more efficient alternative.\nAIMS: This study examined whether pre-planned cognitive reappraisal via implementation intentions more effectively reduces negative emotional experience in youth with depressive symptoms than momentary reappraisal, and whether these effects persist after short-term re-exposure.\nMETHODS: This randomised, single-blind and three-arm experiment was conducted from 10 December 2021 to 19 December 2021 at Southwest University in China. Following screening with the Beck Depression Inventory-II (BDI-II), 64 undergraduate students with depressive symptoms (score ≥ 20) and 64 without depressive symptoms (score ≤ 10) were enrolled. Participants were randomly allocated to one of three experimental conditions: passive watching of emotional stimuli, momentary reappraisal (reinterpreting the meaning of a sad face upon presentation) or pre-planned reappraisal (applying a pre-trained reappraisal framework before stimulus presentation). The formal experiment included an emotion elicitation and regulation task, a 20-min interval during which participants completed questionnaires and a re-exposure phase in which all groups passively viewed novel sad faces. Subjective emotional experiences were measured using the nine-point self-assessment manikin (SAM).\nRESULTS: Pre-planned reappraisal produced significantly less negative valence and lower arousal ratings for sad faces than passive watching in both participants with and without depressive symptoms. Momentary reappraisal only reduced negative emotional ratings in participants without depressive symptoms, but not those with depressive symptoms. During re-exposure, only prior pre-planned reappraisal yielded sustained reductions in negative emotional ratings. Participants with depressive symptoms also reported greater perceived benefit from pre-planned than from momentary reappraisal.\nCONCLUSIONS: Compared with momentary reappraisal, pre-planned cognitive reappraisal via implementation intentions produced stronger and more short-term sustained effects among youth with depressive symptoms, supporting its potential use in low-cost self-regulation interventions and clinical cognitive therapies."
     },
     {
-      "pmid": "42027147",
-      "title": "S-adenosylmethionine as an epigenetic treatment of depression in adults with childhood trauma.",
+      "pmid": "42680588",
+      "title": "Habit Learning Shapes Activity Dynamics in the Central Nucleus of the Amygdala.",
       "authors": [
-        "Alkema A",
-        "Schalkwijk W",
-        "Bohte E",
-        "Draisma L",
-        "Hoppe A",
-        "Koch C",
-        "Refuge V",
-        "Romberg B",
-        "Luykx JJ",
-        "Jans JJM",
-        "Cahn W",
-        "Regeer E",
-        "Boks MPM"
+        "Amaya KA",
+        "Carmichael JE",
+        "Stott JJ",
+        "Townsend ES",
+        "Bien EA",
+        "Palmer JA",
+        "Smith KS"
       ],
-      "journal": "Epigenomics",
+      "journal": "The Journal of neuroscience : the official journal of the Society for Neuroscience",
       "year": "2026",
-      "abstract": "BACKGROUND: Childhood trauma is associated with increased risk of depression and epigenetic alterations in stress-related pathways. Preclinical studies suggest that methyl donors may facilitate DNA methylation changes. This first-in-human trial of epigenetic treatment investigated methyl donor S-adenosylmethionine (SAMe) as add-on to trauma-focused therapy for depression.\nMETHODS: In this randomized, double-blind, placebo-controlled trial with 6-month follow-up, 31 adults with trauma-related depression were enrolled. Participants received 1200 mg SAMe or placebo alongside 12-weeks trauma-focused therapy. Depression symptoms were assessed using the Hamilton Rating Scale of Depression (HAM-D). Plasma SAMe levels and genome-wide DNA methylation were measured pre- and post-treatment, including epigenome-wide association analyses, differentially methylated region analyses, and epigenetic clock measures.\nRESULTS: Twenty-eight participants completed the study. Depression symptoms decreased significantly during treatment and remained improved at follow-up, reflecting the effect of psychotherapy, without clinical benefit of SAMe. SAMe supplementation did not alter plasma SAMe levels. However, SAMe treatment was associated with differential methylation across 66 regions. Epigenetic clock analyses showed no consistent treatment-related changes.\nCONCLUSIONS: This first-in-human epigenetic intervention study in psychiatry demonstrates the feasibility of combining trauma-focused psychotherapy with targeted epigenetic analyses. While SAMe showed no additive clinical effects, the results provide important leads for future trials.\nCLINICAL TRIAL IDENTIFIER (EUDRACT): 2017-002097-38.\nDepression is common and can be especially difficult to treat in people who experienced traumatic events during childhood. Early life stress may leave long-lasting biological “marks”: small changes to DNA that influence how genes work, in a process called “DNA methylation.” Trauma induces DNA methylation changes around genes related to the stress response, which can affect how the body responds to stress.In this study, we tested whether a natural substance called S-adenosylmethionine (SAMe) could help improve depression symptoms by influencing these biological traces. We investigated whether using SAMe alongside trauma-focused psychotherapy could help facilitate treatment-induced changes in DNA methylation linked to stress.Twenty-eight adults with depression and a history of childhood trauma participated in this clinical trial. Half received SAMe and the other half received a placebo. All participants received trauma-focused psychotherapy. We measured depression symptoms and DNA methylation patterns before and after treatment. Depression symptoms were improved after psychotherapy in both groups, but SAMe did not lead to additional improvement in symptoms. We also did not observe clear changes in DNA methylation. However, some small, regional differences were detected, that can inform future research directions.Although SAMe did not show clear added benefit in this study, the trial provides important insights into the challenging translation of biological treatments from laboratory research into clinical practice. It also offers guidance for designing future studies that aim to target biological processes involved in trauma-related depression."
+      "abstract": "Habits develop as motivated behaviors that are strengthened by extended experience and feedback. While the performance component of a habit is relatively well studied, being linked to action-related neural dynamics in the basal ganglia and beyond, neural mechanisms for outcome feedback during habit formation, the reinforcement component, remain unknown. One candidate for this feedback mechanism is in the central nucleus of the amygdala (CeA). Here, we identify CeA neural firing dynamics in male and female rats that serve to promote habit formation. We used a novel maze task with rewards of differing identity and value to show that habits arise with task overtraining. After showing that overtraining engages CeA as shown through elevated cFos expression, we recorded in vivo CeA activity across learning and after outcome devaluation when habitual behavior is most identifiable. Neuronal activity changes tracked with habit formation. During learning, a group of recorded cells were significantly responsive at the choice point of maze trials while others encoded outcome consumption. By late training, neural activity exhibited a rapid depression at the choice point of the maze and excitation during reward receipt. In both cases, outcome magnitude, but not identity, was a significant modulator of neural activity. Additionally, a population of neurons tracked instantaneous changes in animal run speed. These speed cells dramatically decreased in number as habits formed. Together, these findings support the role of the CeA in providing reinforcement for habitual behavior, offering a signal that marks successful performance while identifying speed representations in the CeA."
     },
     {
-      "pmid": "42012723",
-      "title": "Longitudinal trajectories of apathy in Huntington's disease: a 6-year follow-up study.",
+      "pmid": "42492084",
+      "title": "Rapid Development and Testing of Behavioral Text Message Reminders for Antidepressant Adherence via Online Panels: Survey Study.",
       "authors": [
-        "Poulsen E",
-        "Hendel RK",
-        "Ásbjörnsdóttir B",
-        "Hjermind LE",
-        "Nielsen JE",
-        "Vogel A"
+        "Tropea TR",
+        "Marcus SC",
+        "Bucher A",
+        "Bowden CF",
+        "Olfson M",
+        "Stewart RE"
       ],
-      "journal": "Journal of neurology",
+      "journal": "Journal of medical Internet research",
       "year": "2026",
-      "abstract": "OBJECTIVE: Apathy is a common and debilitating neuropsychiatric symptom in Huntington's disease (HD), yet its long-term trajectory remains poorly characterized. This study examined changes in apathy in HD gene expansion carriers (HDGECs) over 6 years, using a multidimensional measure, and investigated associations with cognition, motor symptoms and depression.\nMETHODS: Eighty-two HDGECs (premanifest and manifest) completed assessments at Time 0 and Time 1 with a mean follow-up interval of 6 years. Apathy was measured using the Lille Apathy Rating Scale (LARS) and the Problem Behaviors Assessment-short (PBA-s). Depressive symptoms were assessed with the Hamilton Depression Rating Scale, while social cognition and executive functioning were measured using the Emotion Hexagon and Symbol Digit Modalities Test. Within-person changes were examined using paired statistical tests and associations with clinical variables were evaluated using correlation analyses.\nRESULTS: Total apathy scores increased significantly over 6 years, with small changes (LARS: 1.38 points; PBA-s: 1.11 points). Premanifest participants showed a selective decline in Action Initiation, whereas manifest participants exhibited a broader worsening of total apathy. Individual trajectories were variable, with both worsening and improvement observed. An increase in depressive symptoms was significantly correlated with changes in apathy but accounted for little variance.\nCONCLUSION: Apathy in HD shows a small but significant increase over 6 years, characterized by marked heterogeneity and changes in Action Initiation. The limited association with depression and cognition highlights apathy as an independent neuropsychiatric feature. These findings underscore the heterogeneous nature of apathy progression and the value of multidimensional assessment in longitudinal studies."
+      "abstract": "BACKGROUND: SMS text message reminders have been used to promote many health behaviors, such as improving diet and physical activity, managing chronic health conditions, reminding patients about medical appointments, and supporting medication adherence across a range of health conditions. Despite their promise, developing effective reminders tailored to specific patient populations is resource-intensive. AI may facilitate item development, and online research panels may provide an efficient way to test message content with target users prior to implementing large-scale trials.\nOBJECTIVE: This study aimed to (1) develop a library of antidepressant adherence-promoting SMS text messages that are perceived as helpful, (2) test whether an online panel approach can be used to evaluate them, and (3) identify message characteristics perceived as most helpful by patients with depression taking antidepressant medication.\nMETHODS: In total, 83 SMS text message reminders were developed based on barriers to adherence and behavior change technique pairings, with approximately half authored by the study team, and half generated by AI. Using an online panel, we recruited 181 American adults with depression currently prescribed an antidepressant medication. Each participant rated a subset of messages on how much they thought each would help them remember to take their medication. Associations between message characteristics and ratings were estimated using generalized linear models in Stata. Survey weights were used in analyses to align the sample with national antidepressant user demographics.\nRESULTS: The online panel was able to rapidly recruit a sample of participants, who provided 7520 item ratings in total. AI-generated messages were rated as significantly more helpful than those authored by humans (adjusted mean difference 0.24 on a 5-point scale, 95% CI 0.12-0.36; P<.001). Messages addressing delayed symptom benefit were preferred over other adherence barriers, and behavior change techniques emphasizing self-monitoring (P<.001), habit formation (P<.001), and natural consequences (P<.001) received significantly higher ratings than those using external influence or support. No difference was observed between motivational and informational message content.\nCONCLUSIONS: Online panels offer a rapid, scalable approach to evaluating SMS text message reminders for patients currently taking antidepressants. When provided with specific instructions and human-led examples, AI can efficiently generate message content perceived to be helpful in promoting medication adherence. Given that AI-generated content received higher ratings than human-authored messages, future work may consider using this tool to support rapid intervention development. In addition, identifying common barriers to adherence and applying behavior change techniques to address those barriers can inform targeted message development and support adherence. Taken together, these findings demonstrate the utility of combining low-cost methods such as online panel research with AI to accelerate the design and preliminary evaluation of digital health interventions."
     },
     {
-      "pmid": "41944742",
-      "title": "Safety and Efficacy of Maintenance Treatment With Aripiprazole Once-Monthly in Black/African American Adults Diagnosed With Bipolar I Disorder: Post Hoc Analysis of a 52-Week, Open-Label Study.",
+      "pmid": "42459273",
+      "title": "From early risk to preventive action: Empowerment based digital triage and intervention for burnout, anxiety, and depression in Scandinavian healthcare workers.",
       "authors": [
-        "Bell Lynum KS",
-        "Such P",
-        "Zhang Z",
-        "Simmons-Yon A",
-        "Atkins N",
-        "Lawson W",
-        "Goldberg JF"
+        "Michelsen C"
       ],
-      "journal": "The Journal of clinical psychiatry",
+      "journal": "AIMS public health",
       "year": "2026",
-      "abstract": "Objective: This exploratory post hoc analysis examined the safety/efficacy of the aripiprazole once-monthly 400 mg (AOM 400) long-acting injectable (LAI) in Black/African American patients diagnosed with bipolar I disorder (BP-I). Methods: Data were from a 52-week, open-label trial of AOM 400 maintenance treatment in patients diagnosed with DSM-IV-TR-defined BP-I. Outcomes included treatment-emergent adverse events (TEAEs), clinician-rated extrapyramidal symptoms (EPS), patient stability, Young Mania Rating Scale (YMRS), Montgomery-Asberg Depression Rating Scale (MADRS), and Clinical Global Impression-Bipolar Version-Severity (CGI-BP-S) scores, functioning, and quality of life (QoL). Data analyses comprised descriptive statistics and a mixed model for repeated measures. Results: Outcomes were analyzed in 464 patients (Black/African American, n=104; White, n=255; Asian, n=94; other racial groups, n=11). No notable increase in TEAEs, serious TEAEs, or TEAEs leading to discontinuation were observed in Black/African American patients vs those in other racial groups. Rates of akathisia, tremor, increased weight, or hypertension were lower/similar in Black/African American patients vs other racial groups; changes in EPS scores were minimal in all groups. At last visit, 90.1% of Black/African American patients were stable, similar to other racial groups. Small changes in YMRS total score occurred in all groups, with MADRS total score and CGI-BP-S scores largely unchanged. Functioning and QoL improved in Black/African American patients, to a similar/greater degree than other racial groups. Limitations include the open-label design, prior aripiprazole stabilization, and sparse metabolic laboratory data, constraining causal inference and metabolic conclusions. Conclusion: The safety and efficacy of AOM 400 is comparable between Black/African American and non-Black/African American patients with BP-I. The data provide valuable evidence supporting second-generation LAI antipsychotic use in these patients. Trial Registration: ClinicalTrials.gov identifier: NCT01710709."
+      "abstract": "BACKGROUND: Burnout, anxiety, and depression among healthcare workers are associated with long-term sickness absence, reduced quality of care, and impaired patient safety. In Sweden and other Scandinavian countries, common mental disorders account for a substantial share of sickness absence, with costs borne by employers and national insurance systems (the \"payee side\"). Early identification of workers at elevated risk, followed by proportionate preventive support, is therefore central to sustainable hospital management and occupational health. The Empowerment for Participation (EFP) assessment is a 110-item web-based system that maps everyday participation, demands, and self-expectations and derives validated risk indices for burnout, anxiety, and depression, together with constructs such as motivation, stress, and defence routines. The EFP battery has been used as a triage tool and an outcome framework in web-based psychotherapy trials targeting burnout risk and as a component in AI-driven digital triage concepts within the My-E-Health ecosystem. Prior Swedish evidence also links burnout and stress symptoms in healthcare workers to subsequent long-term sickness absence, supporting the relevance of risk indices for occupational prevention. Empowerment-related constructs have further been shown to be responsive to interventions such as mindfulness-based treatment.\nOBJECTIVE: To integrate empirical data from a cohort of healthcare personnel assessed with the EFP battery into a broader preventive model linking early risk identification, digital and therapist-delivered support, and the Scandinavian sick-pay context, while clarifying the methodological limits of non-randomised, real-world data.\nMETHODS: I analysed EFP data from 325 healthcare workers with baseline (T1) and follow-up (T2) assessments who, in routine practice, either (1) received no structured treatment or AI support (no structured support/control), (2) engaged in human-delivered psychotherapy (human therapy), or (3) used an AI-supported, web-based intervention grounded in the EFP architecture (AI-only support). Outcomes included the EFP Empowerment index and EFP-derived risk indices for burnout, anxiety, and depression, plus stress burden, motivation, and defence routines. Change over time was examined within groups (paired t-tests; Cohen's d_z) and explored between groups using change-score ANOVAs (η²). Because groups were not randomised and differed at baseline, between-group comparisons were interpreted cautiously as descriptive.\nRESULTS: At baseline, participants who went on to use human therapy or AI-only support showed higher EFP-derived risk for burnout, anxiety, and depression and lower empowerment than those who did not engage in structured support, consistent with risk-driven help-seeking. Under naturalistic conditions, human therapy and AI-only support were associated with large within-group improvements in empowerment and substantial reductions in EFP-derived risk indices, whereas the no-structured-support group showed only small changes. Defence routines decreased far more in the human therapy group than in the AI-only group, suggesting potentially distinct mechanisms. Improvements in empowerment were strongly associated with reductions in risk indices; however, the observational design did not support causal inference.\nCONCLUSIONS: The EFP battery functions as a practical framework for early risk identification and change-sensitive outcome monitoring that can support scalable digital triage and stepped-care pathways. However, because allocation to support was non-randomised and sickness absence was not measured in this cohort, claims about prevention of sick leave should be treated as hypotheses to be tested in prospective studies that include baseline-balanced comparisons and registry-based sick-leave endpoints."
     }
   ]
 }
