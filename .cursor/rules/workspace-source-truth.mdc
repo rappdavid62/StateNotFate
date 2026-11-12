@@ -7,6 +7,7 @@ alwaysApply: true
 
 - Verify root, Git root, branch, remote, and dirty state before consequential work.
 - Canonical local project root: `C:\Users\rappd\OneDrive\Desktop\SNF_DEPLOY`.
+- On Linux use the verified Git checkout root and confirm the origin matches the repository below.
 - Remote repository: `rappdavid62/StateNotFate`.
 - Production-source branch: `SNF` unless current GitHub/Netlify evidence proves a deliberate change.
 - The current development branch may be edited when the task belongs there, but do not call it production merely because it is open locally.

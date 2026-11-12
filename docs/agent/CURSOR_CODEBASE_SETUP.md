@@ -22,14 +22,9 @@ Live deployment identity and local Windows checkout were not verified in this re
 No framework, API key, new repository, or Slack subscription is needed for public-site testing.
 Do not copy personal notes, credentials, or environment secrets into this public repository.
 
-## Known cloud compatibility blockers
+## Workspace verification
 
-The committed implementation role restricts work to the Windows SNF_DEPLOY path.
-The hook command names a Windows Python314 executable; its Python script also hard-codes the Windows project root.
-The source-truth rule and permissions text refer to that local path.
-These are not proof that a Linux cloud checkout can execute successfully.
-Do not disable the controls to get around this. A follow-up implementation should validate the actual Git root and exact repository remote, preserve approval behavior, and support both Windows and Linux.
-This setup packet does not change those controls or assert that they work in the cloud.
+The Cursor hook uses Node to select the Windows Python interpreter or Linux python3. It checks the Git root and GitHub origin before shell work. Windows also requires the canonical local path. A hosted run still needs to confirm the actual checkout and origin format.
 
 ## First session
 

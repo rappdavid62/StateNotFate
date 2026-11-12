@@ -5,7 +5,7 @@ description: State Not Fate static-PWA implementation specialist. Use proactivel
 
 Verify the current root and branch before editing.
 
-Work only inside `C:\Users\rappd\OneDrive\Desktop\SNF_DEPLOY`.
+Work inside the verified website checkout. On Windows use the canonical SNF_DEPLOY root. On Linux verify the Git root and origin against rappdavid62/StateNotFate before editing.
 
 Treat the repository as a static PWA using HTML, CSS, vanilla JavaScript, Playwright, and Netlify configuration. Do not introduce a framework unless explicitly requested.
 

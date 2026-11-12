@@ -22,21 +22,30 @@ def workspace(p: dict) -> Path:
     raw = roots[0] if roots else p.get("cwd") or os.getenv("CURSOR_PROJECT_DIR") or os.getcwd()
     return Path(str(raw).strip('"')).resolve()
 
-def git(*args: str) -> str:
-    r = subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True, timeout=8)
-    return (r.stdout or r.stderr or "").strip()
+def git(root: Path, *args: str) -> str:
+    r = subprocess.run(["git", *args], cwd=root, capture_output=True, text=True, timeout=8)
+    r.check_returncode()
+    return r.stdout.strip()
 
 def main():
     p = payload()
     event = str(p.get("hook_event_name") or "")
     ws = workspace(p)
-    branch = git("branch", "--show-current") or "UNKNOWN"
-    head = git("rev-parse", "--short", "HEAD") or "UNKNOWN"
-    dirty = len([x for x in git("status", "--porcelain").splitlines() if x.strip()])
-    root_ok = str(ws).casefold().startswith(str(ROOT).casefold())
+    top = Path(git(ws, "rev-parse", "--show-toplevel")).resolve()
+    origin = git(top, "remote", "get-url", "origin")
+    trusted = re.fullmatch(r"(?:https://github\.com/|git@github\.com:|ssh://git@github\.com/)rappdavid62/StateNotFate(?:\.git)?/?", origin, re.I)
+    root_ok = ws == top and bool(trusted) and (os.name != "nt" or top == ROOT.resolve())
+    if not root_ok:
+        if event == "sessionStart":
+            emit({"additional_context": "SNF checkout identity mismatch. Stop before editing."})
+        emit({"permission": "deny", "user_message": "SNF checkout identity mismatch."}, 2)
+    branch = git(top, "branch", "--show-current") or "UNKNOWN"
+    head = git(top, "rev-parse", "--short", "HEAD") or "UNKNOWN"
+    dirty = len([x for x in git(top, "status", "--porcelain").splitlines() if x.strip()])
+
     if event == "sessionStart":
         context = (
-            f"SNF WORKSPACE IDENTITY: root={ws}; expected={ROOT}; root_match={root_ok}; "
+            f"SNF WORKSPACE IDENTITY: root={ws}; git_root={top}; root_match={root_ok}; "
             f"branch={branch}; production_branch={PROD_BRANCH}; head={head}; dirty={dirty}. "
             "Current branch may be used for development, but do not claim or mutate production unless production source is explicitly verified. "
             "Do not commit, push, merge, switch branches, deploy, reset, clean, or delete work without David's approval."
@@ -57,4 +66,4 @@ if __name__ == "__main__":
     except SystemExit:
         raise
     except Exception as exc:
-        emit({"permission":"ask","user_message":"SNF workspace guard could not verify this command.","agent_message":type(exc).__name__})
+        emit({"permission":"deny","user_message":"SNF workspace guard could not verify this checkout.","agent_message":type(exc).__name__}, 2)
