@@ -1,7 +1,7 @@
 {
   "autoRun": {
     "allow_instructions": [
-      "Allow read-only repository inspection, Git status/diff/log checks, npm tests, Playwright tests, local static serving, and bounded edits inside the verified SNF_DEPLOY project root when David asked for implementation.",
+      "Allow read-only repository inspection, Git status/diff/log checks, npm tests, Playwright tests, local static serving, and bounded edits inside the verified StateNotFate checkout when David asked for implementation.",
       "Treat the current branch as a valid development context but do not call it production unless it is verified against the repository's production source branch and Netlify state."
     ],
     "block_instructions": [
