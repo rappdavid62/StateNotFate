@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Depression Atlas — State Not Fate</title>
+    <meta name="description" content="State Not Fate depression cause-and-effect atlas. Adverse childhood experiences are mapped as upstream load on depression and suicidal behavior, with claim labels and no personal risk score.">
+    <meta property="og:title" content="State Not Fate — Depression Atlas">
+    <meta property="og:description" content="Cause-and-effect atlas. ACEs as upstream drivers of depression and suicidal behavior. Population evidence only. No personal risk score.">
+    <link rel="canonical" href="https://statenotfate.netlify.app/depression-atlas">
+    <link rel="apple-touch-icon" href="/favicon.svg">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="index.css">
+    <style>
+        .atlas-fence { border-left: 4px solid #8a5a12; }
+        .atlas-crisis { display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; align-items: center; }
+        .atlas-crisis a { font-weight: 700; }
+        .atlas-layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr); gap: 1rem; align-items: start; }
+        .atlas-toolbar, .atlas-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.75rem 0 1rem; }
+        .atlas-pill, .atlas-node-btn, .atlas-loop-btn, .atlas-bat-btn {
+            appearance: none; border: 1px solid rgba(10, 13, 51, 0.18); background: #fff; color: inherit;
+            border-radius: 999px; padding: 0.35rem 0.75rem; font: inherit; font-size: 0.86rem; cursor: pointer;
+        }
+        .atlas-pill[aria-pressed="true"], .atlas-node-btn[aria-current="true"], .atlas-loop-btn[aria-pressed="true"], .atlas-bat-btn[aria-pressed="true"] {
+            background: #1a1a1a; color: #fff; border-color: #1a1a1a;
+        }
+        .atlas-nodes { display: grid; gap: 0.45rem; max-height: 640px; overflow: auto; padding-right: 0.2rem; }
+        .atlas-node-btn { border-radius: 12px; text-align: left; display: grid; gap: 0.15rem; width: 100%; }
+        .atlas-node-btn small { opacity: 0.72; }
+        .atlas-kicker { font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; }
+        .atlas-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+        .atlas-table th, .atlas-table td { border-bottom: 1px solid rgba(10, 13, 51, 0.12); text-align: left; vertical-align: top; padding: 0.65rem 0.45rem; }
+        .atlas-table th { font-size: 0.78rem; letter-spacing: 0.03em; text-transform: uppercase; }
+        .atlas-read { font-size: 0.92rem; line-height: 1.55; }
+        .atlas-meta { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.6rem; }
+        .atlas-edge { margin: 0.35rem 0; }
+        @media (max-width: 860px) { .atlas-layout { grid-template-columns: 1fr; } .atlas-nodes { max-height: none; } }
+    </style>
+</head>
+<body>
+    <header class="public-header" data-public-site>
+        <nav class="public-nav" aria-label="Public site navigation">
+            <a class="public-brand" href="/">State Not Fate</a>
+            <div class="public-nav-links">
+                <a href="/#learn">Learn</a>
+                <a href="/#program">Start / Try the program</a>
+                <a href="/suicide-prevention">Suicide Prevention</a>
+                <a href="/depression-atlas" aria-current="page">Depression Atlas</a>
+                <a href="/evidence">Evidence / Sources</a>
+                <a href="/essays">Essays</a>
+                <a href="/contact">Contact / Join</a>
+                <a href="/crisis">Crisis Help</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="public-page" data-public-site>
+        <p class="public-kicker">Cause-and-effect atlas · v1.3 · ACE upstream layer</p>
+        <h1>Depression Cause-and-Effect Atlas</h1>
+        <p class="public-summary">Depression is not a character verdict. It is a systems failure that can retune energy, reward prediction, threat detection, sleep, follow-through, and the felt cost of action. Adverse childhood experiences sit upstream of that failure. They raise population risk for depression and suicidal behavior. They do not assign a personal fate, and this page never turns an ACE count into a personal risk score.</p>
+
+        <section class="source-card" aria-label="Urgent support">
+            <h2>Urgent support first</h2>
+            <div class="atlas-crisis">
+                <span>Immediate physical danger: call 911.</span>
+                <a href="tel:988">Call 988</a>
+                <a href="sms:988">Text 988</a>
+                <a href="https://988lifeline.org/" target="_blank" rel="noopener noreferrer">988lifeline.org</a>
+                <span>U.S. & Canada, 24/7. Text HOME to 741741 for the Crisis Text Line.</span>
+                <a href="/crisis">Open crisis help</a>
+            </div>
+        </section>
+
+        <section class="source-card atlas-fence">
+            <span class="claim-chip claim-chip-boundary">Non-scoring fence</span>
+            <h2>What this page will not do</h2>
+            <p class="atlas-read">No ACE quiz. No suicide probability. No public LOW / MEDIUM / HIGH. No “safe” or “unsafe” clearance. Odds ratios below are population associations from research samples. A person with many ACEs may never become depressed. A person with none may still be in a severe episode. Hard safety rules beat any background statistic. This is education inside an adjunctive tool, not diagnosis, treatment, or a replacement for professional care.</p>
+        </section>
+
+        <section class="source-card" id="dose">
+            <h2>The dose pattern, read correctly</h2>
+            <p class="atlas-read">ACEs are categories of childhood abuse, neglect, and household dysfunction, usually counted before age 18. The original CDC–Kaiser work and later reviews show a graded pattern: as the count rises, rates of adult depression and suicide attempts rise with it. The pattern is strong. It is not linear destiny, and retrospective studies usually show larger odds than prospective ones.</p>
+            <div style="overflow-x:auto">
+                <table class="atlas-table">
+                    <thead>
+                        <tr>
+                            <th>Contrast</th>
+                            <th>Depression</th>
+                            <th>Suicidal behavior</th>
+                            <th>How to read it</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Any ACE exposure vs none</td>
+                            <td>OR 2.01 (95% CI 1.86–2.32)</td>
+                            <td>Suicidality OR 2.33 (2.11–2.56). Anxiety OR 1.94 (1.82–2.22).</td>
+                            <td><span class="claim-chip claim-chip-research">Evidence</span> Sahle et al. umbrella review, Eur Child Adolesc Psychiatry 2022 (epub 2021). Association did not clearly vary by gender or age of exposure. This is “any exposure,” not a high count.</td>
+                        </tr>
+                        <tr>
+                            <td>≥4 categories vs none, original cohort</td>
+                            <td>Inside a 4- to 12-fold band for depression, along with alcoholism and drug abuse</td>
+                            <td>Same 4- to 12-fold band for suicide attempt in the 1998 report. Dube et al., 2001: any single category about 2- to 5-fold; at 7+ experiences, adjusted OR 31.1 (20.6–47.1) vs none (attempt prevalence 1.1% vs 35.2%).</td>
+                            <td><span class="claim-chip claim-chip-research">Evidence</span> Felitti et al., 1998, n = 9,508. Dube et al., 2001, JAMA, is the suicide-attempt paper. Each step up the ACE score raised attempt odds by roughly 50–70% in that cohort. Population attributable fractions there were large (about 67% of lifetime attempts associated with ≥1 ACE) because ACEs were common — attributable fraction is not individual probability.</td>
+                        </tr>
+                        <tr>
+                            <td>≥4 vs none, pooled adult studies</td>
+                            <td>Mental-ill-health odds in the “more than 3 to 6” band; about fourfold across distress and disorder indicators</td>
+                            <td>Self-directed violence in the strongest band (odds ratios greater than 7), with high heterogeneity</td>
+                            <td><span class="claim-chip claim-chip-research">Evidence</span> Hughes et al., Lancet Public Health, 2017. 37 studies, 253,719 adults, general samples, ≥4 vs 0. Wide uncertainty on the violence estimates. Do not treat the top of that band as a personal multiplier.</td>
+                        </tr>
+                        <tr>
+                            <td>Prospective studies</td>
+                            <td>OR 1.61 (1.45–1.76)</td>
+                            <td>Suicidality OR 1.28 (1.13–1.43). PTSD OR 2.26. Anxiety OR 1.78.</td>
+                            <td><span class="claim-chip claim-chip-research">Evidence</span> Murray et al., 2025 systematic review. Smaller than retrospective odds. Maltreatment and violence ACEs were stronger depression predictors than household ACEs. Recall bias is real. The signal does not disappear when recall bias is reduced.</td>
+                        </tr>
+                        <tr>
+                            <td>Already in an affective disorder</td>
+                            <td>The diagnosis is already present</td>
+                            <td>Suicidal behavior OR 1.98 (1.74–2.26). Sexual abuse OR 2.24 (1.90–2.64). Ideation OR 2.16. Attempts OR 1.95.</td>
+                            <td><span class="claim-chip claim-chip-research">Evidence</span> 2025 European Psychiatry meta-analysis, 41 studies, 19,588 people. ACEs are not fully “used up” by the depression or bipolar diagnosis. They still mark higher suicidal behavior inside the clinical group.</td>
+                        </tr>
+                        <tr>
+                            <td>Type, not just count</td>
+                            <td>Youth-onset depression OR 2.14 (1.93–2.37) after early-life adversity. Emotional abuse OR 4.25 (3.04–5.94). Threat OR 2.60 vs deprivation OR 1.76.</td>
+                            <td>Adult suicide attempt: sexual abuse OR 3.17 (2.76–3.64), physical abuse OR 2.52, emotional abuse OR 2.49, complex abuse OR 5.18 (2.52–10.63).</td>
+                            <td><span class="claim-chip claim-chip-research">Evidence</span> Youth: 2024 meta-analysis, 87 studies, 213,006. Adults: Angelakis et al., 2019, 68 studies, n = 261,660. Emotional abuse is not a minor category. Threat loads depression earlier and harder than deprivation, on average.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="atlas-read">Dube and colleagues also showed partial mediation. Depressed affect, self-reported alcoholism, and illicit drug use carried part of the ACE-to-attempt relationship. That matters mechanically. The childhood load often arrives in adult life through the same substrates this project already runs: mood state, substances, and a nervous system that has stopped expecting effort to pay.</p>
+        </section>
+
+        <section class="source-card" id="pathways">
+            <h2>How the load enters the machine</h2>
+            <div class="public-grid">
+                <article>
+                    <span class="claim-chip claim-chip-research">Evidence → synthesis</span>
+                    <h3>Threat</h3>
+                    <p>Physical abuse, sexual abuse, and violence in the home bias salience and danger learning. In the atlas this feeds threat bias, nocturnal vigilance, and self-attack. It is not a moral stain. It is a calibration that made sense in the original environment and now over-fires.</p>
+                </article>
+                <article>
+                    <span class="claim-chip claim-chip-research">Evidence → synthesis</span>
+                    <h3>Deprivation</h3>
+                    <p>Emotional and physical neglect, chaos, and missing care reduce expected reward and cognitive bandwidth. This is the closest ACE path to the project’s core observation: effort starts to feel expensive, and payoff starts to feel absent. Emotional abuse and neglect are high-yield, not soft.</p>
+                </article>
+                <article>
+                    <span class="claim-chip claim-chip-framework">Synthesis</span>
+                    <h3>Household dysfunction</h3>
+                    <p>A household member with mental illness, substance problems, or incarceration, or a loss of a parent, adds unpredictability. The child learns that other people and tomorrow are unstable inputs. Adult social shrinkage and substance coping often continue that lesson.</p>
+                </article>
+                <article>
+                    <span class="claim-chip claim-chip-framework">Synthesis</span>
+                    <h3>Body, not biography homework</h3>
+                    <p>Toxic stress literature links early adversity to HPA-axis wear, inflammatory tone, sleep disruption, and reward-circuit blunting. Those are mechanisms, not a lab you can run in the browser. The usable translation is substrate first: light, sleep timing, food, movement, one safe contact, treatment if indicated. Childhood narrative work is not the Level 1 lever.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="source-card" id="map">
+            <h2>8-layer map, with ACEs wired in</h2>
+            <p class="atlas-read">Select a layer, then a node. Upstream is what drives the node. Downstream is what it drives. The lever changes with battery. Nothing here is stored.</p>
+            <div class="atlas-pills" role="toolbar" aria-label="Layer filter" id="layer-filter"></div>
+            <div class="atlas-toolbar" aria-label="Battery">
+                <span class="atlas-kicker">Battery for the lever only</span>
+                <button type="button" class="atlas-bat-btn" data-bat="collapse" aria-pressed="false">Collapse</button>
+                <button type="button" class="atlas-bat-btn" data-bat="low" aria-pressed="true">Low</button>
+                <button type="button" class="atlas-bat-btn" data-bat="medium" aria-pressed="false">Medium</button>
+                <button type="button" class="atlas-bat-btn" data-bat="strong" aria-pressed="false">Strong</button>
+            </div>
+            <div class="atlas-layout">
+                <div class="atlas-nodes" id="node-list"></div>
+                <article class="source-card" id="inspector" aria-live="polite">
+                    <p>Select a node.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="source-card" id="loops">
+            <h2>Closed loops the ACE load tends to lock</h2>
+            <p class="atlas-read">A loop is a circuit, not a personality. The break is a smaller action with a trace, not a speech about the past.</p>
+            <div class="atlas-pills" id="loop-filter" role="toolbar" aria-label="Loops"></div>
+            <article id="loop-panel" class="atlas-read"></article>
+        </section>
+
+        <section class="source-card">
+            <h2>What State Not Fate does with this</h2>
+            <div class="public-grid">
+                <article>
+                    <h3>Year 1 job stays de-chaos</h3>
+                    <p>A high ACE load is a reason to make the floor smaller, not a reason to start with identity repair, trauma processing, or a five-year ambition. Stabilization is the correct early job: wake window, light, water, food, meds if prescribed, one reset.</p>
+                </article>
+                <article>
+                    <h3>Proof against a trained prediction</h3>
+                    <p>If the childhood environment taught “effort will not be met,” the depressed state will reuse that prediction. The counter is not encouragement. It is one action small enough to finish, written down so a bad hour cannot erase it.</p>
+                </article>
+                <article>
+                    <h3>Treatment lane stays open</h3>
+                    <p>Trauma-focused therapy, medication when indicated, and substance treatment are clinical tools. The atlas can point at the lane. It does not dose, time, or replace it. Severe self-neglect, mania, psychosis, or active withdrawal needs a person and a service, not a self-map.</p>
+                </article>
+                <article>
+                    <h3>988 is not a failure state</h3>
+                    <p>Suicidal thoughts can appear in severe depression with or without ACEs. Contact 988, a trusted person, or 911 when there is immediate danger. Means safety is a conversation with a person, not a set of instructions on this page.</p>
+                </article>
+            </div>
+            <p><a href="/suicide-prevention">Suicide prevention appendix</a> · <a href="/evidence">Evidence and claim rules</a> · <a href="/#program">Main Frame</a></p>
+        </section>
+
+        <section class="source-card">
+            <h2>Sources</h2>
+            <ul class="atlas-read">
+                <li>Felitti VJ, et al. Relationship of childhood abuse and household dysfunction to many of the leading causes of death in adults: the Adverse Childhood Experiences (ACE) Study. <em>Am J Prev Med.</em> 1998;14:245-258.</li>
+                <li>Dube SR, et al. Childhood abuse, household dysfunction, and the risk of attempted suicide throughout the life span. <em>JAMA.</em> 2001;286:3089-3096. <a href="https://pubmed.ncbi.nlm.nih.gov/11754674/" target="_blank" rel="noopener noreferrer">PubMed 11754674</a></li>
+                <li>Hughes K, et al. The effect of multiple adverse childhood experiences on health: a systematic review and meta-analysis. <em>Lancet Public Health.</em> 2017;2:e356-e366. <a href="https://pubmed.ncbi.nlm.nih.gov/29253477/" target="_blank" rel="noopener noreferrer">PubMed 29253477</a></li>
+                <li>Sahle BW, et al. The association between adverse childhood experiences and common mental disorders and suicidality: an umbrella review of systematic reviews and meta-analyses. <em>Eur Child Adolesc Psychiatry.</em> 2022;31(10):1489-1499. doi:10.1007/s00787-021-01745-2. Epub 2021 Feb 27. <a href="https://pubmed.ncbi.nlm.nih.gov/33638709/" target="_blank" rel="noopener noreferrer">PubMed 33638709</a></li>
+                <li>Angelakis I, Gillespie EL, Panagioti M. Childhood maltreatment and adult suicidality: systematic review and meta-analysis. <em>Psychol Med.</em> 2019. <a href="https://pubmed.ncbi.nlm.nih.gov/30608046/" target="_blank" rel="noopener noreferrer">PubMed 30608046</a></li>
+                <li>Association between adverse childhood experiences and suicidal behavior in affective disorders: systematic review and meta-analysis. <em>Eur Psychiatry.</em> 2025. <a href="https://pubmed.ncbi.nlm.nih.gov/40433733/" target="_blank" rel="noopener noreferrer">PubMed 40433733</a></li>
+                <li>Early-life adversity and youth-onset depression meta-analysis, 2024. <a href="https://pubmed.ncbi.nlm.nih.gov/39328345/" target="_blank" rel="noopener noreferrer">PubMed 39328345</a></li>
+                <li>Murray AL, et al. Prospective longitudinal associations between ACEs and adult mental health: systematic review and meta-analysis. <em>Trauma Violence Abuse.</em> 2025.</li>
+                <li>McLaughlin KA, Sheridan MA, Lambert HK. Childhood adversity and neural development: deprivation and threat as dimensions. <em>Neurosci Biobehav Rev.</em> 2014. Framework for the threat/deprivation split. The mapping onto this app’s layers is project synthesis.</li>
+                <li>NICE NG222 (depression in adults; reviewed 2026) for adjunctive care matched to severity, and NICE NG225 for the rule that a tool must not calculate a personal suicide risk. VA/DoD MDD guidance is a measurement frame, not a clearance. See <a href="/evidence">Evidence</a>.</li>
+            </ul>
+            <p class="text-secondary">Exchange note: A2A-20261021-DEPRESSION-ATLAS-V1, updated on the live site as v1.3 with the ACE upstream layer. Educational systems literacy only.</p>
+        </section>
+    </main>
+    <script>
+    (function () {
+        var LAYERS = [
+            ["ALL", "All layers"],
+            ["UP", "1 · Upstream"],
+            ["SL", "2 · Sleep"],
+            ["IM", "3 · Immediate state"],
+            ["BH", "4 · Behavior"],
+            ["LF", "5 · Life consequences"],
+            ["FB", "6 · Feedback loops"],
+            ["DIF", "7 · Differentials"],
+            ["INT", "8 · Levers"]
+        ];
+        var NODES = [
+            {id:"up-dose", layer:"UP", tier:"ESTABLISHED", title:"ACE count is a population load",
+                mechanism:"More ACE categories track with higher odds of adult depression and suicide attempts. The curve is graded. Retrospective odds are larger than prospective odds. Attributable fraction is high partly because ACEs are common, not because every exposed person will attempt suicide.",
+                reframe:"A count describes exposure in a cohort. It is not an identity, a clearance, or a prediction about the person reading this page.",
+                lever:{collapse:"Do not inventory your childhood today. Drink water, get light, and keep 988 one tap away.", low:"If a number is echoing, write one line: 'This is a population pattern. It is not my probability.' Then do one floor action.", medium:"Use the count only as context for why startup is expensive. Pick one substrate to defend this week: sleep timing or food timing.", strong:"Do not spend a strong day reconstructing a full ACE autobiography. Defend anchors, then one forward task."},
+                up:[], down:["up-threat","up-deprivation","up-household"],
+                source:"Felitti 1998; Dube 2001; Hughes 2017; Murray 2025"},
+            {id:"up-threat", layer:"UP", tier:"ESTABLISHED", title:"Threat ACEs: abuse and violence",
+                mechanism:"Sexual abuse, physical abuse, emotional abuse, and violence toward a caregiver are the categories with the larger suicidality odds in maltreatment meta-analyses. Complex, multi-type abuse carries a higher attempt odds than a single type. Youth data put emotional abuse at the top of early depression risk, and threat above deprivation.",
+                reframe:"Hypervigilance was a solution. In depression it becomes a permanent alarm: the room is hostile, the self is on trial, night is unsafe.",
+                lever:{collapse:"Name the alarm as alarm. No exposure work. Feet on the floor, light, one safe sensory fact.", low:"Shorten the day. One room surface or one glass of water. Do not retell the event.", medium:"If therapy exists, this is a clinician topic, not a solo deep dive. Keep sleep regular so threat does not get the 3 a.m. shift.", strong:"A strong day can hold one treatment step: scheduling, a refill, or a note to a clinician. Not a self-directed trauma marathon."},
+                up:["up-dose"], down:["im-threat","sl-midnight","fb-shame"],
+                source:"Angelakis 2019; youth ELA meta-analysis 2024; Sahle 2022"},
+            {id:"up-deprivation", layer:"UP", tier:"ESTABLISHED", title:"Deprivation ACEs: neglect and thin care",
+                mechanism:"Emotional and physical neglect deprive the developing system of reliable reward, response, and scaffolding. In the threat/deprivation model, deprivation is more about missing inputs than about danger learning. Adult depression then looks like flatness, expensive effort, and 'nothing will answer.'",
+                reframe:"The absence of response teaches a prediction: action will not be met. That prediction is the gate in front of every later plan.",
+                lever:{collapse:"One met action: water placed where your hand already is.", low:"Three-minute outside air or one cleared surface. Write what changed, even if the change is tiny.", medium:"Pair one cue you already hit (waking, kettle, meds) with one met action. Repeat before you add a second.", strong:"Add one responsive human or one treatment contact. Do not add five. Deprivation is repaired by reliable response, not by volume."},
+                up:["up-dose"], down:["im-reward","bh-avoid","fb-nothing"],
+                source:"McLaughlin, Sheridan, Lambert 2014 framework; project synthesis onto reward prediction"},
+            {id:"up-household", layer:"UP", tier:"ESTABLISHED", title:"Household dysfunction",
+                mechanism:"Living with mental illness, substance problems, incarceration, or parental loss makes the environment noisy. Prospective work finds maltreatment a stronger depression predictor than household categories alone, but household load still matters, and it often clusters with abuse. Dube found alcohol and drug use partly carry the path from ACE score to attempts.",
+                reframe:"Unpredictable adults teach the nervous system that people and plans are unstable. Adult coping can copy the household: numb, disappear, or over-function, then crash.",
+                lever:{collapse:"No family-systems project. Safety, substances honest, 988 if thoughts are hot.", low:"If substances are in the picture, do not hide them from the floor plan. One honest line in a private note is enough.", medium:"One clinical or mutual-help step if substances are destabilizing the floor. The atlas will not out-plan withdrawal or mania.", strong:"Protect sleep and food before any reckoning conversation with family. A strong day is a bad day to reopen every old room."},
+                up:["up-dose"], down:["bh-substance","bh-social","lf-next"],
+                source:"Felitti 1998; Dube 2001 partial mediation; Murray 2025 moderation"},
+            {id:"sl-midnight", layer:"SL", tier:"ESTABLISHED", title:"Mind after midnight",
+                mechanism:"Nocturnal wakefulness, roughly midnight to 6 a.m., worsens mood, impulse, and catastrophic prediction. Threat-loaded histories often lose sleep first. A tired brain prices effort even higher the next day.",
+                reframe:"3 a.m. conclusions are state data from a shifted clock, not a verdict on the life or the childhood.",
+                lever:{collapse:"Lights low. No problem-solving. Get to horizontal. 988 if the night is dangerous.", low:"Same wake window tomorrow, even after a bad night. Morning light. Do not compensate by sleeping the day away if you can touch the window.", medium:"Fixed wake, morning outdoor light, and a dull wind-down. Caffeine cutoff.", strong:"Keep the window when life gets interesting. Expansion that steals sleep recreates the loop."},
+                up:["up-threat","im-threat"], down:["im-reward","fb-midnight"],
+                source:"Nocturnal wakefulness literature; project sleep module. ACE link is synthesis."},
+            {id:"im-reward", layer:"IM", tier:"SYNTHESIS", title:"Reward prediction goes cheap",
+                mechanism:"Depression shifts the internal calculator: effort feels costly, reward feels weak or absent. Deprivation and chronic stress make that shift more believable because it was often true in the original environment. The result is not laziness. It is a prediction that startup will not pay.",
+                reframe:"You do not wait for the prediction to feel generous. You generate one piece of counter-evidence small enough to be real.",
+                lever:{collapse:"The evidence is survival itself: water, meds if prescribed, any food.", low:"One action under five minutes with a before/after sentence.", medium:"Repeat yesterday's action before you enlarge it. Three repetitions beat one bigger plan.", strong:"Use capacity for a real task, then stop while the floor is intact. Overshoot confirms the crash prediction."},
+                up:["up-deprivation","sl-midnight"], down:["bh-avoid","fb-nothing","int-proof"],
+                source:"Project thesis aligned with reward-stress literature. Label: synthesis."},
+            {id:"im-threat", layer:"IM", tier:"SYNTHESIS", title:"Threat bias stays on",
+                mechanism:"Abuse and violence train faster danger detection. In depression that bias merges with shame and rumination. Neutral events get read as rejection, trap, or proof of permanent damage.",
+                reframe:"The alarm can be accurate about the past and wrong about this hour. Treat the thought as data from a sensitive system, not as a court ruling.",
+                lever:{collapse:"Orient to the room: five things you can see. No argument with the thought.", low:"Write the alarm in one sentence, then one body fact (feet, temperature, light).", medium:"One rumination stop: name it, stand up, ten-minute reset, return or stop.", strong:"Do not use a clear day to prosecute yourself for old alarms. One repair in the actual room."},
+                up:["up-threat"], down:["fb-shame","sl-midnight"],
+                source:"Threat dimension, McLaughlin framework. App mapping is synthesis."},
+            {id:"bh-avoid", layer:"BH", tier:"SYNTHESIS", title:"Avoidance that once protected",
+                mechanism:"Withdrawal reduces exposure to threat and to failed reward. It also removes the only inputs that could update the prediction. Days become zero-days. The childhood logic and the depressive logic agree: do less.",
+                reframe:"Avoidance is a successful short-term strategy with a high long-term tax. The correction is a smaller approach, not a character attack.",
+                lever:{collapse:"Do not disappear from food, water, and a located phone.", low:"One non-passive act: reply with one word, or take trash to the door.", medium:"One task block short enough to finish. Stop at the end.", strong:"One social or work approach you can repeat tomorrow. Leave slack."},
+                up:["im-reward","up-deprivation"], down:["lf-function","fb-nothing"],
+                source:"Behavioral activation logic plus project daily architecture."},
+            {id:"bh-substance", layer:"BH", tier:"ESTABLISHED", title:"Substance coping as a carrier",
+                mechanism:"In the ACE suicide-attempt cohort, alcohol and illicit drug use partly mediated the path from ACE score to attempts. Substances also wreck sleep, reward, and next-day startup, so they feed the same loops they were meant to quiet.",
+                reframe:"Numbing is understandable and expensive. Hiding it makes the floor plan fictional.",
+                lever:{collapse:"If you are in withdrawal, overdose risk, or cannot keep down food, this is a medical situation, not an atlas day. 911 or urgent care.", low:"One honest mark: used / did not use. No lecture.", medium:"Tell one clinician or one safe person the actual pattern. Ask what level of care fits.", strong:"Do not celebrate a strong day by using. That is how capacity gets spent in advance."},
+                up:["up-household","up-dose"], down:["sl-midnight","lf-function"],
+                source:"Dube 2001, partial mediation. Hughes 2017, problematic drug use among the strongest ≥4 outcomes."},
+            {id:"bh-social", layer:"BH", tier:"SYNTHESIS", title:"Social shrinkage",
+                mechanism:"Unreliable early care makes contact feel costly. Depression then narrows life until rumination has no competing data. Isolation is both a scar and a maintaining loop.",
+                reframe:"The goal is not to become socially impressive. It is to stop total disappearance.",
+                lever:{collapse:"A number on the phone is enough. You do not have to call if speech is gone. 988 can be the contact.", low:"One text that does not explain your childhood.", medium:"One scheduled low-demand contact. Leave when it is done.", strong:"Repeat a contact that was tolerable. Do not rebuild your whole social life in a week."},
+                up:["up-household","im-threat"], down:["fb-shame","int-person"],
+                source:"Project social module. ACE link is synthesis."},
+            {id:"lf-function", layer:"LF", tier:"SYNTHESIS", title:"Ordinary range collapses",
+                mechanism:"Sleep, hygiene, food, work, and the room slide together. The person reads the slide as identity. The system is actually losing its load-bearing inputs, which makes tomorrow more expensive.",
+                reframe:"Function is the outcome that matters early. Mood commentary can wait.",
+                lever:{collapse:"Minimum viable day only.", low:"Level 1 plus one visible trace.", medium:"Level 1 plus movement, one task, one reset.", strong:"Level 3 only if Level 1 survived yesterday."},
+                up:["bh-avoid","bh-substance","sl-midnight"], down:["fb-nothing"],
+                source:"Project Year 1 definition of success."},
+            {id:"lf-next", layer:"LF", tier:"ESTABLISHED", title:"The load can travel forward",
+                mechanism:"Hughes and colleagues noted that the outcomes most tightly tied to multiple ACEs — violence, mental illness, substance problems — are also risks for the next generation. That is a population warning, not a prophecy about anyone's parenting or character.",
+                reframe:"Interruption is practical: your own floor, treatment, and not using crisis as a secret. It is not a demand to be unscarred.",
+                lever:{collapse:"If children or dependent adults are unsafe right now, get a person involved. 911 if someone is in immediate danger.", low:"One stability act they can see: a meal, a light on, a calm exit instead of a spiral.", medium:"Keep your sleep and substances from becoming their weather.", strong:"Use a good week to set one reliable routine, not to prove you have transcended the past."},
+                up:["up-household","bh-substance"], down:[],
+                source:"Hughes 2017 interpretation of cross-generation risk. Not a personal forecast."},
+            {id:"fb-nothing", layer:"FB", tier:"SYNTHESIS", title:"Loop: nothing will be met",
+                mechanism:"Deprivation or chaos trains 'effort is pointless.' Depression reprints it. Avoidance confirms it. The loop does not need a new trauma. It only needs another day with no trace of effect.",
+                reframe:"The loop breaks on evidence, not on a better attitude.",
+                lever:{collapse:"One met biological action.", low:"Write the before and after of one five-minute act.", medium:"Repeat the same act on a second day before adding scope.", strong:"Log the repetition so a later bad day cannot call the week fake."},
+                up:["im-reward","bh-avoid","up-deprivation"], down:["int-proof"],
+                source:"Project gatekeeper logic, now tied to deprivation ACEs."},
+            {id:"fb-midnight", layer:"FB", tier:"SYNTHESIS", title:"Loop: 3 a.m. verdict",
+                mechanism:"Lost sleep plus threat bias produces a night court. The verdict feels final because the cortex is tired and the alarm is loud. Morning then starts already sentenced, so the day never gets a fair test.",
+                reframe:"Postpone the verdict until after light and food. Night content is not a plan.",
+                lever:{collapse:"No analysis. Horizontal. 988 if you are not safe.", low:"Morning light before you reread the night.", medium:"Wake window plus a written rule: no life decisions between midnight and 6.", strong:"Guard the window when work or grief pushes bedtime later."},
+                up:["sl-midnight","im-threat"], down:["im-reward"],
+                source:"Sleep and nocturnal-wakefulness synthesis."},
+            {id:"fb-shame", layer:"FB", tier:"SYNTHESIS", title:"Loop: burdensomeness and silence",
+                mechanism:"Emotional abuse and neglect supply the raw material for 'I am the problem' and 'telling someone will cost them.' Depression adds weight and withdrawal. Silence then removes correction. This page will not score burdensomeness or call it a suicide formula.",
+                reframe:"Shame is a state with a history. It is not a factual ledger of what you cost other people.",
+                lever:{collapse:"If the silence includes a plan or intent, contact 988 or 911. Do not stay alone with it to be polite.", low:"One sentence to one person or to 988. No full history required.", medium:"Put one name in a safety note. Ask them what they can actually hear.", strong:"Do not spend relief on disappearing again. Repeat the contact while it is easier."},
+                up:["up-threat","im-threat","bh-social"], down:["int-988"],
+                source:"Emotional abuse findings plus project non-scoring rule. Not a personal risk model."},
+            {id:"dif-fence", layer:"DIF", tier:"BOUNDARY", title:"Not a probability and not every illness",
+                mechanism:"ACE history does not rule out bipolar or mixed states, psychosis, severe substance destabilization, medical illness, or current danger. Those change the plan. Self-management is the wrong container when the floor itself is collapsing or reality testing is breaking.",
+                reframe:"Complexity is a routing problem. It is not a reason to hide, and it is not a score.",
+                lever:{collapse:"Person, clinic, or emergency service. The atlas steps aside.", low:"Tell a clinician about mania, psychosis, or withdrawal if those are in the picture. Do not let this page talk over them.", medium:"Bring the pattern, not a self-diagnosis.", strong:"Use capacity to get the right level of care, not to prove you can self-contain everything."},
+                up:[], down:["int-treat"],
+                source:"Project triage flags. NICE and VA/DoD as boundaries, not as a calculator."},
+            {id:"int-floor", layer:"INT", tier:"PROJECT", title:"Lever: survival floor",
+                mechanism:"Wake, light, water, food, prescribed meds, hygiene minimum. These do not process ACEs. They keep tomorrow available so any later work has a body to live in.",
+                reframe:"The floor is the intervention when biography is too heavy to touch.",
+                lever:{collapse:"Floor only.", low:"Floor plus one trace.", medium:"Floor is assumed, not optional, while you add one block.", strong:"Floor stays when ambition shows up."},
+                up:["lf-function"], down:[],
+                source:"Project Level 1."},
+            {id:"int-proof", layer:"INT", tier:"PROJECT", title:"Lever: written proof",
+                mechanism:"A depressed, threat-trained, deprivation-trained memory will delete small wins. Writing is how the win survives the next reading error.",
+                reframe:"The note is evidence. It is not a mood diary contest.",
+                lever:{collapse:"One word is a valid note.", low:"Before / after, two lines.", medium:"Weekly: did a bad day erase the week, or only the day?", strong:"Keep the log when you feel above it. That is when people stop and then get surprised."},
+                up:["fb-nothing","im-reward"], down:[],
+                source:"Project proof rule."},
+            {id:"int-person", layer:"INT", tier:"PROJECT", title:"Lever: one contact",
+                mechanism:"Total disappearance is the social expression of the ACE prediction that people are unsafe or useless. One tolerable contact is a counterexample. It does not have to be intimate, and it does not have to understand your childhood.",
+                reframe:"Contact is a dose of reality, not a performance of recovery.",
+                lever:{collapse:"988 counts.", low:"One text.", medium:"One planned check-in.", strong:"Keep the same person rather than collecting new ones."},
+                up:["bh-social"], down:[],
+                source:"Project contact protection."},
+            {id:"int-treat", layer:"INT", tier:"PROJECT", title:"Lever: treatment as a tool",
+                mechanism:"Psychological treatment and medication, when indicated, are part of the formal evidence for depression. Trauma-focused work belongs in that lane, at a pace a clinician can hold. The atlas does not decide the modality.",
+                reframe:"Using treatment is a mechanical move. It is not an identity and not a confession that the floor failed.",
+                lever:{collapse:"If you are unsafe or medically unstable, urgent care beats a future appointment.", low:"Find the card, the portal, or the bottle. One step.", medium:"Book, refill, or attend. Bring sleep and substance facts.", strong:"Do not drop treatment because a good week felt like proof you are finished."},
+                up:["dif-fence","up-threat"], down:[],
+                source:"NICE adult depression guidance; VA/DoD. Project is not anti-treatment."},
+            {id:"int-988", layer:"INT", tier:"BOUNDARY", title:"Lever: 988 is always in the circuit",
+                mechanism:"Background ACE risk and an acute crisis are different timescales. The atlas can explain the first. Only a live human line should carry the second.",
+                reframe:"Calling is a correct use of the system. It does not raise a score, because there is no score.",
+                lever:{collapse:"Call or text 988. 911 if you or someone else is in immediate physical danger.", low:"Save the number where your thumb can find it.", medium:"Tell one person that 988 is part of your plan.", strong:"Leave the number in place after the crisis passes."},
+                up:["fb-shame","dif-fence"], down:[],
+                source:"988 Suicide & Crisis Lifeline. U.S. and Canada."}
+        ];
+        var LOOPS = [
+            {id:"l1", title:"Nothing will be met",
+                text:"Deprivation or chaos made unresponsiveness the normal outcome. Depression reprints it as 'plans are fake.' Avoidance confirms it by producing no new data. Break: one action small enough to finish, written before and after. Do not explain your childhood in the note."},
+            {id:"l2", title:"3 a.m. verdict",
+                text:"Threat history plus a broken night puts the alarm in charge. The verdict feels like insight. Break: no life decisions from midnight to 6, morning light before you trust the story, 988 if the night includes danger."},
+            {id:"l3", title:"Silence as manners",
+                text:"Emotional abuse and neglect often teach that your need is the problem. Depression calls that lesson 'burdensomeness' and rewards silence. Break: one sentence to one person or to 988. This is not a risk score and not a request to disclose trauma."},
+            {id:"l4", title:"Numbing that taxes the floor",
+                text:"Alcohol or drugs borrow relief and then steal sleep, startup, and judgment. In the original ACE suicide data they carried part of the path to attempts. Break: honesty on the floor plan, medical help if withdrawal or overdose is in play, no atlas heroics."},
+            {id:"l5", title:"Strong day overshoot",
+                text:"A rare good day gets spent trying to pay back years, including childhood years. The crash then 'proves' the old prediction. Break: strong days still end. Anchors first. One expansion. Stop."}
+        ];
+        var byId = {};
+        NODES.forEach(function (n) { byId[n.id] = n; });
+        var layer = "ALL";
+        var current = "up-dose";
+        var battery = "low";
+        var layerEl = document.getElementById("layer-filter");
+        var listEl = document.getElementById("node-list");
+        var inspector = document.getElementById("inspector");
+        LAYERS.forEach(function (pair) {
+            var b = document.createElement("button");
+            b.type = "button";
+            b.className = "atlas-pill";
+            b.textContent = pair[1];
+            b.setAttribute("aria-pressed", pair[0] === layer ? "true" : "false");
+            b.addEventListener("click", function () {
+                layer = pair[0];
+                Array.prototype.forEach.call(layerEl.children, function (child) {
+                    child.setAttribute("aria-pressed", child === b ? "true" : "false");
+                });
+                renderList();
+            });
+            layerEl.appendChild(b);
+        });
+        document.querySelectorAll(".atlas-bat-btn").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                battery = btn.getAttribute("data-bat");
+                document.querySelectorAll(".atlas-bat-btn").forEach(function (other) {
+                    other.setAttribute("aria-pressed", other === btn ? "true" : "false");
+                });
+                renderInspector();
+            });
+        });
+        function links(ids) {
+            if (!ids || !ids.length) return "<p class='atlas-edge'>None mapped.</p>";
+            return ids.map(function (id) {
+                var n = byId[id];
+                if (!n) return "";
+                return "<p class='atlas-edge'><button type='button' class='atlas-pill' data-jump='" + id + "'>" + n.title + "</button></p>";
+            }).join("");
+        }
+        function renderList() {
+            var rows = NODES.filter(function (n) { return layer === "ALL" || n.layer === layer; });
+            listEl.innerHTML = "";
+            rows.forEach(function (n) {
+                var b = document.createElement("button");
+                b.type = "button";
+                b.className = "atlas-node-btn";
+                b.setAttribute("aria-current", n.id === current ? "true" : "false");
+                b.innerHTML = "<span class='atlas-kicker'>" + n.layer + " · " + n.tier + "</span><strong>" + n.title + "</strong>";
+                b.addEventListener("click", function () { current = n.id; renderList(); renderInspector(); });
+                listEl.appendChild(b);
+            });
+        }
+        function renderInspector() {
+            var n = byId[current];
+            inspector.innerHTML =
+                "<div class='atlas-meta'><span class='claim-chip claim-chip-research'>" + n.layer + "</span><span class='claim-chip claim-chip-boundary'>" + n.tier + "</span></div>" +
+                "<h2>" + n.title + "</h2>" +
+                "<h3>Mechanism</h3><p class='atlas-read'>" + n.mechanism + "</p>" +
+                "<h3>State, not fate</h3><p class='atlas-read'>" + n.reframe + "</p>" +
+                "<h3>Lever at this battery (" + battery + ")</h3><p class='atlas-read'>" + n.lever[battery] + "</p>" +
+                "<h3>Upstream</h3>" + links(n.up) +
+                "<h3>Downstream</h3>" + links(n.down) +
+                "<p class='text-secondary'>Source note: " + n.source + "</p>";
+            inspector.querySelectorAll("[data-jump]").forEach(function (btn) {
+                btn.addEventListener("click", function () {
+                    current = btn.getAttribute("data-jump");
+                    renderList();
+                    renderInspector();
+                });
+            });
+        }
+        var loopEl = document.getElementById("loop-filter");
+        var loopPanel = document.getElementById("loop-panel");
+        LOOPS.forEach(function (loop, idx) {
+            var b = document.createElement("button");
+            b.type = "button";
+            b.className = "atlas-loop-btn";
+            b.textContent = loop.title;
+            b.setAttribute("aria-pressed", idx === 0 ? "true" : "false");
+            b.addEventListener("click", function () {
+                Array.prototype.forEach.call(loopEl.children, function (child) {
+                    child.setAttribute("aria-pressed", child === b ? "true" : "false");
+                });
+                loopPanel.textContent = loop.text;
+            });
+            loopEl.appendChild(b);
+        });
+        loopPanel.textContent = LOOPS[0].text;
+        renderList();
+        renderInspector();
+    })();
+    </script>
+</body>
+</html>
