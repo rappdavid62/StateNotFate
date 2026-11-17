@@ -580,6 +580,7 @@ const COMPANION_QUESTION_TREE = {
                         }
                     }
                 }
+                renderReEntryCard();
             } else {
                 const path = hash.replace(/^#\/?/, "");
                 if (path === "screen-welcome" || path === "program" || hash === "#screen-welcome" || hash === "#program") {
@@ -944,10 +945,15 @@ const COMPANION_QUESTION_TREE = {
             } else if (tabId === "suicideprevention") {
                 renderSuicidePreventionTab();
             }
+            ensureCourseRouting();
+            state.polaris.routing.lastTab = tabId;
+            saveState();
             return true;
         }
 
         function setupEventListeners() {
+            document.addEventListener("click", onCourseClick);
+
             // Crisis Safe Box distress rating events
             const btnUnlock = document.getElementById("btn-unlock-safebox");
             if (btnUnlock) {
@@ -4058,50 +4064,283 @@ const COMPANION_QUESTION_TREE = {
             }
         }
 
+        const COURSE_CHECKIN = {
+            initiation: { energy: "low", action: "initiation", label: "Put both feet on the floor and stand once" },
+            rhythm: { energy: "low", action: "rhythm", label: "Open blinds or stand by a window for 30 seconds" },
+            space: { energy: "medium", action: "space", label: "Put one visible piece of trash in a bin" },
+            body: { energy: "collapse", action: "body", label: "Drink water or take prescribed meds if due" },
+            mind: { energy: "low", action: "mind", label: "Say “This is a state, not a fate,” then touch one object and name it" },
+            low: { energy: "low", action: "initiation", label: "Put both feet on the floor and stand once" },
+            medium: { energy: "medium", action: "initiation", label: "Put both feet on the floor and stand once" },
+            collapse: { energy: "collapse", action: "body", label: "Drink water or take prescribed meds if due" }
+        };
+
+        function ensureCourseRouting() {
+            if (!state.polaris || typeof state.polaris !== "object") {
+                state.polaris = {
+                    enabled: true,
+                    proof: { total: 0, today: 0, ledger: [] },
+                    resilience: { current: 0, longest: 0, missedDays: 0, lastCompletedDate: "" },
+                    day: { currentState: state.todayEnergy || "medium", lastCheckInDate: "", difficulty: "easy", pacing: "slow", floorWinsMode: false },
+                    anchors: { today: {} },
+                    quests: { daily: [] },
+                    profile: {},
+                    questionnaire: {},
+                    routing: {}
+                };
+            }
+            if (!state.polaris.routing || typeof state.polaris.routing !== "object" || Array.isArray(state.polaris.routing)) {
+                state.polaris.routing = {};
+            }
+            const routing = state.polaris.routing;
+            if (routing.checkInDate === undefined) routing.checkInDate = "";
+            if (routing.checkInSkippedDate === undefined) routing.checkInSkippedDate = "";
+            if (routing.checkInChoice === undefined) routing.checkInChoice = "";
+            if (routing.lastActionId === undefined) routing.lastActionId = "";
+            if (routing.lastTab === undefined) routing.lastTab = "";
+            if (routing.energyBeforeCheckIn === undefined) routing.energyBeforeCheckIn = "";
+        }
+
+        function hasStoredCourse() {
+            return Boolean(
+                state.isOnboarded ||
+                (Array.isArray(state.history) && state.history.length) ||
+                (Array.isArray(state.userAnchors) && state.userAnchors.length) ||
+                (state.polaris && state.polaris.proof && Number(state.polaris.proof.total) > 0)
+            );
+        }
+
+        function courseCheckInSpec() {
+            ensureCourseRouting();
+            return COURSE_CHECKIN[state.polaris.routing.checkInChoice] || COURSE_CHECKIN.initiation;
+        }
+
+        function refreshCourseSurfaces() {
+            renderWelcomeCourse();
+            if (state.isOnboarded && document.getElementById("reentry-card-container")) {
+                renderReEntryCard();
+            }
+        }
+
+        function focusVisibleCourseAction() {
+            ["#btn-welcome-next", "#btn-course-next-anchor"].forEach((selector) => {
+                const el = document.querySelector(selector);
+                if (el && el.offsetParent !== null) el.focus();
+            });
+        }
+
+        function applyCourseCheckIn(choice) {
+            const spec = COURSE_CHECKIN[choice];
+            if (!spec) return;
+            ensureCourseRouting();
+            const routing = state.polaris.routing;
+            if (!routing.energyBeforeCheckIn) routing.energyBeforeCheckIn = state.todayEnergy || "medium";
+            routing.checkInChoice = choice;
+            routing.checkInDate = getTodayString();
+            routing.checkInSkippedDate = "";
+            state.todayEnergy = spec.energy;
+            if (!state.polaris.day) {
+                state.polaris.day = { currentState: spec.energy, lastCheckInDate: "", difficulty: "easy", pacing: "slow", floorWinsMode: false };
+            }
+            state.polaris.day.currentState = spec.energy;
+            state.polaris.day.lastCheckInDate = getTodayString();
+            saveState();
+            refreshCourseSurfaces();
+        }
+
+        function skipCourseCheckIn() {
+            ensureCourseRouting();
+            const routing = state.polaris.routing;
+            if (routing.energyBeforeCheckIn) {
+                state.todayEnergy = routing.energyBeforeCheckIn;
+                if (state.polaris.day) state.polaris.day.currentState = state.todayEnergy;
+            }
+            routing.checkInChoice = "";
+            routing.checkInDate = "";
+            routing.checkInSkippedDate = getTodayString();
+            saveState();
+            refreshCourseSurfaces();
+            focusVisibleCourseAction();
+        }
+
+        function resumeCourse() {
+            if (supportRoutingActive()) return;
+            if (!hasStoredCourse()) {
+                const status = document.getElementById("welcome-checkin-status");
+                if (status) status.textContent = "Nothing stored yet. The action above is the start.";
+                focusVisibleCourseAction();
+                return;
+            }
+            if (!state.isOnboarded) state.isOnboarded = true;
+            ensureCourseRouting();
+            saveState();
+            showScreen("dashboard");
+            const tab = state.polaris.routing.lastTab || "dashboard";
+            const validTabs = ["dashboard", "polaris", "momentum", "safebox", "mediaconsole", "progression", "cognitivelab", "documentcenter", "explorer", "suicideprevention"];
+            showTab(validTabs.includes(tab) ? tab : "dashboard");
+            const anchor = document.getElementById("daily-checklist-items") || document.getElementById("reentry-card-container");
+            if (anchor) anchor.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+
+        function toggleCoursePanel(panelId, button) {
+            const panel = document.getElementById(panelId);
+            if (!panel) return;
+            panel.classList.toggle("hidden");
+            const expanded = !panel.classList.contains("hidden");
+            if (button) button.setAttribute("aria-expanded", expanded ? "true" : "false");
+            if (expanded) {
+                const first = panel.querySelector("button, a");
+                if (first) first.focus();
+            }
+        }
+
+        function runWelcomeAction() {
+            if (supportRoutingActive()) return;
+            const spec = courseCheckInSpec();
+            executeTinyAnchor(spec.action);
+        }
+
+        function onCourseClick(event) {
+            const target = event.target.closest("[data-course-checkin], [data-course-skip], [data-course-resume], [data-course-change], [data-course-primary], [data-course-checklist], [data-course-polaris], [data-course-welcome], [data-course-explore], [data-course-personalize], [data-course-floor]");
+            if (!target) return;
+            if (target.hasAttribute("data-course-checkin")) {
+                applyCourseCheckIn(target.getAttribute("data-course-checkin"));
+                return;
+            }
+            if (target.hasAttribute("data-course-skip")) {
+                skipCourseCheckIn();
+                return;
+            }
+            if (target.hasAttribute("data-course-resume")) {
+                resumeCourse();
+                return;
+            }
+            if (target.hasAttribute("data-course-change")) {
+                toggleCoursePanel(target.getAttribute("data-course-change"), target);
+                return;
+            }
+            if (target.hasAttribute("data-course-primary")) {
+                runWelcomeAction();
+                return;
+            }
+            if (target.hasAttribute("data-course-checklist")) {
+                focusChecklist();
+                return;
+            }
+            if (target.hasAttribute("data-course-polaris")) {
+                showScreen("dashboard");
+                showTab("polaris");
+                return;
+            }
+            if (target.hasAttribute("data-course-welcome")) {
+                showScreen("welcome");
+                return;
+            }
+            if (target.hasAttribute("data-course-explore")) {
+                exploreFullProgram();
+                return;
+            }
+            if (target.hasAttribute("data-course-personalize")) {
+                openProfileDepthSelector();
+                return;
+            }
+            if (target.hasAttribute("data-course-floor")) {
+                goToEmergencyFloor();
+            }
+        }
+
+        function renderWelcomeCourse() {
+            const next = document.getElementById("btn-welcome-next");
+            if (!next) return;
+            const spec = courseCheckInSpec();
+            next.textContent = spec.label;
+            const status = document.getElementById("welcome-checkin-status");
+            ensureCourseRouting();
+            const routing = state.polaris.routing;
+            const today = getTodayString();
+            if (status) {
+                if (routing.checkInSkippedDate === today) {
+                    status.textContent = "Check-in skipped. The action is unchanged.";
+                } else if (routing.checkInDate === today && routing.checkInChoice) {
+                    status.textContent = "Check-in saved on this device.";
+                } else {
+                    status.textContent = "Optional. Skipping it leaves the action in place.";
+                }
+            }
+            document.querySelectorAll("[data-course-checkin]").forEach((button) => {
+                const selected = button.getAttribute("data-course-checkin") === routing.checkInChoice;
+                button.setAttribute("aria-pressed", selected ? "true" : "false");
+            });
+        }
+
         function renderReEntryCard() {
             if (!state.isOnboarded) return;
 
             const container = document.getElementById("reentry-card-container");
             if (!container) return;
-            
+
             // Re-run checking logic to ensure reEntry state is up-to-date
             updateReEntryState();
+            ensureCourseRouting();
 
             // Check if energy is low or collapse (dynamic override)
-            const isLowEnergy = state.todayEnergy === 'low' || state.todayEnergy === 'collapse';
-            
+            const isLowEnergy = state.todayEnergy === "low" || state.todayEnergy === "collapse";
+
             let message = "";
-            let cardType = state.reEntry ? state.reEntry.lastMessageType : 'normal';
+            const cardType = state.reEntry ? state.reEntry.lastMessageType : "normal";
 
             if (isLowEnergy) {
                 message = "Low energy changes the plan. It does not cancel the day. Use Floor Wins Mode.";
-            } else if (cardType === 'first-use') {
+            } else if (cardType === "first-use") {
                 message = "Start small. The goal is not a perfect day. The goal is one piece of proof.";
-            } else if (cardType === 'missed-yesterday') {
+            } else if (cardType === "missed-yesterday") {
                 message = "You missed a day. That is data, not a verdict. Restart with one small anchor.";
-            } else if (cardType === 'away-multiple') {
+            } else if (cardType === "away-multiple") {
                 message = "You were away for a bit. No penalty. The system resumes at the smallest useful step.";
             } else {
                 message = "Welcome back. Start with today’s anchors.";
             }
 
+            const routing = state.polaris.routing;
+            const today = getTodayString();
+            const skipped = routing.checkInSkippedDate === today;
+            const checked = routing.checkInDate === today && routing.checkInChoice;
+            const checkInNote = skipped
+                ? "Check-in skipped. Stored anchors stay."
+                : (checked ? "Check-in saved on this device." : "Check-in can wait.");
+            const pressed = (choice) => routing.checkInChoice === choice ? "true" : "false";
+
             container.innerHTML = `
-                <div class="reentry-card">
-                    <div class="reentry-header">
-                        <span class="icon">🜁</span> Smart Re-Entry Signal
+                <section class="reentry-card course-return" aria-label="Return visit">
+                    <div class="course-support">
+                        <a href="/crisis" data-open-support>Support</a>
+                        <span>988 or 911. No screening required.</span>
                     </div>
-                    <div class="reentry-content">
-                        ${message}
+                    <p class="reentry-content">${message}</p>
+                    <p class="course-kicker">One next action</p>
+                    <button type="button" class="reentry-btn reentry-btn-primary" id="btn-course-next-anchor" onclick="startSmallestAnchor()">
+                        Start smallest anchor
+                    </button>
+                    <div class="course-checkin">
+                        <h3>Check-in</h3>
+                        <p id="return-checkin-status">${checkInNote}</p>
+                        <button type="button" class="course-text-btn" data-course-skip="return">Skip check-in</button>
+                        <div class="course-checkin-options" role="group" aria-label="Skippable check-in">
+                            <button type="button" data-course-checkin="low" aria-pressed="${pressed("low")}">Low</button>
+                            <button type="button" data-course-checkin="medium" aria-pressed="${pressed("medium")}">Steady</button>
+                            <button type="button" data-course-checkin="collapse" aria-pressed="${pressed("collapse")}">Floor</button>
+                        </div>
                     </div>
-                    <div class="reentry-actions">
-                        <button class="reentry-btn reentry-btn-primary" onclick="startSmallestAnchor()">
-                            🎯 Start smallest anchor
-                        </button>
-                        <button class="reentry-btn reentry-btn-secondary" onclick="focusChecklist()">
-                            📋 Open today's checklist
-                        </button>
+                    <div class="course-switch">
+                        <button type="button" class="course-text-btn" data-course-resume="return">Resume</button>
+                        <button type="button" class="course-text-btn" data-course-change="return-alternates" aria-expanded="false" aria-controls="return-alternates">Change course</button>
                     </div>
-                </div>
+                    <div id="return-alternates" class="course-alternates hidden">
+                        <button type="button" class="btn btn-secondary w-full" data-course-checklist="1">Open today's checklist</button>
+                        <button type="button" class="btn btn-secondary w-full" data-course-polaris="1">Open Polaris</button>
+                        <button type="button" class="btn btn-secondary w-full" data-course-welcome="1">Change the first action</button>
+                    </div>
+                </section>
             `;
         }
 
@@ -4231,12 +4470,13 @@ const COMPANION_QUESTION_TREE = {
             state.isOnboarded = true;
             if (state.currentLayer === undefined || state.currentLayer === null) state.currentLayer = 0;
             
-            // Set energy to low/collapse equivalent implicitly
-            state.todayEnergy = 'low';
+            ensureCourseRouting();
+            if (!state.polaris.routing.checkInChoice) state.todayEnergy = "low";
             
             // Add it to today's active anchors list dynamically
             if (!state.polaris.anchors.today) state.polaris.anchors.today = {};
             state.polaris.anchors.today[anchor.id] = false; // Mark incomplete
+            state.polaris.routing.lastActionId = anchor.id;
             
             // We temporarily add it to userAnchors so it renders, or we handle it via getAnchorsForToday
             // Let's just push it to the top of the user anchors for today
@@ -5523,7 +5763,7 @@ const COMPANION_QUESTION_TREE = {
             if (!greetingEl || !subtitleEl) return;
 
             let greeting = "You’re here.";
-            let subtitle = "No catch-up. Pick the current state.";
+            let subtitle = "One action. Check-in can wait.";
 
             if (state.history && state.history.length > 0) {
                 const activeDays = state.history.filter(log => log && log.date && !log.missed);
@@ -5550,6 +5790,7 @@ const COMPANION_QUESTION_TREE = {
 
             greetingEl.textContent = greeting;
             subtitleEl.textContent = subtitle;
+            renderWelcomeCourse();
         }
 
         // ==========================================================

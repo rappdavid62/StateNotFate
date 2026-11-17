@@ -17,24 +17,65 @@ def payload() -> dict:
     except Exception:
         return {}
 
-def workspace(p: dict) -> Path:
-    roots = p.get("workspace_roots") or []
-    raw = roots[0] if roots else p.get("cwd") or os.getenv("CURSOR_PROJECT_DIR") or os.getcwd()
-    return Path(str(raw).strip('"')).resolve()
+def candidate_dirs(p: dict) -> list[Path]:
+    found: list[Path] = []
+    for raw in p.get("workspace_roots") or []:
+        found.append(Path(str(raw).strip('"')).resolve())
+    for raw in (p.get("cwd"), os.getenv("CURSOR_PROJECT_DIR")):
+        if raw:
+            found.append(Path(str(raw).strip('"')).resolve())
+    if not found:
+        found.append(Path.cwd().resolve())
+    unique: list[Path] = []
+    for item in found:
+        if item not in unique:
+            unique.append(item)
+    return unique
 
 def git(root: Path, *args: str) -> str:
     r = subprocess.run(["git", *args], cwd=root, capture_output=True, text=True, timeout=8)
     r.check_returncode()
     return r.stdout.strip()
 
+def origin_trusted(origin: str) -> bool:
+    # Hosted checkouts rewrite https://github.com/ to a credential URL.
+    # Match the repository path and never keep or print the credential.
+    text = re.sub(r"^(https://)[^/@\s]+@", r"\1", origin.strip(), count=1)
+    return bool(re.fullmatch(
+        r"(?:https://github\.com/|git@github\.com:|ssh://git@github\.com/)rappdavid62/StateNotFate(?:\.git)?/?",
+        text,
+        re.I,
+    ))
+
+def contains(parent: Path, child: Path) -> bool:
+    try:
+        child.resolve().relative_to(parent.resolve())
+        return True
+    except ValueError:
+        return False
+
+def trusted_checkout(p: dict) -> Path | None:
+    dirs = candidate_dirs(p)
+    for start in dirs:
+        try:
+            top = Path(git(start, "rev-parse", "--show-toplevel")).resolve()
+            origin = git(top, "remote", "get-url", "origin")
+        except Exception:
+            continue
+        if not origin_trusted(origin):
+            continue
+        if os.name == "nt" and top != ROOT.resolve():
+            continue
+        if top in dirs or any(contains(item, top) for item in dirs):
+            return top
+    return None
+
 def main():
     p = payload()
     event = str(p.get("hook_event_name") or "")
-    ws = workspace(p)
-    top = Path(git(ws, "rev-parse", "--show-toplevel")).resolve()
-    origin = git(top, "remote", "get-url", "origin")
-    trusted = re.fullmatch(r"(?:https://github\.com/|git@github\.com:|ssh://git@github\.com/)rappdavid62/StateNotFate(?:\.git)?/?", origin, re.I)
-    root_ok = ws == top and bool(trusted) and (os.name != "nt" or top == ROOT.resolve())
+    top = trusted_checkout(p)
+    root_ok = top is not None
+    ws = top if top is not None else (candidate_dirs(p)[0] if candidate_dirs(p) else Path.cwd())
     if not root_ok:
         if event == "sessionStart":
             emit({"additional_context": "SNF checkout identity mismatch. Stop before editing."})

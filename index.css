@@ -4413,8 +4413,11 @@ body.future-narrowing-active #polaris-growth-layer {
 body.has-site-notice .public-site,
 body.has-site-notice .public-page { padding-bottom: calc(5.75rem + env(safe-area-inset-bottom)); }
 @media (max-width: 768px) {
-    body.has-site-notice:has(.app-container:not(.hidden)) .snf-ui-587 { bottom: calc(4.6rem + env(safe-area-inset-bottom)); }
-    body.has-site-notice:has(.app-container:not(.hidden)) .app-container { padding-bottom: 8.5rem; }
+    body.has-site-notice:has(#screen-dashboard:not(.hidden)) .snf-ui-587 { bottom: calc(4.6rem + env(safe-area-inset-bottom)); }
+    body.has-site-notice:has(#screen-dashboard:not(.hidden)) .app-container { padding-bottom: 8.5rem; }
+}
+body.has-site-notice:has(#screen-welcome:not(.hidden)) .course-visit {
+    padding-bottom: calc(6.5rem + env(safe-area-inset-bottom));
 }
 .snf-ui-588 { position: fixed; top: 1rem; right: 1rem; z-index: 10000; display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none; max-width: 380px; }
 
@@ -4750,5 +4753,139 @@ body.has-site-notice .public-page { padding-bottom: calc(5.75rem + env(safe-area
     .morning-gratitude-completed-box {
         padding: 0.75rem;
         gap: 0.6rem;
+    }
+}
+
+/* Course visit: one action, skippable check-in, resume or change course. */
+.course-visit,
+.course-return {
+    width: min(100%, 34rem);
+    max-width: 100%;
+    text-align: left;
+    align-items: stretch;
+}
+
+.course-visit {
+    margin: 1.25rem auto 2rem;
+    gap: 0.75rem;
+}
+
+.course-visit .logo-header {
+    font-size: clamp(1.7rem, 8vw, 2.6rem);
+    letter-spacing: 0.06em;
+    margin-bottom: 0.25rem;
+}
+
+.course-support {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.course-support a {
+    color: var(--accent-teal);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.course-support span,
+.course-kicker,
+.course-checkin p {
+    color: var(--text-secondary);
+}
+
+.course-kicker {
+    margin: 0.35rem 0 0;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.course-checkin h3 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.course-checkin p {
+    margin: 0.2rem 0 0.55rem;
+}
+
+.course-checkin-options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+}
+
+.course-checkin-options button,
+.course-text-btn,
+.course-primary,
+.course-return .reentry-btn-primary,
+.course-alternates .btn {
+    min-height: 44px;
+    white-space: normal;
+    text-align: left;
+    overflow-wrap: anywhere;
+}
+
+.course-checkin-options button,
+.course-text-btn {
+    width: 100%;
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text-primary);
+    font: inherit;
+    padding: 0.65rem 0.8rem;
+    cursor: pointer;
+}
+
+.course-checkin-options button[aria-pressed="true"] {
+    border-color: var(--accent-teal);
+    box-shadow: inset 0 0 0 1px var(--accent-teal);
+}
+
+.course-primary,
+.course-return .reentry-btn-primary {
+    width: 100%;
+    justify-content: flex-start;
+    font-size: 1rem;
+    padding: 0.85rem 1rem;
+}
+
+.course-switch {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.course-alternates {
+    display: grid;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.course-visit :focus-visible,
+.course-return :focus-visible {
+    outline: 3px solid var(--accent-teal);
+    outline-offset: 3px;
+}
+
+@media (max-width: 480px) {
+    .course-visit {
+        margin-top: 0.5rem;
+    }
+
+    .course-switch {
+        grid-template-columns: 1fr;
     }
 }
