@@ -3,7 +3,8 @@ import { expect, test } from '@playwright/test';
 test('Onboarding assessment dropdowns save correctly @advisory', async ({ page }) => {
   await page.goto('/#program');
 
-  // Begin assessment
+  // Assessment stays available under Change course. It is not the first action.
+  await page.click('#btn-welcome-change');
   await page.click('#btn-start-intake');
 
   // Advance through the wizard steps to Section 4 (Safety -> Burden -> Mantra -> Structure)

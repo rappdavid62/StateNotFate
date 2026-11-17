@@ -111,57 +111,51 @@
         <!-- ========================================== -->
 <!-- SMART WELCOME / RE-ENTRY LAYER             -->
 <!-- ========================================== -->
-<div id="screen-welcome" class="welcome-screen">
-    <h1 class="logo-header snf-ui-8" >
-        STATE, NOT FATE
-        <span class="snf-ui-9">
-            状態・運命ではない
-        </span>
-    </h1>
-    <h3 class="text-lavender mb-2 snf-ui-10" id="welcome-greeting" >
-        You’re here.
-        <span class="snf-ui-11">
-            システム起動 // STATUS: ACTIVE
-        </span>
-    </h3>
-    <p class="intro snf-ui-12" id="welcome-subtitle" >No catch-up. Pick the current state.</p>
+<div id="screen-welcome" class="welcome-screen course-visit">
+    <p class="course-support">
+        <a href="/crisis" data-open-support>Support</a>
+        <span>988 or 911. No intake required.</span>
+    </p>
+    <h1 class="logo-header snf-ui-8">STATE, NOT FATE</h1>
+    <h2 class="text-lavender mb-2 snf-ui-10" id="welcome-greeting">You’re here.</h2>
+    <p class="intro snf-ui-12" id="welcome-subtitle">One action. Check-in can wait.</p>
 
-    <div class="glass-card snf-ui-13" >
-        <div class="snf-ui-14">
-            <button class="btn btn-primary w-full snf-ui-15" onclick="startSmallAction()" >
-                Start Small — One tiny action right now
-            </button>
-            <button class="btn btn-secondary w-full snf-ui-15" onclick="exploreFullProgram()" >
-                Explore Full Program
-            </button>
-            <button class="btn btn-secondary w-full snf-ui-15" onclick="openProfileDepthSelector()" >
-                Personalize More
-            </button>
-            <button class="btn btn-danger w-full snf-ui-15" onclick="goToEmergencyFloor()" >
-                Emergency Floor
-            </button>
+    <p class="course-kicker" id="welcome-next-label">One next action</p>
+    <button type="button" class="btn btn-primary course-primary" id="btn-welcome-next" data-course-primary="welcome">Put both feet on the floor and stand once</button>
+
+    <section class="course-checkin" aria-labelledby="welcome-checkin-title">
+        <h3 id="welcome-checkin-title">Check-in</h3>
+        <p id="welcome-checkin-status">Optional. Skipping it leaves the action in place.</p>
+        <div class="course-checkin-options" role="group" aria-label="Skippable check-in">
+            <button type="button" data-course-checkin="initiation" aria-pressed="false">I can’t start</button>
+            <button type="button" data-course-checkin="rhythm" aria-pressed="false">Rhythm is off</button>
+            <button type="button" data-course-checkin="space" aria-pressed="false">Space is dragging</button>
+            <button type="button" data-course-checkin="body" aria-pressed="false">Body needs the floor</button>
+            <button type="button" data-course-checkin="mind" aria-pressed="false">Mind is spiraling</button>
+        </div>
+        <button type="button" class="course-text-btn" id="btn-welcome-skip" data-course-skip="welcome">Skip check-in</button>
+    </section>
+
+    <div class="course-switch">
+        <button type="button" class="course-text-btn" id="btn-welcome-resume" data-course-resume="welcome">Resume</button>
+        <button type="button" class="course-text-btn" id="btn-welcome-change" data-course-change="welcome-alternates" aria-expanded="false" aria-controls="welcome-alternates">Change course</button>
+    </div>
+    <div id="welcome-alternates" class="course-alternates hidden">
+        <button type="button" class="btn btn-secondary w-full" data-course-explore="1">Explore full program</button>
+        <button type="button" class="btn btn-secondary w-full" data-course-personalize="1">Personalize more</button>
+        <button type="button" class="btn btn-secondary w-full" id="btn-start-intake">Begin Assessment</button>
+        <button type="button" class="btn btn-secondary w-full" data-course-floor="1">Open support floor</button>
+        <div class="guidelines-box glass-card">
+            <h2>The Main Frame Principles:</h2>
+            <ul>
+                <li><strong>Action before motivation:</strong> Start tiny so the day has one visible result.</li>
+                <li><strong>Streak purity is a trap:</strong> Streak systems build shame. Resilience and restart speed stay.</li>
+                <li><strong>Interactive Media Console:</strong> Program recordings stay inside the local app.</li>
+                <li><strong>Structured progression:</strong> PHQ-9 and the 10-layer record stay available when you want them.</li>
+            </ul>
         </div>
     </div>
-
-    <p class="text-muted snf-ui-16" >
-        Help is never locked. You can open the full program or 10-Minute Floor anytime.
-    </p>
-
-            <div class="guidelines-box glass-card">
-                <h2>The Main Frame Principles:</h2>
-                <ul>
-                    <li><strong>Action before motivation:</strong> We start tiny to prove to your brain that actions produce consequences.</li>
-                    <li><strong>Streak purity is a trap:</strong> Streak systems build shame. We track <em>resilience</em> and restart speed instead.</li>
-                    <li><strong>Interactive Media Console:</strong> Play your program recordings and podcasts directly inside your local app.</li>
-                    <li><strong>Structured Progression tracking:</strong> Standardized PHQ-9 assessments and 10-Layer progression metrics built-in.</li>
-                </ul>
-            </div>
-
-            <div class="flex-between w-full">
-                <button class="btn btn-secondary" onclick="window.location.href='/crisis'">Exit to Safety</button>
-                <button class="btn btn-primary" id="btn-start-intake">Begin Assessment <span class="icon">➔</span></button>
-            </div>
-        </div>
+</div>
 
         <!-- STATE SELECTOR SCREEN -->
         <div id="screen-state-selector" class="welcome-screen hidden">
@@ -636,6 +630,9 @@
             <!-- Main Content Area -->
             <div class="snf-ui-37">
 
+            <!-- Return visit stays above every tab, including the Polaris landing. -->
+            <div id="reentry-card-container"></div>
+
             <!-- Future Narrowing Notice Banner -->
             <div id="future-narrowing-banner" class="hidden snf-ui-38" >
                 ⚡ <strong>Future Narrowing Mode Active:</strong> Horizon compressed to today. Long-term goals and projections hidden to protect energy.
@@ -654,9 +651,6 @@
                         ⚡ Activate Polaris
                     </button>
                 </div>
-
-                <!-- Smart Re-Entry Card Placeholder -->
-                <div id="reentry-card-container"></div>
 
                 <!-- Master Custom Mantra Display (Center Stage) -->
                 <div class="master-mantra-card glass-card">
